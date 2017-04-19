@@ -1,0 +1,13 @@
+
+{% load static %}
+
+{% block content %}
+  <form method="post" action="{% url 'deepb:upload' %}" enctype="multipart/form-data">
+    {% csrf_token %}
+    <input type="file" name="gene_file">
+    <label>Upload Gene File</label><br />
+    <input type="file" name="symptom_file">
+    <label>Upload Symptom File</label><br />
+    <button type="submit">Upload File</button>
+  </form>
+{% endblock %}
