@@ -9,6 +9,8 @@ import amino_acid_mapping
 import Levenshtein
 import random
 from collections import defaultdict
+import os.path
+BASE = os.path.dirname(os.path.abspath(__file__))
 # import pickle
 # import pprint
 
@@ -16,10 +18,8 @@ reload(sys)
 sys.setdefaultencoding('utf-8')
 pd.options.display.max_colwidth = 10000
 
-CLINVAR_VARIANT_SUMMARY = 'data/clinvar_variant_summary.txt'
-PARSED_CLINVAR = 'data/parsed_clinvar.txt'
-# SAMPLE_GENES = 'data/sample_genes.txt'
-
+CLINVAR_VARIANT_SUMMARY = os.path.join(BASE, 'data/clinvar_variant_summary.txt')
+PARSED_CLINVAR = os.path.join(BASE, 'data/parsed_clinvar.txt')
 
 ## Collect information from myvariant 
 
@@ -328,7 +328,7 @@ def get_variants(candidate_vars):
   # print "Get dbscSNV splicing data "
   for chromosome in set(dbscsnv_chromosomes):
     # print chromosome
-    with open('data/dbscSNV/dbscSNV1.1.' + chromosome, 'rb') as f:
+    with open(os.path.join(BASE, ('data/dbscSNV/dbscSNV1.1.' + chromosome)), 'rb') as f:
       f.readline()
       for line in f.readlines():
         line = line.rstrip()

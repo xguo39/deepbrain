@@ -1,19 +1,19 @@
 import pandas as pd
-# import pprint
 import re
 from nltk.corpus import wordnet as wn
 from collections import deque
 import re
 from nltk.stem.wordnet import WordNetLemmatizer
 from collections import Counter
+import os.path
+BASE = os.path.dirname(os.path.abspath(__file__))
 
-HPO_SUBCLASS = 'data/hpo_subclasses.txt'
-HPO_SUPERCLASSES = 'data/hpo_superclasses.txt'
-HPO_NAMES = 'data/hpo_names.txt'
-HPO_FILE = 'data/all_hpo_terms_and_synonyms.txt'
-# PHENOTYPE_FILE = 'data/sample_patient_phenotype.txt'
-PHENOTYPE_TO_GENE_FILE = 'data/Expanded_OMIM_ALL_FREQUENCIES_phenotype_to_genes_without_synonym.txt'
-PHENOTYPE_TO_DISEASE_FILE = 'data/Expanded_ALL_SOURCES_ALL_FREQUENCIES_diseases_to_phenotypes.txt'
+HPO_SUBCLASS = os.path.join(BASE, "data/hpo_subclasses.txt")
+HPO_SUPERCLASSES = os.path.join(BASE, "data/hpo_superclasses.txt")
+HPO_NAMES = os.path.join(BASE, "data/hpo_names.txt")
+HPO_FILE = os.path.join(BASE, "data/all_hpo_terms_and_synonyms.txt")
+PHENOTYPE_TO_GENE_FILE = os.path.join(BASE, "data/Expanded_OMIM_ALL_FREQUENCIES_phenotype_to_genes_without_synonym.txt")
+PHENOTYPE_TO_DISEASE_FILE = os.path.join(BASE, 'data/Expanded_ALL_SOURCES_ALL_FREQUENCIES_diseases_to_phenotypes.txt')
 
 # In practice, we don't need to screen through all genes. Only a few gene candidates are examined.
 #CANDIDATE_GENES = ['GRIN1', 'HDGFRP2']

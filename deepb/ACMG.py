@@ -7,12 +7,14 @@ import amino_acid_mapping
 import numpy as np
 import os
 import time
+import os.path
+BASE = os.path.dirname(os.path.abspath(__file__))
 
 def getKnownGeneCanonical():
     global knownGeneCanonical
     knownGeneCanonical = dict()
-    df_knownGeneCanonical = pd.read_csv('data/ACMG/knownGeneCanonical.txt', sep = ' ')
-    df_ucsc_refseq_map = pd.read_csv('data/ACMG/kgTxInfo.txt', usecols = [0, 2], names = ['Transcript(ucsc/known)', 'Transcript(HGVS)'], sep = '\t')
+    df_knownGeneCanonical = pd.read_csv(os.path.join(BASE, 'data/ACMG/knownGeneCanonical.txt'), sep = ' ')
+    df_ucsc_refseq_map = pd.read_csv(os.path.join(BASE, 'data/ACMG/kgTxInfo.txt'), usecols = [0, 2], names = ['Transcript(ucsc/known)', 'Transcript(HGVS)'], sep = '\t')
     df_knownGeneCanonical = df_knownGeneCanonical.merge(df_ucsc_refseq_map, how = 'left', on = 'Transcript(ucsc/known)')
     for index, row in df_knownGeneCanonical.iterrows():
         transcript = row['Transcript(HGVS)']
@@ -23,7 +25,7 @@ def getKnownGeneCanonical():
 
 def getLOFGenes():
     global LOF_genes
-    df_LOF_genes = pd.read_csv('data/ACMG/PVS1.LOF.genes.txt', names = ['gene'])
+    df_LOF_genes = pd.read_csv(os.path.join(BASE, 'data/ACMG/PVS1.LOF.genes.txt'), names = ['gene'])
     LOF_genes = pd.unique(df_LOF_genes.gene.values).tolist()
 
 def check_PVS1(variant_):
@@ -54,7 +56,7 @@ def check_PVS1(variant_):
 def getMissenseAAPathogenicity(): 
     global missense_AA_pathogenicity, missense_original_AA
     missense_AA_pathogenicity, missense_original_AA = dict(), dict()
-    with open('data/ACMG/missense_AA_change_pathogenicity.txt', 'rb') as f:
+    with open(os.path.join(BASE, 'data/ACMG/missense_AA_change_pathogenicity.txt'), 'rb') as f:
         f.readline()
         for line in f.readlines():
             line = line.rstrip()
@@ -204,7 +206,7 @@ def getORGreaterThan5Variants():
     # OR -- odds ratios or relative risk
     global variants_with_or_greater_than_5
     variants_with_or_greater_than_5 = []
-    with open('data/PS4.variants.hg19.txt', 'rb') as f:
+    with open(os.path.join(BASE, 'data/PS4.variants.hg19.txt'), 'rb') as f:
         f.readline()
         for line in f.readlines():
             line = line.rstrip()
@@ -233,10 +235,10 @@ def check_PS4(variant_):
 
 def getRecessiveDominantGenes():
     global dominant_genes, recessive_genes, adultonset_genes
-    df_omim_mim2gene = pd.read_csv('data/omim_mim2gene.txt', sep = '\t', skiprows = 1, usecols = [0, 1, 3], names = ['mim', 'type', 'gene']) 
-    df_mim_dominant = pd.read_csv('data/mim_domin.txt', names = ['mim'])
-    df_mim_recessive = pd.read_csv('data/mim_recessive.txt', names = ['mim'])
-    df_mim_adultonset = pd.read_csv('data/mim_adultonset.txt', names = ['mim'])
+    df_omim_mim2gene = pd.read_csv(os.path.join(BASE, 'data/omim_mim2gene.txt'), sep = '\t', skiprows = 1, usecols = [0, 1, 3], names = ['mim', 'type', 'gene'])
+    df_mim_dominant = pd.read_csv(os.path.join(BASE, 'data/mim_domin.txt'), names = ['mim'])
+    df_mim_recessive = pd.read_csv(os.path.join(BASE, 'data/mim_recessive.txt'), names = ['mim'])
+    df_mim_adultonset = pd.read_csv(os.path.join(BASE, 'data/mim_adultonset.txt'), names = ['mim'])
     df_mim_dominant = df_mim_dominant.merge(df_omim_mim2gene, how = 'left', on = 'mim')  
     df_mim_recessive = df_mim_recessive.merge(df_omim_mim2gene, how = 'left', on = 'mim')  
     df_mim_adultonset = df_mim_adultonset.merge(df_omim_mim2gene, how = 'left', on = 'mim')  
@@ -291,7 +293,7 @@ def getRecessiveDominantVariants():
     global variants_recessive, variants_dominant
     variants_recessive, variants_dominant = dict(), dict()
     maps = {'A':'T', 'T':'A', 'C':'G', 'G':'C', 'N':'N', 'X':'X'}
-    with open('data/BS2_hom_het.hg19.txt', 'rb') as f:
+    with open(os.path.join(BASE, 'data/BS2_hom_het.hg19.txt'), 'rb') as f:
         for line in f.readlines():
             line = line.rstrip()
             parts = line.split(' ')
@@ -330,7 +332,7 @@ def check_BS2(variant_):
 def getBenignDomains():
     global benign_domains
     benign_domains = []
-    with open('data/PM1_domains_with_benigns.txt', 'rb') as f:
+    with open(os.path.join(BASE, 'data/PM1_domains_with_benigns.txt'), 'rb') as f:
         for line in f.readlines():
             line = line.rstrip()
             parts = line.split('\t')
@@ -370,7 +372,7 @@ def check_PM3_BP2():
 def getRepeatRegion():
     global repeat_regions 
     repeat_regions = dict()
-    with open('data/rmsk.txt', 'rb') as f:
+    with open(os.path.join(BASE, 'data/rmsk.txt'), 'rb') as f:
         for line in f.readlines():
             line = line.rstrip()
             parts = line.split('\t')
@@ -425,8 +427,8 @@ def check_PP1_BS4():
 def getMissenseOrTruncatePathogenicityOfGene():
     global missense_pathogenic_genes, truncate_pathogenic_genes
     missense_pathogenic_genes, trucate_pathogenic_genes = [], []
-    df_missense = pd.read_csv('data/PP2.genes.txt', names = ['gene'])
-    df_truncate = pd.read_csv('data/BP1.genes.txt', names = ['gene'])
+    df_missense = pd.read_csv(os.path.join(BASE, 'data/PP2.genes.txt'), names = ['gene'])
+    df_truncate = pd.read_csv(os.path.join(BASE, 'data/BP1.genes.txt'), names = ['gene'])
     missense_pathogenic_genes = pd.unique(df_missense.gene.values).tolist()
     truncate_pathogenic_genes = pd.unique(df_truncate.gene.values).tolist()
 

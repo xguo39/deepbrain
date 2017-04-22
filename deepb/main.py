@@ -69,6 +69,7 @@ def master_function(input_phenotype,input_genes):
 	df_hpo_ranking_genes = pd.DataFrame(ranking_genes, columns=['gene','score','hits'])
 	df_hpo_ranking_genes = df_hpo_ranking_genes[['gene','score']]
 	ACMG_result = ACMG.Get_ACMG_result(df_hpo_ranking_genes, variants)
+
 	return ACMG_result, df_genes, phenos
 
 

@@ -2,6 +2,8 @@ import pandas as pd
 import time
 import sys
 import MySQLdb
+import os.path
+BASE = os.path.dirname(os.path.abspath(__file__))
 
 reload(sys)
 sys.setdefaultencoding('utf-8')
@@ -56,6 +58,4 @@ def queryPubmedDB(candidate_vars):
    # return df
    # candidate_vars = readCandidateVarFile()
    #  df = queryPubmedDB(candidate_vars)
-   df.to_csv('result/pubmed_query_results.csv', index = False, sep = '\t')
-
-# print time.time() - start_program
+   df.to_csv(os.path.join(BASE, 'result/pubmed_query_results.csv'), index = False, sep = '\t')

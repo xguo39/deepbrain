@@ -31,7 +31,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'deepb.apps.DeepbConfig',
+    'deepb.apps.DeepbrainConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -78,7 +78,7 @@ WSGI_APPLICATION = 'deepbrain.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'DeepB',
+        'NAME': 'Aivar',
         'USER': 'root',
         'PASSWORD': 'Tianqi12',
         'HOST': 'localhost',
