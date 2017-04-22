@@ -63,7 +63,7 @@ def master_function(input_phenotype,input_genes):
 	final_res, variants = collectVariantInfo.get_variants(candidate_vars)
 
 	# pubmed
-	pubmed.queryPubmedDB(final_res)
+	# pubmed.queryPubmedDB(final_res)
 
 	# ACMG
 	df_hpo_ranking_genes = pd.DataFrame(ranking_genes, columns=['gene','score','hits'])
