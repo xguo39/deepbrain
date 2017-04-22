@@ -4,7 +4,10 @@ from __future__ import unicode_literals
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 from django.shortcuts import render
-import numpy as np
+from django.utils import timezone
+
+import pandas as pd
+# import main
 
 id = 10000
 
@@ -17,33 +20,34 @@ def upload(request):
     gene_file = request.FILES['gene_file']
     symptom_file = request.FILES['symptom_file']
     task_id = id+1
-    result = []
-    while result == []:
-        return render(request, 'deepb/index.html', {
-            'running_message': "Here is your task ID: %s. You task is being processed. Please be patient. The page will refresh automatically when it's done." %task_id,
-        })
+    handle_uploaded_gene_file(gene_file)
+    handle_uploaded_symptom_file(symptom_file)
 
-    try:
-        result = main.master(gene_file, symptom_file)
-    except(KeyError):
-        return render(request, 'deepb/index.html', {
-            'error_message': "The process has failed. Please upload your files again.",
-        })
-    else:
-        main_table.
+    # try:
+    #     ACMG_result, df_genes, phenos = main.master_function('input/input_phenotype.txt', 'input/input_genes.txt')
+    # except (KeyError):
+    #     return render(request, 'deepb/index.html', {
+    #         'error_message': "The process has failed. Please try again.",
+    #     })
+    # else:
+    #     input_gene = df_genes.to_json(orient='records')[1:-1].replace('},{', '} {')
+    #     input_phenotype = ', '.join(phenos)
+    #     result_table = ACMG_result.to_json(orient='records')[1:-1].replace('},{', '} {')
+    #     pub_date = timezone.now()
 
-        return render(request, 'polls/results.html', {'question': question})
 
-# def handle_uploaded_gene_file(f):
-#     with open('/Users/xinguo/Desktop/deepbrain/gene_output.txt', 'wb+') as destination:
-#         for chunk in f.chunks():
-#             destination.write(chunk)
-#     return 1
-#
-# def handle_uploaded_symptom_file(f):
-#     with open('/Users/xinguo/Desktop/deepbrain/symptom_output.txt', 'wb+') as destination:
-#         for chunk in f.chunks():
-#             destination.write(chunk)
+    return render(request, 'deepb/result.html')
+
+
+def handle_uploaded_gene_file(f):
+    with open('input/input_genes.txt', 'wb+') as destination:
+        for chunk in f.chunks():
+            destination.write(chunk)
+
+def handle_uploaded_symptom_file(f):
+    with open('input/input_phenotype.txt', 'wb+') as destination:
+        for chunk in f.chunks():
+            destination.write(chunk)
 
 # def waiting_task(request, task_id):
 #     while
