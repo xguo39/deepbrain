@@ -8,13 +8,16 @@ from django.utils import timezone
 from deepb.models import Main_table
 from deepb.tasks import trigger_background_main_task
 
-import pandas as pd
-import main
+# import pandas as pd
+# import main
+
+import os.path
+BASE = os.path.dirname(os.path.abspath(__file__))
 
 task_id = 10000
 
-gene_file_path = '/Users/xinguo/input/input_genes.txt'
-phenotype_file_path = '/Users/xinguo/input/input_phenotype.txt'
+gene_file_path = os.path.join(BASE, 'input/input_genes.txt')
+phenotype_file_path = os.path.join(BASE, 'input/input_phenotype.txt')
 
 # Create your views here.
 def index(request):

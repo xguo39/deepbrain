@@ -147,13 +147,23 @@ def getPubMedEval():
     functional_study_keywords = ['function', 'in vivo', 'in vitro', 'RNA', 'mouse', 'mice', 'rodent', 'rat', 'zebrafish', 'frog', 'patient', 'cases', 'diago', 'structur']
     res = defaultdict(dict)
     functional_study_res = dict()
-    os.system('python eval.py --eval_data_file result/pubmed_query_results.csv --outfile result/prediction_filters345.csv --checkpoint_file data/model/sentclass_filters345/model-3000 --vocab_file data/model/sentclass_filters345/vocab')
+
+    eval_path = os.path.join(BASE, 'eval.py')
+    pubmed_query_results_path = os.path.join(BASE, 'result/pubmed_query_results.csv')
+    prediction_filters345_path = os.path.join(BASE, 'result/prediction_filters345.csv')
+    prediction_filters246_path = os.path.join(BASE, 'result/prediction_filters246.csv')
+    model345_3000_path = os.path.join(BASE, 'data/model/sentclass_filters345/model-3000')
+    model246_3000_path = os.path.join(BASE, 'data/model/sentclass_filters246/model-3000')
+    vocab345_path = os.path.join(BASE, 'data/model/sentclass_filters345/vocab')
+    vocab246_path = os.path.join(BASE, 'data/model/sentclass_filters246/vocab')
+
+    os.system('python %s --eval_data_file %s --outfile %s --checkpoint_file %s --vocab_file %s' % (eval_path, pubmed_query_results_path,prediction_filters345_path,model345_3000_path,vocab345_path))
     time.sleep(2)
-    os.system('python eval.py --eval_data_file result/pubmed_query_results.csv --outfile result/prediction_filters246.csv --checkpoint_file data/model/sentclass_filters246/model-3000 --vocab_file data/model/sentclass_filters246/vocab')
+    os.system('python %s --eval_data_file %s --outfile %s --checkpoint_file %s --vocab_file %s' % (eval_path, pubmed_query_results_path,prediction_filters246_path,model246_3000_path,vocab246_path))
     time.sleep(2)
     try:
-        df_filters345 = pd.read_csv('result/prediction_filters345.csv', sep = '|', usecols = [0, 1, 4, 5, 6, 8, 9, 10, 11])
-        df_filters246 = pd.read_csv('result/prediction_filters246.csv', sep = '|', usecols = [0, 1, 4, 5, 6, 10])
+        df_filters345 = pd.read_csv(os.path.join(BASE, 'result/prediction_filters345.csv'), sep = '|', usecols = [0, 1, 4, 5, 6, 8, 9, 10, 11])
+        df_filters246 = pd.read_csv(os.path.join(BASE, 'result/prediction_filters246.csv'), sep = '|', usecols = [0, 1, 4, 5, 6, 10])
     except IOError:
         return
     df = df_filters345.merge(df_filters246, how = 'left', on = ['gene', 'variant', 'title'])

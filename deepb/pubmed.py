@@ -59,3 +59,6 @@ def queryPubmedDB(candidate_vars):
    # candidate_vars = readCandidateVarFile()
    #  df = queryPubmedDB(candidate_vars)
    df.to_csv(os.path.join(BASE, 'result/pubmed_query_results.csv'), index = False, sep = '\t')
+
+
+   
