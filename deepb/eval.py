@@ -6,22 +6,23 @@ import datetime
 import dataloader
 from tensorflow.contrib import learn
 import csv
-
+import os.path
+BASE = os.path.dirname(os.path.abspath(__file__))
 ## usage: python eval.py  
 
 # Parameters
 # ==================================================
 
 # Data Parameters
-tf.flags.DEFINE_string("eval_data_file", "data/pubmed_query_results.csv", "Data source for evaluation")
+tf.flags.DEFINE_string("eval_data_file", os.path.join(BASE, "result/pubmed_query_results.csv"), "Data source for evaluation")
 tf.flags.DEFINE_string("delimiter", "\t", "Delimiter in the data file")
 
 # Eval Parameters
 tf.flags.DEFINE_integer("batch_size", 64, "Batch Size (default: 64)")
-tf.flags.DEFINE_string("checkpoint_file", "data/1491075157_nsent_5_maxsentlen_180_filters345_rmparentheses/checkpoints/model-3000", "Model file from training run")
-tf.flags.DEFINE_string("vocab_file", "data/1491075157_nsent_5_maxsentlen_180_filters345_rmparentheses/vocab", "Vocab file from training run")
+tf.flags.DEFINE_string("checkpoint_file", os.path.join(BASE, "data/1491075157_nsent_5_maxsentlen_180_filters345_rmparentheses/checkpoints/model-3000"), "Model file from training run")
+tf.flags.DEFINE_string("vocab_file", os.path.join(BASE, "data/1491075157_nsent_5_maxsentlen_180_filters345_rmparentheses/vocab"), "Vocab file from training run")
 tf.flags.DEFINE_boolean("eval_train", False, "Evaluate on all training data")
-tf.flags.DEFINE_string("outfile", "/tmp/prediction_filters345.csv", "outfile path")
+tf.flags.DEFINE_string("outfile", os.path.join(BASE, "/tmp/prediction_filters345.csv"), "outfile path")
 
 # Misc Parameters
 tf.flags.DEFINE_boolean("allow_soft_placement", True, "Allow device soft device placement")
@@ -44,7 +45,7 @@ else:
         f.readline()
         for line in f.readlines():
             text = line.rstrip()
-            parts = text.split('|')
+            parts = text.split('\t')
             title, text, gene, variant, protein, impactfactor, year, journal = parts[3], parts[7], parts[0], parts[1], parts[2], parts[6], parts[5], parts[4]
             x_raw.append(dataloader.extractSentencesFromText(title, text, gene, variant, protein))
             y_test.append(1)
@@ -89,11 +90,11 @@ with graph.as_default():
         dropout_keep_prob = graph.get_operation_by_name("dropout_keep_prob").outputs[0]
 
         # Tensors we want to evaluate
-        predictions = graph.get_operation_by_name("output/predictions").outputs[0]
-        prediction_probs = graph.get_operation_by_name("output/predict_probs").outputs[0]
-        predict_pathogenicity_probs = graph.get_operation_by_name("output/predict_pathogenicity_probs").outputs[0]
-        predict_uncertain_probs = graph.get_operation_by_name("output/predict_uncertain_probs").outputs[0]
-        predict_benign_probs = graph.get_operation_by_name("output/predict_benign_probs").outputs[0]
+        predictions = graph.get_operation_by_name(os.path.join(BASE, "output/predictions")).outputs[0]
+        prediction_probs = graph.get_operation_by_name(os.path.join(BASE, "output/predict_probs")).outputs[0]
+        predict_pathogenicity_probs = graph.get_operation_by_name(os.path.join(BASE, "output/predict_pathogenicity_probs")).outputs[0]
+        predict_uncertain_probs = graph.get_operation_by_name(os.path.join(BASE, "output/predict_uncertain_probs")).outputs[0]
+        predict_benign_probs = graph.get_operation_by_name(os.path.join(BASE, "output/predict_benign_probs")).outputs[0]
 
         # Collect the predictions here
         all_predictions, all_prediction_probs, all_predict_pathogenicity_probs, all_predict_uncertain_probs, all_predict_benign_probs = sess.run([predictions, prediction_probs, 

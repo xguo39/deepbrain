@@ -9,24 +9,23 @@ from deepb.models import Main_table
 from deepb.tasks import trigger_background_main_task
 from django.views.generic.list import ListView
 from django.views.generic import DetailView
+import random
 
-import pandas as pd
-import main
 
-task_id = 10000
+import os.path
+BASE = os.path.dirname(os.path.abspath(__file__))
 
-gene_file_path = '/Users/xinguo/input/input_genes.txt'
-phenotype_file_path = '/Users/xinguo/input/input_phenotype.txt'
+gene_file_path = os.path.join(BASE, 'input/input_genes.txt')
+phenotype_file_path = os.path.join(BASE, 'input/input_phenotype.txt')
 
 # Create your views here.
 def index(request):
     return render(request, 'deepb/index.html')
 
 def upload(request):
-    global task_id
     gene_file = request.FILES['gene_file']
     symptom_file = request.FILES['symptom_file']
-    task_id = task_id+1
+    task_id = random.randint(1000000,9999999)
     handle_uploaded_gene_file(gene_file)
     handle_uploaded_symptom_file(symptom_file)
 
