@@ -32,4 +32,5 @@ def trigger_background_main_task(phenotype_file_path, gene_file_path, id):
         pub_date=timezone.now()
     )
     sample.save()
+    
     logger.info("Finish writing data to DB in background main task")

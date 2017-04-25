@@ -14,7 +14,7 @@ BASE = os.path.dirname(os.path.abspath(__file__))
 # ==================================================
 
 # Data Parameters
-tf.flags.DEFINE_string("eval_data_file", os.path.join(BASE, "data/pubmed_query_results.csv"), "Data source for evaluation")
+tf.flags.DEFINE_string("eval_data_file", os.path.join(BASE, "result/pubmed_query_results.csv"), "Data source for evaluation")
 tf.flags.DEFINE_string("delimiter", "\t", "Delimiter in the data file")
 
 # Eval Parameters
@@ -45,7 +45,7 @@ else:
         f.readline()
         for line in f.readlines():
             text = line.rstrip()
-            parts = text.split('|')
+            parts = text.split('\t')
             title, text, gene, variant, protein, impactfactor, year, journal = parts[3], parts[7], parts[0], parts[1], parts[2], parts[6], parts[5], parts[4]
             x_raw.append(dataloader.extractSentencesFromText(title, text, gene, variant, protein))
             y_test.append(1)

@@ -1,0 +1,7 @@
+#Spherocytosis, Seizures, Developmental regression, Reduced visual acuity, Memory impairment, Muscle weakness, learning disability, joint swelling, retinal periphery, Raynaud, esophagitis, sinus bradycardia, immune headache, Thrombocytosis bolus tongue, overactive bladder, weight gain, epilepsy, retinal pigmentary
+
+#Hypotonia, GLobal developmental delay, Involuntary movements, Cortical visual impairment, atrial septum, body twitches, hand, Dysphagia, Short foot, Small feet, tight frenulum, Gross motor, esotropia, constipation, clinodactyly, palm crease, dorsal pedal fullness, atrial septal, hypermobility, hypertelorism, sparse temporal hair, intermittent hand wringing, thin corpus callosum, Rett, finger twirling
+
+Lamdoid, Sagittal, Craniosynostosis, Metopic, macular atrophy, anetoderma, short stature, developmental delay, Ventriculomegaly, growth hormone deficiency, cryptorchidism, seizures, walk, enlarge ventricles, purple splotches, skin, anetoderma-like lesions, cutis marmorata, frontal bossing, forehead prominant, midfacial hypoplasia, epicanthal folds, depressed nasal bridge, bulbous nasal tip, high palate, lacy reticularis, hypotrophic macules, purple hue, thin appearing skin, Crouzon Acanthosis Nigricans, Goltz-Gorlin, scrotum, inguinal testes testis, failure to thrive
+
+#Anxiety, Atria septal defect, Autism, Constipation, Deeply set eye, Gastroesophageal reflux, Hypermetropia, Impaired pain sensation, Intellectual disability, Low posterior hairline, Postnatal microcephaly, Sleep disturbance
