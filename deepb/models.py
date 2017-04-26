@@ -12,8 +12,13 @@ class Main_table(models.Model):
     result = models.TextField()
     pub_date = models.DateTimeField()
     user_name = models.CharField(max_length=10)
-    take_name = models.CharField(max_length=20)
+    task_name = models.CharField(max_length=20)
 
+class Raw_input_table(models.Model):
+    raw_input_gene = models.TextField()
+    raw_input_phenotype = models.TextField()
+    user_name = models.CharField(max_length=10, default='')
+    task_name = models.CharField(max_length=20, default='')
 
 # class pubmed(models.Model):
 # 	gene = models.CharField(max_length=20)
