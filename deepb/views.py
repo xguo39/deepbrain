@@ -5,7 +5,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 from django.shortcuts import render
 from django.utils import timezone
-from deepb.models import Main_table
+from deepb.models import Main_table, Raw_input_table
 from deepb.tasks import trigger_background_main_task
 from django.views.generic.list import ListView
 from django.views.generic import DetailView
@@ -25,13 +25,19 @@ def index(request):
 def upload(request):
     gene_file = request.FILES['gene_file']
     symptom_file = request.FILES['symptom_file']
+    user_name = request.POST.get('user_name', None)
+    task_name = request.POST.get('task_name', None)
     task_id = random.randint(1000000,9999999)
-    handle_uploaded_gene_file(gene_file)
-    handle_uploaded_symptom_file(symptom_file)
 
-    trigger_background_main_task.delay(phenotype_file_path, gene_file_path, task_id)
+    if user_name is None:
+        user_name = 'default ' + str(task_id)
+    if task_name is None:
+        task_name = 'default ' + str(task_id)
+
+    raw_input_id = handle_uploaded_file(gene_file, symptom_file, user_name, task_name)
+
+    trigger_background_main_task.delay(raw_input_id)
     return HttpResponseRedirect(reverse('deepb:results', args=()))
-    # return HttpResponse("Success! You task ID is %s " % task_id)
 
 class ResultsView(ListView):
     model = Main_table
@@ -48,17 +54,15 @@ class DetailsView(DetailView):
     model = Main_table
     template_name = 'deepb/result.html'
 
-def handle_uploaded_gene_file(f):
-    # TODO: need to write to DB
-    with open(gene_file_path, 'wb+') as destination:
-        for chunk in f.chunks():
-            destination.write(chunk)
-
-def handle_uploaded_symptom_file(f):
-    # TODO: need to write to DB
-    with open(phenotype_file_path, 'wb+') as destination:
-        for chunk in f.chunks():
-            destination.write(chunk)
+def handle_uploaded_file(raw_input_gene_file, raw_input_phenotype_file, user_name, task_name):
+    raw_gene_input = Raw_input_table(
+        raw_input_gene=raw_input_gene_file.read(),
+        raw_input_phenotype=raw_input_phenotype_file.read(),
+        user_name=user_name,
+        task_name=task_name
+    )
+    raw_gene_input.save()
+    return raw_gene_input.id
 
 # def waiting_task(request, task_id):
 #     while
