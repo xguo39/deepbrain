@@ -33,7 +33,7 @@
     </div>
 
     <div class="container">
-    	<h3>Input gene</h3>
+    	<h3>Input Gene</h3>
     	<table id="input_gene" class="table table-bordered table-striped table-hover" border="1">
             <thead>
                 <tr>
@@ -48,13 +48,14 @@
     	</table>
     </div>
     <div class="container">
-	<h3>Input phenotype</h3>
+	<h3>Input Phenotype</h3>
 	<p>{{ input_phenotype }}<p><br /> 
 	</div>
 	<br />
 	<div class="container">
-	<a href="{% url 'deepb:results' %}">Back to home</a><br />
+	<a href="{% url 'deepb:results' %}">Back to Home</a><br />
 	</div>
+	<br /><br /><br />
     </body>
 </html>
 
@@ -68,6 +69,7 @@
 var result = {{ result }}
 $(document).ready(function() {
     $('#result').dataTable({
+    	"order": [ 3, 'desc' ],
         "data": result,
         "columns": [
             { "data" : "gene" },

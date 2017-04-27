@@ -50,10 +50,7 @@ class ResultsView(generic.ListView):
         return context
 
 def details(request, pk):
-    try:
-        main_table = Main_table.objects.get(pk=pk)
-    except Question.DoesNotExist:
-        raise Http404("Question does not exist")
+    main_table = get_object_or_404(Main_table, pk=pk)
     return render(request, 'deepb/result.html', {
         'task_id': main_table.task_id,
         'result': mark_safe(main_table.result),
