@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+  <head>
+    <!-- Bootstrap -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- datatables -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.15/css/jquery.dataTables.min.css">
+
+  <body>
+  	<br />
+  	<br />
+  	<div class="container">
+  	<h3>Task ID: {{ task_id }} </h3><br />
+  	</div>
+    <div class="container">
+    	<h3>Result</h3>
+    	<table id="result" class="table table-bordered table-striped table-hover" border="1">
+            <thead>
+                <tr>
+                    <th>Gene</th>
+                    <th>Variant</th>
+                    <th>Id</th>
+                    <th>Final Score</th>
+                    <th>Pathogenicity Score</th>
+                    <th>Pathogenicity</th>
+                    <th>Hit Criteria</th>
+                    <th>Hpo Hit Score</th>
+                </tr>
+            </thead>
+    	</table>
+    </div>
+
+    <div class="container">
+    	<h3>Input Gene</h3>
+    	<table id="input_gene" class="table table-bordered table-striped table-hover" border="1">
+            <thead>
+                <tr>
+                    <th>Gene</th>
+                    <th>Zygosity</th>
+                    <th>HGVS cDNA-level nomenclature</th>
+                    <th>FHGVS protein</th>
+                    <th>Chromosome</th>
+                    <th>PEffect (codingEffect)</th>
+                </tr>
+            </thead>
+    	</table>
+    </div>
+    <div class="container">
+	<h3>Input Phenotype</h3>
+	<p>{{ input_phenotype }}<p><br /> 
+	</div>
+	<br />
+	<div class="container">
+	<a href="{% url 'deepb:results' %}">Back to Home</a><br />
+	</div>
+	<br /><br /><br />
+    </body>
+</html>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<!-- Include all compiled plugins (below), or include individual files as needed -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+<script type="text/javascript" src="https://cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
+
+<script>
+var result = {{ result }}
+$(document).ready(function() {
+    $('#result').dataTable({
+    	"order": [ 3, 'desc' ],
+        "data": result,
+        "columns": [
+            { "data" : "gene" },
+            { "data" : "variant" },
+            { "data" : "id" },
+            { "data" : "final_score" },
+            { "data" : "pathogenicity_score" },
+            { "data" : "pathogenicity" },
+            { "data" : "hit_criteria" },
+            { "data" : "hpo_hit_score" }
+        ]
+    } );
+} );
+var input_gene = {{ input_gene }}
+$(document).ready(function() {
+    $('#input_gene').dataTable({
+        "data": input_gene,
+        "columns": [
+            { "data" : "c1" },
+            { "data" : "c2" },
+            { "data" : "c3" },
+            { "data" : "c4" },
+            { "data" : "c5" },
+            { "data" : "c6" }
+        ]
+    } );
+} );
+
+</script>
+
+

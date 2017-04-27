@@ -10,7 +10,7 @@ from django.views.generic.list import ListView
 from django.views.generic import DetailView
 from django.utils.safestring import mark_safe
 from django.views import generic
-
+from django.contrib.auth.decorators import login_required
 
 import random
 
@@ -19,8 +19,10 @@ import os.path
 BASE = os.path.dirname(os.path.abspath(__file__))
 
 # Create your views here.
-def index(request):
-    return render(request, 'deepb/index.html')
+
+@login_required(login_url="login/")
+def home(request):
+    return render(request, 'home.html')
 
 def upload(request):
     gene_file = request.FILES['gene_file']
@@ -41,7 +43,7 @@ def upload(request):
 
 class ResultsView(generic.ListView):
     model = Main_table
-    template_name = 'deepb/index.html'
+    template_name = 'home.html'
     context_object_name = 'latest_task_list'
 
     def get_context_data(self, **kwargs):
@@ -51,7 +53,7 @@ class ResultsView(generic.ListView):
 
 def details(request, pk):
     main_table = get_object_or_404(Main_table, pk=pk)
-    return render(request, 'deepb/result.html', {
+    return render(request, 'result.html', {
         'task_id': main_table.task_id,
         'result': mark_safe(main_table.result),
         'input_gene': mark_safe(main_table.input_gene),

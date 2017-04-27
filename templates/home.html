@@ -1,3 +1,7 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
 <!DOCTYPE html>
 <html>
 {% load static %}
@@ -18,7 +22,6 @@
       <h3>Please upload your task:</h3>
   {% endif %}
 
-  {% block content %}
     <form method="post" action="{% url 'deepb:upload' %}" enctype="multipart/form-data">
       {% csrf_token %}
       <input type="file" name="gene_file">
@@ -40,6 +43,3 @@
   </div>  
 </body>
 {% endblock %}
-
-{% if running_message %}<p><strong>{{ running_message }}</strong></p>{% endif %}
-{% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
