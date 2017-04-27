@@ -1,24 +1,22 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-
+from django.shortcuts import get_object_or_404, render
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
-from django.shortcuts import render
 from django.utils import timezone
 from deepb.models import Main_table, Raw_input_table
 from deepb.tasks import trigger_background_main_task
 from django.views.generic.list import ListView
 from django.views.generic import DetailView
 from django.utils.safestring import mark_safe
+from django.views import generic
+
 
 import random
 
 
 import os.path
 BASE = os.path.dirname(os.path.abspath(__file__))
-
-gene_file_path = os.path.join(BASE, 'input/input_genes.txt')
-phenotype_file_path = os.path.join(BASE, 'input/input_phenotype.txt')
 
 # Create your views here.
 def index(request):
@@ -41,7 +39,7 @@ def upload(request):
     trigger_background_main_task.delay(raw_input_id)
     return HttpResponseRedirect(reverse('deepb:results', args=()))
 
-class ResultsView(ListView):
+class ResultsView(generic.ListView):
     model = Main_table
     template_name = 'deepb/index.html'
     context_object_name = 'latest_task_list'
@@ -51,10 +49,17 @@ class ResultsView(ListView):
         context['last_result'] = 'Your task has been successfully uploaded'
         return context
 
-
-class DetailsView(DetailView):
-    model = Main_table
-    template_name = 'deepb/result.html'
+def details(request, pk):
+    try:
+        main_table = Main_table.objects.get(pk=pk)
+    except Question.DoesNotExist:
+        raise Http404("Question does not exist")
+    return render(request, 'deepb/result.html', {
+        'task_id': main_table.task_id,
+        'result': mark_safe(main_table.result),
+        'input_gene': mark_safe(main_table.input_gene),
+        'input_phenotype': main_table.input_phenotype,
+        })
 
 def handle_uploaded_file(raw_input_gene_file, raw_input_phenotype_file, user_name, task_name):
     raw_gene_input = Raw_input_table(

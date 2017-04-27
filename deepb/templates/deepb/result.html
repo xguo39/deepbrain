@@ -9,8 +9,11 @@
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.15/css/jquery.dataTables.min.css">
 
   <body>
-  	<h3>Task ID: {{ main_table.task_id }} </h3><br />
-
+  	<br />
+  	<br />
+  	<div class="container">
+  	<h3>Task ID: {{ task_id }} </h3><br />
+  	</div>
     <div class="container">
     	<h3>Result</h3>
     	<table id="result" class="table table-bordered table-striped table-hover" border="1">
@@ -44,13 +47,14 @@
             </thead>
     	</table>
     </div>
-
+    <div class="container">
 	<h3>Input phenotype</h3>
-	<p>{{ main_table.input_phenotype }}<p><br /> 
-
+	<p>{{ input_phenotype }}<p><br /> 
+	</div>
 	<br />
+	<div class="container">
 	<a href="{% url 'deepb:results' %}">Back to home</a><br />
-
+	</div>
     </body>
 </html>
 
@@ -61,7 +65,7 @@
 <script type="text/javascript" src="https://cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
 
 <script>
-var result = {{ main_table.result }}
+var result = {{ result }}
 $(document).ready(function() {
     $('#result').dataTable({
         "data": result,
@@ -77,7 +81,7 @@ $(document).ready(function() {
         ]
     } );
 } );
-var input_gene = {{ main_table.input_gene }}
+var input_gene = {{ input_gene }}
 $(document).ready(function() {
     $('#input_gene').dataTable({
         "data": input_gene,
