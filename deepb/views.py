@@ -11,6 +11,9 @@ from django.views.generic import DetailView
 from django.utils.safestring import mark_safe
 from django.views import generic
 from django.contrib.auth.decorators import login_required
+from django.utils import timezone
+from deepb.configs import Config, Constant
+from model_wrapper import Raw_input_table_with_status_and_id
 
 import random
 
@@ -27,7 +30,7 @@ def home(request):
 def upload(request):
     gene_file = request.FILES['gene_file']
     symptom_file = request.FILES['symptom_file']
-    user_name = request.POST.get('user_name', None)
+    user_name = request.user.username
     task_name = request.POST.get('task_name', None)
     task_id = random.randint(1000000,9999999)
 
@@ -42,7 +45,6 @@ def upload(request):
     return HttpResponseRedirect(reverse('deepb:results', args=()))
 
 class ResultsView(generic.ListView):
-    model = Main_table
     template_name = 'home.html'
     context_object_name = 'latest_task_list'
 
@@ -50,6 +52,33 @@ class ResultsView(generic.ListView):
         context = super(ResultsView, self).get_context_data(**kwargs)
         context['last_result'] = 'Your task has been successfully uploaded'
         return context
+
+    def get_queryset(self):
+        raw_input_list = Raw_input_table.objects.filter(user_name=self.request.user.username)
+        raw_input_table_with_status_and_id_list = []
+        for raw_input_table in raw_input_list:
+            status, id = self._task_status_check(raw_input_table)
+            raw_input_table_with_status_and_id_list.append(Raw_input_table_with_status_and_id(raw_input_table, status, id))
+        return raw_input_table_with_status_and_id_list
+
+
+    def _task_status_check(self, raw_input_table):
+        # check if the task is failed
+        current_time = timezone.now()
+        pub_time = raw_input_table.pub_date
+        if current_time - pub_time > Config.max_task_waiting_time:
+            return Constant.FAIL_STATUS, None
+
+        # check if the task is in progress
+        task_name = raw_input_table.task_name
+        user_name = raw_input_table.user_name
+        main_table_result = Main_table.objects.filter(user_name=user_name, task_name=task_name).first()
+        if main_table_result is None:
+            return Constant.IN_PROGRESS_STATUS, None
+
+        # the task is completed
+        return Constant.SUCCESS_STATUS, main_table_result.id
+
 
 def details(request, pk):
     main_table = get_object_or_404(Main_table, pk=pk)
@@ -65,7 +94,8 @@ def handle_uploaded_file(raw_input_gene_file, raw_input_phenotype_file, user_nam
         raw_input_gene=raw_input_gene_file.read(),
         raw_input_phenotype=raw_input_phenotype_file.read(),
         user_name=user_name,
-        task_name=task_name
+        task_name=task_name,
+        pub_date=timezone.now(),
     )
     raw_gene_input.save()
     return raw_gene_input.id

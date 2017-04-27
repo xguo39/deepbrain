@@ -1,6 +1,6 @@
 import map_phenotype_to_gene
 import collectVariantInfo
-import pubmed
+# import pubmed
 import ACMG
 
 import pandas as pd

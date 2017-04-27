@@ -19,6 +19,7 @@ class Raw_input_table(models.Model):
     raw_input_phenotype = models.TextField()
     user_name = models.CharField(max_length=10, default='')
     task_name = models.CharField(max_length=20, default='')
+    pub_date = models.DateTimeField()
 
 # class pubmed(models.Model):
 # 	gene = models.CharField(max_length=20)
