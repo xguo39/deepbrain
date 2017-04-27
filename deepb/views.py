@@ -9,6 +9,8 @@ from deepb.models import Main_table, Raw_input_table
 from deepb.tasks import trigger_background_main_task
 from django.views.generic.list import ListView
 from django.views.generic import DetailView
+from django.utils.safestring import mark_safe
+
 import random
 
 

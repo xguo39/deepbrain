@@ -16,7 +16,7 @@ pd.options.display.max_colwidth = 10000
 db = MySQLdb.connect(host="127.0.0.1",    
                      user="root",       
                      passwd="Tianqi12", 
-                     db="Aivar")       
+                     db="DB_offline")       
 
 # def readCandidateVarFile():
 #     candidate_vars = []
@@ -49,7 +49,7 @@ def queryPubmedDB(candidate_vars):
        else:
            variant, protein = protein_variant, genevar2protein[(gene, protein_variant)]
        res.append([gene, variant, protein, pmid, title, journal, year, impact_factor, abstract])
-   db.close()
+   # db.close()
 
    df = pd.DataFrame(res, columns = ['Gene', 'Variant', 'Protein', 'PMID', 'Title', 'Journal', 'Year', 'Impact_Factor', 'Abstract'])
    df = df[['Gene', 'Variant', 'Protein', 'Title', 'Journal', 'Year', 'Impact_Factor', 'Abstract', 'PMID']]
