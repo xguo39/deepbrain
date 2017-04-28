@@ -37,14 +37,23 @@
     {% if last_result %}<h3>All your tasks:</h3>{% endif %}
     {% for result in latest_task_list %}
       {% if result.status == 'In progress' %}
+        Task name: &nbsp;
         {{ result.raw_input_table.task_name }}<br />
-        In progress<br />
+        Task status: In progress<br />
       {% elif result.status == 'Failed'%}
+        Task name: &nbsp;
         {{ result.raw_input_table.task_name }}<br />
-        Failed<br />
+        Task status: Failed<br />
+      {% elif result.status == 'Succeed' %}
+        Task name: &nbsp;
+        <a href="{% url 'deepb:details' result.id %}">{{ result.raw_input_table.task_name }}</a><br />
+        Task status: Succeed<br />
       {% else %}
-        Succeed<br />
+        Task name: &nbsp;
+        {{ result.raw_input_table.task_name }}<br />
+        Task status: Server Error<br />
       {%  endif %}
+      <br />
     {% endfor %}
   </div>  
 </body>

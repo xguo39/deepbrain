@@ -7,5 +7,5 @@ class Raw_input_table_with_status_and_id(object):
 
     def __init__(self, raw_input_table, status, id=None):
         self.raw_input_table = raw_input_table
-        status = status
-        id = id
+        self.status = status
+        self.id = id
