@@ -57,28 +57,26 @@ class ResultsView(generic.ListView):
         raw_input_list = Raw_input_table.objects.filter(user_name=self.request.user.username)
         raw_input_table_with_status_and_id_list = []
         for raw_input_table in raw_input_list:
-            status, id = self._task_status_check(raw_input_table)
-            raw_input_table_with_status_and_id_list.append(Raw_input_table_with_status_and_id(raw_input_table, status, id))
+            status, main_table_id = self._task_status_check(raw_input_table)
+            raw_input_table_with_status_and_id_list.append(Raw_input_table_with_status_and_id(raw_input_table, status, main_table_id))
         return raw_input_table_with_status_and_id_list
 
-
     def _task_status_check(self, raw_input_table):
-        # check if the task is failed
-        current_time = timezone.now()
-        pub_time = raw_input_table.pub_date
-        if current_time - pub_time > Config.max_task_waiting_time:
-            return Constant.FAIL_STATUS, None
-
-        # check if the task is in progress
+        # check if the task is succeed
         task_name = raw_input_table.task_name
         user_name = raw_input_table.user_name
-        main_table_result = Main_table.objects.filter(user_name=user_name, task_name=task_name).first()
-        if main_table_result is None:
+        # we use id in raw_input_table as task_id in the main_table
+        task_id = raw_input_table.id
+        current_time = timezone.now()
+        pub_time = raw_input_table.pub_date
+
+        main_table_result = Main_table.objects.filter(user_name=user_name, task_name=task_name, task_id=task_id).first()
+        if main_table_result is not None:
+            return Constant.SUCCESS_STATUS, main_table_result.id
+        elif current_time - pub_time > Config.max_task_waiting_time:
+            return Constant.FAIL_STATUS, None
+        else:
             return Constant.IN_PROGRESS_STATUS, None
-
-        # the task is completed
-        return Constant.SUCCESS_STATUS, main_table_result.id
-
 
 def details(request, pk):
     main_table = get_object_or_404(Main_table, pk=pk)

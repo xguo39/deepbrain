@@ -11,6 +11,33 @@
   <!-- <link rel="stylesheet" type="text/css" href="{% static 'deepb/style.css' %}" /> -->
     <!-- Bootstrap -->
   <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+
+  <script language="javascript">
+    function required()
+    {
+        var result = true
+        var empt = document.forms["form1"]["gene_file"].value;
+        if (empt == "")
+        {
+            alert("Please upload a gene file");
+            result = false;
+        }
+        empt = document.forms["form1"]["symptom_file"].value;
+        if (empt == "")
+        {
+            alert("Please upload a symptom file");
+            result = false;
+        }
+        empt = document.forms["form1"]["task_name"].value;
+        if (empt == "")
+        {
+            alert("Please enter a task_name");
+            result = false;
+        }
+        return result
+    }
+  </script>
+
 </head>
 <body>
   <div class="container">
@@ -22,39 +49,50 @@
       <h3>Please upload your task:</h3>
   {% endif %}
 
-    <form method="post" action="{% url 'deepb:upload' %}" enctype="multipart/form-data">
+    <form name="form1" method="post" action="{% url 'deepb:upload' %}" enctype="multipart/form-data">
       {% csrf_token %}
       <input type="file" name="gene_file">
-      <label>Upload Gene File</label><br />
+      <label>Upload Gene File (*required)</label><br />
       <input type="file" name="symptom_file">
-      <label>Upload Symptom File</label><br />
+      <label>Upload Symptom File (*required)</label><br />
       <input type="text" name="task_name">
-      <label>Please enter your task name</label><br />
-      <button type="submit">Upload File</button>
+      <label>Please enter your task name (*required)</label><br />
+      <button type="submit", onClick="return required()">Upload File</button>
     </form>
 
     <br />
+    <div id="results">
     {% if last_result %}<h3>All your tasks:</h3>{% endif %}
     {% for result in latest_task_list %}
       {% if result.status == 'In progress' %}
         Task name: &nbsp;
         {{ result.raw_input_table.task_name }}<br />
         Task status: In progress<br />
+        Task submit time: &nbsp;
+        {{ result.raw_input_table.pub_date }}<br />
       {% elif result.status == 'Failed'%}
         Task name: &nbsp;
         {{ result.raw_input_table.task_name }}<br />
         Task status: Failed<br />
+        Task submit time: &nbsp;
+        {{ result.raw_input_table.pub_date }}<br />
       {% elif result.status == 'Succeed' %}
         Task name: &nbsp;
-        <a href="{% url 'deepb:details' result.id %}">{{ result.raw_input_table.task_name }}</a><br />
+        {{ result.raw_input_table.task_name }} &nbsp;
+        <a href="{% url 'deepb:details' result.main_table_id %}">Click to see results</a><br />
         Task status: Succeed<br />
+        Task submit time: &nbsp;
+        {{ result.raw_input_table.pub_date }}<br />
       {% else %}
         Task name: &nbsp;
         {{ result.raw_input_table.task_name }}<br />
         Task status: Server Error<br />
+        Task submit time: &nbsp;
+        {{ result.raw_input_table.pub_date }}<br />
       {%  endif %}
       <br />
     {% endfor %}
+    </div>
   </div>  
 </body>
 {% endblock %}
