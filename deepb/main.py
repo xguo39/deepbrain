@@ -1,7 +1,8 @@
 import map_phenotype_to_gene
 import collectVariantInfo
-# import pubmed
+import pubmed
 import ACMG
+import filterVariantOnPhenotype
 
 import pandas as pd
 import numpy as np
@@ -65,11 +66,16 @@ def master_function(raw_input_id):
 	final_res, variants = collectVariantInfo.get_variants(candidate_vars)
 
 	# pubmed
-	# pubmed.queryPubmedDB(final_res)
+	df_pubmed = pubmed.queryPubmedDB(final_res)
 
 	# ACMG
 	df_hpo_ranking_genes = pd.DataFrame(ranking_genes, columns=['gene', 'score', 'hits'])
 	df_hpo_ranking_genes = df_hpo_ranking_genes[['gene', 'score']]
-	ACMG_result = ACMG.Get_ACMG_result(df_hpo_ranking_genes, variants)
+	ACMG_result = ACMG.Get_ACMG_result(df_hpo_ranking_genes, variants, df_pubmed)
 
-	return ACMG_result, df_genes, phenos
+	# filter variant on phenotype
+	df_final_res = filterVariantOnPhenotype.generateOutput(variants, ACMG_result, phenos)
+
+
+	return df_final_res, df_genes, phenos
+

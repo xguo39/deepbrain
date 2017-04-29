@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 {% load static %}
@@ -21,12 +22,14 @@
                 <tr>
                     <th>Gene</th>
                     <th>Variant</th>
+                    <th>Protein</th>
                     <th>Id</th>
                     <th>Final Score</th>
-                    <th>Pathogenicity Score</th>
                     <th>Pathogenicity</th>
                     <th>Hit Criteria</th>
+                    <th>Pathogenicity Score</th>
                     <th>Hpo Hit Score</th>
+                    <th>Pheno Match Score</th>
                 </tr>
             </thead>
     	</table>
@@ -69,17 +72,19 @@
 var result = {{ result }}
 $(document).ready(function() {
     $('#result').dataTable({
-    	"order": [ 3, 'desc' ],
+    	"order": [ 4, 'desc' ],
         "data": result,
         "columns": [
             { "data" : "gene" },
             { "data" : "variant" },
+            { "data" : "protein" },
             { "data" : "id" },
             { "data" : "final_score" },
-            { "data" : "pathogenicity_score" },
             { "data" : "pathogenicity" },
             { "data" : "hit_criteria" },
-            { "data" : "hpo_hit_score" }
+            { "data" : "pathogenicity_score" },
+            { "data" : "hpo_hit_score" },
+            { "data" : "pheno_match_score" }
         ]
     } );
 } );
@@ -99,5 +104,4 @@ $(document).ready(function() {
 } );
 
 </script>
-
 

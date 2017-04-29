@@ -3,7 +3,6 @@ import pandas as pd
 from collections import defaultdict
 import pickle
 import amino_acid_mapping
-# import pprint
 import numpy as np
 import os
 import time
@@ -13,7 +12,7 @@ BASE = os.path.dirname(os.path.abspath(__file__))
 def getKnownGeneCanonical():
     global knownGeneCanonical
     knownGeneCanonical = dict()
-    df_knownGeneCanonical = pd.read_csv(os.path.join(BASE, 'data/ACMG/knownGeneCanonical.txt'), sep = ' ')
+    df_knownGeneCanonical = pd.read_csv(os.path.join(BASE, 'data/ACMG/knownGeneCanonical.txt'), sep = ' ', dtype = str)
     df_ucsc_refseq_map = pd.read_csv(os.path.join(BASE, 'data/ACMG/kgTxInfo.txt'), usecols = [0, 2], names = ['Transcript(ucsc/known)', 'Transcript(HGVS)'], sep = '\t')
     df_knownGeneCanonical = df_knownGeneCanonical.merge(df_ucsc_refseq_map, how = 'left', on = 'Transcript(ucsc/known)')
     for index, row in df_knownGeneCanonical.iterrows():
@@ -35,22 +34,29 @@ def check_PVS1(variant_):
     deletion) in a gene where LOF is a known mechanism of disease
     '''
     # Need variant effect (nonsense, frameshift, ...); canonical transcript; 
-    # LOF genes; splicing prediction scores; allele start position; exon (from cadd)
+    # LOF genes; splicing prediction score; allele start position; exon (from cadd)
     gene, variant_effect, transcript, exon, variant_id = variant_['gene'], variant_['effect'], variant_['transcript'], variant_['exon'], variant_['id']
     dbscSNV_rf_score, dbscSNV_ada_score = variant_['dbscSNV_rf_score'], variant_['dbscSNV_ada_score']
     allele_start_pos = re.match(r'[0-9]{1,20}', variant_id.split('.')[-1]).group(0)
     null_variant_types = ["chromosome", "exon_loss", "frameshift", "inversion", "feature_ablation", "gene_fusion", "rearranged_at_DNA_level", "initiator_condon", "splice_acceptor", "splice_donor", "stop_gain", 'start_lost', 'stop_lost']
-    
+ 
     PVS1 = 0
     dbscSNV_cutoff = 0.6
-    effect_in_null_variant_types = re.search('|'.join(null_variant_types), variant_effect, re.I) and not re.search('intron', variant_effect, re.I)
+    #effect_in_null_variant_types = re.search('|'.join(null_variant_types), variant_effect, re.I) and not re.search('intron', variant_effect, re.I)
+    effect_in_null_variant_types = re.search('|'.join(null_variant_types), variant_effect, re.I)
     in_LOF_genes = True if gene in LOF_genes else False
-    not_affect_splicing = False if ((dbscSNV_rf_score and float(dbscSNV_rf_score) > dbscSNV_cutoff) or (dbscSNV_ada_score and float(dbscSNV_ada_score) > dbscSNV_cutoff)) else True 
-    if effect_in_null_variant_types and in_LOF_genes and not_affect_splicing: PVS1 = 1
+    #not_affect_splicing = False if ((dbscSNV_rf_score and float(dbscSNV_rf_score) > dbscSNV_cutoff) or (dbscSNV_ada_score and float(dbscSNV_ada_score) > dbscSNV_cutoff)) else True 
+    not_benign_splicing = True if ((not dbscSNV_rf_score and not dbscSNV_ada_score) or (dbscSNV_rf_score and float(dbscSNV_rf_score) > dbscSNV_cutoff) or (dbscSNV_ada_score and float(dbscSNV_ada_score) > dbscSNV_cutoff)) else False 
+
+    #if effect_in_null_variant_types and in_LOF_genes and not_affect_splicing: PVS1 = 1
+    if effect_in_null_variant_types and in_LOF_genes and not_benign_splicing: PVS1 = 1
     if transcript in knownGeneCanonical:
         num_exons, transcript_end = knownGeneCanonical[transcript][0], knownGeneCanonical[transcript][2]
-        if exon == 1 or exon == num_exons: PVS1 = 0
-        if (float(transcript_end) - float(allele_start_pos)) < 50: PVS1 = 0
+        if exon == 1 or exon == num_exons: 
+            PVS1 = 0
+
+        if (float(transcript_end) - float(allele_start_pos)) < 50: 
+            PVS1 = 0
     return PVS1
 
 def getMissenseAAPathogenicity(): 
@@ -58,7 +64,7 @@ def getMissenseAAPathogenicity():
     missense_AA_pathogenicity, missense_original_AA = dict(), dict()
     with open(os.path.join(BASE, 'data/ACMG/missense_AA_change_pathogenicity.txt'), 'rb') as f:
         f.readline()
-        for line in f.readlines():
+        for line in f:
             line = line.rstrip()
             parts = line.split('\t')
             gene, protein = parts[0], parts[1]
@@ -70,10 +76,10 @@ def getMissenseAAPathogenicity():
                 protein = robj.sub(lambda m: protein_map[m.group(0)], protein)
             if gene not in missense_AA_pathogenicity:
                 missense_AA_pathogenicity[gene] = [protein] 
-                missense_original_AA[gene] = [original_AA] 
+                missense_original_AA[gene] = [(original_AA, protein)] 
             else:
                 missense_AA_pathogenicity[gene].append(protein)
-                missense_original_AA[gene].append(original_AA)
+                missense_original_AA[gene].append((original_AA, protein))
 
 def check_PS1_PM5(variant_):
     '''
@@ -99,6 +105,11 @@ def check_PS1_PM5(variant_):
         has_pathogenic_same_AA_change = True
     if gene in missense_original_AA and original_AA in missense_original_AA[gene]:
         has_pathogenic_different_AA_change = True
+    if gene in missense_original_AA:
+        for tup in missense_original_AA[gene]:
+            if original_AA == tup[0] and protein != tup[1]:
+                has_pathogenic_different_AA_change = True
+                break
     not_affect_splicing = False if ((dbscSNV_rf_score and float(dbscSNV_rf_score) > dbscSNV_cutoff) or (dbscSNV_ada_score and float(dbscSNV_ada_score) > dbscSNV_cutoff)) else True
     if effect_in_missense_variant_types and has_pathogenic_same_AA_change and not_affect_splicing: PS1 = 1
     if effect_in_missense_variant_types and has_pathogenic_different_AA_change: PM5 = 1
@@ -108,7 +119,7 @@ def check_PS1_PM5(variant_):
         gene, variant = variant_['gene'], variant_['variant']
         if (gene, variant) in study_pathogenicity_score:
             PS1 = study_pathogenicity_score[(gene, variant)]
- 
+
     return PS1, PM5
 
 def check_PS2_PM6():
@@ -140,40 +151,17 @@ def checkFunctionalStudy(title, text, impactfactor):
     weighted_count = count * np.log(impactfactor + 1.0) 
     return count, weighted_count
 
-def getPubMedEval():
-    global functional_study_pathogenicity, study_pathogenicity_score 
+def getPubMedEval(df_pubmed):
+    global functional_study_pathogenicity, study_pathogenicity_score
     functional_study_pathogenicity = dict()
     study_pathogenicity_score = dict()
     functional_study_keywords = ['function', 'in vivo', 'in vitro', 'RNA', 'mouse', 'mice', 'rodent', 'rat', 'zebrafish', 'frog', 'patient', 'cases', 'diago', 'structur']
     res = defaultdict(dict)
     functional_study_res = dict()
 
-    eval_path = os.path.join(BASE, 'eval.py')
-    pubmed_query_results_path = os.path.join(BASE, 'result/pubmed_query_results.csv')
-    prediction_filters345_path = os.path.join(BASE, 'result/prediction_filters345.csv')
-    prediction_filters246_path = os.path.join(BASE, 'result/prediction_filters246.csv')
-    model345_3000_path = os.path.join(BASE, 'data/model/sentclass_filters345/model-3000')
-    model246_3000_path = os.path.join(BASE, 'data/model/sentclass_filters246/model-3000')
-    vocab345_path = os.path.join(BASE, 'data/model/sentclass_filters345/vocab')
-    vocab246_path = os.path.join(BASE, 'data/model/sentclass_filters246/vocab')
-
-    os.system('python %s --eval_data_file %s --outfile %s --checkpoint_file %s --vocab_file %s' % (eval_path, pubmed_query_results_path,prediction_filters345_path,model345_3000_path,vocab345_path))
-    time.sleep(2)
-    os.system('python %s --eval_data_file %s --outfile %s --checkpoint_file %s --vocab_file %s' % (eval_path, pubmed_query_results_path,prediction_filters246_path,model246_3000_path,vocab246_path))
-    time.sleep(2)
-    try:
-        df_filters345 = pd.read_csv(os.path.join(BASE, 'result/prediction_filters345.csv'), sep = '|', usecols = [0, 1, 4, 5, 6, 8, 9, 10, 11])
-        df_filters246 = pd.read_csv(os.path.join(BASE, 'result/prediction_filters246.csv'), sep = '|', usecols = [0, 1, 4, 5, 6, 10])
-    except IOError:
-        return
-    df = df_filters345.merge(df_filters246, how = 'left', on = ['gene', 'variant', 'title'])
-    df['pathogenicity_prob'] = df[['pathogenicity_prob_x', 'pathogenicity_prob_y']].mean(axis=1)
-    df['uncertain_prob'] = df[['uncertain_prob_x', 'uncertain_prob_y']].mean(axis=1)
-    df['benign_prob'] = df[['benign_prob_x', 'benign_prob_y']].mean(axis=1)
-    df['pathogenicity_score'] = df['pathogenicity_prob'] + 0.5 * df['uncertain_prob'] 
     #df = df[['gene', 'variant', 'pathogenicity_prob', 'impactfactor', 'year', 'title', 'text']]
-    for index, row in df.iterrows():
-        gene, variant, pathogenicity_score, impactfactor, year, title, text = row['gene'], row['variant'], row['pathogenicity_score'], row['impactfactor'], row['year'], row['title'], row['text']
+    for index, row in df_pubmed.iterrows():
+        gene, variant, pathogenicity_score, impactfactor, year, title, text = row['Gene'], row['Variant'], row['pathogenicity_score'], row['Impact_Factor'], row['Year'], row['Title'], row['Abstract']
         count, weighted_count = checkFunctionalStudy(title, text, impactfactor)
         if (gene, variant) not in study_pathogenicity_score: 
             study_pathogenicity_score[(gene,variant)] = [pathogenicity_score]
@@ -186,9 +174,7 @@ def getPubMedEval():
                 functional_study_res[(gene, variant)] = [pathogenicity_score]
             else:
                 functional_study_res[(gene, variant)].append(pathogenicity_score)
-    # print "------------------------------------------------------------------------------------------------------------"
-    # print functional_study_res
-    # print "------------------------------------------------------------------------------------------------------------"
+
     for key in functional_study_res.keys():
         pathogenicity_prob = np.mean(functional_study_res[key])
         study_pathogenicity_score[key] = np.mean(study_pathogenicity_score[key])
@@ -216,9 +202,9 @@ def getORGreaterThan5Variants():
     # OR -- odds ratios or relative risk
     global variants_with_or_greater_than_5
     variants_with_or_greater_than_5 = []
-    with open(os.path.join(BASE, 'data/PS4.variants.hg19.txt'), 'rb') as f:
+    with open(os.path.join(BASE, 'data/ACMG/PS4.variants.hg19.txt'), 'rb') as f:
         f.readline()
-        for line in f.readlines():
+        for line in f:
             line = line.rstrip()
             parts = line.split('\t')
             variant = 'chr' + parts[0] + '_' + parts[1] + '_' + parts[1] + '_' + parts[3] + '_' + parts[4]  
@@ -245,10 +231,10 @@ def check_PS4(variant_):
 
 def getRecessiveDominantGenes():
     global dominant_genes, recessive_genes, adultonset_genes
-    df_omim_mim2gene = pd.read_csv(os.path.join(BASE, 'data/omim_mim2gene.txt'), sep = '\t', skiprows = 1, usecols = [0, 1, 3], names = ['mim', 'type', 'gene'])
-    df_mim_dominant = pd.read_csv(os.path.join(BASE, 'data/mim_domin.txt'), names = ['mim'])
-    df_mim_recessive = pd.read_csv(os.path.join(BASE, 'data/mim_recessive.txt'), names = ['mim'])
-    df_mim_adultonset = pd.read_csv(os.path.join(BASE, 'data/mim_adultonset.txt'), names = ['mim'])
+    df_omim_mim2gene = pd.read_csv(os.path.join(BASE, 'data/ACMG/omim_mim2gene.txt'), sep = '\t', skiprows = 1, usecols = [0, 1, 3], names = ['mim', 'type', 'gene'])
+    df_mim_dominant = pd.read_csv(os.path.join(BASE, 'data/ACMG/mim_domin.txt'), names = ['mim'])
+    df_mim_recessive = pd.read_csv(os.path.join(BASE, 'data/ACMG/mim_recessive.txt'), names = ['mim'])
+    df_mim_adultonset = pd.read_csv(os.path.join(BASE, 'data/ACMG/mim_adultonset.txt'), names = ['mim'])
     df_mim_dominant = df_mim_dominant.merge(df_omim_mim2gene, how = 'left', on = 'mim')  
     df_mim_recessive = df_mim_recessive.merge(df_omim_mim2gene, how = 'left', on = 'mim')  
     df_mim_adultonset = df_mim_adultonset.merge(df_omim_mim2gene, how = 'left', on = 'mim')  
@@ -302,16 +288,14 @@ def check_BA1_BS1(variant_):
 def getRecessiveDominantVariants():
     global variants_recessive, variants_dominant
     variants_recessive, variants_dominant = dict(), dict()
-    maps = {'A':'T', 'T':'A', 'C':'G', 'G':'C', 'N':'N', 'X':'X'}
-    with open(os.path.join(BASE, 'data/BS2_hom_het.hg19.txt'), 'rb') as f:
-        for line in f.readlines():
+    # maps = {'A':'T', 'T':'A', 'C':'G', 'G':'C', 'N':'N', 'X':'X'}
+    with open(os.path.join(BASE, 'data/ACMG/BS2_hom_het.hg19.txt'), 'rb') as f:
+        for line in f:
             line = line.rstrip()
             parts = line.split(' ')
-            variant = 'chr' + parts[0] + '_' + parts[1] + '_' + parts[1] + '_' + parts[2] + '_' + parts[3]
-            # Flip ATCG
-            variant_alt = 'chr' + parts[0] + '_' + parts[1] + '_' + parts[1] + '_' + maps[parts[2]] + '_' + maps[parts[3]]
-            variants_recessive[variant], variants_recessive[variant_alt] = parts[4], parts[4]
-            variants_dominant[variant], variants_dominant[variant_alt] = parts[5], parts[5]
+            variant, variant_alt = parts[0], parts[1]
+            variants_recessive[variant], variants_recessive[variant_alt] = parts[2], parts[2]
+            variants_dominant[variant], variants_dominant[variant_alt] = parts[3], parts[3]
 
 def check_BS2(variant_):
     '''
@@ -342,8 +326,8 @@ def check_BS2(variant_):
 def getBenignDomains():
     global benign_domains
     benign_domains = []
-    with open(os.path.join(BASE, 'data/PM1_domains_with_benigns.txt'), 'rb') as f:
-        for line in f.readlines():
+    with open(os.path.join(BASE, 'data/ACMG/PM1_domains_with_benigns.txt'), 'rb') as f:
+        for line in f:
             line = line.rstrip()
             parts = line.split('\t')
             domain = 'chr' + parts[0] + '_' + parts[1] + '_' + parts[2]
@@ -382,11 +366,11 @@ def check_PM3_BP2():
 def getRepeatRegion():
     global repeat_regions 
     repeat_regions = dict()
-    with open(os.path.join(BASE, 'data/rmsk.txt'), 'rb') as f:
-        for line in f.readlines():
+    with open(os.path.join(BASE, 'data/ACMG/rmsk.txt'), 'rb') as f:
+        for line in f:
             line = line.rstrip()
             parts = line.split('\t')
-            chromosome, startpos, endpos= parts[5], parts[6], parts[7]
+            chromosome, startpos, endpos= parts
             if chromosome in repeat_regions: 
                 repeat_regions[chromosome].append((startpos, endpos))
             else:
@@ -437,8 +421,8 @@ def check_PP1_BS4():
 def getMissenseOrTruncatePathogenicityOfGene():
     global missense_pathogenic_genes, truncate_pathogenic_genes
     missense_pathogenic_genes, trucate_pathogenic_genes = [], []
-    df_missense = pd.read_csv(os.path.join(BASE, 'data/PP2.genes.txt'), names = ['gene'])
-    df_truncate = pd.read_csv(os.path.join(BASE, 'data/BP1.genes.txt'), names = ['gene'])
+    df_missense = pd.read_csv(os.path.join(BASE, 'data/ACMG/PP2.genes.txt'), names = ['gene'])
+    df_truncate = pd.read_csv(os.path.join(BASE, 'data/ACMG/BP1.genes.txt'), names = ['gene'])
     missense_pathogenic_genes = pd.unique(df_missense.gene.values).tolist()
     truncate_pathogenic_genes = pd.unique(df_truncate.gene.values).tolist()
 
@@ -488,7 +472,6 @@ def check_PP3_BP4(variant_):
     is_pathogenic_fathmm = evalPathogenicityScore(fathmm, 'fathmm') 
     is_pathogenic_metasvm = evalPathogenicityScore(metasvm, 'metasvm') 
     is_pathogenic_gerp = evalPathogenicityScore(gerp, 'gerp++')
-    # print dbscSNV_rf_score, dbscSNV_ada_score
     if (dbscSNV_rf_score and float(dbscSNV_rf_score) > cutoff['dbscSNV_rf_score']) or (dbscSNV_ada_score and float(dbscSNV_ada_score) > cutoff['dbscSNV_ada_score']):
         is_pathogenic_dbscSNV = 'D'
     elif (not dbscSNV_rf_score) and (not dbscSNV_ada_score):
@@ -496,7 +479,6 @@ def check_PP3_BP4(variant_):
     else:
         is_pathogenic_dbscSNV = 'N' # if dbscSNV scores are missing, the allele is not in the splice sequence, should be benign
     is_pathogenic = [is_pathogenic_dann, is_pathogenic_fathmm, is_pathogenic_metasvm, is_pathogenic_gerp, is_pathogenic_dbscSNV] 
-    # print is_pathogenic
     try:
         PP3 = float(is_pathogenic.count('D')) / (is_pathogenic.count('D') + is_pathogenic.count('N'))
     except ZeroDivisionError:
@@ -610,13 +592,13 @@ def classify(ACMG_score_list):
             return 'Likely benign', ACMG_weighted_score, '|'.join(hit_criteria)
     return 'Uncertain significance', ACMG_weighted_score, '|'.join(hit_criteria)
 
-def Get_ACMG_result(df_hpo_ranking_genes, variants):
+def Get_ACMG_result(df_hpo_ranking_genes, variants, df_pubmed):
     # variants = pickle.load(open('result/variants.p', 'rb')) 
 
     getKnownGeneCanonical()
     getLOFGenes()
     getMissenseAAPathogenicity()
-    getPubMedEval()
+    getPubMedEval(df_pubmed)
     getORGreaterThan5Variants()
     getRecessiveDominantGenes()
     getRecessiveDominantVariants()
@@ -698,7 +680,7 @@ def Get_ACMG_result(df_hpo_ranking_genes, variants):
     # df_hpo_ranking_genes = pd.read_csv('result/ranking_genes.txt', sep = '\t', usecols = [0, 1])
     df_final_result = df_final_result.merge(df_hpo_ranking_genes, how = 'left', on = 'gene')
     df_final_result.columns = ['gene', 'variant', 'id', 'pathogenicity_score', 'pathogenicity', 'hit_criteria', 'hpo_hit_score']
-    df_final_result['final_score'] = np.log(df_final_result['hpo_hit_score'] + 1.0) * df_final_result['pathogenicity_score']
+    df_final_result['final_score'] = np.log(df_final_result['hpo_hit_score'] + 2.7183) * df_final_result['pathogenicity_score']
     df_final_result = df_final_result[['gene', 'variant', 'id', 'final_score', 'pathogenicity_score', 'pathogenicity', 'hit_criteria', 'hpo_hit_score']]
     df_final_result.sort_values(by=['final_score'], ascending = [0], inplace = True)
     df_final_result = df_final_result.reset_index(drop=True)

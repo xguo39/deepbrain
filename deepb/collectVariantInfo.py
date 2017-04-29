@@ -9,16 +9,15 @@ import amino_acid_mapping
 import Levenshtein
 import random
 from collections import defaultdict
+import MySQLdb
 import os.path
 BASE = os.path.dirname(os.path.abspath(__file__))
-# import pickle
-# import pprint
+
 
 reload(sys)
 sys.setdefaultencoding('utf-8')
 pd.options.display.max_colwidth = 10000
 
-CLINVAR_VARIANT_SUMMARY = os.path.join(BASE, 'data/clinvar_variant_summary.txt')
 PARSED_CLINVAR = os.path.join(BASE, 'data/parsed_clinvar.txt')
 
 ## Collect information from myvariant 
@@ -30,7 +29,7 @@ def collectAll(gene, variant, transcript):
   try:
     variant_id = snpeff['hits'][0]['_id']
   except IndexError:
-    return '', '', '', '', '', '', '' 
+    return '', '', '', ''
   hits = snpeff['hits']
   anns = []
   variant_ids = []
@@ -64,7 +63,7 @@ def collectAll(gene, variant, transcript):
           hgvs_p = var['hgvs_p'] if 'hgvs_p' in var else ''
           variant_id = tmp_variant_id
 
-  return variant_id, effect, feature_id, feature_type, putative_impact, transcript_biotype, hgvs_p 
+  return variant_id, effect, feature_id, hgvs_p 
 
 def collectExAC():
   try:
@@ -197,34 +196,20 @@ def collectdbsnp():
   rsid = non_snpeff['dbsnp']['rsid'] if 'rsid' in non_snpeff['dbsnp'] else ''
   return rsid
 
-# Read clinvar summary data, from which we get clinvar title to gene mapping
-def initClinvarTitle2GeneDict():
-  global title2gene
-  global CLINVAR_VARIANT_SUMMARY
-  df_clinvar_summary = pd.read_csv(CLINVAR_VARIANT_SUMMARY, sep = '\t', usecols = ['Name', 'GeneSymbol'])
-  title2gene = df_clinvar_summary.set_index('Name').to_dict()['GeneSymbol']
-
 def getClinvarData():
   global PARSED_CLINVAR
   clinvar_pathogenicity = dict()
   pathos= []
   with open(PARSED_CLINVAR, 'rb') as f:
     f.readline()
-    for line in f.readlines():
-      line = line.rstrip()
+    for line in f:
+      line = line.rstrip('\n')
       parts = line.split('\t')
       title, variant, pathogenicity = parts[1], parts[3], parts[8]
+      gene, variant, pathogenicity = parts[3], parts[5], parts[10]
       pathos.append(pathogenicity)
-      # Convert protein from 1 to 3 letters
       variants = variant.split('|')
-      variants = [item.split(':')[-1] for item in variants if item]
-      try:
-        gene = title2gene[title.split(' AND ')[0]]
-      except KeyError:
-        try:
-          gene = title.split(':')[0].split('(')[1].rstrip(')')
-        except IndexError:
-          gene = ''
+      variants = [item for item in variants if item]
       for variant in variants:
         if (gene, variant) not in clinvar_pathogenicity:
           clinvar_pathogenicity[(gene, variant)] = [pathogenicity]
@@ -234,32 +219,36 @@ def getClinvarData():
       values = clinvar_pathogenicity[key]
       values = '|'.join(values)
       clinvar_pathogenicity[key] = values
-    # print set(pathos)
+    print set(pathos)
   return clinvar_pathogenicity
 
-# def readCandidateGenes(hpo_filtered_genes):
-#   global SAMPLE_GENES
-#   candidate_vars = []
-#   # df_hpo_filtered_genes = pd.read_csv('result/ranking_genes.txt', sep = '\t')
-#   # hpo_filtered_genes = pd.unique(df_hpo_filtered_genes['gene'].values).tolist()
-#   with open(SAMPLE_GENES, 'rb') as f:
-#     f.readline()
-#     for line in f.readlines():
-#       line = line.rstrip()
-#       parts = line.split('\t')
-#       gene = parts[0]
-#       if gene not in hpo_filtered_genes:
-#         continue
-#       for part in parts:
-#         if re.search(r'_.*:', part):
-#           transcript, variant = part.split(':') 
-#       candidate_vars.append((gene, variant, transcript))
-#   return candidate_vars
-
+def getVariantidfromDB(candidate_vars):
+  db = MySQLdb.connect(host="localhost",
+                     user="root",
+                     passwd="Tianqi12",
+                     db="DB_offline")
+  query = 'select gene, variant, protein, transcript, variant_id, effect from genevariantproteinmapping where '
+  for var in candidate_vars:
+    gene, variant, transcript = var
+    query += "(gene='%s' and variant='%s' and transcript='%s') or " % (gene, variant, transcript)    
+  query = query[0:-4]
+  cursor = db.cursor()
+  cursor.execute(query)
+  data = cursor.fetchall()
+  db.close()
+  res = dict() 
+  for line in data:
+    gene, variant, protein, transcript, variant_id, effect = line
+    res[(gene, variant)] = (variant_id, effect, transcript, protein) 
+  return res
 
 def get_variants(candidate_vars):
 
   mv = myvariant.MyVariantInfo()
+  variantidfromDB = getVariantidfromDB(candidate_vars)
+
+
+
   variant_ids = []
   variant_id2key = dict()
   variants = defaultdict(dict)
@@ -270,10 +259,14 @@ def get_variants(candidate_vars):
     # print var
     gene, variant, transcript = var
     key = (gene, variant)
-    variant_id, effect, feature_id, feature_type, putative_impact, transcript_biotype, hgvs_p = collectAll(gene, variant, transcript)
+    if key in variantidfromDB.keys():
+      variant_id, effect, feature_id, hgvs_p = variantidfromDB[key]
+    else:
+      variant_id, effect, feature_id, hgvs_p = collectAll(gene, variant, transcript)
+    
     variants[key]['gene'], variants[key]['variant'], variants[key]['transcript'] = gene, variant, transcript
     variants[key]['id'], variants[key]['effect'], variants[key]['protein'] = variant_id, effect, hgvs_p 
-    
+  
     # Only 'interpro_domain' is a list; all the other fields are strings 
     if not variant_id:
       variants[key]['maf_exac'] = variants[key]['maf_1000g'] = variants[key]['maf_esp6500'] = variants[key]['dann'] = variants[key]['fathmm'] = variants[key]['metasvm'] = variants[key]['gerp++'] = variants[key]['exon'] = variants[key]['ref'] = variants[key]['alt'] = variants[key]['rsid'] = ''
@@ -282,7 +275,7 @@ def get_variants(candidate_vars):
       continue
     variant_ids.append(variant_id)
     variant_id2key[variant_id] = (gene, variant)
-    # time.sleep(random.uniform(0.1, 0.3))
+    time.sleep(random.uniform(0, 0.1))
 
   non_snpeff_var_data = mv.getvariants(variant_ids, fields = ['exac.ac.ac_adj','exac.an.an_adj', 'exac_nontcga.ac.ac_adj', 'exac_nontcga.an.an_adj',
                                'dbnsfp', 'cadd.1000g.af', 'cadd.esp.af', 'clinvar.omim', 'clinvar.rcv',
@@ -330,7 +323,7 @@ def get_variants(candidate_vars):
     # print chromosome
     with open(os.path.join(BASE, ('data/dbscSNV/dbscSNV1.1.' + chromosome)), 'rb') as f:
       f.readline()
-      for line in f.readlines():
+      for line in f:
         line = line.rstrip()
         parts = line.split('\t')
         chromo, pos, ref, alt, ada_score, rf_score = 'chr' + parts[0], parts[1], parts[2], parts[3], parts[4], parts[5]
@@ -343,7 +336,6 @@ def get_variants(candidate_vars):
 
   ## Get Clinvar assertion data from local file if the record can not be find in myvariant
   # print "Get Clinvar data "
-  initClinvarTitle2GeneDict()
   clinvar_pathogenicity = getClinvarData()
   for key in variants.keys():
     if not variants[key]['clinvar_pathogenicity'] and key in clinvar_pathogenicity:

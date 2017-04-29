@@ -48,16 +48,28 @@
   {% else %}
       <h3>Please upload your task:</h3>
   {% endif %}
-
+  </br>
     <form name="form1" method="post" action="{% url 'deepb:upload' %}" enctype="multipart/form-data">
       {% csrf_token %}
-      <input type="file" name="gene_file">
-      <label>Upload Gene File (*required)</label><br />
-      <input type="file" name="symptom_file">
-      <label>Upload Symptom File (*required)</label><br />
-      <input type="text" name="task_name">
-      <label>Please enter your task name (*required)</label><br />
-      <button type="submit", onClick="return required()">Upload File</button>
+      <div class = "container">
+        <label>Upload Gene File (*required)</label>
+        <input type="file" name="gene_file">   
+      </div>
+      <p></p>
+      <p></p>
+      <p></p>
+      <div class = "container">
+        <label>Upload Symptom File (*required)</label>
+        <input type="file" name="symptom_file">
+      </div>
+      <p></p>
+      <p></p>
+      <p></p>
+      <div class = "container">
+        <input type="text" name="task_name">
+        <label>Please enter your task name (*required)</label><br />
+        <button type="submit", onClick="return required()">Upload File</button>
+      </div>
     </form>
 
     <br />

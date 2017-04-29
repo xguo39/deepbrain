@@ -31,7 +31,7 @@ db = MySQLdb.connect(host="127.0.0.1",
 
 def queryPubmedDB(candidate_vars):
    genevar2protein, geneprotein2var = {}, {}
-   query = "select gene, protein_variant, pmid, title, journal, year, impact_factor, abstract from pubmed_var where "
+   query = "select gene, protein_variant, pmid, title, journal, year, impact_factor, abstract, pathogenicity_score from pubmed_var where "
    for var in candidate_vars:
        gene, variant, protein = var
        genevar2protein[(gene, variant)] = protein
@@ -43,21 +43,16 @@ def queryPubmedDB(candidate_vars):
    data = cursor.fetchall()
    res = []
    for line in data:
-       gene, protein_variant, pmid, title, journal, year, impact_factor, abstract = line 
+       gene, protein_variant, pmid, title, journal, year, impact_factor, abstract, pathogenicity_score = line 
        if protein_variant.startswith('p.'):
            variant, protein = geneprotein2var[(gene, protein_variant)], protein_variant
        else:
            variant, protein = protein_variant, genevar2protein[(gene, protein_variant)]
-       res.append([gene, variant, protein, pmid, title, journal, year, impact_factor, abstract])
-   # db.close()
-
-   df = pd.DataFrame(res, columns = ['Gene', 'Variant', 'Protein', 'PMID', 'Title', 'Journal', 'Year', 'Impact_Factor', 'Abstract'])
-   df = df[['Gene', 'Variant', 'Protein', 'Title', 'Journal', 'Year', 'Impact_Factor', 'Abstract', 'PMID']]
+       res.append([gene, variant, protein, pmid, title, journal, year, impact_factor, abstract, pathogenicity_score])
+   df = pd.DataFrame(res, columns = ['Gene', 'Variant', 'Protein', 'PMID', 'Title', 'Journal', 'Year', 'Impact_Factor', 'Abstract', 'pathogenicity_score'])
+   df = df[['Gene', 'Variant', 'Protein', 'Title', 'Journal', 'Year', 'Impact_Factor', 'Abstract', 'PMID', 'pathogenicity_score']]
    df.drop_duplicates(inplace = True)
    df = df[df.Abstract.notnull() & (df.Abstract != '')]
-   # return df
-   # candidate_vars = readCandidateVarFile()
-   #  df = queryPubmedDB(candidate_vars)
-   df.to_csv(os.path.join(BASE, 'result/pubmed_query_results.csv'), index = False, sep = '\t')
+   return df
 
 
