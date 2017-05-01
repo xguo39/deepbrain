@@ -25,11 +25,11 @@ PARSED_CLINVAR = os.path.join(BASE, 'data/parsed_clinvar.txt')
 def collectAll(gene, variant, transcript):
   mv = myvariant.MyVariantInfo()
   snpeff = mv.query('snpeff.ann.gene_id:%s AND snpeff.ann.hgvs_c:%s'
-		     % (gene, variant), fields='snpeff')
+         % (gene, variant), fields='snpeff')
   try:
     variant_id = snpeff['hits'][0]['_id']
   except IndexError:
-    return '', '', '', ''
+    return ''
   hits = snpeff['hits']
   anns = []
   variant_ids = []
@@ -62,8 +62,29 @@ def collectAll(gene, variant, transcript):
           effect, feature_id, feature_type, putative_impact, transcript_biotype = (var['effect'], var['feature_id'], var['feature_type'], var['putative_impact'], var['transcript_biotype'])
           hgvs_p = var['hgvs_p'] if 'hgvs_p' in var else ''
           variant_id = tmp_variant_id
+  return variant_id
 
-  return variant_id, effect, feature_id, hgvs_p 
+def collectSnpeff(gene, variant, transcript):
+  try:
+    ann = non_snpeff['snpeff']['ann']
+  except KeyError:
+    return '', ''
+  if not isinstance(ann, list):
+    effect = ann['effect'] if 'effect' in ann else ''
+    protein = ann['hgvs_p'] if 'hgvs_p' in ann else ''
+  else:
+    transcript = transcript.decode('utf-8')
+    effect = ann[0]['effect'] if 'effect' in ann[0] else ''
+    protein = ann[0]['hgvs_p'] if 'hgvs_p' in ann[0] else ''
+    max_similarity = 0
+    for var in ann:
+      if var['gene_id'] == gene and var['hgvs_c'] == variant: 
+        sim = Levenshtein.ratio(transcript, var['feature_id'])
+        if sim > max_similarity:
+          max_similarity = sim
+          effect = var['effect'] if 'effect' in var else ''
+          protein = var['hgvs_p'] if 'hgvs_p' in var else ''
+  return effect, protein
 
 def collectExAC():
   try:
@@ -219,7 +240,7 @@ def getClinvarData():
       values = clinvar_pathogenicity[key]
       values = '|'.join(values)
       clinvar_pathogenicity[key] = values
-    print set(pathos)
+    # print set(pathos)
   return clinvar_pathogenicity
 
 def getVariantidfromDB(candidate_vars):
@@ -229,7 +250,7 @@ def getVariantidfromDB(candidate_vars):
                      db="DB_offline")
   query = 'select gene, variant, protein, transcript, variant_id, effect from genevariantproteinmapping where '
   for var in candidate_vars:
-    gene, variant, transcript = var
+    gene, variant, transcript, variant_id = var
     query += "(gene='%s' and variant='%s' and transcript='%s') or " % (gene, variant, transcript)    
   query = query[0:-4]
   cursor = db.cursor()
@@ -239,15 +260,12 @@ def getVariantidfromDB(candidate_vars):
   res = dict() 
   for line in data:
     gene, variant, protein, transcript, variant_id, effect = line
-    res[(gene, variant)] = (variant_id, effect, transcript, protein) 
+    res[(gene, variant)] = variant_id 
   return res
 
 def get_variants(candidate_vars):
-
   mv = myvariant.MyVariantInfo()
   variantidfromDB = getVariantidfromDB(candidate_vars)
-
-
 
   variant_ids = []
   variant_id2key = dict()
@@ -257,35 +275,41 @@ def get_variants(candidate_vars):
   dbscsnv_chromosomes, dbscsnv_variants = [], {}
   for var in candidate_vars:
     # print var
-    gene, variant, transcript = var
+    gene, variant, transcript, variant_id = var
     key = (gene, variant)
-    if key in variantidfromDB.keys():
-      variant_id, effect, feature_id, hgvs_p = variantidfromDB[key]
-    else:
-      variant_id, effect, feature_id, hgvs_p = collectAll(gene, variant, transcript)
-    
-    variants[key]['gene'], variants[key]['variant'], variants[key]['transcript'] = gene, variant, transcript
-    variants[key]['id'], variants[key]['effect'], variants[key]['protein'] = variant_id, effect, hgvs_p 
+    if not variant_id:
+      if key in variantidfromDB.keys():
+        variant_id = variantidfromDB[key]
+      else:
+        variant_id = collectAll(gene, variant, transcript)
+    variants[key]['gene'], variants[key]['variant'], variants[key]['transcript'], variants[key]['id'] = gene, variant, transcript, variant_id
   
     # Only 'interpro_domain' is a list; all the other fields are strings 
     if not variant_id:
       variants[key]['maf_exac'] = variants[key]['maf_1000g'] = variants[key]['maf_esp6500'] = variants[key]['dann'] = variants[key]['fathmm'] = variants[key]['metasvm'] = variants[key]['gerp++'] = variants[key]['exon'] = variants[key]['ref'] = variants[key]['alt'] = variants[key]['rsid'] = ''
       variants[key]['interpro_domain'] = []
       variants[key]['clinvar_pathogenicity'] = '' 
+      variants[key]['effect'], variants[key]['protein']  = '', ''
       continue
     variant_ids.append(variant_id)
-    variant_id2key[variant_id] = (gene, variant)
-    time.sleep(random.uniform(0, 0.1))
+    variant_id2key[variant_id] = (gene, variant, transcript)
 
   non_snpeff_var_data = mv.getvariants(variant_ids, fields = ['exac.ac.ac_adj','exac.an.an_adj', 'exac_nontcga.ac.ac_adj', 'exac_nontcga.an.an_adj',
                                'dbnsfp', 'cadd.1000g.af', 'cadd.esp.af', 'clinvar.omim', 'clinvar.rcv',
                                'cadd.annotype', 'cadd.consequence', 'cadd.consdetail', 'cadd.grantham',
-                               'cadd.phred', 'cadd.exon', 'vcf.ref', 'vcf.alt', 'dbsnp.rsid'])
+                               'cadd.phred', 'cadd.exon', 'vcf.ref', 'vcf.alt', 'dbsnp.rsid',
+                               'snpeff.ann.effect', 'snpeff.ann.gene_id', 'snpeff.ann.hgvs_p', 'snpeff.ann.hgvs_c', 'snpeff.ann.feature_id'])
   global non_snpeff
   for data in non_snpeff_var_data:
     non_snpeff = data
     variant_id = non_snpeff['_id'] 
     key = variant_id2key[variant_id]
+    gene, variant, transcript = key
+    key = (gene, variant)
+
+    effect, protein = collectSnpeff(gene, variant, transcript)  
+    variants[key]['effect'] = effect
+    variants[key]['protein'] = protein
 
     maf_exac, maf_exac_nontcga = collectExAC()
     maf_exac = maf_exac_nontcga if not maf_exac and maf_exac_nontcga else maf_exac

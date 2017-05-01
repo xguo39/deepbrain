@@ -14,43 +14,26 @@ from django.contrib.auth.decorators import login_required
 from django.utils import timezone
 from deepb.configs import Config, Constant
 from model_wrapper import Raw_input_table_with_status_and_id
-
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.shortcuts import redirect
 import random
 
 
 import os.path
 BASE = os.path.dirname(os.path.abspath(__file__))
 
-# Create your views here.
 
-@login_required(login_url="login/")
-def home(request):
-    return render(request, 'home.html')
+def to_home(request):
+    return redirect('/home/')
 
-def upload(request):
-    gene_file = request.FILES['gene_file']
-    symptom_file = request.FILES['symptom_file']
-    user_name = request.user.username
-    task_name = request.POST.get('task_name', None)
-    task_id = random.randint(1000000,9999999)
-
-    if user_name is None:
-        user_name = 'default ' + str(task_id)
-    if task_name is None:
-        task_name = 'default ' + str(task_id)
-
-    raw_input_id = handle_uploaded_file(gene_file, symptom_file, user_name, task_name)
-
-    trigger_background_main_task.delay(raw_input_id)
-    return HttpResponseRedirect(reverse('deepb:home', args=()))
-
-class ResultsView(generic.ListView):
+class HomeView(LoginRequiredMixin, ListView):
+    login_url = '/login/'
     template_name = 'home.html'
     context_object_name = 'latest_task_list'
 
     def get_context_data(self, **kwargs):
-        context = super(ResultsView, self).get_context_data(**kwargs)
-        context['last_result'] = 'Your task has been successfully uploaded'
+        context = super(HomeView, self).get_context_data(**kwargs)
+        context['User_name'] = self.request.user.username
         return context
 
     def get_queryset(self):
@@ -59,7 +42,7 @@ class ResultsView(generic.ListView):
         for raw_input_table in raw_input_list:
             status, main_table_id = self._task_status_check(raw_input_table)
             raw_input_table_with_status_and_id_list.append(Raw_input_table_with_status_and_id(raw_input_table, status, main_table_id))
-        return raw_input_table_with_status_and_id_list
+        return raw_input_table_with_status_and_id_list[::-1]
 
     def _task_status_check(self, raw_input_table):
         # check if the task is succeed
@@ -78,13 +61,27 @@ class ResultsView(generic.ListView):
         else:
             return Constant.IN_PROGRESS_STATUS, None
 
-def details(request, pk):
+
+def upload(request):
+    gene_file = request.FILES['gene_file']
+    symptom_file = request.FILES['symptom_file']
+    user_name = request.user.username
+    task_name = request.POST.get('task_name', None)
+    raw_input_id = handle_uploaded_file(gene_file, symptom_file, user_name, task_name)
+
+    trigger_background_main_task.delay(raw_input_id)
+    return redirect('/home/')
+
+
+
+def result(request, pk):
     main_table = get_object_or_404(Main_table, pk=pk)
     return render(request, 'result.html', {
         'task_name': main_table.task_name,
         'result': mark_safe(main_table.result),
         'input_gene': mark_safe(main_table.input_gene),
         'input_phenotype': main_table.input_phenotype,
+        'User_name': request.user.username
         })
 
 def handle_uploaded_file(raw_input_gene_file, raw_input_phenotype_file, user_name, task_name):

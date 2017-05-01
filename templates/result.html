@@ -1,22 +1,25 @@
+{% extends 'base.html' %}
 
+
+{% block content %}
 <!DOCTYPE html>
 <html lang="en">
 {% load static %}
   <head>
     <!-- Bootstrap -->
-    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet"> -->
+    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
 
     <!-- datatables -->
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.15/css/jquery.dataTables.min.css">
+  </head>
 
   <body>
-  	<br />
-  	<br />
     <div class="container">
-        <a href="{% url 'deepb:results' %}"> Back to Home</a><br />
+        <a href="{% url 'deepb:home' %}"> Back to Home</a><br />
     </div>
   	<div class="container">       
-  	<h3>Task name: {{ task_name }} </h3><br />
+  	  <h3>Task name: {{ task_name }} </h3><br />
   	</div>
     <div class="container">
     	<h3>Result</h3>
@@ -56,15 +59,15 @@
 	</div>
 	<br />
 	<div class="container">
-	<a href="{% url 'deepb:results' %}">Back to Home</a><br />
+	<a href="{% url 'deepb:home' %}">Back to Home</a><br />
 	</div>
 	<br /><br /><br />
     </body>
-</html>
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-<!-- Include all compiled plugins (below), or include individual files as needed -->
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</html>
+{% endblock %}
+
+{% block javascript %}
 
 <script type="text/javascript" src="https://cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
 
@@ -101,4 +104,4 @@ $(document).ready(function() {
 } );
 
 </script>
-
+{% endblock %}

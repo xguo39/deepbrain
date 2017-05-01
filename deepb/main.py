@@ -3,6 +3,7 @@ import collectVariantInfo
 import pubmed
 import ACMG
 import filterVariantOnPhenotype
+import csv
 
 import pandas as pd
 import numpy as np
@@ -13,6 +14,48 @@ from io import StringIO
 
 # input_phenotype = 'data/sample_patient_phenotype.txt'
 # input_genes = 'data/sample_genes.txt'
+
+def format_hgvs(chrom, pos, ref, alt):
+    '''get a valid hgvs name from VCF-style "chrom, pos, ref, alt" data.
+
+    Example:
+
+        >>> myvariant.format_hgvs("1", 35366, "C", "T")
+        >>> myvariant.format_hgvs("2", 17142, "G", "GA")
+        >>> myvariant.format_hgvs("MT", 8270, "CACCCCCTCT", "C")
+        >>> myvariant.format_hgvs("X", 107930849, "GGA", "C")
+
+    '''
+    chrom = str(chrom)
+    if chrom.lower().startswith('chr'):
+        # trim off leading "chr" if any
+        chrom = chrom[3:]
+    if len(ref) == len(alt) == 1:
+        # this is a SNP
+        hgvs = 'chr{0}:g.{1}{2}>{3}'.format(chrom, pos, ref, alt)
+    elif len(ref) > 1 and len(alt) == 1:
+        # this is a deletion:
+        if ref[0] == alt:
+            start = int(pos) + 1
+            end = int(pos) + len(ref) - 1
+            hgvs = 'chr{0}:g.{1}_{2}del'.format(chrom, start, end)
+        else:
+            end = int(pos) + len(ref) - 1
+            hgvs = 'chr{0}:g.{1}_{2}delins{3}'.format(chrom, pos, end, alt)
+    elif len(ref) == 1 and len(alt) > 1:
+        # this is a insertion
+        if alt[0] == ref:
+            hgvs = 'chr{0}:g.{1}_{2}ins'.format(chrom, pos, int(pos) + 1)
+            ins_seq = alt[1:]
+            hgvs += ins_seq
+        else:
+            hgvs = 'chr{0}:g.{1}delins{2}'.format(chrom, pos, alt)
+    elif len(ref) > 1 and len(alt) > 1:
+        end = int(pos) + len(alt) - 1
+        hgvs = 'chr{0}:g.{1}_{2}delins{3}'.format(chrom, pos, end, alt)
+    else:
+        raise ValueError("Cannot convert {} into HGVS id.".format((chrom, pos, ref, alt)))
+    return hgvs
 
 def master_function(raw_input_id):
 	raw_input = Raw_input_table.objects.get(id=raw_input_id)
@@ -51,6 +94,44 @@ def master_function(raw_input_id):
 	hpo_filtered_genes = np.unique([i[0] for i in ranking_genes]).tolist()
 
 	candidate_vars = []
+	input_gene = input_gene.split('\n')
+	header = inputgene[0]
+	sniffer = csv.Sniffer()
+	dialect = sniffer.sniff(header)
+	delimiter =  dialect.delimiter
+	field_names = header.split(delimiter)
+	chrom_idx, pos_idx, ref_idx, alt_idx, gene_idx = None, None, None, None, None
+
+	for idx in xrange(len(field_names)):
+	    field = field_names[idx]
+	    if re.match(r'chrom', field, re.I): chrom_idx = idx
+	    if re.match(r'pos|start', field, re.I): pos_idx = idx
+	    if re.match(r'ref', field, re.I): ref_idx = idx
+	    if re.match(r'alt|allele 1', field, re.I): alt_idx = idx
+	    if re.match(r'gene (gene)|gene', field, re.I): gene_idx = idx
+
+	for line in input_gene:
+	    line = line.rstrip()
+	    parts = line.split(delimiter)
+	    if gene_idx:
+	        gene = parts[gene_idx]
+	    else:
+	        gene = parts[0]
+	    if gene not in hpo_filtered_genes:
+	        continue
+	    transcript, variant, variant_id = '', '', ''
+	    for part in parts:
+	        if re.search(r'_.*:c\.', part):
+	            transcript, variant = part.split(':')
+	        if re.search(r'_.*:g\.', part):
+	            variant_id = 'chr' + part.split(':')[0].split('.')[-1] + part.split(':')[-1]
+	        if re.search(r'chr.*:g\.', part, re.I):
+	            variant_id = part
+	    if not variant_id and (chrom_idx, pos_idx, ref_idx, alt_idx):
+	        chrome, pos, ref, alt = parts[chrom_idx], parts[pos_idx], parts[ref_idx], parts[alt_idx]
+	        variant_id = format_hgvs(chrome, pos, ref, alt)
+	    candidate_vars.append((gene, variant, transcript, variant_id))
+
 	input_gene = input_gene.split('\n')
 	for line in input_gene:
 		line = line.rstrip()
