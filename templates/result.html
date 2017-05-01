@@ -12,8 +12,11 @@
   <body>
   	<br />
   	<br />
-  	<div class="container">
-  	<h3>Task ID: {{ task_id }} </h3><br />
+    <div class="container">
+        <a href="{% url 'deepb:results' %}"> Back to Home</a><br />
+    </div>
+  	<div class="container">       
+  	<h3>Task name: {{ task_name }} </h3><br />
   	</div>
     <div class="container">
     	<h3>Result</h3>
@@ -27,16 +30,13 @@
                     <th>Final Score</th>
                     <th>Pathogenicity</th>
                     <th>Hit Criteria</th>
-                    <th>Pathogenicity Score</th>
-                    <th>Hpo Hit Score</th>
-                    <th>Pheno Match Score</th>
                 </tr>
             </thead>
     	</table>
     </div>
 
     <div class="container">
-    	<h3>Input Gene</h3>
+    	<h3>Input gene</h3>
     	<table id="input_gene" class="table table-bordered table-striped table-hover" border="1">
             <thead>
                 <tr>
@@ -51,7 +51,7 @@
     	</table>
     </div>
     <div class="container">
-	<h3>Input Phenotype</h3>
+	<h3>Input phenotype</h3>
 	<p>{{ input_phenotype }}<p><br /> 
 	</div>
 	<br />
@@ -81,10 +81,7 @@ $(document).ready(function() {
             { "data" : "id" },
             { "data" : "final_score" },
             { "data" : "pathogenicity" },
-            { "data" : "hit_criteria" },
-            { "data" : "pathogenicity_score" },
-            { "data" : "hpo_hit_score" },
-            { "data" : "pheno_match_score" }
+            { "data" : "hit_criteria" }
         ]
     } );
 } );

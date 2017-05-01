@@ -42,7 +42,7 @@ def upload(request):
     raw_input_id = handle_uploaded_file(gene_file, symptom_file, user_name, task_name)
 
     trigger_background_main_task.delay(raw_input_id)
-    return HttpResponseRedirect(reverse('deepb:results', args=()))
+    return HttpResponseRedirect(reverse('deepb:home', args=()))
 
 class ResultsView(generic.ListView):
     template_name = 'home.html'
@@ -81,7 +81,7 @@ class ResultsView(generic.ListView):
 def details(request, pk):
     main_table = get_object_or_404(Main_table, pk=pk)
     return render(request, 'result.html', {
-        'task_id': main_table.task_id,
+        'task_name': main_table.task_name,
         'result': mark_safe(main_table.result),
         'input_gene': mark_safe(main_table.input_gene),
         'input_phenotype': main_table.input_phenotype,
