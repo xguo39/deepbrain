@@ -95,7 +95,7 @@ def master_function(raw_input_id):
 
 	candidate_vars = []
 	input_gene = input_gene.split('\n')
-	header = inputgene[0]
+	header = input_gene[0]
 	sniffer = csv.Sniffer()
 	dialect = sniffer.sniff(header)
 	delimiter =  dialect.delimiter
@@ -127,22 +127,10 @@ def master_function(raw_input_id):
 	            variant_id = 'chr' + part.split(':')[0].split('.')[-1] + part.split(':')[-1]
 	        if re.search(r'chr.*:g\.', part, re.I):
 	            variant_id = part
-	    if not variant_id and (chrom_idx, pos_idx, ref_idx, alt_idx):
+	    if not variant_id and (chrom_idx and pos_idx and ref_idx and alt_idx):
 	        chrome, pos, ref, alt = parts[chrom_idx], parts[pos_idx], parts[ref_idx], parts[alt_idx]
 	        variant_id = format_hgvs(chrome, pos, ref, alt)
 	    candidate_vars.append((gene, variant, transcript, variant_id))
-
-	input_gene = input_gene.split('\n')
-	for line in input_gene:
-		line = line.rstrip()
-		parts = line.split('\t')
-		gene = parts[0]
-		if gene not in hpo_filtered_genes:
-			continue
-		for part in parts:
-			if re.search(r'_.*:', part):
-				transcript, variant = part.split(':')
-		candidate_vars.append((gene, variant, transcript))
 
 	final_res, variants = collectVariantInfo.get_variants(candidate_vars)
 

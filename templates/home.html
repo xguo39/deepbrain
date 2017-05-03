@@ -46,14 +46,14 @@
     <form name="form1" method="post" action="{% url 'deepb:upload' %}" enctype="multipart/form-data">
       {% csrf_token %}
       <div class = "container">
-        <label>Upload gene file (*required)</label>
+        <label>Upload gene file</label>
         <input type="file" name="gene_file">   
       </div>
       <p></p>
       <p></p>
       <p></p>
       <div class = "container">
-        <label>Upload phenotype file (*required)</label>
+        <label>Upload phenotype file</label>
         <input type="file" name="symptom_file">
       </div>
       <p></p>
@@ -61,7 +61,7 @@
       <p></p>
       <div class = "container">
         <input type="text" name="task_name" placeholder="Please enter a task name">
-        <label>(*required)</label><br />
+        <label></label><br />
       </div>
       <p></p>
       <p></p>
