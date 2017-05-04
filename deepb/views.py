@@ -31,6 +31,45 @@ class HomeView(LoginRequiredMixin, ListView):
     def get_context_data(self, **kwargs):
         context = super(HomeView, self).get_context_data(**kwargs)
         context['User_name'] = self.request.user.username
+        if Raw_input_table.objects.filter(user_name=self.request.user.username).count() > 6:
+            context['show_all'] = "all"
+        return context
+
+    def get_queryset(self):
+        raw_input_list = Raw_input_table.objects.filter(user_name=self.request.user.username)
+        raw_input_table_with_status_and_id_list = []
+        # show_all = self.request.GET.get('show_all')
+        for raw_input_table in raw_input_list:
+            status, main_table_id = self._task_status_check(raw_input_table)
+            raw_input_table_with_status_and_id_list.append(Raw_input_table_with_status_and_id(raw_input_table, status, main_table_id))
+        return raw_input_table_with_status_and_id_list[::-1][:6]
+
+    def _task_status_check(self, raw_input_table):
+        # check if the task is succeed
+        task_name = raw_input_table.task_name
+        user_name = raw_input_table.user_name
+        # we use id in raw_input_table as task_id in the main_table
+        task_id = raw_input_table.id
+        current_time = timezone.now()
+        pub_time = raw_input_table.pub_date
+
+        main_table_result = Main_table.objects.filter(user_name=user_name, task_name=task_name, task_id=task_id).first()
+        if main_table_result is not None:
+            return Constant.SUCCESS_STATUS, main_table_result.id
+        elif current_time - pub_time > Config.max_task_waiting_time:
+            return Constant.FAIL_STATUS, None
+        else:
+            return Constant.IN_PROGRESS_STATUS, None
+
+class HomeAllView(LoginRequiredMixin, ListView):
+    login_url = '/login/'
+    template_name = 'home.html'
+    context_object_name = 'latest_task_list'
+
+    def get_context_data(self, **kwargs):
+        context = super(HomeAllView, self).get_context_data(**kwargs)
+        context['User_name'] = self.request.user.username
+        context['all_back'] = 1
         return context
 
     def get_queryset(self):
@@ -39,7 +78,8 @@ class HomeView(LoginRequiredMixin, ListView):
         for raw_input_table in raw_input_list:
             status, main_table_id = self._task_status_check(raw_input_table)
             raw_input_table_with_status_and_id_list.append(Raw_input_table_with_status_and_id(raw_input_table, status, main_table_id))
-        return raw_input_table_with_status_and_id_list[::-1]
+        return raw_input_table_with_status_and_id_list
+
 
     def _task_status_check(self, raw_input_table):
         # check if the task is succeed

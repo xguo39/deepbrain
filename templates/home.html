@@ -4,68 +4,83 @@
 
 {% block content %}
 <div class="container">
-    <h3>Please upload your task:</h3>
-</br>
-  <form name="form1" method="post" action="{% url 'deepb:upload' %}" enctype="multipart/form-data">
-    {% csrf_token %}
-    <div class = "container">
-      <label>Upload gene file</label>
-      <input type="file" name="gene_file">   
-    </div>
-    <p></p>
-    <p></p>
-    <p></p>
-    <div class = "container">
-      <label>Upload phenotype file</label>
-      <input type="file" name="symptom_file">
-    </div>
-    <p></p>
-    <p></p>
-    <p></p>
-    <div class = "container">
-      <input type="text" name="task_name" placeholder="Please enter a task name">
-      <label></label><br />
-    </div>
-    <p></p>
-    <p></p>
-    <p></p>
-    <div class = "container">
-      <button type="submit", onClick="return required()">Run task</button>
-    </div>
-  </form>
+    
+  <div class = "col-sm-6" id = "upload">
+      <h3>Upload new task</h3>
+    </br>
 
-  <br />
-  <div id="results">
-    <h3>All your tasks:</h3>
-  {% for result in latest_task_list %}
-    {% if result.status == 'In progress' %}
-      Task name: &nbsp;
-      {{ result.raw_input_table.task_name }}<br />
-      Task status: In progress<br />
-      Task submit time: &nbsp;
-      {{ result.raw_input_table.pub_date }}<br />
-    {% elif result.status == 'Failed'%}
-      Task name: &nbsp;
-      {{ result.raw_input_table.task_name }}<br />
-      Task status: Failed<br />
-      Task submit time: &nbsp;
-      {{ result.raw_input_table.pub_date }}<br />
-    {% elif result.status == 'Succeed' %}
-      Task name: &nbsp;
-      {{ result.raw_input_table.task_name }} &nbsp;
-      <a href="{% url 'deepb:result' result.main_table_id %}">Click to see results</a><br />
-      Task status: Succeed<br />
-      Task submit time: &nbsp;
-      {{ result.raw_input_table.pub_date }}<br />
-    {% else %}
-      Task name: &nbsp;
-      {{ result.raw_input_table.task_name }}<br />
-      Task status: Server Error<br />
-      Task submit time: &nbsp;
-      {{ result.raw_input_table.pub_date }}<br />
-    {%  endif %}
+    <form name="form1" method="post" action="{% url 'deepb:upload' %}" enctype="multipart/form-data">
+      {% csrf_token %}
+      <div class = "container">
+        <label>Upload gene file</label>
+        <input type="file" name="gene_file">   
+      </div>
+      <p></p>
+      <p></p>
+      <p></p>
+      <div class = "container">
+        <label>Upload phenotype file</label>
+        <input type="file" name="symptom_file">
+      </div>
+      <p></p>
+      <p></p>
+      <p></p>
+      <div class = "container">
+        <input type="text" name="task_name" placeholder="Please enter a task name">
+        <label></label><br />
+      </div>
+      <p></p>
+      <p></p>
+      <p></p>
+      <div class = "container">
+        <button type="submit", onClick="return required()">Run task</button>
+      </div>
+    </form>
+  </div>
+
+  <div class = "col-sm-6" id="results">
+    <h3>Your tasks</h3>
     <br />
-  {% endfor %}
+    <div id = "result_list">
+    {% for result in latest_task_list %}
+      {% if result.status == 'In progress' %}
+        Task name: &nbsp;
+        {{ result.raw_input_table.task_name }}<br />
+        Task status: In progress<br />
+        Task submit time: &nbsp;
+        {{ result.raw_input_table.pub_date }}<br />
+      {% elif result.status == 'Failed'%}
+        Task name: &nbsp;
+        {{ result.raw_input_table.task_name }}<br />
+        Task status: Failed<br />
+        Task submit time: &nbsp;
+        {{ result.raw_input_table.pub_date }}<br />
+      {% elif result.status == 'Succeed' %}
+        Task name: &nbsp;
+        {{ result.raw_input_table.task_name }} &nbsp;
+        <a href="{% url 'deepb:result' result.main_table_id %}">Click to see results</a><br />
+        Task status: Succeed<br />
+        Task submit time: &nbsp;
+        {{ result.raw_input_table.pub_date }}<br />
+      {% else %}
+        Task name: &nbsp;
+        {{ result.raw_input_table.task_name }}<br />
+        Task status: Server Error<br />
+        Task submit time: &nbsp;
+        {{ result.raw_input_table.pub_date }}<br />
+      {%  endif %}
+      <br />
+    {% endfor %}
+    {% if show_all %}
+    <a href="{% url 'deepb:home_all' show_all %}"> Show All</a>
+    {% endif %}
+    {% if all_back %}
+    <a href="{% url 'deepb:home' %}"> Back </a>
+    {% endif %}
+    <br />
+    <br />
+    <br />
+  </div>
   </div>
 </div>  
 {% endblock %}

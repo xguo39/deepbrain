@@ -4,6 +4,8 @@
 {% block css %}
     <!-- <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet"> -->
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.15/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/select/1.2.2/css/select.dataTables.min.css">
+    
 {% endblock %}
 
 {% block content %}
@@ -56,6 +58,7 @@
 
 {% block javascript %}
     <script type="text/javascript" src="https://cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/select/1.2.2/js/dataTables.select.min.js"></script>
 
     <script>
     var result = {{ result }}
@@ -63,14 +66,15 @@
         $('#result').dataTable({
         	"order": [ 4, 'desc' ],
             "data": result,
+            "autoWidth": false,
             "columns": [
-                { "data" : "gene" },
-                { "data" : "variant" },
-                { "data" : "protein" },
-                { "data" : "id" },
-                { "data" : "final_score" },
-                { "data" : "pathogenicity" },
-                { "data" : "hit_criteria" }
+                { "data" : "gene" , "width": "10%" },
+                { "data" : "variant" , "width": "10%" },
+                { "data" : "protein" , "width": "10%" },
+                { "data" : "id" , "width": "20%" },
+                { "data" : "final_score" , "width": "14%" },
+                { "data" : "pathogenicity" , "width": "18%" },
+                { "data" : "hit_criteria" , "width": "18%" }
             ]
         } );
     } );
@@ -78,6 +82,7 @@
     $(document).ready(function() {
         $('#input_gene').dataTable({
             "data": input_gene,
+            "scrollX": true,
             "columns": [
             {% for field in field_names %}
                 { "data" : "{{ field }}" },
