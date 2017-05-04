@@ -78,7 +78,7 @@ class HomeAllView(LoginRequiredMixin, ListView):
         for raw_input_table in raw_input_list:
             status, main_table_id = self._task_status_check(raw_input_table)
             raw_input_table_with_status_and_id_list.append(Raw_input_table_with_status_and_id(raw_input_table, status, main_table_id))
-        return raw_input_table_with_status_and_id_list
+        return raw_input_table_with_status_and_id_list[::-1]
 
 
     def _task_status_check(self, raw_input_table):
