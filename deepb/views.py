@@ -16,8 +16,6 @@ from deepb.configs import Config, Constant
 from model_wrapper import Raw_input_table_with_status_and_id
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import redirect
-import random
-import json
 
 
 
