@@ -69,14 +69,6 @@ def upload(request):
     trigger_background_main_task.delay(raw_input_id)
     return redirect('/home/')
 
-s = '[{"i":"imap.gmail.com","p":"someP@ss"},{"i":"imap.aol.com","p":"anoterPass"}]'
-jdata = json.loads(s)
-for d in jdata:
-    for key, value in d.iteritems():
-        print key, value
-
-import os.path
-BASE = os.path.dirname(os.path.abspath(__file__))
 
 def result(request, pk):
     main_table = get_object_or_404(Main_table, pk=pk)
