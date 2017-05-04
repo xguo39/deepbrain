@@ -14,9 +14,8 @@ logger = get_task_logger(__name__)
 def trigger_background_main_task(raw_input_id):
     """sends an email when feedback form is filled successfully"""
     logger.info("Start background main task")
-    ACMG_result, df_genes, phenos = master_function(raw_input_id)
+    ACMG_result, df_genes, phenos, field_names = master_function(raw_input_id)
 
-    df_genes.columns = ['c1', 'c2', 'c3', 'c4', 'c5', 'c6']
     input_gene = df_genes.to_json(orient='records')
     input_phenotype = ', '.join(phenos)
     result_table = ACMG_result.to_json(orient='records')

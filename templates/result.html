@@ -1,107 +1,90 @@
 {% extends 'base.html' %}
-
-
-{% block content %}
-<!DOCTYPE html>
-<html lang="en">
 {% load static %}
-  <head>
-    <!-- Bootstrap -->
+
+{% block css %}
     <!-- <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet"> -->
-    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
-
-    <!-- datatables -->
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.15/css/jquery.dataTables.min.css">
-  </head>
-
-  <body>
-    <div class="container">
-        <a href="{% url 'deepb:home' %}"> Back to Home</a><br />
-    </div>
-  	<div class="container">       
-  	  <h3>Task name: {{ task_name }} </h3><br />
-  	</div>
-    <div class="container">
-    	<h3>Result</h3>
-    	<table id="result" class="table table-bordered table-striped table-hover" border="1">
-            <thead>
-                <tr>
-                    <th>Gene</th>
-                    <th>Variant</th>
-                    <th>Protein</th>
-                    <th>Id</th>
-                    <th>Final Score</th>
-                    <th>Pathogenicity</th>
-                    <th>Hit Criteria</th>
-                </tr>
-            </thead>
-    	</table>
-    </div>
-
-    <div class="container">
-    	<h3>Input gene</h3>
-    	<table id="input_gene" class="table table-bordered table-striped table-hover" border="1">
-            <thead>
-                <tr>
-                    <th>Gene</th>
-                    <th>Zygosity</th>
-                    <th>HGVS cDNA-level nomenclature</th>
-                    <th>FHGVS protein</th>
-                    <th>Chromosome</th>
-                    <th>PEffect (codingEffect)</th>
-                </tr>
-            </thead>
-    	</table>
-    </div>
-    <div class="container">
-	<h3>Input phenotype</h3>
-	<p>{{ input_phenotype }}<p><br /> 
-	</div>
-	<br />
-	<div class="container">
-	<a href="{% url 'deepb:home' %}">Back to Home</a><br />
-	</div>
-	<br /><br /><br />
-    </body>
-
-</html>
 {% endblock %}
 
+{% block content %}
+    <div class="container">
+    <a href="{% url 'deepb:home' %}"> Back to Home</a><br />
+    </div>
+    <div class="container">       
+      <h3>Task name: {{ task_name }} </h3><br />
+    </div>
+    <div class="container">
+    <h3>Result</h3>
+    <table id="result" class="table table-bordered table-striped table-hover" border="1">
+        <thead>
+            <tr>
+                <th>Gene</th>
+                <th>Variant</th>
+                <th>Protein</th>
+                <th>Id</th>
+                <th>Final Score</th>
+                <th>Pathogenicity</th>
+                <th>Hit Criteria</th>
+            </tr>
+        </thead>
+    </table>
+    </div>
+
+    <div class="container">
+    <h3>Input gene</h3>
+    <table id="input_gene" class="table table-bordered table-striped table-hover" border="1">
+        <thead>
+            <tr>
+                {% for field in field_names %}
+                <th>{{ field }}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+    </table>
+    </div>
+    <div class="container">
+    <h3>Input phenotype</h3>
+    <p>{{ input_phenotype }}<p><br /> 
+    </div>
+    <br />
+    <div class="container">
+    <a href="{% url 'deepb:home' %}">Back to Home</a><br />
+    </div>
+    <br /><br /><br />
+{% endblock %}
+
+
 {% block javascript %}
+    <script type="text/javascript" src="https://cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
 
-<script type="text/javascript" src="https://cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
-
-<script>
-var result = {{ result }}
-$(document).ready(function() {
-    $('#result').dataTable({
-    	"order": [ 4, 'desc' ],
-        "data": result,
-        "columns": [
-            { "data" : "gene" },
-            { "data" : "variant" },
-            { "data" : "protein" },
-            { "data" : "id" },
-            { "data" : "final_score" },
-            { "data" : "pathogenicity" },
-            { "data" : "hit_criteria" }
-        ]
+    <script>
+    var result = {{ result }}
+    $(document).ready(function() {
+        $('#result').dataTable({
+        	"order": [ 4, 'desc' ],
+            "data": result,
+            "columns": [
+                { "data" : "gene" },
+                { "data" : "variant" },
+                { "data" : "protein" },
+                { "data" : "id" },
+                { "data" : "final_score" },
+                { "data" : "pathogenicity" },
+                { "data" : "hit_criteria" }
+            ]
+        } );
     } );
-} );
-var input_gene = {{ input_gene }}
-$(document).ready(function() {
-    $('#input_gene').dataTable({
-        "data": input_gene,
-        "columns": [
-            { "data" : "c1" },
-            { "data" : "c2" },
-            { "data" : "c3" },
-            { "data" : "c4" },
-            { "data" : "c5" },
-            { "data" : "c6" }
-        ]
+    var input_gene = {{ input_gene }}
+    $(document).ready(function() {
+        $('#input_gene').dataTable({
+            "data": input_gene,
+            "columns": [
+            {% for field in field_names %}
+                { "data" : "{{ field }}" },
+            {% endfor %}
+            ]
+        } );
     } );
-} );
 
-</script>
+    </script>
 {% endblock %}

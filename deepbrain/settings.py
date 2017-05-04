@@ -16,6 +16,7 @@ import os
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
 
@@ -25,7 +26,7 @@ SECRET_KEY = '(9#+i8y4oxabldvxmgxsy+@#5h^q=vfgd@urh9(h)2+%0is3(h'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['52.37.227.215']
+ALLOWED_HOSTS = ['52.37.227.215','127.0.0.1']
 
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),

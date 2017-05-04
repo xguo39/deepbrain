@@ -17,10 +17,9 @@ from model_wrapper import Raw_input_table_with_status_and_id
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import redirect
 import random
+import json
 
 
-import os.path
-BASE = os.path.dirname(os.path.abspath(__file__))
 
 
 def to_home(request):
@@ -72,16 +71,26 @@ def upload(request):
     trigger_background_main_task.delay(raw_input_id)
     return redirect('/home/')
 
+s = '[{"i":"imap.gmail.com","p":"someP@ss"},{"i":"imap.aol.com","p":"anoterPass"}]'
+jdata = json.loads(s)
+for d in jdata:
+    for key, value in d.iteritems():
+        print key, value
 
+import os.path
+BASE = os.path.dirname(os.path.abspath(__file__))
 
 def result(request, pk):
     main_table = get_object_or_404(Main_table, pk=pk)
+    field = [i.split(":")[0][1:-1] for i in main_table.input_gene.split("},{")[0][2:].split(',')]
+
     return render(request, 'result.html', {
         'task_name': main_table.task_name,
         'result': mark_safe(main_table.result),
         'input_gene': mark_safe(main_table.input_gene),
         'input_phenotype': main_table.input_phenotype,
-        'User_name': request.user.username
+        'User_name': request.user.username,
+        'field_names': field
         })
 
 def handle_uploaded_file(raw_input_gene_file, raw_input_phenotype_file, user_name, task_name):

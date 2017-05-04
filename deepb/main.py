@@ -146,5 +146,5 @@ def master_function(raw_input_id):
 	df_final_res = filterVariantOnPhenotype.generateOutput(variants, ACMG_result, phenos)
 
 
-	return df_final_res, df_genes, phenos
+	return df_final_res, df_genes, phenos, field_names
 
