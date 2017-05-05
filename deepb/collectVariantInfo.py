@@ -28,8 +28,14 @@ def collectAll(gene, variant, transcript):
          % (gene, variant), fields='snpeff')
   try:
     variant_id = snpeff['hits'][0]['_id']
-  except IndexError:
-    return ''
+  except (KeyError, IndexError):
+    time.sleep(random.uniform(0.1, 0.3))
+    snpeff = mv.query('snpeff.ann.gene_id:%s AND snpeff.ann.hgvs_c:%s'
+                       % (gene, variant), fields='snpeff')
+    try:
+      variant_id = snpeff['hits'][0]['_id']
+    except (KeyError, IndexError):
+      return ''
   hits = snpeff['hits']
   anns = []
   variant_ids = []
@@ -292,54 +298,73 @@ def get_variants(candidate_vars):
       variants[key]['effect'], variants[key]['protein']  = '', ''
       continue
     variant_ids.append(variant_id)
-    variant_id2key[variant_id] = (gene, variant, transcript)
+    if variant_id in variant_id2key:
+      variant_id2key[variant_id].append((gene, variant, transcript))
+    else:
+      variant_id2key[variant_id] = [(gene, variant, transcript)]
+    time.sleep(random.uniform(0.02, 0.1))
 
-  non_snpeff_var_data = mv.getvariants(variant_ids, fields = ['exac.ac.ac_adj','exac.an.an_adj', 'exac_nontcga.ac.ac_adj', 'exac_nontcga.an.an_adj',
+  variant_ids = list(set(variant_ids))
+  # print variant_ids
+  non_snpeff_var_data = []
+  batch_size = 100
+  start, end = 0, 0
+  num_variant_ids = len(variant_ids)
+  while True:
+    start = end
+    end += batch_size
+    end = min(end, num_variant_ids)
+    tmp = mv.getvariants(variant_ids[start:end], fields = ['exac.ac.ac_adj','exac.an.an_adj', 'exac_nontcga.ac.ac_adj', 'exac_nontcga.an.an_adj',
                                'dbnsfp', 'cadd.1000g.af', 'cadd.esp.af', 'clinvar.omim', 'clinvar.rcv',
                                'cadd.annotype', 'cadd.consequence', 'cadd.consdetail', 'cadd.grantham',
                                'cadd.phred', 'cadd.exon', 'vcf.ref', 'vcf.alt', 'dbsnp.rsid',
                                'snpeff.ann.effect', 'snpeff.ann.gene_id', 'snpeff.ann.hgvs_p', 'snpeff.ann.hgvs_c', 'snpeff.ann.feature_id'])
+    non_snpeff_var_data += tmp
+    if end >= num_variant_ids:
+      break
+
   global non_snpeff
   for data in non_snpeff_var_data:
     non_snpeff = data
     variant_id = non_snpeff['_id'] 
-    key = variant_id2key[variant_id]
-    gene, variant, transcript = key
-    key = (gene, variant)
+    keys = variant_id2key[variant_id]
+    for key in keys:
+      gene, variant, transcript = key
+      key = (gene, variant)
 
-    effect, protein = collectSnpeff(gene, variant, transcript)  
-    variants[key]['effect'] = effect
-    variants[key]['protein'] = protein
+      effect, protein = collectSnpeff(gene, variant, transcript)  
+      variants[key]['effect'] = effect
+      variants[key]['protein'] = protein
 
-    maf_exac, maf_exac_nontcga = collectExAC()
-    maf_exac = maf_exac_nontcga if not maf_exac and maf_exac_nontcga else maf_exac
+      maf_exac, maf_exac_nontcga = collectExAC()
+      maf_exac = maf_exac_nontcga if not maf_exac and maf_exac_nontcga else maf_exac
 
-    dbnsfp_exac, dbnsfp_1000g, cadd_1000g, cadd_esp = collectMAF()
-    variants[key]['maf_exac'] = dbnsfp_exac if dbnsfp_exac else maf_exac
-    variants[key]['maf_1000g'] = dbnsfp_1000g if dbnsfp_1000g else cadd_1000g
-    variants[key]['maf_esp6500'] = cadd_esp
+      dbnsfp_exac, dbnsfp_1000g, cadd_1000g, cadd_esp = collectMAF()
+      variants[key]['maf_exac'] = dbnsfp_exac if dbnsfp_exac else maf_exac
+      variants[key]['maf_1000g'] = dbnsfp_1000g if dbnsfp_1000g else cadd_1000g
+      variants[key]['maf_esp6500'] = cadd_esp
 
-    pathogenicity_scores, interpro_domain = collectdbNSFP()
-    dann, fathmm, metasvm, gerp = pathogenicity_scores 
-    variants[key]['dann'], variants[key]['fathmm'], variants[key]['metasvm'], variants[key]['gerp++'] = dann, fathmm, metasvm, gerp
-    variants[key]['interpro_domain'] = interpro_domain
+      pathogenicity_scores, interpro_domain = collectdbNSFP()
+      dann, fathmm, metasvm, gerp = pathogenicity_scores 
+      variants[key]['dann'], variants[key]['fathmm'], variants[key]['metasvm'], variants[key]['gerp++'] = dann, fathmm, metasvm, gerp
+      variants[key]['interpro_domain'] = interpro_domain
 
-    clinvar_data = collectClinvar()
-    variants[key]['clinvar_pathogenicity'] = clinvar_data
+      clinvar_data = collectClinvar()
+      variants[key]['clinvar_pathogenicity'] = clinvar_data
 
-    annotype, consequence, consdetail, grantham_score, phred_score, exon = collectCadd()
-    variants[key]['exon'] = exon.split('/')[0]
+      annotype, consequence, consdetail, grantham_score, phred_score, exon = collectCadd()
+      variants[key]['exon'] = exon.split('/')[0]
 
-    ref, alt = collectVCF()
-    variants[key]['ref'], variants[key]['alt'] = ref, alt
-   
-    rsid = collectdbsnp()
-    variants[key]['rsid'] = rsid
+      ref, alt = collectVCF()
+      variants[key]['ref'], variants[key]['alt'] = ref, alt
+     
+      rsid = collectdbsnp()
+      variants[key]['rsid'] = rsid
 
-    chromosome = variant_id.split(':')[0]
-    allele_start_pos = re.findall(r'[0-9]{1,20}', variant_id.split('.')[-1])[0]
-    dbscsnv_chromosomes.append(chromosome) 
-    dbscsnv_variants[(chromosome, allele_start_pos, ref, alt)] = key
+      chromosome = variant_id.split(':')[0]
+      allele_start_pos = re.findall(r'[0-9]{1,20}', variant_id.split('.')[-1])[0]
+      dbscsnv_chromosomes.append(chromosome) 
+      dbscsnv_variants[(chromosome, allele_start_pos, ref, alt)] = key
 
   ## Get dbscSNV splicing effect data from local files
   # print "Get dbscSNV splicing data "

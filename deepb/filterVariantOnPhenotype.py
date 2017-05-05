@@ -184,10 +184,17 @@ def searchPhenosFromPubmed(patient_phenotypes, samedomainvariants, domainvariant
         for word in pheno_wordlist:
             if word not in word_difficulty_index.keys() or word_difficulty_index[word] < 100:
                 append_wordlist = True
-                patient_phenotypes_wordbreak += pheno_wordlist
+                rare_words_in_pheno_wordlist = [word for word in pheno_wordlist if word not in word_difficulty_index or word_difficulty_index[word] < 1000]
+                patient_phenotypes_wordbreak += rare_words_in_pheno_wordlist
                 break   
         if not append_wordlist:
             patient_phenotypes_wordbreak.append(pheno)
+
+    tmp_patient_phenotypes_wordbreak = []
+    for pheno in patient_phenotypes_wordbreak:
+        if pheno not in word_difficulty_index.keys() or word_difficulty_index[pheno] < 160000:
+            tmp_patient_phenotypes_wordbreak.append(pheno)
+    patient_phenotypes_wordbreak = tmp_patient_phenotypes_wordbreak
     # print patient_phenotypes_wordbreak
     re_pubmed = re.compile(r'\b(' +'|'.join(patient_phenotypes_wordbreak) + r')', re.I)
 
@@ -310,14 +317,19 @@ def identifyVariantsWithOppositePhenos(variantphenos, patient_phenotypes):
                     continue
                 words_in_patient_pheno_only = set(patient_pheno_wordlist) - common_words
                 words_in_var_pheno_only = set(var_pheno_wordlist) - common_words
-                if isOppositeMeaning(words_in_var_pheno_only, words_in_patient_pheno_only): 
+                if words_in_patient_pheno_only and words_in_var_pheno_only and isOppositeMeaning(words_in_var_pheno_only, words_in_patient_pheno_only):
                     variants_with_opposite_phenos.append(var) 
     return list(set(variants_with_opposite_phenos))
 
 def getScores(variantphenosfromPubmed, variantphenosfromDB, variantphenos, patient_phenotypes):
-    global patient_phenotypes_wordbreak
+    global patient_phenotypes_wordbreak, word_difficulty_index
     scores = dict()
     variantphenosfromPubmedAndDB = dict()
+    # convert pubmed matched text to lower case
+    for originalvar in variantphenosfromPubmed.keys():
+        values = variantphenosfromPubmed[originalvar]
+        values = [value.lower() for value in values]
+        variantphenosfromPubmed[originalvar] = values
     for originalvar in variantphenosfromPubmed.keys():
         variantphenosfromPubmedAndDB[originalvar] = variantphenosfromPubmed[originalvar]
     for originalvar in variantphenosfromDB.keys():
@@ -331,18 +343,22 @@ def getScores(variantphenosfromPubmed, variantphenosfromDB, variantphenos, patie
 	items_count = Counter(variantphenosfromPubmed[originalvar])
 	#print items_count
 	for item in items_count.keys():
+            difficulty_index = word_difficulty_index[item] if item in word_difficulty_index else 50
+            weight = 8.0 / np.log(difficulty_index) ## The more difficult the word, the more weight to be assigned
 	    if originalvar in scores:
-		scores[originalvar] += np.log( min((items_count[item] + 1), 10) ) 
+		scores[originalvar] += np.log( min((items_count[item] + 1), 10) ) * weight 
 	    else:
-		scores[originalvar] = np.log( min((items_count[item] + 1), 10) ) 
+		scores[originalvar] = np.log( min((items_count[item] + 1), 10) ) * weight 
     for originalvar in variantphenosfromDB.keys():
 	items_count = Counter(variantphenosfromDB[originalvar])
 	#print items_count
 	for item in items_count.keys():
+            difficulty_index = word_difficulty_index[item] if item in word_difficulty_index else 50
+            weight = 8.0 / np.log(difficulty_index) ## The more difficult the word, the more weight to be assigned
 	    if originalvar in scores:
-		scores[originalvar] += np.log( min((items_count[item] + 1), 10) ) 
+		scores[originalvar] += np.log( min((items_count[item] + 1), 10) ) * weight 
 	    else:
-		scores[originalvar] = np.log( min((items_count[item] + 1), 10) ) 
+		scores[originalvar] = np.log( min((items_count[item] + 1), 10) ) * weight 
 
     # print scores
     for originalvar in variantphenosfromPubmedAndDB.keys():
@@ -363,7 +379,10 @@ def getScores(variantphenosfromPubmed, variantphenosfromDB, variantphenos, patie
     variants_with_opposite_phenos = identifyVariantsWithOppositePhenos(variantphenos, patient_phenotypes)
     # print variants_with_opposite_phenos
     for originalvar in variants_with_opposite_phenos:
-        scores[originalvar] = 0
+        if originalvar in scores:
+            scores[originalvar] = scores[originalvar] * 0.9
+        else:
+            scores[originalvar] = 1.0 * 0.9
     # print scores
     return scores
 

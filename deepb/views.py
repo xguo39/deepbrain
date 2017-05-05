@@ -20,6 +20,7 @@ from django.shortcuts import redirect
 
 
 
+
 def to_home(request):
     return redirect('/home/')
 
@@ -31,8 +32,13 @@ class HomeView(LoginRequiredMixin, ListView):
     def get_context_data(self, **kwargs):
         context = super(HomeView, self).get_context_data(**kwargs)
         context['User_name'] = self.request.user.username
-        if Raw_input_table.objects.filter(user_name=self.request.user.username).count() > 6:
+        raw_input_list = Raw_input_table.objects.filter(user_name=self.request.user.username)
+        if raw_input_list.count() > 6:
             context['show_all'] = "all"
+        last_task = Raw_input_table.objects.order_by('-id')[0]
+        status, main_table_id = self._task_status_check(last_task)
+        context['last_task_status'] = status
+        context['estimate_time'] = round((0.14225678*len(last_task.raw_input_gene.split('},{')) + 1.69510401*len(last_task.raw_input_phenotype.split(','))+93.838831687329304)/60, 1)
         return context
 
     def get_queryset(self):
@@ -70,6 +76,9 @@ class HomeAllView(LoginRequiredMixin, ListView):
         context = super(HomeAllView, self).get_context_data(**kwargs)
         context['User_name'] = self.request.user.username
         context['all_back'] = 1
+        last_task = Raw_input_table.objects.order_by('-id')[0]
+        status, main_table_id = self._task_status_check(last_task)
+        context['last_task_status'] = status
         return context
 
     def get_queryset(self):
@@ -100,11 +109,24 @@ class HomeAllView(LoginRequiredMixin, ListView):
 
 
 def upload(request):
-    gene_file = request.FILES['gene_file']
-    symptom_file = request.FILES['symptom_file']
     user_name = request.user.username
     task_name = request.POST.get('task_name', None)
-    raw_input_id = handle_uploaded_file(gene_file, symptom_file, user_name, task_name)
+    gene_file = request.FILES['gene_file']
+    phenotype_type = ''
+    phenotype_file = ''
+    try:
+        phenotype_file = request.FILES['symptom_file']   
+    except:
+        phenotype = ''
+    phenotype_type = request.POST.get('input_text_phenotype', None)
+
+    if phenotype_type:
+        phenotype = phenotype_type
+    if phenotype_file:
+        phenotype = phenotype_file.read()
+
+
+    raw_input_id = handle_uploaded_file(gene_file, phenotype, user_name, task_name)
 
     trigger_background_main_task.delay(raw_input_id)
     return redirect('/home/')
@@ -126,7 +148,7 @@ def result(request, pk):
 def handle_uploaded_file(raw_input_gene_file, raw_input_phenotype_file, user_name, task_name):
     raw_gene_input = Raw_input_table(
         raw_input_gene=raw_input_gene_file.read(),
-        raw_input_phenotype=raw_input_phenotype_file.read(),
+        raw_input_phenotype=raw_input_phenotype_file,
         user_name=user_name,
         task_name=task_name,
         pub_date=timezone.now(),

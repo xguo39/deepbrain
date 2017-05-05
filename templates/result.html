@@ -22,7 +22,6 @@
             <tr>
                 <th>Gene</th>
                 <th>Variant</th>
-                <th>Protein</th>
                 <th>Id</th>
                 <th>Final Score</th>
                 <th>Pathogenicity</th>
@@ -64,15 +63,14 @@
     var result = {{ result }}
     $(document).ready(function() {
         $('#result').dataTable({
-        	"order": [ 4, 'desc' ],
+        	"order": [ 3, 'desc' ],
             "data": result,
             "autoWidth": false,
             "columns": [
-                { "data" : "gene" , "width": "10%" },
-                { "data" : "variant" , "width": "10%" },
-                { "data" : "protein" , "width": "10%" },
+                { "data" : "gene" , "width": "14%" },
+                { "data" : "variant" , "width": "15%" },
                 { "data" : "id" , "width": "20%" },
-                { "data" : "final_score" , "width": "14%" },
+                { "data" : "final_score" , "width": "15%" },
                 { "data" : "pathogenicity" , "width": "18%" },
                 { "data" : "hit_criteria" , "width": "18%" }
             ]

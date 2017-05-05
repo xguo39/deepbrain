@@ -1,7 +1,7 @@
 import datetime
 
 class Config(object):
-    max_task_waiting_time = datetime.timedelta(minutes=3)
+    max_task_waiting_time = datetime.timedelta(minutes=5)
 
 class Constant(object):
     FAIL_STATUS = 'Failed'

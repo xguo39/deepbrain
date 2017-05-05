@@ -6,33 +6,36 @@
 <div class="container">
     
   <div class = "col-sm-6" id = "upload">
-      <h3>Upload new task</h3>
+      <h3>Test new task</h3>
     </br>
 
     <form name="form1" method="post" action="{% url 'deepb:upload' %}" enctype="multipart/form-data">
       {% csrf_token %}
-      <div class = "container">
-        <label>Upload gene file</label>
-        <input type="file" name="gene_file">   
-      </div>
-      <p></p>
-      <p></p>
-      <p></p>
-      <div class = "container">
-        <label>Upload phenotype file</label>
-        <input type="file" name="symptom_file">
-      </div>
-      <p></p>
-      <p></p>
-      <p></p>
-      <div class = "container">
-        <input type="text" name="task_name" placeholder="Please enter a task name">
+
+      <div class = "container" id = "enter_task_name">
+        <label>Enter a task name <small><i>*required</i></small></label> &nbsp;</br>
+        <input type="text" name="task_name" placeholder="">
         <label></label><br />
       </div>
-      <p></p>
-      <p></p>
-      <p></p>
-      <div class = "container">
+
+      <div class = "container" id = "input_gene_file">
+        <label>Input patient's gene file (.txt) <small><i>*required</i></small> </label></br>
+        <input type="file" name="gene_file">   
+      </div>
+
+      <div class = "container" id = "input_phen">
+        <label>Input patient's phenotypes (.txt file or type) <small><i>*optional</i></small> </label></br>
+        <input type="file" name="symptom_file">
+        <p></p>
+        <textarea id = "myTextArea"
+                  name = "input_text_phenotype"
+                  rows = "7"
+                  cols = "45"
+                  maxlength = "800"
+                  placeholder = "You can type phenotypes here, separate them by  ,   "></textarea>
+      </div>
+
+      <div class = "container" id = "run_task">
         <button type="submit", onClick="return required()">Run task</button>
       </div>
     </form>
@@ -46,7 +49,7 @@
       {% if result.status == 'In progress' %}
         Task name: &nbsp;
         {{ result.raw_input_table.task_name }}<br />
-        Task status: In progress<br />
+        Task status: In progress (It will take about {{ estimate_time }} mins)<br />
         Task submit time: &nbsp;
         {{ result.raw_input_table.pub_date }}<br />
       {% elif result.status == 'Failed'%}
@@ -96,12 +99,6 @@
           alert("Please upload a gene file");
           result = false;
       }
-      empt = document.forms["form1"]["symptom_file"].value;
-      if (empt == "")
-      {
-          alert("Please upload a symptom file");
-          result = false;
-      }
       empt = document.forms["form1"]["task_name"].value;
       if (empt == "")
       {
@@ -110,5 +107,12 @@
       }
       return result
   }
+
+  {% if last_task_status == 'In progress' %}
+    window.setTimeout(function () {
+        location.href = "";
+      }, 30000);
+  {% endif %}
+
 </script>
 {% endblock %}
