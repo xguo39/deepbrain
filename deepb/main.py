@@ -11,6 +11,7 @@ import re
 import myvariant
 from deepb.models import Main_table, Raw_input_table
 from io import StringIO
+from collections import Counter
 
 # input_phenotype = 'data/sample_patient_phenotype.txt'
 # input_genes = 'data/sample_genes.txt'
@@ -62,37 +63,6 @@ def master_function(raw_input_id):
 	input_gene = raw_input.raw_input_gene
 	input_phenotype = raw_input.raw_input_phenotype
 
-	# input_gene_list = [i.split('\t') for i in input_gene.split('\n')]
-	# df_genes = pd.DataFrame(input_gene_list[1:-1], columns=input_gene_list[0])
-	df_genes = pd.read_csv(StringIO(input_gene), sep = '\t')
-	CANDIDATE_GENES = pd.unique(df_genes.Gene.values).tolist()
-
-	corner_cases = dict()
-	phenos = []
-	input_phenotype = input_phenotype.split('\n')
-	for line in input_phenotype:
-		if line.startswith('#') or not line.strip():
-			continue
-		line = line.rstrip()
-		phenos += line.split(',')
-		for pheno in phenos:
-			if re.search('development', pheno) and re.search('delay', pheno) and not re.search('growth', pheno):
-				phenos.append('growth delay')
-				corner_cases['growth delay'] = pheno.strip()
-		for pheno in phenos:
-			if re.search('growth', pheno) and re.search('delay', pheno) and not re.search('development', pheno):
-				phenos.append('developmental delay')
-				corner_cases['developmental delay'] = pheno.strip()
-	phenos = [_.strip() for _ in phenos]
-
-	# map phenotype to gene
-	mv = myvariant.MyVariantInfo()
-
-	ranking_genes, ranking_disease = map_phenotype_to_gene.generate_score(phenos, CANDIDATE_GENES, corner_cases)
-
-	# collect variant info
-	hpo_filtered_genes = np.unique([i[0] for i in ranking_genes]).tolist()
-
 	candidate_vars = []
 	input_gene = input_gene.split('\n')
 	header = input_gene[0]
@@ -110,27 +80,68 @@ def master_function(raw_input_id):
 	    if re.match(r'alt|allele 1', field, re.I): alt_idx = idx
 	    if re.match(r'gene (gene)|gene', field, re.I): gene_idx = idx
 
-	for line in input_gene:
-	    line = line.rstrip()
-	    parts = line.split(delimiter)
-	    if gene_idx:
-	        gene = parts[gene_idx]
-	    else:
-	        gene = parts[0]
-	    if gene not in hpo_filtered_genes:
+	if not gene_idx:
+		gene_idx = 0
+
+	#df_genes = pd.read_csv(StringIO(raw_input.raw_input_gene), sep = '\t')
+
+	text = StringIO(unicode(input_phenotype), newline=None)
+	lines = text.readlines()
+	lines = [line.strip() for line in lines]
+	phenos = []
+	for line in lines:
+	    if not line:
 	        continue
-	    transcript, variant, variant_id = '', '', ''
-	    for part in parts:
-	        if re.search(r'_.*:c\.', part):
-	            transcript, variant = part.split(':')
-	        if re.search(r'_.*:g\.', part):
-	            variant_id = 'chr' + part.split(':')[0].split('.')[-1] + part.split(':')[-1]
-	        if re.search(r'chr.*:g\.', part, re.I):
-	            variant_id = part
-	    if not variant_id and (chrom_idx and pos_idx and ref_idx and alt_idx):
-	        chrome, pos, ref, alt = parts[chrom_idx], parts[pos_idx], parts[ref_idx], parts[alt_idx]
-	        variant_id = format_hgvs(chrome, pos, ref, alt)
-	    candidate_vars.append((gene, variant, transcript, variant_id))
+	    phenos_each_line = re.split(r'  +|\t+|,|;|\.|\|', line.strip())
+	    phenos_each_line = [re.sub(r'^\W+|\W+$', '', s) for s in phenos_each_line]
+	    phenos_each_line = [s for s in phenos_each_line if s]
+	    phenos += phenos_each_line
+
+	corner_cases = dict()
+	for pheno in phenos:
+		if re.search('development', pheno) and re.search('delay', pheno) and not re.search('growth', pheno):
+			phenos.append('growth delay')
+			corner_cases['growth delay'] = pheno.strip()
+	for pheno in phenos:
+		if re.search('growth', pheno) and re.search('delay', pheno) and not re.search('development', pheno):
+			phenos.append('developmental delay')
+			corner_cases['developmental delay'] = pheno.strip()
+
+	# map phenotype to gene
+	mv = myvariant.MyVariantInfo()
+
+	input_gene_list = []
+	CANDIDATE_GENES = []
+	for line in input_gene[1:]:
+		if not line:
+			continue
+		line = line.rstrip()
+		parts = re.split(r'%s' % delimiter, line)
+		input_gene_list.append(parts)
+		gene = parts[gene_idx]
+		CANDIDATE_GENES.append(gene)
+		transcript, variant, variant_id = '', '', ''
+		for part in parts:
+		    if re.search(r'_.*:c\.', part):
+		        transcript, variant = part.split(':')
+		    if re.search(r'_.*:g\.', part):
+		        variant_id = 'chr' + part.split(':')[0].split('.')[-1] + part.split(':')[-1]
+		    if re.search(r'chr.*:g\.', part, re.I):
+		        variant_id = part
+		if not variant_id and (chrom_idx and pos_idx and ref_idx and alt_idx):
+		    chrome, pos, ref, alt = parts[chrom_idx], parts[pos_idx], parts[ref_idx], parts[alt_idx]
+		    variant_id = format_hgvs(chrome, pos, ref, alt)
+		candidate_vars.append((gene, variant, transcript, variant_id))
+
+	ranking_genes, ranking_disease = map_phenotype_to_gene.generate_score(phenos, CANDIDATE_GENES, corner_cases)
+	# collect variant info
+	hpo_filtered_genes = np.unique([i[0] for i in ranking_genes]).tolist()
+
+	tmp_candidate_vars = []
+	for var in candidate_vars:
+		if var[0] in hpo_filtered_genes:
+			tmp_candidate_vars.append(var)
+	candidate_vars = tmp_candidate_vars
 
 	final_res, variants = collectVariantInfo.get_variants(candidate_vars)
 
@@ -145,6 +156,18 @@ def master_function(raw_input_id):
 	# filter variant on phenotype
 	df_final_res = filterVariantOnPhenotype.generateOutput(variants, ACMG_result, phenos)
 
+    # remove lines which has wrong number of fields
+
+	field_nums = []
+	for line in input_gene_list:
+	    field_nums.append(len(line))
+	count = Counter(field_nums)
+	correct_field_num = count.most_common()[0][0]
+	correct_input_gene_list = []
+	for line in input_gene_list:
+		if len(line) == correct_field_num:
+			correct_input_gene_list.append(line)
+	df_genes = pd.DataFrame(correct_input_gene_list, columns = field_names)
 
 	return df_final_res, df_genes, phenos, field_names
 
