@@ -82,6 +82,7 @@
     $(document).ready(function() {
         $('#input_gene').dataTable({
             "data": input_gene,
+            "autoWidth": false,
             "scrollX": true,
             "columns": [
             {% for field in field_names %}
