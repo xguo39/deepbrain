@@ -24,8 +24,19 @@ PARSED_CLINVAR = os.path.join(BASE, 'data/parsed_clinvar.txt')
 
 def collectAll(gene, variant, transcript):
   mv = myvariant.MyVariantInfo()
-  snpeff = mv.query('snpeff.ann.gene_id:%s AND snpeff.ann.hgvs_c:%s'
-         % (gene, variant), fields='snpeff')
+  attempt, max_attempts = 0, 3
+  while True:
+    attempt += 1    
+    if attempt > max_attempts:
+      break
+    try:
+      snpeff = mv.query('snpeff.ann.gene_id:%s AND snpeff.ann.hgvs_c:%s'
+           % (gene, variant), fields='snpeff')
+      break
+    except:
+      time.sleep(random.uniform(0.3, 0.5))
+      pass
+
   try:
     variant_id = snpeff['hits'][0]['_id']
   except (KeyError, IndexError):

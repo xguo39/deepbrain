@@ -45,7 +45,11 @@
     </div>
     <div class="container">
     <h3>Input phenotype</h3>
-    <p>{{ input_phenotype }}<p><br /> 
+    <p>{{ input_phenotype }}</p>
+    {% if not input_phenotype %}
+        <p>No phenotype available</p>
+    {% endif %}
+    <br /> 
     </div>
     <br />
     <div class="container">

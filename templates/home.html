@@ -3,116 +3,99 @@
 
 
 {% block content %}
-<div class="container">
-    
-  <div class = "col-sm-6" id = "upload">
-      <h3>Test new task</h3>
-    </br>
+  <div class="container">
+      
+    <div class = "col-sm-6" id = "upload">
+        <h3>Test new task</h3>
+      </br>
 
-    <form name="form1" method="post" action="{% url 'deepb:upload' %}" enctype="multipart/form-data">
-      {% csrf_token %}
+      <form name="form1" method="post" action="{% url 'deepb:upload' %}" enctype="multipart/form-data">
+        {% csrf_token %}
 
-      <div class = "container" id = "enter_task_name">
-        <label>Enter a task name <small><i>*required</i></small></label> &nbsp;</br>
-        <input type="text" name="task_name" placeholder="">
-        <label></label><br />
-      </div>
+        <div class = "container" id = "enter_task_name">
+          <label>Enter a task name <small><i>*required</i></small></label> &nbsp;</br>
+          <input type="text" name="task_name" placeholder="" required>
+          <label></label><br />
+        </div>
 
-      <div class = "container" id = "input_gene_file">
-        <label>Input patient's gene file (.txt) <small><i>*required</i></small> </label></br>
-        <input type="file" name="gene_file">   
-      </div>
+        <div class = "container" id = "input_gene_file">
+          <label>Input patient's gene file <small>(.txt or .xls)</small> <small><i>*required</i></small> </label></br>
+          <input type="file" name="gene_file">
+        </div>
 
-      <div class = "container" id = "input_phen">
-        <label>Input patient's phenotypes (.txt file or type) <small><i>*optional</i></small> </label></br>
-        <input type="file" name="symptom_file">
-        <p></p>
-        <textarea id = "myTextArea"
-                  name = "input_text_phenotype"
-                  rows = "7"
-                  cols = "45"
-                  maxlength = "800"
-                  placeholder = "You can type phenotypes here, separate them by  ,   "></textarea>
-      </div>
+        <div class = "container" id = "input_phen">
+          <label>Input patient's phenotypes <small>(.txt file or type)</small> <small><i>*optional</i></small> </label></br>
+          <input type="file" name="symptom_file">
+          <p></p>
+          <textarea id = "myTextArea"
+                    name = "input_text_phenotype"
+                    rows = "7"
+                    cols = "45"
+                    maxlength = "800"
+                    placeholder = "You can type phenotypes here, separate them by  ,   "></textarea>
+        </div>
 
-      <div class = "container" id = "run_task">
-        <button type="submit", onClick="return required()">Run task</button>
-      </div>
-    </form>
-  </div>
+        <div class = "container" id = "run_task">
+          <button type="submit", onClick="return">Run task</button>
+        </div>
+      </form>
+    </div>
 
-  <div class = "col-sm-6" id="results">
-    <h3>Your tasks</h3>
-    <br />
-    <div id = "result_list">
-    {% for result in latest_task_list %}
-      {% if result.status == 'In progress' %}
-        Task name: &nbsp;
-        {{ result.raw_input_table.task_name }}<br />
-        Task status: In progress (It will take about {{ estimate_time }} mins)<br />
-        Task submit time: &nbsp;
-        {{ result.raw_input_table.pub_date }}<br />
-      {% elif result.status == 'Failed'%}
-        Task name: &nbsp;
-        {{ result.raw_input_table.task_name }}<br />
-        Task status: Failed<br />
-        Task submit time: &nbsp;
-        {{ result.raw_input_table.pub_date }}<br />
-      {% elif result.status == 'Succeed' %}
-        Task name: &nbsp;
-        {{ result.raw_input_table.task_name }} &nbsp;
-        <a href="{% url 'deepb:result' result.main_table_id %}">Click to see results</a><br />
-        Task status: Succeed<br />
-        Task submit time: &nbsp;
-        {{ result.raw_input_table.pub_date }}<br />
-      {% else %}
-        Task name: &nbsp;
-        {{ result.raw_input_table.task_name }}<br />
-        Task status: Server Error<br />
-        Task submit time: &nbsp;
-        {{ result.raw_input_table.pub_date }}<br />
-      {%  endif %}
+    <div class = "col-sm-6" id="results">
+      <h3>Your tasks</h3>
       <br />
-    {% endfor %}
-    {% if show_all %}
-    <a href="{% url 'deepb:home_all' show_all %}"> Show All</a>
-    {% endif %}
-    {% if all_back %}
-    <a href="{% url 'deepb:home' %}"> Back </a>
-    {% endif %}
-    <br />
-    <br />
-    <br />
-  </div>
-  </div>
-</div>  
+      <div id = "result_list">
+      {% for result in latest_task_list %}
+        {% if result.status == 'In progress' %}
+          Task name: &nbsp;
+          {{ result.raw_input_table.task_name }}<br />
+          Task status: In progress (It will take about {{ estimate_time }} mins)<br />
+          Task submit time: &nbsp;
+          {{ result.raw_input_table.pub_date }}<br />
+        {% elif result.status == 'Failed'%}
+          Task name: &nbsp;
+          {{ result.raw_input_table.task_name }}<br />
+          Task status: Failed<br />
+          Task submit time: &nbsp;
+          {{ result.raw_input_table.pub_date }}<br />
+        {% elif result.status == 'Succeed' %}
+          Task name: &nbsp;
+          {{ result.raw_input_table.task_name }} &nbsp;
+          <a href="{% url 'deepb:result' result.main_table_id %}">Click to see results</a><br />
+          Task status: Succeed<br />
+          Task submit time: &nbsp;
+          {{ result.raw_input_table.pub_date }}<br />
+        {% else %}
+          Task name: &nbsp;
+          {{ result.raw_input_table.task_name }}<br />
+          Task status: Server Error<br />
+          Task submit time: &nbsp;
+          {{ result.raw_input_table.pub_date }}<br />
+        {%  endif %}
+        <br />
+      {% endfor %}
+      {% if show_all %}
+      <a href="{% url 'deepb:home_all' show_all %}"> Show All</a>
+      {% endif %}
+      {% if all_back %}
+      <a href="{% url 'deepb:home' %}"> Back </a>
+      {% endif %}
+      <br />
+      <br />
+      <br />
+    </div>
+    </div>
+  </div>  
 {% endblock %}
 
 {% block javascript %}
-<script language="javascript">
-  function required()
-  {
-      var result = true
-      var empt = document.forms["form1"]["gene_file"].value;
-      if (empt == "")
-      {
-          alert("Please upload a gene file");
-          result = false;
-      }
-      empt = document.forms["form1"]["task_name"].value;
-      if (empt == "")
-      {
-          alert("Please enter a task_name");
-          result = false;
-      }
-      return result
-  }
+  <script>
 
-  {% if last_task_status == 'In progress' %}
-    window.setTimeout(function () {
-        location.href = "";
-      }, 30000);
-  {% endif %}
+    {% if last_task_status == 'In progress' %}
+      window.setTimeout(function () {
+          location.href = "";
+        }, 30000);
+    {% endif %}
 
-</script>
+  </script>
 {% endblock %}

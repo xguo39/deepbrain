@@ -16,6 +16,7 @@ from deepb.configs import Config, Constant
 from model_wrapper import Raw_input_table_with_status_and_id
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import redirect
+import pandas as pd
 
 
 
@@ -79,6 +80,8 @@ class HomeAllView(LoginRequiredMixin, ListView):
         last_task = Raw_input_table.objects.order_by('-id')[0]
         status, main_table_id = self._task_status_check(last_task)
         context['last_task_status'] = status
+        context['estimate_time'] = round((0.14225678*len(last_task.raw_input_gene.split('},{')) + 1.69510401*len(last_task.raw_input_phenotype.split(','))+93.838831687329304)/60, 1)
+
         return context
 
     def get_queryset(self):
@@ -112,6 +115,7 @@ def upload(request):
     user_name = request.user.username
     task_name = request.POST.get('task_name', None)
     gene_file = request.FILES['gene_file']
+
     phenotype_type = ''
     phenotype_file = ''
     try:
@@ -146,8 +150,14 @@ def result(request, pk):
         })
 
 def handle_uploaded_file(raw_input_gene_file, raw_input_phenotype_file, user_name, task_name):
+    
+    if raw_input_gene_file.name.endswith('.xls') or raw_input_gene_file.name.endswith('.xlsx'):
+        input_gene = pd.read_excel(raw_input_gene_file).to_csv(index=False)
+    if raw_input_gene_file.name.endswith('.txt'):
+        input_gene = raw_input_gene_file.read()
+
     raw_gene_input = Raw_input_table(
-        raw_input_gene=raw_input_gene_file.read(),
+        raw_input_gene=input_gene,
         raw_input_phenotype=raw_input_phenotype_file,
         user_name=user_name,
         task_name=task_name,
