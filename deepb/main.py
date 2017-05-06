@@ -117,7 +117,7 @@ def read_input_gene_file(input_gene):
 			if re.search(r'_.*:c\.', part):
 				transcript, variant = part.split(':')
 			else:
-				if re,search(r'c\.', part):
+				if re.search(r'c\.', part):
 					variant = part
 				if re.search(r'NM_', part, re.I):
 					transcript = part.split(':')[0]
