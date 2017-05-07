@@ -404,7 +404,7 @@ def generateOutput(variants, ACMG_result, patient_phenotypes):
         gene, variant, protein = key
         id, final_score, pathogenicity_score, pathogenicity, hit_criteria, hpo_hit_score = variantsdata[key]
         pheno_match_score = scores[key] if key in scores else 1.0 
-        final_score = float(final_score) * pheno_match_score       
+        final_score = round(float(final_score) * pheno_match_score, 2)       
         final_res.append([gene, variant, protein, id, final_score, pathogenicity, hit_criteria, pathogenicity_score, hpo_hit_score, pheno_match_score])	
     df_final_res = pd.DataFrame(final_res, columns = ['gene', 'variant', 'protein', 'id', 'final_score', 'pathogenicity', 'hit_criteria', 'pathogenicity_score', 'hpo_hit_score', 'pheno_match_score'])
     df_final_res.sort(['final_score'], ascending = [0], inplace = True)

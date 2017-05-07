@@ -683,6 +683,8 @@ def Get_ACMG_result(df_hpo_ranking_genes, variants, df_pubmed):
     df_final_result['final_score'] = np.log(df_final_result['hpo_hit_score'] + 2.7183) * df_final_result['pathogenicity_score']
     df_final_result = df_final_result[['gene', 'variant', 'id', 'final_score', 'pathogenicity_score', 'pathogenicity', 'hit_criteria', 'hpo_hit_score']]
     df_final_result.sort_values(by=['final_score'], ascending = [0], inplace = True)
+    df_final_result.drop_duplicates(inplace = True)
+    df_final_result['final_score'] = df_final_result['final_score'].apply(lambda x: round(x,2))
     df_final_result = df_final_result.reset_index(drop=True)
     # df_final_result.to_csv('result/ACMG_variant_pathogenicity_result.txt', sep = '\t', index = False)
     return df_final_result

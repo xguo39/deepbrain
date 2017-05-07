@@ -3,7 +3,7 @@ from . import views
 
 app_name = 'deepb'
 urlpatterns = [
-	url(r'^$', views.to_home, name='to_home'),
+	url(r'^$', views.index, name='index'),
     url(r'^home/$', views.HomeView.as_view(), name='home'),
     url(r'^home/(?P<show_all>[-\w]+)/$', views.HomeAllView.as_view(), name='home_all'),
     url(r'^upload/$', views.upload, name='upload'),
