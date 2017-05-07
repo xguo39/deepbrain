@@ -24,7 +24,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '(9#+i8y4oxabldvxmgxsy+@#5h^q=vfgd@urh9(h)2+%0is3(h'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['52.37.227.215','127.0.0.1','54.70.221.155', 'www.genonova.com']
 

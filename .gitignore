@@ -2,3 +2,4 @@
 *.pyc
 deepb/data/
 *.pid
+.DS_Store
