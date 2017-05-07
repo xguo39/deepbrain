@@ -39,7 +39,7 @@ class HomeView(LoginRequiredMixin, ListView):
         last_task = Raw_input_table.objects.order_by('-id')[0]
         status, main_table_id = self._task_status_check(last_task)
         context['last_task_status'] = status
-        context['estimate_time'] = round((0.14225678*len(last_task.raw_input_gene.split('},{')) + 1.69510401*len(last_task.raw_input_phenotype.split(','))+93.838831687329304)/60, 1)
+        context['estimate_time'] = round((0.14*len(last_task.raw_input_gene.split('\n')) + 1.69*len(last_task.raw_input_phenotype.split(','))+93.83)/60, 1)
         return context
 
     def get_queryset(self):
