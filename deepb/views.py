@@ -34,11 +34,13 @@ class HomeView(LoginRequiredMixin, ListView):
         context = super(HomeView, self).get_context_data(**kwargs)
         context['User_name'] = self.request.user.username
         raw_input_list = Raw_input_table.objects.filter(user_name=self.request.user.username)
-        if raw_input_list.count() > 6:
+        task_count = raw_input_list.count()
+        if task_count > 6:
             context['show_all'] = "all"
         last_task = Raw_input_table.objects.order_by('-id')[0]
         status, main_table_id = self._task_status_check(last_task)
         context['last_task_status'] = status
+        context['task_count'] = task_count
         context['estimate_time'] = round((0.14*len(last_task.raw_input_gene.split('\n')) + 1.69*len(last_task.raw_input_phenotype.split(','))+93.83)/60, 1)
         return context
 
