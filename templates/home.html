@@ -1,6 +1,8 @@
 {% extends 'base.html' %}
 {% load static %}
 
+{% block css %}
+{% endblock %}
 
 {% block content %}
   <div class="container">
@@ -52,6 +54,7 @@
           Task status: In progress (It will take about {{ estimate_time }} mins)<br />
           Task submit time: &nbsp;
           {{ result.raw_input_table.pub_date }}<br />
+          <p style="color:blue;float:left"><i>{{ status_step }}</i></p><img src="{% static 'images/blue_loading_dots.gif' %}" width="30" height="30" style="float:left"><br />
         {% elif result.status == 'Failed'%}
           Task name: &nbsp;
           {{ result.raw_input_table.task_name }}<br />
@@ -83,7 +86,7 @@
       <br />
       <br />
       <br />
-    </div>
+      </div>
     </div>
   </div>  
 {% endblock %}
@@ -94,7 +97,7 @@
     {% if last_task_status == 'In progress' %}
       window.setTimeout(function () {
           location.href = "";
-        }, 30000);
+        }, 10000);
     {% endif %}
 
   </script>

@@ -37,10 +37,12 @@ class HomeView(LoginRequiredMixin, ListView):
         task_count = raw_input_list.count()
         if task_count > 6:
             context['show_all'] = "all"
-        last_task = Raw_input_table.objects.order_by('-id')[0]
+        # last_task = Raw_input_table.objects.order_by('-id')[0]
+        last_task = raw_input_list.order_by('-id')[0]
         status, main_table_id = self._task_status_check(last_task)
         context['last_task_status'] = status
         context['task_count'] = task_count
+        context['status_step'] = last_task.status
         context['estimate_time'] = round((0.14*len(last_task.raw_input_gene.split('\n')) + 1.69*len(last_task.raw_input_phenotype.split(','))+93.83)/60, 1)
         return context
 
@@ -65,7 +67,7 @@ class HomeView(LoginRequiredMixin, ListView):
         main_table_result = Main_table.objects.filter(user_name=user_name, task_name=task_name, task_id=task_id).first()
         if main_table_result is not None:
             return Constant.SUCCESS_STATUS, main_table_result.id
-        elif current_time - pub_time > Config.max_task_waiting_time:
+        elif raw_input_table.status[-6:]=="failed":
             return Constant.FAIL_STATUS, None
         else:
             return Constant.IN_PROGRESS_STATUS, None
@@ -79,11 +81,12 @@ class HomeAllView(LoginRequiredMixin, ListView):
         context = super(HomeAllView, self).get_context_data(**kwargs)
         context['User_name'] = self.request.user.username
         context['all_back'] = 1
-        last_task = Raw_input_table.objects.order_by('-id')[0]
+        raw_input_list = Raw_input_table.objects.filter(user_name=self.request.user.username)
+        last_task = raw_input_list.order_by('-id')[0]
         status, main_table_id = self._task_status_check(last_task)
         context['last_task_status'] = status
-        context['estimate_time'] = round((0.14225678*len(last_task.raw_input_gene.split('},{')) + 1.69510401*len(last_task.raw_input_phenotype.split(','))+93.838831687329304)/60, 1)
-
+        context['status_step'] = last_task.status
+        context['estimate_time'] = round((0.14*len(last_task.raw_input_gene.split('\n')) + 1.69*len(last_task.raw_input_phenotype.split(','))+93.83)/60, 1)
         return context
 
     def get_queryset(self):
@@ -107,7 +110,7 @@ class HomeAllView(LoginRequiredMixin, ListView):
         main_table_result = Main_table.objects.filter(user_name=user_name, task_name=task_name, task_id=task_id).first()
         if main_table_result is not None:
             return Constant.SUCCESS_STATUS, main_table_result.id
-        elif current_time - pub_time > Config.max_task_waiting_time:
+        elif raw_input_table.status[-6:]=="failed":
             return Constant.FAIL_STATUS, None
         else:
             return Constant.IN_PROGRESS_STATUS, None
@@ -164,6 +167,7 @@ def handle_uploaded_file(raw_input_gene_file, raw_input_phenotype_file, user_nam
         user_name=user_name,
         task_name=task_name,
         pub_date=timezone.now(),
+        status = "Preprocessing data for interpretation"
     )
     raw_gene_input.save()
     return raw_gene_input.id
