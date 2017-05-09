@@ -37,7 +37,10 @@ def check_PVS1(variant_):
     # LOF genes; splicing prediction score; allele start position; exon (from cadd)
     gene, variant_effect, transcript, exon, variant_id = variant_['gene'], variant_['effect'], variant_['transcript'], variant_['exon'], variant_['id']
     dbscSNV_rf_score, dbscSNV_ada_score = variant_['dbscSNV_rf_score'], variant_['dbscSNV_ada_score']
-    allele_start_pos = re.match(r'[0-9]{1,20}', variant_id.split('.')[-1]).group(0)
+    if variant_id:
+        allele_start_pos = re.match(r'[0-9]{1,20}', variant_id.split('.')[-1]).group(0)
+    else:
+        return 0
     null_variant_types = ["chromosome", "exon_loss", "frameshift", "inversion", "feature_ablation", "gene_fusion", "rearranged_at_DNA_level", "initiator_condon", "splice_acceptor", "splice_donor", "stop_gain", 'start_lost', 'stop_lost']
  
     PVS1 = 0
@@ -217,7 +220,10 @@ def check_PS4(variant_):
     '''
     # use vcf annoation (ref, alt) from myvariant
     gene, variant_ref, variant_alt, variant_id = variant_['gene'], variant_['ref'], variant_['alt'], variant_['id']
-    allele_start_end_pos = re.findall(r'[0-9]{1,20}', variant_id.split('.')[-1])
+    if variant_id:
+        allele_start_end_pos = re.findall(r'[0-9]{1,20}', variant_id.split('.')[-1])
+    else:
+        return 0
     if len(allele_start_end_pos) == 1:
         allele_start_pos = allele_end_pos = allele_start_end_pos[0]
     elif len(allele_start_end_pos) == 2:
@@ -248,8 +254,11 @@ def check_PM2(variant_):
     1000 Genomes Project, or Exome Aggregation Consortium
     '''
     # use maf from exac, 1000 genomes, and esp6500
-    gene = variant_['gene']
+    gene, variant_id = variant_['gene'], variant_['id']
     maf_exac, maf_1000g, maf_esp6500 = variant_['maf_exac'], variant_['maf_1000g'], variant_['maf_esp6500']
+
+    if not variant_id:
+        return 0
 
     PM2 = 0
     cutoff_maf = 0.001
@@ -305,7 +314,10 @@ def check_BS2(variant_):
     '''
     # use vcf annoation (ref, alt) from myvariant
     gene, variant_ref, variant_alt, variant_id = variant_['gene'], variant_['ref'], variant_['alt'], variant_['id']
-    allele_start_end_pos = re.findall(r'[0-9]{1,20}', variant_id.split('.')[-1])
+    if variant_id:
+        allele_start_end_pos = re.findall(r'[0-9]{1,20}', variant_id.split('.')[-1])
+    else:
+        return 0
     if len(allele_start_end_pos) == 1:
         allele_start_pos = allele_end_pos = allele_start_end_pos[0]
     elif len(allele_start_end_pos) == 2:
@@ -385,7 +397,10 @@ def check_PM4_BP3(variant_):
     gene, variant_effect, protein, variant_id = variant_['gene'], variant_['effect'], variant_['protein'], variant_['id']
     inframe_indel_variant_types = ["inframe_insertion", "inframe_deletion"]
 
-    chromosome = variant_id.split(':')[0]
+    if variant_id:
+        chromosome = variant_id.split(':')[0]
+    else:
+        return 0, 0
     allele_start_end_pos = re.findall(r'[0-9]{1,20}', variant_id.split('.')[-1])
     if len(allele_start_end_pos) == 1:
         allele_start_pos = allele_end_pos = allele_start_end_pos[0]
@@ -615,9 +630,6 @@ def Get_ACMG_result(df_hpo_ranking_genes, variants, df_pubmed):
         variant_ = variants[key]
         # print key
         # print variant_
-        if not variant_['id']: 
-            variant_ACMG_result[key] = 'Uncertain significance' 
-            continue
         # print "checking PVS1"
         PVS1 = check_PVS1(variant_)
         # print "checking PS1 PM5"

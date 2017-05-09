@@ -1,6 +1,8 @@
 {% extends 'base.html' %}
 {% load static %}
 
+{% block css %}
+{% endblock %}
 
 {% block content %}
   <div class="container">
@@ -20,12 +22,12 @@
 
         <div class = "container" id = "input_gene_file">
           <label>Input patient's gene file <small>(.txt or .xls)</small> <small><i>*required</i></small> </label></br>
-          <input type="file" name="gene_file" required>
+          <input type="file" name="gene_file" required accept=".txt,.xlsx,.xls">
         </div>
 
         <div class = "container" id = "input_phen">
           <label>Input patient's phenotypes <small>(.txt file or type)</small> <small><i>*optional</i></small> </label></br>
-          <input type="file" name="symptom_file">
+          <input type="file" name="symptom_file" accept=".txt">
           <p></p>
           <textarea id = "myTextArea"
                     name = "input_text_phenotype"
@@ -52,6 +54,7 @@
           Task status: In progress (It will take about {{ estimate_time }} mins)<br />
           Task submit time: &nbsp;
           {{ result.raw_input_table.pub_date }}<br />
+          <p style="color:blue;float:left"><i>{{ status_step }}</i></p><img src="{% static 'images/blue_loading_dots.gif' %}" width="30" height="30" style="float:left"><br />
         {% elif result.status == 'Failed'%}
           Task name: &nbsp;
           {{ result.raw_input_table.task_name }}<br />
@@ -75,7 +78,7 @@
         <br />
       {% endfor %}
       {% if show_all %}
-      <a href="{% url 'deepb:home_all' show_all %}"> Show All</a>
+      <a href="{% url 'deepb:home_all' show_all %}"> Show all {{ task_count }} tasks</a>
       {% endif %}
       {% if all_back %}
       <a href="{% url 'deepb:home' %}"> Back </a>
@@ -83,7 +86,7 @@
       <br />
       <br />
       <br />
-    </div>
+      </div>
     </div>
   </div>  
 {% endblock %}
@@ -94,7 +97,7 @@
     {% if last_task_status == 'In progress' %}
       window.setTimeout(function () {
           location.href = "";
-        }, 30000);
+        }, 10000);
     {% endif %}
 
   </script>

@@ -13,6 +13,7 @@ from deepb.models import Main_table, Raw_input_table
 from io import StringIO
 from collections import Counter
 
+
 # input_phenotype = 'data/sample_patient_phenotype.txt'
 # input_genes = 'data/sample_genes.txt'
 
@@ -156,6 +157,7 @@ def map_phenotype2gene(CANDIDATE_GENES, phenos, corner_cases, candidate_vars):
 	return ranking_genes, candidate_vars
 
 def master_function(raw_input_id):
+	status_step = "generating candidate variants ..." 
 	raw_input = Raw_input_table.objects.get(id=raw_input_id)
 	input_gene = raw_input.raw_input_gene
 	input_phenotype = raw_input.raw_input_phenotype
@@ -163,31 +165,44 @@ def master_function(raw_input_id):
 	# Read input pheno file and generate phenos and corner_cases 
 	phenos, corner_cases = read_input_pheno_file(input_phenotype)
 
+
 	# Read input gene file and generate candidate_vars. candidate_vars are (gene, variant, transcript, variant_id); CANDIDATE_GENES is a list of gene symbols; df_genes is a dataframe that keeps all the data that user uploaded; field_names are header of the input gene file 
 	candidate_vars, CANDIDATE_GENES, df_genes, field_names = read_input_gene_file(input_gene)
 
 	# map phenotype to gene; the candidate_vars was filtered: if it is a gene associated with phenos, then keep it.
+
 	if phenos:
-	    ranking_genes, candidate_vars = map_phenotype2gene(CANDIDATE_GENES, phenos, corner_cases, candidate_vars)
+		raw_input.status = "Maping phenotypes to genes"
+		raw_input.save()
+		ranking_genes, candidate_vars = map_phenotype2gene(CANDIDATE_GENES, phenos, corner_cases, candidate_vars)
 	else:
-	    ranking_genes = []
-	    for gene in CANDIDATE_GENES:
-	        ranking_genes.append((gene, 1.0, 1))
+		ranking_genes = []
+		for gene in CANDIDATE_GENES:
+			ranking_genes.append((gene, 1.0, 1))
 
 	# collect variant info
+	raw_input.status = "Annotating variants using genomic databases"
+	raw_input.save()
 	mv = myvariant.MyVariantInfo()
 	final_res, variants = collectVariantInfo.get_variants(candidate_vars)
 
 	# pubmed
+	raw_input.status = "Searching biomedical literatures"
+	raw_input.save()
 	df_pubmed = pubmed.queryPubmedDB(final_res)
 
 	# ACMG
+	raw_input.status = "Checking ACMG standard"
+	raw_input.save()
 	df_hpo_ranking_genes = pd.DataFrame(ranking_genes, columns=['gene', 'score', 'hits'])
 	df_hpo_ranking_genes = df_hpo_ranking_genes[['gene', 'score']]
 	ACMG_result = ACMG.Get_ACMG_result(df_hpo_ranking_genes, variants, df_pubmed)
 
 	# filter variant on phenotype
+
 	if phenos:
+		raw_input.status = "Filtering variants based on phenotypes"
+		raw_input.save()
 		df_final_res = filterVariantOnPhenotype.generateOutput(variants, ACMG_result, phenos)
 	else:
 	    df_final_res = ACMG_result
