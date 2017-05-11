@@ -25,6 +25,9 @@ import pandas as pd
 def index(request):
     return render(request, 'index.html')
 
+def index_en(request):
+    return render(request, 'index_en.html')
+
 class HomeView(LoginRequiredMixin, ListView):
     login_url = '/login/'
     template_name = 'home.html'
