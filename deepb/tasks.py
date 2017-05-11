@@ -23,8 +23,7 @@ def trigger_background_main_task(raw_input_id):
         result_table = ACMG_result.to_json(orient='records')
 
         logger.info("Finish processing data, start writing data to DB in background main task")
-        raw_input.status = "succeed"
-        raw_input.save()
+
         
         sample = Main_table(
             task_id=raw_input_id,
@@ -36,10 +35,11 @@ def trigger_background_main_task(raw_input_id):
             task_name=raw_input.task_name,
         )
         sample.save()
-        
         logger.info("Finish writing data to DB in background main task")
-
+        raw_input.status = "succeed"
+        raw_input.save()
+        
     except:
-        raw_input.status = raw_input.status + "failed"
+        raw_input.status = raw_input.status + " failed"
         raw_input.save()
         logger.info("Failed")
