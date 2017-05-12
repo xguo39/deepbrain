@@ -12,11 +12,12 @@
     <div class="container">
     <a href="{% url 'deepb:home' %}"> Back to Home</a><br />
     </div>
-    <div class="container">       
-      <h3>Task name: {{ task_name }} </h3><br />
+    <div class="container">
+      <h3>Task name: {{ task_name }} </h3>
     </div>
     <div class="container">
-    <h3>Result</h3>
+    <h3 style="float:left">Result</h3>
+    <h4 style="float:left; padding-top:17px; padding-left:35px"><a href="{% url 'deepb:interpretation' pk %}">See Interpretation detail</a></h4>
     <table id="result" class="table table-bordered table-striped table-hover" border="1">
         <thead>
             <tr>

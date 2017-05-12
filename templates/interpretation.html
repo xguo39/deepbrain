@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block css %}
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet"> -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.15/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/select/1.2.2/css/select.dataTables.min.css">
+    <style>
+        table.dataTable tbody td {
+        word-break: break-word;
+        vertical-align: top;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+    <a href="{% url 'deepb:result' pk %}">Back to Result</a><br />
+    </div>
+    <div class="container">
+    <h3>Interpretation</h3>
+    <table id="Interpretation" class="table table-bordered table-striped table-hover" border="1">
+        <thead>
+            <tr>
+                <th>Gene</th>
+                <th>Variant</th>
+                <th>Criteria</th>
+                <th>Interpretation</th>
+            </tr>
+        </thead>
+    </table>
+    </div><br />
+    <div class="container">
+    <a href="{% url 'deepb:result' pk %}">Back to Result</a><br />
+    </div>
+    <br /><br /><br />
+{% endblock %}
+
+
+{% block javascript %}
+    <script type="text/javascript" src="https://cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/select/1.2.2/js/dataTables.select.min.js"></script>
+
+    <script>
+    var interpretation = {{ interpretation }}
+    $(document).ready(function() {
+        $('#Interpretation').dataTable({
+            "paging": false,
+            "ordering": false,
+            "autoWidth": false,
+            "data": interpretation,
+            "scrollY": 800,
+            "columns": [
+                { "data" : "gene", "width": "5%" },
+                { "data" : "variant", "width": "10%" },
+                { "data" : "criteria", "width": "10%" },
+                { "data" : "interpretation", "width": "75%" }
+            ]
+        } );
+    } );
+
+
+    </script>
+{% endblock %}
