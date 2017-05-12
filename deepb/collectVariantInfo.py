@@ -234,31 +234,53 @@ def collectdbsnp():
   rsid = non_snpeff['dbsnp']['rsid'] if 'rsid' in non_snpeff['dbsnp'] else ''
   return rsid
 
-def getClinvarData():
+def getClinvarData(genes, gene_variants):
   global PARSED_CLINVAR
-  clinvar_pathogenicity = dict()
-  pathos= []
-  with open(PARSED_CLINVAR, 'rb') as f:
+  clinvar_pathogenicity, clinvar_pmids, clinvar_variation_ids, clinvar_review_status = dict(), dict(), dict(), dict()
+  #pathos= []
+  with open(PARSED_CLINVAR, 'rU') as f:
     f.readline()
     for line in f:
       line = line.rstrip('\n')
       parts = line.split('\t')
-      title, variant, pathogenicity = parts[1], parts[3], parts[8]
-      gene, variant, pathogenicity = parts[3], parts[5], parts[10]
-      pathos.append(pathogenicity)
+      gene, variant, pathogenicity, records, variation_id, review_status = parts[3], parts[5], parts[10], parts[11], parts[12], parts[9]
+      if gene not in genes:
+        continue
+      #pathos.append(pathogenicity)
+      pmids = re.findall(r'PubMed : [0-9]{1,20}', records)
+      pmids = [_.split(' : ')[1] for _ in pmids]
       variants = variant.split('|')
       variants = [item for item in variants if item]
       for variant in variants:
+        if (gene, variant) not in gene_variants:
+          continue
         if (gene, variant) not in clinvar_pathogenicity:
           clinvar_pathogenicity[(gene, variant)] = [pathogenicity]
+          clinvar_pmids[(gene, variant)] = pmids
+          clinvar_variation_ids[(gene, variant)] = [variation_id]
+          clinvar_review_status[(gene, variant)] = [review_status]
         else:
           clinvar_pathogenicity[(gene, variant)].append(pathogenicity)
+          clinvar_pmids[(gene, variant)] += pmids
+          clinvar_variation_ids[(gene, variant)].append(variation_id)
+          clinvar_review_status[(gene, variant)].append(review_status)
     for key in clinvar_pathogenicity:
       values = clinvar_pathogenicity[key]
       values = '|'.join(values)
       clinvar_pathogenicity[key] = values
-    # print set(pathos)
-  return clinvar_pathogenicity
+    for key in clinvar_pmids:
+      values = list(set(clinvar_pmids[key]))
+      clinvar_pmids[key] = values
+    for key in clinvar_variation_ids:
+      values = list(set(clinvar_variation_ids[key]))
+      values = '|'.join(values)
+      clinvar_variation_ids[key] = values
+    for key in clinvar_review_status:
+      values = list(set(clinvar_review_status[key]))
+      values = '|'.join(values)
+      clinvar_review_status[key] = values
+    #print set(pathos)
+  return clinvar_pathogenicity, clinvar_pmids, clinvar_variation_ids, clinvar_review_status
 
 def getVariantidfromDB(candidate_vars):
   db = MySQLdb.connect(host="localhost",
@@ -305,7 +327,7 @@ def get_variants(candidate_vars):
     if not variant_id:
       variants[key]['maf_exac'] = variants[key]['maf_1000g'] = variants[key]['maf_esp6500'] = variants[key]['dann'] = variants[key]['fathmm'] = variants[key]['metasvm'] = variants[key]['gerp++'] = variants[key]['exon'] = variants[key]['ref'] = variants[key]['alt'] = variants[key]['rsid'] = ''
       variants[key]['interpro_domain'] = []
-      variants[key]['clinvar_pathogenicity'] = '' 
+      variants[key]['clinvar_pathogenicity'], variants[key]['clinvar_pmids'], variants[key]['clinvar_variation_ids'], variants[key]['clinvar_review_status'] = '', [], '', ''
       variants[key]['effect'], variants[key]['protein']  = '', ''
       continue
     variant_ids.append(variant_id)
@@ -362,6 +384,9 @@ def get_variants(candidate_vars):
 
       clinvar_data = collectClinvar()
       variants[key]['clinvar_pathogenicity'] = clinvar_data
+      variants[key]['clinvar_pmids'] = []
+      variants[key]['clinvar_variation_ids'] = ''
+      variants[key]['clinvar_review_status'] = ''
 
       annotype, consequence, consdetail, grantham_score, phred_score, exon = collectCadd()
       variants[key]['exon'] = exon.split('/')[0]
@@ -396,10 +421,18 @@ def get_variants(candidate_vars):
 
   ## Get Clinvar assertion data from local file if the record can not be find in myvariant
   # print "Get Clinvar data "
-  clinvar_pathogenicity = getClinvarData()
+  genes = [var[0] for var in candidate_vars]
+  gene_variants = [(var[0], var[1]) for var in candidate_vars]
+  clinvar_pathogenicity, clinvar_pmids, clinvar_variation_ids, clinvar_review_status = getClinvarData(genes, gene_variants)
   for key in variants.keys():
-    if not variants[key]['clinvar_pathogenicity'] and key in clinvar_pathogenicity:
+    if key in clinvar_pathogenicity:
       variants[key]['clinvar_pathogenicity'] = clinvar_pathogenicity[key]
+    if key in clinvar_pmids:
+      variants[key]['clinvar_pmids'] = clinvar_pmids[key]
+    if key in clinvar_variation_ids:
+      variants[key]['clinvar_variation_ids'] = clinvar_variation_ids[key]
+    if key in clinvar_review_status:
+      variants[key]['clinvar_review_status'] = clinvar_review_status[key]
 
   # pprint.pprint(variants)
   # pickle.dump(variants, open('result/variants.p', 'wb'))

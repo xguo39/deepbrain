@@ -82,6 +82,8 @@ class HomeView(LoginRequiredMixin, ListView):
             return Constant.SUCCESS_STATUS, main_table_result.id
         elif raw_input_table.status[-6:]=="failed":
             return Constant.FAIL_STATUS, None
+        elif current_time - pub_time > Config.max_task_waiting_time:
+            return Constant.FAIL_STATUS, None
         else:
             return Constant.IN_PROGRESS_STATUS, None
 
@@ -112,7 +114,7 @@ def upload(request):
 
 def result(request, pk):
     main_table = get_object_or_404(Main_table, pk=pk)
-    field = [i.split(":")[0][1:-1] for i in main_table.input_gene.split("},{")[0][2:].split(',')]
+    input_gene_field = [i.split(":")[0][1:-1] for i in main_table.input_gene.split("},{")[0][2:].split(',')]
 
     return render(request, 'result.html', {
         'task_name': main_table.task_name,
@@ -120,7 +122,17 @@ def result(request, pk):
         'input_gene': mark_safe(main_table.input_gene),
         'input_phenotype': main_table.input_phenotype,
         'User_name': request.user.username,
-        'field_names': field
+        'field_names': input_gene_field,
+        'pk': pk,
+        })
+
+def interpretation(request, pk):
+    main_table = get_object_or_404(Main_table, pk=pk)
+
+    return render(request, 'interpretation.html', {
+        'interpretation': mark_safe(main_table.interpretation),
+        'task_name': main_table.task_name,
+        'pk': pk,
         })
 
 def handle_uploaded_file(raw_input_gene_file, raw_input_phenotype_file, user_name, task_name):

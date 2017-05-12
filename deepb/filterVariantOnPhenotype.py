@@ -10,10 +10,8 @@ from nltk.corpus import wordnet as wn
 from nltk.stem.wordnet import WordNetLemmatizer
 from pattern.en import pluralize, singularize
 from collections import Counter
-import os.path
+import os
 BASE = os.path.dirname(os.path.abspath(__file__))
-
-start_program = time.time()
 
 reload(sys)
 sys.setdefaultencoding("utf-8")
@@ -40,7 +38,6 @@ def getProteinDomainOfTopVariants(variants, top_variants):
         proteins[var] = variants[var]['protein']
     return protein_domains, proteins
 
-
 # Update top variants and protein domains key by adding protein to the key: (gene, variant) --> (gene, variant, protein)
 def updateTopVariantsAndProteinDomainsKey(top_variants, protein_domains, proteins, variantsdata):
     updated_top_variants, updated_protein_domains, updated_variantsdata = [], dict(), dict()
@@ -56,7 +53,8 @@ def updateTopVariantsAndProteinDomainsKey(top_variants, protein_domains, protein
         gene, variant = key
         protein = proteins[key]
         updated_variantsdata[(gene, variant, protein)] = variantsdata[key]
-    return updated_top_variants, updated_protein_domains, updated_variantsdata
+    variantsdata = updated_variantsdata
+    return updated_top_variants, updated_protein_domains, variantsdata
 
 def searchSimilarProteinDomain(gene, protein_domain, dbdata):
     re_domain = re.compile(r'(' +'|'.join(protein_domain) + r')') 
@@ -96,6 +94,15 @@ def queryVariantsInSameProteinDomain(protein_domains):
     for key in samedomainvariants.keys():
         samedomainvariants[key] = list(set(samedomainvariants[key]))
     for key in samedomainvariants.keys():
+        gene, variant, protein = key
+        similar_variants = ', '.join(['|'.join(var) for var in samedomainvariants[key] if var[1] != variant])
+        if not similar_variants:
+            continue
+        if (gene, variant) in curr_interpret:
+            curr_interpret[(gene, variant)].append('Similar genetic variants that affect the same protein domain were identified: %s.' % similar_variants)
+        else:
+            curr_interpret[(gene, variant)] = ['Similar genetic variants that affect the same protein domain were identified: %s.' % similar_variants]
+    for key in samedomainvariants.keys():
         values = samedomainvariants[key]
         for value in values:
             if value not in samedomainvariants.keys():
@@ -103,7 +110,6 @@ def queryVariantsInSameProteinDomain(protein_domains):
             else:
                 domainvariants2original[value] = value
     return samedomainvariants, domainvariants2original 
-
 
 def queryPhenosFromDB(samedomainvariants, domainvariants2original):
     variantphenos = dict() 
@@ -137,7 +143,6 @@ def queryPhenosFromDB(samedomainvariants, domainvariants2original):
         variantphenos[key] = value 
     return variantphenos
 
-
 def searchPhenosFromDBdata(patient_phenotypes, variantphenos):
     re_pheno = re.compile(r'(' +'|'.join(patient_phenotypes) + r')', re.I)
     variantphenosfromDB = dict()
@@ -150,6 +155,15 @@ def searchPhenosFromDBdata(patient_phenotypes, variantphenos):
 		variantphenosfromDB[key] += re_pheno.findall(phenos) 
 	    else:
 		variantphenosfromDB[key] = re_pheno.findall(phenos) 
+
+    #************ New lines
+    for key in variantphenosfromDB.keys():
+        gene, variant, protein = key
+        phenos = list(set(variantphenosfromDB[key])) 
+        if (gene, variant) in curr_interpret:
+            curr_interpret[(gene, variant)].append("We find variants that affect the same protein domain as our case may lead to the phenos that match our patient's from genomic databases (OMIM, ORPHANET, etc): %s." % (', '.join(list(set(phenos))))) 
+        else:
+            curr_interpret[(gene, variant)] = ["We find variants that affect the same protein domain as our case may lead to the phenos that match our patient's from genomic databases (OMIM, ORPHANET, etc): %s." % (', '.join(list(set(phenos))))]
     return variantphenosfromDB
 
 def initWordDifficultyIndex():
@@ -184,20 +198,23 @@ def searchPhenosFromPubmed(patient_phenotypes, samedomainvariants, domainvariant
         for word in pheno_wordlist:
             if word not in word_difficulty_index.keys() or word_difficulty_index[word] < 100:
                 append_wordlist = True
+                #*********** New lines (only add rare words)
                 rare_words_in_pheno_wordlist = [word for word in pheno_wordlist if word not in word_difficulty_index or word_difficulty_index[word] < 1000]
                 patient_phenotypes_wordbreak += rare_words_in_pheno_wordlist
                 break   
         if not append_wordlist:
             patient_phenotypes_wordbreak.append(pheno)
-
+    #*********** New line (remove common words)
     tmp_patient_phenotypes_wordbreak = []
     for pheno in patient_phenotypes_wordbreak:
         if pheno not in word_difficulty_index.keys() or word_difficulty_index[pheno] < 160000:
             tmp_patient_phenotypes_wordbreak.append(pheno)
-    patient_phenotypes_wordbreak = tmp_patient_phenotypes_wordbreak
-    # print patient_phenotypes_wordbreak
+    patient_phenotypes_wordbreak = tmp_patient_phenotypes_wordbreak 
+
     re_pubmed = re.compile(r'\b(' +'|'.join(patient_phenotypes_wordbreak) + r')', re.I)
 
+    #************ New line
+    variantphenospmids = dict()
     for data in dbdata:
         gene, protein_variant, pmid, title, abstract = data
         text = title + ' ' + abstract
@@ -216,8 +233,21 @@ def searchPhenosFromPubmed(patient_phenotypes, samedomainvariants, domainvariant
                     originalvar = domainvariants2original[(gene, variant, protein)]
                     if originalvar in variantphenosfromPubmed:
                         variantphenosfromPubmed[originalvar] += re_pubmed.findall(text) 
+                        #************ New line
+                        variantphenospmids[originalvar].append(pmid)
                     else:
 			variantphenosfromPubmed[originalvar] = re_pubmed.findall(text) 
+                        #************ New line
+                        variantphenospmids[originalvar] = [pmid]
+
+    #************ New lines
+    for key in variantphenospmids.keys():
+        gene, variant, protein = key
+        pmids = variantphenospmids[key]
+        if (gene, variant) in curr_interpret:
+            curr_interpret[(gene, variant)].append('Previous literature (PMIDs: %s) reported similar phenotypes caused by genetic variants affecting the same protein domain as out current case.' % (', ').join(list(set(pmids))))
+        else:
+            curr_interpret[(gene, variant)] = ['Previous literature (PMIDs: %s) reported similar phenotypes caused by genetic variants affecting the same protein domain as out current case.' % (', ').join(list(set(pmids)))]
     return variantphenosfromPubmed
 
 ## Generate antonyms of a word using NLTK and wordnet
@@ -257,7 +287,7 @@ def isOppositeMeaning(words_in_pheno_only, words_in_hpo_only):
         words_in_pheno_only.add('steady')
     # Poor weight gain and weight gain are in opposite meaning
     if (words_in_pheno_only == set(['poor']) and words_in_hpo_only == set()) or (words_in_hpo_only == set(['poor']) and words_in_pheno_only == set()):
-        # print "Opposite meaning due to word 'poor'", words_in_pheno_only, words_in_hpo_only
+        #print "Opposite meaning due to word 'poor'", words_in_pheno_only, words_in_hpo_only
         return True
     for word in words_in_pheno_only:
         try:
@@ -289,6 +319,48 @@ def isOppositeMeaning(words_in_pheno_only, words_in_hpo_only):
 
 def identifyVariantsWithOppositePhenos(variantphenos, patient_phenotypes):
     #print variantphenos # This is variant phenos from DB
+    variants_with_opposite_phenos = dict()
+    processed_variant_phenos = dict()
+    for var in variantphenos.keys():
+        phenos = variantphenos[var]
+        processed_variant_phenos[var] = []
+        for pheno in phenos:
+            pheno = [_.strip(",()'") for _ in re.split(' |/', pheno)]
+            try:
+                var_pheno_wordlist = [lemmatizer.lemmatize(word) for word in pheno]
+            except UnicodeDecodeError as e:
+                pass
+            processed_variant_phenos[var].append(var_pheno_wordlist) # dict of list of lists 
+    for patient_pheno in patient_phenotypes:
+        patient_pheno = [_.strip(",()'") for _ in re.split(' |/', patient_pheno)]
+        try:
+            patient_pheno_wordlist = [lemmatizer.lemmatize(word) for word in patient_pheno]
+        except UnicodeDecodeError as e:
+            pass
+        for var in processed_variant_phenos.keys():
+            phenos = processed_variant_phenos[var]
+            for var_pheno_wordlist in phenos:
+                if set(var_pheno_wordlist) == set(patient_pheno_wordlist):
+                    continue
+                common_words = set(var_pheno_wordlist) & set(patient_pheno_wordlist)
+                if not common_words:
+                    continue
+                words_in_patient_pheno_only = set(patient_pheno_wordlist) - common_words
+                words_in_var_pheno_only = set(var_pheno_wordlist) - common_words
+                #*********** New line
+                if words_in_patient_pheno_only and words_in_var_pheno_only and isOppositeMeaning(words_in_var_pheno_only, words_in_patient_pheno_only):
+                    # print words_in_patient_pheno_only, words_in_var_pheno_only
+                    if var in variants_with_opposite_phenos:
+                        variants_with_opposite_phenos[var].append((' '.join(patient_pheno), ' '.join(var_pheno_wordlist)))
+                    else:
+                        variants_with_opposite_phenos[var] = [(' '.join(patient_pheno), ' '.join(var_pheno_wordlist))]
+    for var in variants_with_opposite_phenos.keys():
+        value = list(set(variants_with_opposite_phenos[var]))
+        variants_with_opposite_phenos[var] = value
+    return variants_with_opposite_phenos
+
+def bakidentifyVariantsWithOppositePhenos(variantphenos, patient_phenotypes):
+    #print variantphenos # This is variant phenos from DB
     variants_with_opposite_phenos = []
     processed_variant_phenos = dict()
     for var in variantphenos.keys():
@@ -317,7 +389,9 @@ def identifyVariantsWithOppositePhenos(variantphenos, patient_phenotypes):
                     continue
                 words_in_patient_pheno_only = set(patient_pheno_wordlist) - common_words
                 words_in_var_pheno_only = set(var_pheno_wordlist) - common_words
-                if words_in_patient_pheno_only and words_in_var_pheno_only and isOppositeMeaning(words_in_var_pheno_only, words_in_patient_pheno_only):
+                #*********** New line
+                if words_in_patient_pheno_only and words_in_var_pheno_only and isOppositeMeaning(words_in_var_pheno_only, words_in_patient_pheno_only): 
+                    # print words_in_patient_pheno_only, words_in_var_pheno_only
                     variants_with_opposite_phenos.append(var) 
     return list(set(variants_with_opposite_phenos))
 
@@ -325,7 +399,7 @@ def getScores(variantphenosfromPubmed, variantphenosfromDB, variantphenos, patie
     global patient_phenotypes_wordbreak, word_difficulty_index
     scores = dict()
     variantphenosfromPubmedAndDB = dict()
-    # convert pubmed matched text to lower case
+    #***** New lines (convert pubmed matched text to lower case)
     for originalvar in variantphenosfromPubmed.keys():
         values = variantphenosfromPubmed[originalvar]
         values = [value.lower() for value in values]
@@ -337,12 +411,14 @@ def getScores(variantphenosfromPubmed, variantphenosfromDB, variantphenos, patie
             variantphenosfromPubmedAndDB[originalvar] += variantphenosfromDB[originalvar]
         else:
             variantphenosfromPubmedAndDB[originalvar] = variantphenosfromDB[originalvar]
-    # print variantphenosfromPubmedAndDB
+    #print 'variant phenos from Pubmed and DB are'
+    #print variantphenosfromPubmedAndDB
 
     for originalvar in variantphenosfromPubmed.keys():
 	items_count = Counter(variantphenosfromPubmed[originalvar])
 	#print items_count
 	for item in items_count.keys():
+            #******** New lines
             difficulty_index = word_difficulty_index[item] if item in word_difficulty_index else 50
             weight = 8.0 / np.log(difficulty_index) ## The more difficult the word, the more weight to be assigned
 	    if originalvar in scores:
@@ -353,6 +429,7 @@ def getScores(variantphenosfromPubmed, variantphenosfromDB, variantphenos, patie
 	items_count = Counter(variantphenosfromDB[originalvar])
 	#print items_count
 	for item in items_count.keys():
+            #******** New lines
             difficulty_index = word_difficulty_index[item] if item in word_difficulty_index else 50
             weight = 8.0 / np.log(difficulty_index) ## The more difficult the word, the more weight to be assigned
 	    if originalvar in scores:
@@ -368,7 +445,6 @@ def getScores(variantphenosfromPubmed, variantphenosfromDB, variantphenos, patie
         else:
             num_all_var_phenos = num_match_phenos 
         num_all_patient_phenos = len(patient_phenotypes_wordbreak)
-        # print num_match_phenos, num_all_var_phenos, num_all_patient_phenos
         scores[originalvar] = 1.0 + np.sqrt(scores[originalvar]) * np.sqrt(num_match_phenos / num_all_var_phenos) * np.sqrt(num_match_phenos / num_all_patient_phenos)
     # print scores
    
@@ -377,36 +453,63 @@ def getScores(variantphenosfromPubmed, variantphenosfromDB, variantphenos, patie
     lemmatizer = WordNetLemmatizer()
     processed_antonyms = dict()
     variants_with_opposite_phenos = identifyVariantsWithOppositePhenos(variantphenos, patient_phenotypes)
-    # print variants_with_opposite_phenos
+
     for originalvar in variants_with_opposite_phenos:
+        #********* New line
+        gene, variant, protein = originalvar
+        #********* New line
+        oppo_phenos = variants_with_opposite_phenos[originalvar]
+        oppo_phenos = [' vs. '.join(pheno) for pheno in oppo_phenos]
+        oppo_phenos = ', '.join(oppo_phenos)
+        if (gene, variant) in curr_interpret:
+            curr_interpret[(gene, variant)].append('We found previously reported cases that the genetic variants in the same protein domain as our case caused OPPOSITE phenotypes as our patient: %s.' % oppo_phenos)
+        else:
+            curr_interpret[(gene, variant)] = ['We found previously reported cases that the genetic variants in the same protein domain as our case caused OPPOSITE phenotypes as our patient: %s.' % oppo_phenos]
         if originalvar in scores:
             scores[originalvar] = scores[originalvar] * 0.9
         else:
             scores[originalvar] = 1.0 * 0.9
-    # print scores
+
     return scores
 
-def generateOutput(variants, ACMG_result, patient_phenotypes): 
-    global patient_phenotypes_wordbreak
+def generateOutput(variants, ACMG_result, patient_phenotypes, variant_ACMG_interpret): 
+    global patient_phenotypes_wordbreak, curr_interpret
+    curr_interpret = dict()
+
     top_variants, variantsdata = getTopVariantsFromACMGRankings(ACMG_result)
     protein_domains, proteins = getProteinDomainOfTopVariants(variants, top_variants)
     top_variants, protein_domains, variantsdata = updateTopVariantsAndProteinDomainsKey(top_variants, protein_domains, proteins, variantsdata) # Now key is (gene, variant, protein)
-    samedomainvariants, domainvariants2original = queryVariantsInSameProteinDomain(protein_domains) 
+    samedomainvariants, domainvariants2original = queryVariantsInSameProteinDomain(protein_domains)
     variantphenos = queryPhenosFromDB(samedomainvariants, domainvariants2original)
     # print variantphenos
     variantphenosfromDB = searchPhenosFromDBdata(patient_phenotypes, variantphenos)
     initWordDifficultyIndex()
     variantphenosfromPubmed = searchPhenosFromPubmed(patient_phenotypes, samedomainvariants, domainvariants2original)
     scores = getScores(variantphenosfromPubmed, variantphenosfromDB, variantphenos, patient_phenotypes)
+    db.close()
 
     final_res = []
     for key in variantsdata:
         gene, variant, protein = key
         id, final_score, pathogenicity_score, pathogenicity, hit_criteria, hpo_hit_score = variantsdata[key]
         pheno_match_score = scores[key] if key in scores else 1.0 
-        final_score = round(float(final_score) * pheno_match_score, 2)       
+        final_score = float(final_score) * pheno_match_score       
         final_res.append([gene, variant, protein, id, final_score, pathogenicity, hit_criteria, pathogenicity_score, hpo_hit_score, pheno_match_score])	
     df_final_res = pd.DataFrame(final_res, columns = ['gene', 'variant', 'protein', 'id', 'final_score', 'pathogenicity', 'hit_criteria', 'pathogenicity_score', 'hpo_hit_score', 'pheno_match_score'])
-    df_final_res.sort_values(by='final_score', ascending = [0], inplace = True)
-    return df_final_res
-
+    df_final_res.sort(['final_score'], ascending = [0], inplace = True)
+    
+    tmp_df_final_res = df_final_res.copy()
+    tmp_df_final_res.drop_duplicates(subset = ['gene', 'variant'], inplace = True)
+    keys = list(zip(tmp_df_final_res.gene, tmp_df_final_res.variant))
+    df_variant_ACMG_interpret = pd.DataFrame() 
+    for key in keys:
+        if key in curr_interpret.keys():
+            interpret = ' '.join(curr_interpret[key])
+            variant_ACMG_interpret[key].append(('Phenotype filter', interpret))
+        tmp_df = pd.DataFrame(variant_ACMG_interpret[key], columns = ['criteria', 'interpretation'])
+        tmp_df['gene'] = key[0]
+        tmp_df['variant'] = key[1]
+        tmp_df = tmp_df[['gene', 'variant', 'criteria', 'interpretation']] 
+        df_variant_ACMG_interpret = pd.concat([df_variant_ACMG_interpret, tmp_df])
+    
+    return df_final_res, df_variant_ACMG_interpret

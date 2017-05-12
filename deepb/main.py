@@ -196,16 +196,16 @@ def master_function(raw_input_id):
 	raw_input.save()
 	df_hpo_ranking_genes = pd.DataFrame(ranking_genes, columns=['gene', 'score', 'hits'])
 	df_hpo_ranking_genes = df_hpo_ranking_genes[['gene', 'score']]
-	ACMG_result = ACMG.Get_ACMG_result(df_hpo_ranking_genes, variants, df_pubmed)
+	ACMG_result, variant_ACMG_interpretation = ACMG.Get_ACMG_result(df_hpo_ranking_genes, variants, df_pubmed)
 
 	# filter variant on phenotype
 
 	if phenos:
 		raw_input.status = "Filtering variants based on phenotypes"
 		raw_input.save()
-		df_final_res = filterVariantOnPhenotype.generateOutput(variants, ACMG_result, phenos)
+		df_final_res, variant_ACMG_interpretation = filterVariantOnPhenotype.generateOutput(variants, ACMG_result, phenos, variant_ACMG_interpretation)
 	else:
 	    df_final_res = ACMG_result
 
-	return df_final_res, df_genes, phenos, field_names
+	return df_final_res, df_genes, phenos, field_names, variant_ACMG_interpretation
 

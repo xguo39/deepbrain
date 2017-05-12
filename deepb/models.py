@@ -10,6 +10,7 @@ class Main_table(models.Model):
     input_gene = models.TextField()
     input_phenotype = models.TextField()
     result = models.TextField()
+    interpretation = models.TextField(default='')
     pub_date = models.DateTimeField()
     user_name = models.CharField(max_length=10)
     task_name = models.CharField(max_length=20)
