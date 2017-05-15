@@ -169,7 +169,7 @@ def interpretation(request, pk):
     main_table = get_object_or_404(Main_table, pk=pk)
 
     return render(request, 'interpretation.html', {
-        'interpretation': mark_safe(main_table.interpretation_chinese),
+        'interpretation': mark_safe(main_table.interpretation),
         'task_name': main_table.task_name,
         'pk': pk,
         })
