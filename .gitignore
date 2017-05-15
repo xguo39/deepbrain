@@ -4,3 +4,6 @@ deepb/data/
 *.pid
 .DS_Store
 deepb/migrations/
+.gitignore
+dump.rdb
+local_data/
