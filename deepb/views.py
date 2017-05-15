@@ -187,7 +187,7 @@ def handle_uploaded_file(raw_input_gene_file, raw_input_phenotype_file, user_nam
     
     if raw_input_gene_file.name.endswith('.xls') or raw_input_gene_file.name.endswith('.xlsx'):
         input_gene = pd.read_excel(raw_input_gene_file).to_csv(index=False)
-    if raw_input_gene_file.name.endswith('.txt'):
+    else:
         input_gene = raw_input_gene_file.read()
 
     raw_gene_input = Raw_input_table(
