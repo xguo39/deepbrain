@@ -1030,5 +1030,26 @@ def Get_ACMG_result(df_hpo_ranking_genes, variants, df_pubmed):
     df_final_result = df_final_result[['gene', 'variant', 'id', 'final_score', 'pathogenicity_score', 'pathogenicity', 'hit_criteria', 'hpo_hit_score']]
     df_final_result.sort_values(by=['final_score'], ascending = [0], inplace = True)
     df_final_result['final_score'] = df_final_result['final_score'].apply(lambda x: round(x,2))
+    df_final_result.drop_duplicates(subset = ['gene', 'variant'], inplace = True)
     df_final_result = df_final_result.reset_index(drop=True)
-    return df_final_result, variant_ACMG_interpret, variant_ACMG_interpret_chinese
+
+    gene_list = list(df_final_result['gene'])
+    variant_list = list(df_final_result['variant'])
+    gene_variant_list = [(gene_list[i], variant_list[i]) for i in range(len(gene_list))]
+
+    df_variant_ACMG_interpret = pd.DataFrame()
+    df_variant_ACMG_interpret_chinese = pd.DataFrame() 
+    for key in gene_variant_list:
+        tmp_df = pd.DataFrame(variant_ACMG_interpret[key], columns = ['criteria', 'interpretation'])
+        tmp_df['gene'] = key[0]
+        tmp_df['variant'] = key[1]
+        tmp_df = tmp_df[['gene', 'variant', 'criteria', 'interpretation']] 
+        df_variant_ACMG_interpret = pd.concat([df_variant_ACMG_interpret, tmp_df])
+
+        tmp_df = pd.DataFrame(variant_ACMG_interpret_chinese[key], columns = ['criteria', 'interpretation'])
+        tmp_df['gene'] = key[0]
+        tmp_df['variant'] = key[1]
+        tmp_df = tmp_df[['gene', 'variant', 'criteria', 'interpretation']] 
+        df_variant_ACMG_interpret_chinese = pd.concat([df_variant_ACMG_interpret_chinese, tmp_df])
+
+    return df_final_result, variant_ACMG_interpret, variant_ACMG_interpret_chinese, df_variant_ACMG_interpret, df_variant_ACMG_interpret_chinese

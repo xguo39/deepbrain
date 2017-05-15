@@ -51,7 +51,7 @@ class HomeView(LoginRequiredMixin, ListView):
             status, main_table_id = self._task_status_check(last_task)
             context['last_task_status'] = status
             context['status_step'] = last_task.status
-            context['estimate_time'] = round((0.14*len(last_task.raw_input_gene.split('\n')) + 1.69*len(last_task.raw_input_phenotype.split(','))+93.83)/60, 1)
+            context['estimate_time'] = round((0.14*len(last_task.raw_input_gene.split('\n')) + 1.69*len(last_task.raw_input_phenotype.split(','))+93.83)/60, 0)+1
         
         return context
 
@@ -227,7 +227,7 @@ class HomeView_ch(LoginRequiredMixin, ListView):
             status, main_table_id = self._task_status_check(last_task)
             context['last_task_status'] = status
             context['status_step'] = last_task.status
-            context['estimate_time'] = round((0.14*len(last_task.raw_input_gene.split('\n')) + 1.69*len(last_task.raw_input_phenotype.split(','))+93.83)/60, 1)
+            context['estimate_time'] = round((0.14*len(last_task.raw_input_gene.split('\n')) + 1.69*len(last_task.raw_input_phenotype.split(','))+93.83)/60, 0)+1
         
         return context
 
