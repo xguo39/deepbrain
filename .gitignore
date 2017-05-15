@@ -3,3 +3,4 @@
 deepb/data/
 *.pid
 .DS_Store
+deepb/migrations/
