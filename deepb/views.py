@@ -31,7 +31,7 @@ def index_en(request):
 class HomeView(LoginRequiredMixin, ListView):
     login_url = '/login/'
     template_name = 'home.html'
-    context_object_name = 'latest_task_list'        
+    context_object_name = 'latest_task_list'
 
     def get_context_data(self, **kwargs):
         context = super(HomeView, self).get_context_data(**kwargs)
@@ -87,6 +87,7 @@ class HomeView(LoginRequiredMixin, ListView):
         else:
             return Constant.IN_PROGRESS_STATUS, None
 
+
 def upload(request):
     user_name = request.user.username
     task_name = request.POST.get('task_name', None)
@@ -111,8 +112,32 @@ def upload(request):
     trigger_background_main_task.delay(raw_input_id)
     return redirect('/home/')
 
+def upload_ch(request):
+    user_name = request.user.username
+    task_name = request.POST.get('task_name', None)
+    gene_file = request.FILES['gene_file']
 
-def result(request, pk):
+    phenotype_type = ''
+    phenotype_file = ''
+    try:
+        phenotype_file = request.FILES['symptom_file']   
+    except:
+        phenotype = ''
+    phenotype_type = request.POST.get('input_text_phenotype', None)
+
+    if phenotype_type:
+        phenotype = phenotype_type
+    if phenotype_file:
+        phenotype = phenotype_file.read()
+
+
+    raw_input_id = handle_uploaded_file(gene_file, phenotype, user_name, task_name)
+
+    trigger_background_main_task.delay(raw_input_id)
+    return redirect('/home/ch')
+
+
+def result(request, pk, ):
     main_table = get_object_or_404(Main_table, pk=pk)
     input_gene_field = [i.split(":")[0][1:-1] for i in main_table.input_gene.split("},{")[0][2:].split(',')]
 
@@ -126,11 +151,34 @@ def result(request, pk):
         'pk': pk,
         })
 
+def result_ch(request, pk, ):
+    main_table = get_object_or_404(Main_table, pk=pk)
+    input_gene_field = [i.split(":")[0][1:-1] for i in main_table.input_gene.split("},{")[0][2:].split(',')]
+
+    return render(request, 'result_ch.html', {
+        'task_name': main_table.task_name,
+        'result': mark_safe(main_table.result),
+        'input_gene': mark_safe(main_table.input_gene),
+        'input_phenotype': main_table.input_phenotype,
+        'User_name': request.user.username,
+        'field_names': input_gene_field,
+        'pk': pk,
+        })
+
 def interpretation(request, pk):
     main_table = get_object_or_404(Main_table, pk=pk)
 
     return render(request, 'interpretation.html', {
-        'interpretation': mark_safe(main_table.interpretation),
+        'interpretation': mark_safe(main_table.interpretation_chinese),
+        'task_name': main_table.task_name,
+        'pk': pk,
+        })
+
+def interpretation_ch(request, pk):
+    main_table = get_object_or_404(Main_table, pk=pk)
+
+    return render(request, 'interpretation_ch.html', {
+        'interpretation': mark_safe(main_table.interpretation_chinese),
         'task_name': main_table.task_name,
         'pk': pk,
         })
@@ -153,6 +201,64 @@ def handle_uploaded_file(raw_input_gene_file, raw_input_phenotype_file, user_nam
     raw_gene_input.save()
     return raw_gene_input.id
 
-# def waiting_task(request, task_id):
-#     while
-#     return HttpResponse("You task %s is being processed. Please be patient." % task_id)
+
+
+
+class HomeView_ch(LoginRequiredMixin, ListView):
+    login_url = '/login/'
+    template_name = 'home_ch.html'
+    context_object_name = 'latest_task_list'
+
+    def get_context_data(self, **kwargs):
+        context = super(HomeView_ch, self).get_context_data(**kwargs)
+        context['User_name'] = self.request.user.username
+        raw_input_list = Raw_input_table.objects.filter(user_name=self.request.user.username)
+        task_count = raw_input_list.count()
+        try:
+            a = self.kwargs['show_all']
+            context['all_back'] = 1
+        except:
+            if task_count > 6:
+                context['show_all'] = "all"
+                context['task_count'] = task_count
+
+        if task_count > 0:
+            last_task = raw_input_list.order_by('-id')[0]
+            status, main_table_id = self._task_status_check(last_task)
+            context['last_task_status'] = status
+            context['status_step'] = last_task.status
+            context['estimate_time'] = round((0.14*len(last_task.raw_input_gene.split('\n')) + 1.69*len(last_task.raw_input_phenotype.split(','))+93.83)/60, 1)
+        
+        return context
+
+    def get_queryset(self):
+        raw_input_list = Raw_input_table.objects.filter(user_name=self.request.user.username)
+        raw_input_table_with_status_and_id_list = []
+        # show_all = self.request.GET.get('show_all')
+        for raw_input_table in raw_input_list:
+            status, main_table_id = self._task_status_check(raw_input_table)
+            raw_input_table_with_status_and_id_list.append(Raw_input_table_with_status_and_id(raw_input_table, status, main_table_id))
+        try:
+            a = self.kwargs['show_all']
+            return raw_input_table_with_status_and_id_list[::-1]
+        except:
+            return raw_input_table_with_status_and_id_list[::-1][:5]
+
+    def _task_status_check(self, raw_input_table):
+        # check if the task is succeed
+        task_name = raw_input_table.task_name
+        user_name = raw_input_table.user_name
+        # we use id in raw_input_table as task_id in the main_table
+        task_id = raw_input_table.id
+        current_time = timezone.now()
+        pub_time = raw_input_table.pub_date
+
+        main_table_result = Main_table.objects.filter(user_name=user_name, task_name=task_name, task_id=task_id).first()
+        if main_table_result is not None:
+            return Constant.SUCCESS_STATUS, main_table_result.id
+        elif raw_input_table.status[-6:]=="failed":
+            return Constant.FAIL_STATUS, None
+        elif current_time - pub_time > Config.max_task_waiting_time:
+            return Constant.FAIL_STATUS, None
+        else:
+            return Constant.IN_PROGRESS_STATUS, None

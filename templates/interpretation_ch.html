@@ -1,0 +1,84 @@
+{% extends 'base_ch.html' %}
+{% load static %}
+
+{% block css %}
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet"> -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.15/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/select/1.2.2/css/select.dataTables.min.css">
+    <style>
+        table.dataTable tbody td {
+        word-break: break-word;
+        vertical-align: top;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+    <table id="Interpretation" class="table table-bordered table-striped table-hover" border="1">
+        <thead>
+            <tr>
+                <th>基因</th>
+                <th>变异</th>
+                <th>标准</th>
+                <th>解读</th>
+            </tr>
+        </thead>
+    </table>
+    </div><br />
+    <div class="container">
+    <a href="{% url 'deepb:result_ch' pk %}">返回</a><br />
+    </div>
+    <br /><br /><br />
+{% endblock %}
+
+
+{% block javascript %}
+    <script type="text/javascript" src="https://cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/select/1.2.2/js/dataTables.select.min.js"></script>
+
+    <script>
+    var interpretation = {{ interpretation }}
+    $(document).ready(function() {
+        $('#Interpretation').dataTable({
+            "paging": false,
+            "ordering": false,
+            "autoWidth": false,
+            "data": interpretation,
+            "scrollY": 800,
+            "columns": [
+                { "data" : "gene", "width": "7%" },
+                { "data" : "variant", "width": "9%" },
+                { "data" : "criteria", "width": "9%" },
+                { "data" : "interpretation", "width": "75%" }
+            ],
+            "language": {
+                        "sProcessing":   "处理中...",
+                        "sLengthMenu":   "显示 _MENU_ 项结果",
+                        "sZeroRecords":  "没有匹配结果",
+                        "sInfo":         "显示第 _START_ 至 _END_ 项结果，共 _TOTAL_ 项",
+                        "sInfoEmpty":    "显示第 0 至 0 项结果，共 0 项",
+                        "sInfoFiltered": "(由 _MAX_ 项结果过滤)",
+                        "sInfoPostFix":  "",
+                        "sSearch":       "搜索:",
+                        "sUrl":          "",
+                        "sEmptyTable":     "表中数据为空",
+                        "sLoadingRecords": "载入中...",
+                        "sInfoThousands":  ",",
+                        "oPaginate": {
+                            "sFirst":    "首页",
+                            "sPrevious": "上页",
+                            "sNext":     "下页",
+                            "sLast":     "末页"
+                        },
+                        "oAria": {
+                            "sSortAscending":  ": 以升序排列此列",
+                            "sSortDescending": ": 以降序排列此列"
+                        }
+                    }
+        } );
+    } );
+
+
+    </script>
+{% endblock %}

@@ -1,0 +1,150 @@
+{% extends 'base_ch.html' %}
+{% load static %}
+
+{% block css %}
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet"> -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.15/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/select/1.2.2/css/select.dataTables.min.css">
+    <style>
+    table.dataTable tbody td {
+    word-break: break-word;
+    vertical-align: top;
+    }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+    <a href="{% url 'deepb:home_ch' %}"> 返回</a><br /><br />
+    </div>
+    <div class="container">
+    <h4 style="float:left">测试结果</h4>
+    <h5 style="float:left; padding-top:3px; padding-left:39px;"><a href="{% url 'deepb:interpretation_ch' pk %}" style="color: blue">详细解读</a></h5>
+    <br /><br /><br />
+    <table id="result" class="table table-bordered table-striped table-hover" border="1">
+        <thead>
+            <tr>
+                <th>基因</th>
+                <th>变异</th>
+                <th>Id</th>
+                <th>GNova得分</th>
+                <th>致病性</th>
+                <th>标准</th>
+            </tr>
+        </thead>
+    </table>
+    </div>
+    <br /><br /><br />
+    <div class="container">
+    <h4>输入基因</h4>
+    <table id="input_gene" class="table table-bordered table-striped table-hover" border="1">
+        <thead>
+            <tr>
+                {% for field in field_names %}
+                <th>{{ field }}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+    </table>
+    </div>
+    <br /><br />
+    <div class="container">
+    <h4>输入症状</h4>
+    <p>{{ input_phenotype }}</p>
+    {% if not input_phenotype %}
+        <p>无</p>
+    {% endif %}
+    <br /> 
+    </div>
+    <div class="container">
+    <a href="{% url 'deepb:home_ch' %}">返回</a><br />
+    </div>
+    <br /><br /><br />
+{% endblock %}
+
+
+{% block javascript %}
+    <script type="text/javascript" src="https://cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/select/1.2.2/js/dataTables.select.min.js"></script>
+
+    <script>
+    var result = {{ result }}
+    $(document).ready(function() {
+        $('#result').dataTable({
+        	"order": [ 3, 'desc' ],
+            "data": result,
+            "autoWidth": false,
+            "columns": [
+                { "data" : "gene" , "width": "14%" },
+                { "data" : "variant" , "width": "14%" },
+                { "data" : "id" , "width": "20%" },
+                { "data" : "final_score" , "width": "12%" },
+                { "data" : "pathogenicity" , "width": "16%" },
+                { "data" : "hit_criteria" , "width": "24%" }
+            ],
+            "language": {
+                        "sProcessing":   "处理中...",
+                        "sLengthMenu":   "显示 _MENU_ 项结果",
+                        "sZeroRecords":  "没有匹配结果",
+                        "sInfo":         "显示第 _START_ 至 _END_ 项结果，共 _TOTAL_ 项",
+                        "sInfoEmpty":    "显示第 0 至 0 项结果，共 0 项",
+                        "sInfoFiltered": "(由 _MAX_ 项结果过滤)",
+                        "sInfoPostFix":  "",
+                        "sSearch":       "搜索:",
+                        "sUrl":          "",
+                        "sEmptyTable":     "表中数据为空",
+                        "sLoadingRecords": "载入中...",
+                        "sInfoThousands":  ",",
+                        "oPaginate": {
+                            "sFirst":    "首页",
+                            "sPrevious": "上页",
+                            "sNext":     "下页",
+                            "sLast":     "末页"
+                        },
+                        "oAria": {
+                            "sSortAscending":  ": 以升序排列此列",
+                            "sSortDescending": ": 以降序排列此列"
+                        }
+                    }
+        } );
+    } );
+    var input_gene = {{ input_gene }}
+    $(document).ready(function() {
+        $('#input_gene').dataTable({
+            "data": input_gene,
+            "autoWidth": false,
+            "scrollX": true,
+            "columns": [
+            {% for field in field_names %}
+                { "data" : "{{ field }}" },
+            {% endfor %}
+            ],
+            "language": {
+                        "sProcessing":   "处理中...",
+                        "sLengthMenu":   "显示 _MENU_ 项结果",
+                        "sZeroRecords":  "没有匹配结果",
+                        "sInfo":         "显示第 _START_ 至 _END_ 项结果，共 _TOTAL_ 项",
+                        "sInfoEmpty":    "显示第 0 至 0 项结果，共 0 项",
+                        "sInfoFiltered": "(由 _MAX_ 项结果过滤)",
+                        "sInfoPostFix":  "",
+                        "sSearch":       "搜索:",
+                        "sUrl":          "",
+                        "sEmptyTable":     "表中数据为空",
+                        "sLoadingRecords": "载入中...",
+                        "sInfoThousands":  ",",
+                        "oPaginate": {
+                            "sFirst":    "首页",
+                            "sPrevious": "上页",
+                            "sNext":     "下页",
+                            "sLast":     "末页"
+                        },
+                        "oAria": {
+                            "sSortAscending":  ": 以升序排列此列",
+                            "sSortDescending": ": 以降序排列此列"
+                        }
+                    }
+        } );
+    } );
+
+    </script>
+{% endblock %}

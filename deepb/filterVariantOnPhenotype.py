@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import pandas as pd
 import numpy as np
 import re
@@ -100,8 +102,10 @@ def queryVariantsInSameProteinDomain(protein_domains):
             continue
         if (gene, variant) in curr_interpret:
             curr_interpret[(gene, variant)].append('Similar genetic variants that affect the same protein domain were identified: %s.' % similar_variants)
+            curr_interpret_chinese[(gene, variant)].append('与此基因变异相似，影响相同蛋白功能区的变异包括: %s.' % similar_variants)
         else:
             curr_interpret[(gene, variant)] = ['Similar genetic variants that affect the same protein domain were identified: %s.' % similar_variants]
+            curr_interpret_chinese[(gene, variant)] = ['与此基因变异相似，影响相同蛋白功能区的变异包括: %s.' % similar_variants]
     for key in samedomainvariants.keys():
         values = samedomainvariants[key]
         for value in values:
@@ -162,8 +166,10 @@ def searchPhenosFromDBdata(patient_phenotypes, variantphenos):
         phenos = list(set(variantphenosfromDB[key])) 
         if (gene, variant) in curr_interpret:
             curr_interpret[(gene, variant)].append("We find variants that affect the same protein domain as our case may lead to the phenos that match our patient's from genomic databases (OMIM, ORPHANET, etc): %s." % (', '.join(list(set(phenos))))) 
+            curr_interpret_chinese[(gene, variant)].append("基因疾病数据库(比如OMIM, ORPHANET)中报道与此基因变异类似、影响相同蛋白功能区的变异可能导致的如下表型与该病人吻合: %s." % (', '.join(list(set(phenos))))) 
         else:
             curr_interpret[(gene, variant)] = ["We find variants that affect the same protein domain as our case may lead to the phenos that match our patient's from genomic databases (OMIM, ORPHANET, etc): %s." % (', '.join(list(set(phenos))))]
+            curr_interpret_chinese[(gene, variant)] = ["基因疾病数据库(比如OMIM, ORPHANET)中报道与此基因变异类似、影响相同蛋白功能区的变异可能导致的如下表型与该病人吻合: %s." % (', '.join(list(set(phenos))))]
     return variantphenosfromDB
 
 def initWordDifficultyIndex():
@@ -246,8 +252,10 @@ def searchPhenosFromPubmed(patient_phenotypes, samedomainvariants, domainvariant
         pmids = variantphenospmids[key]
         if (gene, variant) in curr_interpret:
             curr_interpret[(gene, variant)].append('Previous literature (PMIDs: %s) reported similar phenotypes caused by genetic variants affecting the same protein domain as out current case.' % (', ').join(list(set(pmids))))
+            curr_interpret_chinese[(gene, variant)].append('生物医学文献(PMIDs: %s)之前报道此基因变异的相似变异(影响相同蛋白功能区)引发与该病人相似的表型.' % (', ').join(list(set(pmids))))
         else:
             curr_interpret[(gene, variant)] = ['Previous literature (PMIDs: %s) reported similar phenotypes caused by genetic variants affecting the same protein domain as out current case.' % (', ').join(list(set(pmids)))]
+            curr_interpret_chinese[(gene, variant)] = ['生物医学文献(PMIDs: %s)之前报道此基因变异的相似变异(影响相同蛋白功能区)引发与该病人相似的表型.' % (', ').join(list(set(pmids)))]
     return variantphenosfromPubmed
 
 ## Generate antonyms of a word using NLTK and wordnet
@@ -463,18 +471,19 @@ def getScores(variantphenosfromPubmed, variantphenosfromDB, variantphenos, patie
         oppo_phenos = ', '.join(oppo_phenos)
         if (gene, variant) in curr_interpret:
             curr_interpret[(gene, variant)].append('We found previously reported cases that the genetic variants in the same protein domain as our case caused OPPOSITE phenotypes as our patient: %s.' % oppo_phenos)
+            curr_interpret_chinese[(gene, variant)].append('基因疾病数据库(比如OMIM, ORPHANET)报道与此基因变异相似的变异引发与该病人相反的表型: %s. 该变异对此病人的致病权重应下调.' % oppo_phenos)
         else:
             curr_interpret[(gene, variant)] = ['We found previously reported cases that the genetic variants in the same protein domain as our case caused OPPOSITE phenotypes as our patient: %s.' % oppo_phenos]
+            curr_interpret_chinese[(gene, variant)] = ['基因疾病数据库(比如OMIM, ORPHANET)报道与此基因变异相似的变异引发与该病人相反的表型: %s. 该变异对此病人的致病权重应下调.' % oppo_phenos]
         if originalvar in scores:
             scores[originalvar] = scores[originalvar] * 0.9
         else:
             scores[originalvar] = 1.0 * 0.9
-
     return scores
 
-def generateOutput(variants, ACMG_result, patient_phenotypes, variant_ACMG_interpret): 
-    global patient_phenotypes_wordbreak, curr_interpret
-    curr_interpret = dict()
+def generateOutput(variants, ACMG_result, patient_phenotypes, variant_ACMG_interpret, variant_ACMG_interpret_chinese): 
+    global patient_phenotypes_wordbreak, curr_interpret, curr_interpret_chinese
+    curr_interpret, curr_interpret_chinese = dict(), dict()
 
     top_variants, variantsdata = getTopVariantsFromACMGRankings(ACMG_result)
     protein_domains, proteins = getProteinDomainOfTopVariants(variants, top_variants)
@@ -501,15 +510,26 @@ def generateOutput(variants, ACMG_result, patient_phenotypes, variant_ACMG_inter
     tmp_df_final_res = df_final_res.copy()
     tmp_df_final_res.drop_duplicates(subset = ['gene', 'variant'], inplace = True)
     keys = list(zip(tmp_df_final_res.gene, tmp_df_final_res.variant))
-    df_variant_ACMG_interpret = pd.DataFrame() 
+    df_variant_ACMG_interpret = pd.DataFrame()
+    df_variant_ACMG_interpret_chinese = pd.DataFrame() 
     for key in keys:
         if key in curr_interpret.keys():
             interpret = ' '.join(curr_interpret[key])
             variant_ACMG_interpret[key].append(('Phenotype filter', interpret))
+        if key in curr_interpret_chinese.keys():
+            interpret_chinese = ' '.join(curr_interpret_chinese[key])
+            variant_ACMG_interpret_chinese[key].append(('表型深度筛选', interpret))
         tmp_df = pd.DataFrame(variant_ACMG_interpret[key], columns = ['criteria', 'interpretation'])
         tmp_df['gene'] = key[0]
         tmp_df['variant'] = key[1]
         tmp_df = tmp_df[['gene', 'variant', 'criteria', 'interpretation']] 
         df_variant_ACMG_interpret = pd.concat([df_variant_ACMG_interpret, tmp_df])
+
+        tmp_df = pd.DataFrame(variant_ACMG_interpret_chinese[key], columns = ['criteria', 'interpretation'])
+        tmp_df['gene'] = key[0]
+        tmp_df['variant'] = key[1]
+        tmp_df = tmp_df[['gene', 'variant', 'criteria', 'interpretation']] 
+        # tmp_df.columns = ['基因', '变异', '标准', '解读']                 
+        df_variant_ACMG_interpret_chinese = pd.concat([df_variant_ACMG_interpret_chinese, tmp_df])
     
-    return df_final_res, df_variant_ACMG_interpret
+    return df_final_res, df_variant_ACMG_interpret, df_variant_ACMG_interpret_chinese

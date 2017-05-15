@@ -5,7 +5,12 @@
     <!-- <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet"> -->
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.15/css/jquery.dataTables.min.css">
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/select/1.2.2/css/select.dataTables.min.css">
-    
+    <style>
+        table.dataTable tbody td {
+        word-break: break-word;
+        vertical-align: top;
+        }
+    </style>
 {% endblock %}
 
 {% block content %}
@@ -13,11 +18,8 @@
     <a href="{% url 'deepb:home' %}"> Back to Home</a><br />
     </div>
     <div class="container">
-      <h3>Task name: {{ task_name }} </h3>
-    </div>
-    <div class="container">
     <h3 style="float:left">Result</h3>
-    <h4 style="float:left; padding-top:17px; padding-left:35px"><a href="{% url 'deepb:interpretation' pk %}">See Interpretation detail</a></h4>
+    <h5 style="float:left; padding-top:20px; padding-left:39px;"><a href="{% url 'deepb:interpretation' pk %}" style="color: blue">Interpretation detail</a></h5>
     <table id="result" class="table table-bordered table-striped table-hover" border="1">
         <thead>
             <tr>

@@ -89,6 +89,7 @@ DATABASES = {
         'PASSWORD': 'Tianqi12',
         'HOST': '127.0.0.1',
         'PORT': '3306',
+        'ENCODING': 'utf-8',
     }
 }
 # DATABASES = {
@@ -146,9 +147,9 @@ EMAIL_PORT = 1025
 
 # EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 # EMAIL_USE_TLS = True
-# EMAIL_HOST = 'smtp.163.com'
-# EMAIL_HOST_USER = 'fiao89@163.com'
-# EMAIL_HOST_PASSWORD = 'Ll89891212'
+# EMAIL_HOST = 'smtp.gmail.com'
+# EMAIL_HOST_USER = ''
+# EMAIL_HOST_PASSWORD = ''
 # EMAIL_PORT = 587
 
 # CELERY STUFF
