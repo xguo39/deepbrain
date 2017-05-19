@@ -137,7 +137,7 @@ def upload_ch(request):
     return redirect('/home/ch')
 
 
-def result(request, pk, ):
+def result(request, pk):
     main_table = get_object_or_404(Main_table, pk=pk)
     input_gene_field = [i.split(":")[0][1:-1] for i in main_table.input_gene.split("},{")[0][2:].split(',')]
 
@@ -151,7 +151,7 @@ def result(request, pk, ):
         'pk': pk,
         })
 
-def result_ch(request, pk, ):
+def result_ch(request, pk):
     main_table = get_object_or_404(Main_table, pk=pk)
     input_gene_field = [i.split(":")[0][1:-1] for i in main_table.input_gene.split("},{")[0][2:].split(',')]
 
@@ -169,6 +169,7 @@ def interpretation(request, pk):
     main_table = get_object_or_404(Main_table, pk=pk)
 
     return render(request, 'interpretation.html', {
+        'User_name': request.user.username,
         'interpretation': mark_safe(main_table.interpretation),
         'task_name': main_table.task_name,
         'pk': pk,
@@ -178,6 +179,7 @@ def interpretation_ch(request, pk):
     main_table = get_object_or_404(Main_table, pk=pk)
 
     return render(request, 'interpretation_ch.html', {
+        'User_name': request.user.username,
         'interpretation': mark_safe(main_table.interpretation_chinese),
         'task_name': main_table.task_name,
         'pk': pk,
