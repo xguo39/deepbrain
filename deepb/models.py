@@ -23,16 +23,4 @@ class Raw_input_table(models.Model):
     task_name = models.CharField(max_length=20, default='')
     pub_date = models.DateTimeField()
     status = models.CharField(max_length=50, default='')
-
-# class pubmed(models.Model):
-# 	gene = models.CharField(max_length=20)
-# 	protein_variant = models.CharField(max_length=30)
-# 	pmid = models.CharField(max_length=15)
-# 	title = models.TextField()
-# 	journal = models.TextField()
-# 	year = models.CharField(max_length=4)
-# 	month = models.CharField(max_length=3)
-# 	impact_factor = models.FloatField()
-# 	abstract = models.TextField()
-# 	variant_id = models.CharField(max_length=30)
-# 	protein_domain = models.CharField(max_length=500)
+    process_time = models.DecimalField(max_digits=3, decimal_places=1, default=0)

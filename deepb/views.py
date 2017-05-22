@@ -47,11 +47,12 @@ class HomeView(LoginRequiredMixin, ListView):
                 context['task_count'] = task_count
 
         if task_count > 0:
-            last_task = raw_input_list.order_by('-id')[0]
-            status, main_table_id = self._task_status_check(last_task)
-            context['last_task_status'] = status
-            context['status_step'] = last_task.status
-            context['estimate_time'] = round((0.14*len(last_task.raw_input_gene.split('\n')) + 1.69*len(last_task.raw_input_phenotype.split(','))+93.83)/60, 0)+1
+            ordered_task = raw_input_list.order_by('-id')
+            for task in ordered_task:
+                status, main_table_id = self._task_status_check(task)
+                if status == 'In progress':
+                    context['refresh'] = 1
+                    break
         
         return context
 
@@ -137,6 +138,29 @@ def upload_ch(request):
     return redirect('/home/ch')
 
 
+def handle_uploaded_file(raw_input_gene_file, raw_input_phenotype_file, user_name, task_name):
+    
+    if raw_input_gene_file.name.endswith('.xls') or raw_input_gene_file.name.endswith('.xlsx'):
+        input_gene = pd.read_excel(raw_input_gene_file).to_csv(index=False)
+    else:
+        input_gene = raw_input_gene_file.read()
+
+    estimate_time = round((0.14*len(input_gene.split('\n')) + 1.69*len(raw_input_phenotype_file.split(','))+93.83)/60, 0)+1
+
+    raw_gene_input = Raw_input_table(
+        raw_input_gene=input_gene,
+        raw_input_phenotype=raw_input_phenotype_file,
+        user_name=user_name,
+        task_name=task_name,
+        pub_date=timezone.now(),
+        status = "Preprocessing data for interpretation",
+        process_time = estimate_time
+    )
+    raw_gene_input.save()
+
+    return raw_gene_input.id
+
+
 def result(request, pk):
     main_table = get_object_or_404(Main_table, pk=pk)
     input_gene_field = [i.split(":")[0][1:-1] for i in main_table.input_gene.split("},{")[0][2:].split(',')]
@@ -185,25 +209,6 @@ def interpretation_ch(request, pk):
         'pk': pk,
         })
 
-def handle_uploaded_file(raw_input_gene_file, raw_input_phenotype_file, user_name, task_name):
-    
-    if raw_input_gene_file.name.endswith('.xls') or raw_input_gene_file.name.endswith('.xlsx'):
-        input_gene = pd.read_excel(raw_input_gene_file).to_csv(index=False)
-    else:
-        input_gene = raw_input_gene_file.read()
-
-    raw_gene_input = Raw_input_table(
-        raw_input_gene=input_gene,
-        raw_input_phenotype=raw_input_phenotype_file,
-        user_name=user_name,
-        task_name=task_name,
-        pub_date=timezone.now(),
-        status = "Preprocessing data for interpretation"
-    )
-    raw_gene_input.save()
-    return raw_gene_input.id
-
-
 
 
 class HomeView_ch(LoginRequiredMixin, ListView):
@@ -225,11 +230,12 @@ class HomeView_ch(LoginRequiredMixin, ListView):
                 context['task_count'] = task_count
 
         if task_count > 0:
-            last_task = raw_input_list.order_by('-id')[0]
-            status, main_table_id = self._task_status_check(last_task)
-            context['last_task_status'] = status
-            context['status_step'] = last_task.status
-            context['estimate_time'] = round((0.14*len(last_task.raw_input_gene.split('\n')) + 1.69*len(last_task.raw_input_phenotype.split(','))+93.83)/60, 0)+1
+            ordered_task = raw_input_list.order_by('-id')
+            for task in ordered_task:
+                status, main_table_id = self._task_status_check(task)
+                if status == 'In progress':
+                    context['refresh'] = 1
+                    break
         
         return context
 
