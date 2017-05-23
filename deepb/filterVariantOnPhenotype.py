@@ -18,11 +18,6 @@ BASE = os.path.dirname(os.path.abspath(__file__))
 reload(sys)
 sys.setdefaultencoding("utf-8")
 
-db = MySQLdb.connect(host="localhost",
-                     user="root",
-                     passwd="Tianqi12",
-                     db="DB_offline")
-
 def getTopVariantsFromACMGRankings(ACMG_result):
     variantsdata= dict()
     top_variants = []
@@ -70,12 +65,19 @@ def searchSimilarProteinDomain(gene, protein_domain, dbdata):
     return similar_variants
 
 def queryVariantsInSameProteinDomain(protein_domains): 
+
+    db = MySQLdb.connect(host="localhost",
+                     user="root",
+                     passwd="Tianqi12",
+                     db="DB_offline")
+
     genes = [var[0] for var in protein_domains.keys()]
     genes = '(' +', '.join("'" + item + "'" for item in genes) + ')'
     query = "select d.gene, m.variant, m.protein, d.protein_domains from var2proteindomains d, genevariantproteinmapping m where d.gene in %s and d.gene = m.gene and (d.protein_variant = m.variant or d.protein_variant = m.protein)" % genes
     cursor = db.cursor()
     cursor.execute(query)
     dbdata = cursor.fetchall()
+    db.close()
 
     samedomainvariants, domainvariants2original = dict(), dict() 
     for var in protein_domains.keys():
@@ -116,6 +118,11 @@ def queryVariantsInSameProteinDomain(protein_domains):
     return samedomainvariants, domainvariants2original 
 
 def queryPhenosFromDB(samedomainvariants, domainvariants2original):
+    db = MySQLdb.connect(host="localhost",
+                     user="root",
+                     passwd="Tianqi12",
+                     db="DB_offline")
+
     variantphenos = dict() 
     query = "select gene, protein_variant, phenotypes from var2phenos where "
     for key in samedomainvariants.keys():
@@ -130,6 +137,7 @@ def queryPhenosFromDB(samedomainvariants, domainvariants2original):
     cursor = db.cursor()
     cursor.execute(query)
     dbdata = cursor.fetchall()
+    db.close()
     for key in samedomainvariants.keys():
         samedomainvariant_list = samedomainvariants[key]
         for samedomainvar in samedomainvariant_list:
@@ -180,6 +188,10 @@ def initWordDifficultyIndex():
 
 def searchPhenosFromPubmed(patient_phenotypes, samedomainvariants, domainvariants2original):
     global word_difficulty_index, patient_phenotypes_wordbreak
+    db = MySQLdb.connect(host="localhost",
+                 user="root",
+                 passwd="Tianqi12",
+                 db="DB_offline")
     variantphenosfromPubmed = dict()
     query = "select gene, protein_variant, pmid, title, abstract from pubmed_var where "
     for key in samedomainvariants.keys():
@@ -194,6 +206,7 @@ def searchPhenosFromPubmed(patient_phenotypes, samedomainvariants, domainvariant
     cursor = db.cursor()
     cursor.execute(query)
     dbdata = cursor.fetchall()
+    db.close()
 
     # break terms to word list: 'pulmonary hypoplasia' -> ['pulmonary', 'hypoplasia']
     patient_phenotypes_wordbreak = []
@@ -250,6 +263,7 @@ def searchPhenosFromPubmed(patient_phenotypes, samedomainvariants, domainvariant
     for key in variantphenospmids.keys():
         gene, variant, protein = key
         pmids = variantphenospmids[key]
+        pmids = ["<a href='https://www.ncbi.nlm.nih.gov/pubmed/%s'> %s </a>" %(i,i) for i in pmids]
         if (gene, variant) in curr_interpret:
             curr_interpret[(gene, variant)].append('Previous literature (PMIDs: %s) reported similar phenotypes caused by genetic variants affecting the same protein domain as out current case.' % (', ').join(list(set(pmids))))
             curr_interpret_chinese[(gene, variant)].append('生物医学文献(PMIDs: %s)之前报道此基因变异的相似变异(影响相同蛋白功能区)引发与该病人相似的表型.' % (', ').join(list(set(pmids))))
@@ -495,7 +509,6 @@ def generateOutput(variants, ACMG_result, patient_phenotypes, variant_ACMG_inter
     initWordDifficultyIndex()
     variantphenosfromPubmed = searchPhenosFromPubmed(patient_phenotypes, samedomainvariants, domainvariants2original)
     scores = getScores(variantphenosfromPubmed, variantphenosfromDB, variantphenos, patient_phenotypes)
-    db.close()
 
     final_res = []
     for key in variantsdata:
@@ -505,8 +518,9 @@ def generateOutput(variants, ACMG_result, patient_phenotypes, variant_ACMG_inter
         final_score = float(final_score) * pheno_match_score       
         final_res.append([gene, variant, protein, id, final_score, pathogenicity, hit_criteria, pathogenicity_score, hpo_hit_score, pheno_match_score])	
     df_final_res = pd.DataFrame(final_res, columns = ['gene', 'variant', 'protein', 'id', 'final_score', 'pathogenicity', 'hit_criteria', 'pathogenicity_score', 'hpo_hit_score', 'pheno_match_score'])
+    df_final_res['final_score'] = df_final_res['final_score'].apply(lambda x: round(x,2))
     df_final_res.sort(['final_score'], ascending = [0], inplace = True)
-    
+
     tmp_df_final_res = df_final_res.copy()
     tmp_df_final_res.drop_duplicates(subset = ['gene', 'variant'], inplace = True)
     keys = list(zip(tmp_df_final_res.gene, tmp_df_final_res.variant))
@@ -518,7 +532,7 @@ def generateOutput(variants, ACMG_result, patient_phenotypes, variant_ACMG_inter
             variant_ACMG_interpret[key].append(('Phenotype filter', interpret))
         if key in curr_interpret_chinese.keys():
             interpret_chinese = ' '.join(curr_interpret_chinese[key])
-            variant_ACMG_interpret_chinese[key].append(('表型深度筛选', interpret))
+            variant_ACMG_interpret_chinese[key].append(('表型深度筛选', interpret_chinese))
         tmp_df = pd.DataFrame(variant_ACMG_interpret[key], columns = ['criteria', 'interpretation'])
         tmp_df['gene'] = key[0]
         tmp_df['variant'] = key[1]

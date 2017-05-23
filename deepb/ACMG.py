@@ -97,6 +97,7 @@ def getMissenseAAPathogenicity():
             line = line.rstrip('\n')
             parts = line.split('\t')
             gene, protein, clinvar_id = parts[0], parts[1], parts[3]
+            clinvar_id = "<a href='https://www.ncbi.nlm.nih.gov/clinvar/variation/%s/'> %s </a>" %(clinvar_id, clinvar_id)
             try:
                 original_AA = re.match(r'p\.[A-Za-z]{3}[0-9]{1,10}', protein).group(0)
             except AttributeError:
@@ -222,6 +223,7 @@ def getPubMedEval(df_pubmed):
     functional_study_res = dict()
     for index, row in df_pubmed.iterrows():
         gene, variant, pathogenicity_score, impactfactor, year, title, text, pmid = row['Gene'], row['Variant'], row['pathogenicity_score'], row['Impact_Factor'], row['Year'], row['Title'], row['Abstract'], row['PMID']
+        pmid = "<a href='https://www.ncbi.nlm.nih.gov/pubmed/%s'> %s </a>" %(pmid, pmid)
         count, weighted_count = checkFunctionalStudy(title, text, impactfactor)
         if (gene, variant) not in study_pathogenicity_score: 
             study_pathogenicity_score[(gene,variant)] = [pathogenicity_score]
@@ -743,8 +745,10 @@ def check_PP5_BP6(variant_):
     curr_interpret, curr_interpret_chinese = [], []
     clinvar_pathogenicity = variant_['clinvar_pathogenicity'].lower()
     clinvar_pmids, clinvar_variation_ids, clinvar_review_status = variant_['clinvar_pmids'], variant_['clinvar_variation_ids'], variant_['clinvar_review_status']   
+    clinvar_pmids = ["<a href='https://www.ncbi.nlm.nih.gov/pubmed/%s'> %s </a>" %(i,i) for i in clinvar_pmids]
+    clinvar_variation_ids = ["<a href='https://www.ncbi.nlm.nih.gov/clinvar/variation/%s/'> %s </a>" %(i,i) for i in clinvar_variation_ids.split('|')]
     # clinvar_pmids is a list
-    clinvar_variation_ids = ', '.join(clinvar_variation_ids.split('|'))
+    clinvar_variation_ids = ', '.join(clinvar_variation_ids)
     if clinvar_review_status:
         clinvar_review_status = clinvar_review_status.split('|')
         reviewstatusmap = {'no assertion criteria provided':0.5, 'no assertion provided':0.5, 'no assertion for the individual variant':0.5, 'criteria provided, single submitter':1, 'criteria provided, conflicting interpretations':0.75, 'criteria provided, multiple submitters, no conflicts':1.5, 'reviewed by expert panel':2, 'practice guideline':2.5} 
@@ -921,6 +925,10 @@ def Get_ACMG_result(df_hpo_ranking_genes, variants, df_pubmed):
         variant_ = variants[key]
         gene_0, variant_0, protein_0, id_0, rsid_0, transcript_0, effect_0, exon_0, interpro_domain_0, ref_0, alt_0, maf_exac_0, maf_1000g_0, maf_esp6500_0, dann_0, fathmm_0, metasvm_0, gerp_0, dbscSNV_rf_0, dbscSNV_ada_0, clinvar_pathogenicity_0, clinvar_pmids_0, clinvar_variation_ids_0, clinvar_review_status_0 = variant_['gene'], variant_['variant'], variant_['protein'], variant_['id'], variant_['rsid'], variant_['transcript'], variant_['effect'], variant_['exon'], variant_['interpro_domain'], variant_['ref'], variant_['alt'], variant_['maf_exac'], variant_['maf_1000g'], variant_['maf_esp6500'], variant_['dann'], variant_['fathmm'], variant_['metasvm'], variant_['gerp++'], variant_['dbscSNV_rf_score'], variant_['dbscSNV_ada_score'], variant_['clinvar_pathogenicity'], variant_['clinvar_pmids'], variant_['clinvar_variation_ids'], variant_['clinvar_review_status']  
 
+        
+        clinvar_pmids_0 = ["<a href='https://www.ncbi.nlm.nih.gov/pubmed/%s'> %s </a>" %(i,i) for i in clinvar_pmids_0]
+        clinvar_variation_ids_0 = ["<a href='https://www.ncbi.nlm.nih.gov/clinvar/variation/%s/'> %s </a>" %(i,i) for i in clinvar_variation_ids_0.split('|')]
+
     	interpret, curr_interpret, interpret_chinese, curr_interpret_chinese = [], [], [], []   
     	if effect_0: 
                 curr_interpret.append('Effect: %s.' % effect_0)
@@ -964,9 +972,9 @@ def Get_ACMG_result(df_hpo_ranking_genes, variants, df_pubmed):
     	if dbscSNV_ada_0: 
                 curr_interpret.append('AdaBoost dbscSNV splicing effect prediction: %s.' % dbscSNV_ada_0)
                 curr_interpret_chinese.append('基于AdaBoost算法的dbscSNV剪接效应预测分数: %s.' % dbscSNV_ada_0)
-    	if clinvar_variation_ids_0: 
-                curr_interpret.append('Clinvar variation ids: %s.' % clinvar_variation_ids_0)
-                curr_interpret_chinese.append('Clinvar数据库ID: %s.' % clinvar_variation_ids_0)
+    	if clinvar_variation_ids_0 != ["<a href='https://www.ncbi.nlm.nih.gov/clinvar/variation//'>  </a>"]: 
+                curr_interpret.append('Clinvar variation ids: %s.' % ",".join(clinvar_variation_ids_0))
+                curr_interpret_chinese.append('Clinvar数据库ID: %s.' % ",".join(clinvar_variation_ids_0))
     	if clinvar_pathogenicity_0: 
                 curr_interpret.append('Pathogenicity reported by Clinvar: %s.' % clinvar_pathogenicity_0)
                 clinvar_pathogenicity_0_chinese =  re_map_clinvar_pathogenicity.sub(lambda m: map_clinvar_pathogenicity[m.group()], clinvar_pathogenicity_0)
@@ -976,8 +984,8 @@ def Get_ACMG_result(df_hpo_ranking_genes, variants, df_pubmed):
                 clinvar_review_status_0_chinese = re_map_clinvar_review_status.sub(lambda m: map_clinvar_review_status[m.group()], clinvar_review_status_0)
                 curr_interpret_chinese.append('Clinvar数据库记录审核状态: %s.' % clinvar_review_status_0)
     	if clinvar_pmids_0: 
-                curr_interpret.append('Pubmed references from Clinvar: %s.' % clinvar_pmids_0)
-                curr_interpret_chinese.append('Clinvar数据库记录的Pubmed相关生物医学文献: %s.' % clinvar_pmids_0)
+                curr_interpret.append('Pubmed references from Clinvar: %s.' % ",".join(clinvar_pmids_0))
+                curr_interpret_chinese.append('Clinvar数据库记录的Pubmed相关生物医学文献: %s.' % ",".join(clinvar_pmids_0))
 
     	curr_interpret = '<br/>'.join(curr_interpret)
     	curr_interpret_chinese = '<br/>'.join(curr_interpret_chinese)
