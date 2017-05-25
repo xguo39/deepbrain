@@ -48,7 +48,9 @@
           <ul class="dropdown-menu" role="menu">
             <li><a href="">用户名:&nbsp;&nbsp; {{ User_name }}</a></li>
             <li class="divider"></li>
-            <li><a href={% url 'password_change' %}>修改密码</a></li>
+            {% if not guest %}
+              <li><a href={% url 'password_change' %}>修改密码</a></li>
+            {% endif %}
             <li><a href={% url 'logout' %}>退出登陆</a></li>
           </ul>
         </li>

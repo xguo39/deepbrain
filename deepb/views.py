@@ -53,7 +53,8 @@ class HomeView(LoginRequiredMixin, ListView):
                 if status == 'In progress':
                     context['refresh'] = 1
                     break
-        
+        if self.request.user.username == 'guest':
+            context['guest'] = 1
         return context
 
     def get_queryset(self):
@@ -240,6 +241,8 @@ class HomeView_ch(LoginRequiredMixin, ListView):
                 if status == 'In progress':
                     context['refresh'] = 1
                     break
+        if self.request.user.username == 'guest':
+            context['guest'] = 1
         
         return context
 
