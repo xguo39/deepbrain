@@ -165,7 +165,7 @@ def handle_uploaded_file(raw_input_gene_file, raw_input_phenotype_file, user_nam
 
     return raw_gene_input.id
 
-
+@login_required(login_url='/login/')
 def result(request, pk):
     main_table = get_object_or_404(Main_table, pk=pk)
     input_gene_field = [i.split(":")[0][1:-1] for i in main_table.input_gene.split("},{")[0][2:].split(',')]
@@ -180,6 +180,7 @@ def result(request, pk):
         'pk': pk,
         })
 
+@login_required(login_url='/login/')
 def result_ch(request, pk):
     main_table = get_object_or_404(Main_table, pk=pk)
     input_gene_field = [i.split(":")[0][1:-1] for i in main_table.input_gene.split("},{")[0][2:].split(',')]
@@ -194,6 +195,7 @@ def result_ch(request, pk):
         'pk': pk,
         })
 
+@login_required(login_url='/login/')
 def interpretation(request, pk):
     main_table = get_object_or_404(Main_table, pk=pk)
 
@@ -204,6 +206,7 @@ def interpretation(request, pk):
         'pk': pk,
         })
 
+@login_required(login_url='/login/')
 def interpretation_ch(request, pk):
     main_table = get_object_or_404(Main_table, pk=pk)
 
