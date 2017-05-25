@@ -59,15 +59,19 @@ class HomeView(LoginRequiredMixin, ListView):
     def get_queryset(self):
         raw_input_list = Raw_input_table.objects.filter(user_name=self.request.user.username)
         raw_input_table_with_status_and_id_list = []
-        # show_all = self.request.GET.get('show_all')
+        # show_all = self.request.GET.get('show_all')            
         for raw_input_table in raw_input_list:
             status, main_table_id = self._task_status_check(raw_input_table)
             raw_input_table_with_status_and_id_list.append(Raw_input_table_with_status_and_id(raw_input_table, status, main_table_id))
-        try:
-            a = self.kwargs['show_all']
-            return raw_input_table_with_status_and_id_list[::-1]
-        except:
-            return raw_input_table_with_status_and_id_list[::-1][:6]
+
+        if self.request.user.username == 'guest':
+            return raw_input_table_with_status_and_id_list[::-1][:1]
+        else:
+            try:
+                a = self.kwargs['show_all']
+                return raw_input_table_with_status_and_id_list[::-1]
+            except:
+                return raw_input_table_with_status_and_id_list[::-1][:6]
 
     def _task_status_check(self, raw_input_table):
         # check if the task is succeed
@@ -242,15 +246,19 @@ class HomeView_ch(LoginRequiredMixin, ListView):
     def get_queryset(self):
         raw_input_list = Raw_input_table.objects.filter(user_name=self.request.user.username)
         raw_input_table_with_status_and_id_list = []
-        # show_all = self.request.GET.get('show_all')
+        # show_all = self.request.GET.get('show_all')            
         for raw_input_table in raw_input_list:
             status, main_table_id = self._task_status_check(raw_input_table)
             raw_input_table_with_status_and_id_list.append(Raw_input_table_with_status_and_id(raw_input_table, status, main_table_id))
-        try:
-            a = self.kwargs['show_all']
-            return raw_input_table_with_status_and_id_list[::-1]
-        except:
-            return raw_input_table_with_status_and_id_list[::-1][:5]
+
+        if self.request.user.username == 'guest':
+            return raw_input_table_with_status_and_id_list[::-1][:1]
+        else:
+            try:
+                a = self.kwargs['show_all']
+                return raw_input_table_with_status_and_id_list[::-1]
+            except:
+                return raw_input_table_with_status_and_id_list[::-1][:5]
 
     def _task_status_check(self, raw_input_table):
         # check if the task is succeed
