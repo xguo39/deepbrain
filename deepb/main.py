@@ -143,12 +143,16 @@ def read_input_gene_file(input_gene):
 				variant_id = part
 		if not variant_id and (chrom_idx is not None and pos_idx is not None and ref_idx is not None and alt_idx is not None):
 			chrome, pos, ref, alt = parts[chrom_idx], parts[pos_idx], parts[ref_idx], parts[alt_idx]
-			try:
-				variant_id = format_hgvs(chrome, pos, ref, alt)
-			except ValueError:
-				pass
-		# print gene, variant, transcript, variant_id
-		candidate_vars.append((gene, variant, transcript, variant_id))
+			alts = alt.split(',')
+			for alt in alts:
+				try:
+					variant_id = format_hgvs(chrome, pos, ref, alt)
+				except ValueError:
+					pass
+				# print gene, variant, transcript, variant_id
+				if not gene and not variant and not transcript and not variant_id:
+					continue
+				candidate_vars.append((gene, variant, transcript, variant_id))
 
 	# remove lines in the input file which has wrong number of fields
 	field_nums = []
