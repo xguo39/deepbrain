@@ -6,6 +6,7 @@ import re
 from nltk.stem.wordnet import WordNetLemmatizer
 from collections import Counter
 import os.path
+import numpy as np
 BASE = os.path.dirname(os.path.abspath(__file__))
 
 HPO_SUBCLASS = os.path.join(BASE, "data/hpo_subclasses.txt")
@@ -541,7 +542,7 @@ def generate_score(phenos, CANDIDATE_GENES, corner_cases, original_phenos):
 
         # pprint.pprint(mapped_genes)
         all_mapped_genes += mapped_genes
-        mapped_genes_score, mapped_genes_score_phenospecificity = map2geneWithSim(final_matches)
+        mapped_genes_score, mapped_genes_score_phenospecificity = map2geneWithSim(final_matches, CANDIDATE_GENES)
         if pheno in corner_cases:
             pheno = corner_cases[pheno]
         for gene in mapped_genes_score:
@@ -639,7 +640,7 @@ def generate_score(phenos, CANDIDATE_GENES, corner_cases, original_phenos):
         if hits:
             ranking_diseases.append((disease, score, hits))
 
-    return ranking_genes, ranking_diseases
+    return ranking_genes, ranking_diseases, gene_associated_phenos
 
 # OUT_FILE = 'result/ranking_genes.txt'
 # OUT_FILE_DISEASE = 'result/ranking_diseases.txt'

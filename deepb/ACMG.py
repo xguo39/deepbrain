@@ -855,7 +855,7 @@ def classify(ACMG_score_list):
     PVS1, PS1, PS2, PS3, PS4, PM1, PM2, PM3, PM4, PM5, PM6, PP1, PP2, PP3, PP4, PP5, BA1, BS1, BS2, BS3, BS4, BP1, BP2, BP3, BP4, BP5, BP6, BP7 = ACMG_score_list
     ACMG_criteria_list = ['PVS1', 'PS1', 'PS2', 'PS3', 'PS4', 'PM1', 'PM2', 'PM3', 'PM4', 'PM5', 'PM6', 'PP1', 'PP2', 'PP3', 'PP4', 'PP5', 'BA1', 'BS1', 'BS2', 'BS3', 'BS4', 'BP1', 'BP2', 'BP3', 'BP4', 'BP5', 'BP6', 'BP7']
     ACMG_score = dict(zip(ACMG_criteria_list, ACMG_score_list)) 
-    print ACMG_score
+    # print ACMG_score
     ACMG_weighted_score = 0 
     hit_criteria = []
     for criteria in ACMG_score.keys():
@@ -1018,8 +1018,8 @@ def Get_ACMG_result(df_hpo_ranking_genes, variants, df_pubmed):
     	PP3, BP4 = check_PP3_BP4(variant_)
     	PP4 = check_PP4()
     	PP5, BP6 = check_PP5_BP6(variant_)
-        print 'PP5', PP5
-        print 'BP6', BP6
+        # print 'PP5', PP5
+        # print 'BP6', BP6
     	BP5 = check_BP5()
     	BP7 = check_BP7(variant_)
            

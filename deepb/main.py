@@ -29,6 +29,8 @@ def format_hgvs(chrom, pos, ref, alt):
         >>> myvariant.format_hgvs("X", 107930849, "GGA", "C")
 
     '''
+    if chrom == '.' or pos == '.' or ref == '.' or alt == '.' or not chrom or not pos or not ref or not alt or ref == alt:
+    	return ''
     chrom = str(chrom)
     if chrom.lower().startswith('chr'):
         # trim off leading "chr" if any
@@ -86,6 +88,7 @@ def read_input_pheno_file(input_phenotype):
             phenos.append('developmental delay')
             corner_cases['developmental delay'] = pheno.strip()
     phenos = [_.strip() for _ in phenos]
+    phenos = list(set(phenos))
     return phenos, corner_cases, original_phenos
 
 def read_input_gene_file(input_gene):
@@ -109,8 +112,7 @@ def read_input_gene_file(input_gene):
 	    if re.match(r'pos|start', field, re.I): pos_idx = idx
 	    if re.match(r'ref', field, re.I): ref_idx = idx
 	    if re.match(r'alt|allele 1', field, re.I): alt_idx = idx
-	    if re.match(r'gene (gene)|gene', field, re.I): gene_idx = idx
-
+	    if re.match(r'gene \(gene\)|gene$', field, re.I): gene_idx = idx
 	input_gene_list = []
 	CANDIDATE_GENES = []
 	for line in input_gene[1:]:
@@ -141,7 +143,10 @@ def read_input_gene_file(input_gene):
 				variant_id = part
 		if not variant_id and (chrom_idx is not None and pos_idx is not None and ref_idx is not None and alt_idx is not None):
 			chrome, pos, ref, alt = parts[chrom_idx], parts[pos_idx], parts[ref_idx], parts[alt_idx]
-			variant_id = format_hgvs(chrome, pos, ref, alt)
+			try:
+				variant_id = format_hgvs(chrome, pos, ref, alt)
+			except ValueError:
+				pass
 		# print gene, variant, transcript, variant_id
 		candidate_vars.append((gene, variant, transcript, variant_id))
 
@@ -159,7 +164,13 @@ def read_input_gene_file(input_gene):
 	return candidate_vars, CANDIDATE_GENES, df_genes, field_names 
 
 def map_phenotype2gene(CANDIDATE_GENES, phenos, corner_cases, candidate_vars, original_phenos):
-	ranking_genes, ranking_disease = map_phenotype_to_gene.generate_score(phenos, CANDIDATE_GENES, corner_cases, original_phenos)
+	ranking_genes, ranking_disease, gene_associated_phenos = map_phenotype_to_gene.generate_score(phenos, CANDIDATE_GENES, corner_cases, original_phenos)
+	# gene_associated_phenos = dict(list) e.g., {'BRCA1':['breast..', '..'], 'PTPN11':['noonan', '..']}
+	for gene in gene_associated_phenos.keys():
+		phenos = gene_associated_phenos[gene]
+		phenos = ', '.join(phenos)
+		gene_associated_phenos[gene] = phenos
+	df_gene_associated_phenos = pd.DataFrame(gene_associated_phenos.items(), columns = ['gene', 'correlated_phenotypes'])
 	# collect variant info
 	hpo_filtered_genes = np.unique([i[0] for i in ranking_genes]).tolist()
 
@@ -168,7 +179,7 @@ def map_phenotype2gene(CANDIDATE_GENES, phenos, corner_cases, candidate_vars, or
 		if var[0] in hpo_filtered_genes:
 			tmp_candidate_vars.append(var)
 	candidate_vars = tmp_candidate_vars
-	return ranking_genes, candidate_vars
+	return ranking_genes, candidate_vars, df_gene_associated_phenos
 
 def master_function(raw_input_id):
 	status_step = "generating candidate variants ..." 
@@ -182,10 +193,10 @@ def master_function(raw_input_id):
 
 	# Read input gene file and generate candidate_vars. candidate_vars are (gene, variant, transcript, variant_id); CANDIDATE_GENES is a list of gene symbols; df_genes is a dataframe that keeps all the data that user uploaded; field_names are header of the input gene file 
 	candidate_vars, CANDIDATE_GENES, df_genes, field_names = read_input_gene_file(input_gene)
-	print candidate_vars
-	print CANDIDATE_GENES
-	print df_genes
-	print field_names
+	# print candidate_vars
+	# print CANDIDATE_GENES
+	# print df_genes
+	# print field_names
 	if not CANDIDATE_GENES:
 		# collect variant info
 		raw_input.status = "Annotating variants using genomic databases"
@@ -196,7 +207,7 @@ def master_function(raw_input_id):
 		if phenos:
 			raw_input.status = "Maping phenotypes to genes"
 			raw_input.save()
-			ranking_genes, candidate_vars = map_phenotype2gene(CANDIDATE_GENES, phenos, corner_cases, candidate_vars, original_phenos)
+			ranking_genes, candidate_vars, df_gene_associated_phenos = map_phenotype2gene(CANDIDATE_GENES, phenos, corner_cases, candidate_vars, original_phenos)
 		else:
 			ranking_genes = []
 			for gene in CANDIDATE_GENES:
@@ -206,7 +217,7 @@ def master_function(raw_input_id):
 		if phenos:
 			raw_input.status = "Maping phenotypes to genes"
 			raw_input.save()
-			ranking_genes, candidate_vars = map_phenotype2gene(CANDIDATE_GENES, phenos, corner_cases, candidate_vars, original_phenos)
+			ranking_genes, candidate_vars, df_gene_associated_phenos = map_phenotype2gene(CANDIDATE_GENES, phenos, corner_cases, candidate_vars, original_phenos)
 		else:
 			ranking_genes = []
 			for gene in CANDIDATE_GENES:
@@ -215,10 +226,10 @@ def master_function(raw_input_id):
 		raw_input.status = "Annotating variants using genomic databases"
 		raw_input.save()
 		final_res, variants = collectVariantInfo.get_variants(candidate_vars)
-	print ranking_genes
-	print candidate_vars
-	print final_res
-	print variants
+	# print ranking_genes
+	# print candidate_vars
+	# print final_res
+	# print variants
 
 	if final_res == [] and variants == defaultdict(dict):
 		return pd.DataFrame(), df_genes, phenos, field_names, pd.DataFrame(), pd.DataFrame()
@@ -241,6 +252,7 @@ def master_function(raw_input_id):
 			raw_input.status = "Filtering variants based on phenotypes"
 			raw_input.save()
 			df_final_res, variant_ACMG_interpretation, variant_ACMG_interpret_chinese = filterVariantOnPhenotype.generateOutput(variants, ACMG_result, phenos, variant_ACMG_interpretation, variant_ACMG_interpret_chinese)
+			df_final_res = df_final_res.merge(df_gene_associated_phenos, on = 'gene', how = 'left')
 			return df_final_res, df_genes, phenos, field_names, variant_ACMG_interpretation, variant_ACMG_interpret_chinese
 
 		else:

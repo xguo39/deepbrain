@@ -373,6 +373,8 @@ def get_variants(candidate_vars):
   global non_snpeff
   for data in non_snpeff_var_data:
     non_snpeff = data
+    if "_id" not in non_snpeff:
+      continue
     variant_id = non_snpeff['_id'] 
     keys = variant_id2key[variant_id]
     for key in keys:

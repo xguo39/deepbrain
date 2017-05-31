@@ -30,6 +30,9 @@
                 <th>GNova得分</th>
                 <th>致病性</th>
                 <th>标准</th>
+                {% if input_phenotype %}
+                    <th>关联表型</th>
+                {% endif %}
             </tr>
         </thead>
     </table>
@@ -75,12 +78,22 @@
             "data": result,
             "autoWidth": false,
             "columns": [
+            {% if input_phenotype %}
+                { "data" : "gene" , "width": "9%" },
+                { "data" : "variant" , "width": "9%" },
+                { "data" : "id" , "width": "16%" },
+                { "data" : "final_score" , "width": "5%" },
+                { "data" : "pathogenicity" , "width": "10%" },
+                { "data" : "hit_criteria" , "width": "10%" },
+                { "data" : "correlated_phenotypes" , "width": "41%" }
+            {% else %}
                 { "data" : "gene" , "width": "14%" },
                 { "data" : "variant" , "width": "14%" },
                 { "data" : "id" , "width": "20%" },
                 { "data" : "final_score" , "width": "12%" },
                 { "data" : "pathogenicity" , "width": "16%" },
                 { "data" : "hit_criteria" , "width": "24%" }
+            {% endif %}
             ],
             "language": {
                         "sProcessing":   "处理中...",
