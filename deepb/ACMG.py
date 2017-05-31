@@ -57,7 +57,7 @@ def check_PVS1(variant_):
     in_LOF_genes = True if gene in LOF_genes else False
     #not_affect_splicing = False if ((dbscSNV_rf_score and float(dbscSNV_rf_score) > dbscSNV_cutoff) or (dbscSNV_ada_score and float(dbscSNV_ada_score) > dbscSNV_cutoff)) else True 
     not_benign_splicing = True if ((not dbscSNV_rf_score and not dbscSNV_ada_score) or (dbscSNV_rf_score and float(dbscSNV_rf_score) > dbscSNV_cutoff) or (dbscSNV_ada_score and float(dbscSNV_ada_score) > dbscSNV_cutoff)) else False 
-    curr_interpret.append('Variant effect belongs to null variant type.') if effect_in_null_variant_types else curr_interpret.append('Variant effect NOT in null variant type.') 
+    curr_interpret.append('Variant belongs to null variant type.') if effect_in_null_variant_types else curr_interpret.append('Variant NOT in null variant type.') 
     curr_interpret_chinese.append('基因变异类型是无效变异(null variant).') if effect_in_null_variant_types else curr_interpret_chinese.append('基因变异类型不是无效变异(null variant).') 
     curr_interpret.append('Allele in a gene where loss of function (LOF) is a known mechanism of disease.') if in_LOF_genes else curr_interpret.append('Allele in a gene where loss of function (LOF) is NOT a known mechanism of disease.') 
     curr_interpret_chinese.append('变异位点所在基因的功能丢失(loss of function)是已知的致病机制.') if in_LOF_genes else curr_interpret_chinese.append('变异位点所在基因的功能丢失(loss of function)不是已知的致病机制.') 
@@ -131,7 +131,7 @@ def check_PS1_PM5(variant_):
     PS1, PM5 = 0, 0
     dbscSNV_cutoff = 0.6
     effect_in_missense_variant_types = re.search('|'.join(missense_variant_types), variant_effect, re.I)
-    curr_interpret.append('Variant effect is missense.') if effect_in_missense_variant_types else curr_interpret.append('Variant effect is NOT missense.')
+    curr_interpret.append('Coding effect is missense.') if effect_in_missense_variant_types else curr_interpret.append('Coding effect is NOT missense.')
     curr_interpret_chinese.append('变异为错义突变.') if effect_in_missense_variant_types else curr_interpret_chinese.append('变异非错义突变.')
     has_pathogenic_same_AA_change, has_pathogenic_different_AA_change = False, False 
     if gene in missense_AA_pathogenicity and protein in missense_AA_pathogenicity[gene]:
@@ -592,6 +592,9 @@ def check_PM4_BP3(variant_):
     if effect_in_inframe_indel_variant_types: 
         curr_interpret.append('Variant effect is in-frame deletions/insertion.')
         curr_interpret_chinese.append('基因变异类型是框内缺失/插入.')
+    else:
+        curr_interpret.append('Variant effect is NOT in-frame deletions/insertion.')
+        curr_interpret_chinese.append('基因变异类型不是框内缺失/插入.')
     curr_interpret.append('Allele is in a repeat region.') if in_repeat_region else curr_interpret.append('Allele is in a nonrepeat region.')
     curr_interpret_chinese.append('变异位点在重复区域(repeat region).') if in_repeat_region else curr_interpret_chinese.append('变异位点在非重复区域(nonrepeat region).')
     if effect_is_stop_loss: 
@@ -752,6 +755,8 @@ def check_PP5_BP6(variant_):
         reviewstatusmap = {'no assertion criteria provided':0.5, 'no assertion provided':0.5, 'no assertion for the individual variant':0.5, 'criteria provided, single submitter':1, 'criteria provided, conflicting interpretations':0.75, 'criteria provided, multiple submitters, no conflicts':1.5, 'reviewed by expert panel':2, 'practice guideline':2.5} 
         clinvar_review_status = [reviewstatusmap[review] for review in clinvar_review_status]
         clinvar_review_status = max(clinvar_review_status)
+    else:
+        clinvar_review_status = 1.0
  
     PP5, BP6 = 0, 0
     pathogenic_keywords = ['pathogenic', 'risk factor']
@@ -850,11 +855,15 @@ def classify(ACMG_score_list):
     PVS1, PS1, PS2, PS3, PS4, PM1, PM2, PM3, PM4, PM5, PM6, PP1, PP2, PP3, PP4, PP5, BA1, BS1, BS2, BS3, BS4, BP1, BP2, BP3, BP4, BP5, BP6, BP7 = ACMG_score_list
     ACMG_criteria_list = ['PVS1', 'PS1', 'PS2', 'PS3', 'PS4', 'PM1', 'PM2', 'PM3', 'PM4', 'PM5', 'PM6', 'PP1', 'PP2', 'PP3', 'PP4', 'PP5', 'BA1', 'BS1', 'BS2', 'BS3', 'BS4', 'BP1', 'BP2', 'BP3', 'BP4', 'BP5', 'BP6', 'BP7']
     ACMG_score = dict(zip(ACMG_criteria_list, ACMG_score_list)) 
+    print ACMG_score
     ACMG_weighted_score = 0 
     hit_criteria = []
     for criteria in ACMG_score.keys():
         score = ACMG_score[criteria] 
         weight = getWeight(criteria)
+        # print criteria
+        # print 'score', score 
+        # print 'weight', weight
         score = score * weight
         ACMG_weighted_score += score
         if score: hit_criteria.append(criteria)
@@ -940,6 +949,9 @@ def Get_ACMG_result(df_hpo_ranking_genes, variants, df_pubmed):
     	if rsid_0: 
                 curr_interpret.append('RefSeq ID: %s.' % rsid_0) 
                 curr_interpret_chinese.append('RefSeq ID: %s.' % rsid_0) 
+        if protein_0: 
+                curr_interpret.append('Protein: %s.' % protein_0) 
+                curr_interpret_chinese.append('蛋白质: %s.' % protein_0) 
     	if exon_0: 
                 curr_interpret.append('exon: %s.' % exon_0) 
                 curr_interpret_chinese.append('外显子: %s.' % exon_0) 
@@ -1006,6 +1018,8 @@ def Get_ACMG_result(df_hpo_ranking_genes, variants, df_pubmed):
     	PP3, BP4 = check_PP3_BP4(variant_)
     	PP4 = check_PP4()
     	PP5, BP6 = check_PP5_BP6(variant_)
+        print 'PP5', PP5
+        print 'BP6', BP6
     	BP5 = check_BP5()
     	BP7 = check_BP7(variant_)
            
@@ -1032,7 +1046,7 @@ def Get_ACMG_result(df_hpo_ranking_genes, variants, df_pubmed):
     #df_hpo_ranking_genes = pd.read_csv('result/ranking_genes.txt', sep = '\t', usecols = [0, 1])
     df_final_result = df_final_result.merge(df_hpo_ranking_genes, how = 'left', on = 'gene')
     df_final_result.columns = ['gene', 'variant', 'id', 'pathogenicity_score', 'pathogenicity', 'hit_criteria', 'hpo_hit_score']
-    df_final_result['final_score'] = np.log(df_final_result['hpo_hit_score'] + 2.7183) * df_final_result['pathogenicity_score']
+    df_final_result['final_score'] = df_final_result['hpo_hit_score'] * df_final_result['pathogenicity_score']
     df_final_result = df_final_result[['gene', 'variant', 'id', 'final_score', 'pathogenicity_score', 'pathogenicity', 'hit_criteria', 'hpo_hit_score']]
     df_final_result.sort_values(by=['final_score'], ascending = [0], inplace = True)
     df_final_result['final_score'] = df_final_result['final_score'].apply(lambda x: round(x,2))

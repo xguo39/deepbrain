@@ -33,6 +33,10 @@ PHENOTYPE_TO_DISEASE_FILE = os.path.join(BASE, 'data/Expanded_ALL_SOURCES_ALL_FR
 ## Phenotypic abnormality is level 1; Abnormality of prenatal development or birth is level 2.
 ## In the search for the common ancestors, we should stop at level 2; if two terms have the common ancestor below or equal at level 2, then we deem them to be semantically similar.
 
+PHENOTYPE_COUNT_FILE = os.path.join(BASE, 'data/hpoid_count_in_pubmed.txt')
+df_pheno_count = pd.read_csv(PHENOTYPE_COUNT_FILE, sep = '\t', usecols = [0, 2])
+hpoidpheno_count = df_pheno_count.set_index('hpoid')['count'].to_dict()
+
 hpo_subclass = dict()
 with open(HPO_SUBCLASS, 'rb') as f:
     # skip the first header line
@@ -410,6 +414,8 @@ def map2geneWithSim(final_matches, CANDIDATE_GENES):
     # Map to genes for each phenotype (one phenotype at one time) with similarity information (word len)
     # final_matches like: [('Postnatal macrocephaly','HP:0005490',0.5), ('Macrocephaly,relative','HP:0004482-synonym', 0.5), ...]
     # map2gene function returns a list while this function returns a dict with genesymbol as key and similarity as value 
+    ##**** new
+    global hpoidpheno_count
     hpoid_sim = dict() 
     for match in final_matches:
         hpoid = match[1].split('-')[0]
@@ -417,6 +423,9 @@ def map2geneWithSim(final_matches, CANDIDATE_GENES):
         if hpoid not in hpoid_sim or sim > hpoid_sim[hpoid]:
             hpoid_sim[hpoid] = sim
     mapped_genes_score = dict()
+    ##**** new
+    mapped_genes_score_phenospecificity = dict()
+
     for hpoid in hpoid_sim:
         try:
             mapped_genes = hpoid2gene[hpoid]
@@ -430,7 +439,14 @@ def map2geneWithSim(final_matches, CANDIDATE_GENES):
                 continue
             if gene not in mapped_genes_score or sim > mapped_genes_score[gene]:
                 mapped_genes_score[gene] = sim
-    return mapped_genes_score 
+                ##**** new
+                if hpoid in hpoidpheno_count:
+                    pheno_weight = 6.0 / np.log(hpoidpheno_count[hpoid] + 2.7183) 
+                else: 
+                    pheno_weight = 6.0  
+                mapped_genes_score_phenospecificity[gene] = sim * pheno_weight
+    ##**** new
+    return mapped_genes_score, mapped_genes_score_phenospecificity 
 
 hpoid2disease = dict()
 numphenosindisease = dict()
@@ -496,13 +512,16 @@ def map2diseaseWithSim(final_matches):
     return mapped_diseases_score 
 
 
-def generate_score(phenos, CANDIDATE_GENES, corner_cases):
+def generate_score(phenos, CANDIDATE_GENES, corner_cases, original_phenos):
     all_mapped_genes = []
     all_mapped_genes_score = {}
     gene_phenos = {} 
     all_mapped_diseases = []
     all_mapped_diseases_score = {}
     disease_phenos = {} 
+
+    gene_associated_phenos = dict()
+    all_mapped_genes_score_phenospecificity = {}
 
     for pheno in phenos:
         # print ("===========================================================================================")
@@ -511,16 +530,27 @@ def generate_score(phenos, CANDIDATE_GENES, corner_cases):
         final_matches = map2hpoWithPhenoSynonyms(pheno)
         # pprint.pprint(final_matches)
         mapped_genes = map2gene(final_matches, CANDIDATE_GENES)
+
+        for gene in mapped_genes:
+            if pheno not in original_phenos:
+                continue
+            if gene in gene_associated_phenos:
+                gene_associated_phenos[gene].append(pheno)
+            else:
+                gene_associated_phenos[gene] = [pheno]
+
         # pprint.pprint(mapped_genes)
         all_mapped_genes += mapped_genes
-        mapped_genes_score = map2geneWithSim(final_matches, CANDIDATE_GENES)
+        mapped_genes_score, mapped_genes_score_phenospecificity = map2geneWithSim(final_matches)
         if pheno in corner_cases:
             pheno = corner_cases[pheno]
         for gene in mapped_genes_score:
             if gene not in all_mapped_genes_score:
                 all_mapped_genes_score[gene] = mapped_genes_score[gene]
+                all_mapped_genes_score_phenospecificity[gene] = mapped_genes_score_phenospecificity[gene]
             else:
                 all_mapped_genes_score[gene] += mapped_genes_score[gene]
+                all_mapped_genes_score_phenospecificity[gene] += mapped_genes_score_phenospecificity[gene]
             if gene not in gene_phenos:
                 gene_phenos[gene] = [pheno]
             else:
@@ -591,12 +621,13 @@ def generate_score(phenos, CANDIDATE_GENES, corner_cases):
     for id in xrange(len(all_mapped_genes_score)):
         gene, score = all_mapped_genes_score[id]
         hits = None
+        phenospecificity_score = all_mapped_genes_score_phenospecificity[gene]
         for gene_hits in count:
             if gene_hits[0] == gene:
                 hits = gene_hits[1] 
                 break
         if hits:
-            ranking_genes.append((gene, score, hits))
+            ranking_genes.append((gene, score, hits, phenospecificity_score))
 
     for id in xrange(len(all_mapped_diseases_score)):
         disease, score = all_mapped_diseases_score[id]

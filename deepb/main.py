@@ -12,6 +12,7 @@ import myvariant
 from deepb.models import Main_table, Raw_input_table
 from io import StringIO
 from collections import Counter
+from collections import defaultdict
 
 
 # input_phenotype = 'data/sample_patient_phenotype.txt'
@@ -61,7 +62,7 @@ def format_hgvs(chrom, pos, ref, alt):
 
 def read_input_pheno_file(input_phenotype):
     if not input_phenotype:
-        return '', ''
+        return '', '', ''
     text = StringIO(unicode(input_phenotype), newline=None)
     lines = text.readlines()
     lines = [line.strip() for line in lines]
@@ -75,6 +76,7 @@ def read_input_pheno_file(input_phenotype):
         phenos += phenos_each_line
 
     corner_cases = dict()
+    original_phenos = [_.strip() for _ in phenos]
     for pheno in phenos:
         if re.search('development', pheno) and re.search('delay', pheno) and not re.search('growth', pheno):
             phenos.append('growth delay')
@@ -83,38 +85,49 @@ def read_input_pheno_file(input_phenotype):
         if re.search('growth', pheno) and re.search('delay', pheno) and not re.search('development', pheno):
             phenos.append('developmental delay')
             corner_cases['developmental delay'] = pheno.strip()
-    return phenos, corner_cases
+    phenos = [_.strip() for _ in phenos]
+    return phenos, corner_cases, original_phenos
 
 def read_input_gene_file(input_gene):
 	candidate_vars = []
 	input_gene = input_gene.split('\n')
-	header = input_gene[0]
-	sniffer = csv.Sniffer()
-	dialect = sniffer.sniff(header)
-	delimiter =  dialect.delimiter
-	field_names = header.split(delimiter)
-	chrom_idx, pos_idx, ref_idx, alt_idx, gene_idx = None, None, None, None, 0 
+
+	for line in input_gene:
+	    if line and line[:2] != "##":
+	        header = line
+	        sniffer = csv.Sniffer()
+	        dialect = sniffer.sniff(header)
+	        delimiter =  dialect.delimiter
+	        field_names = header.split(delimiter)
+	        break
+	        
+	chrom_idx, pos_idx, ref_idx, alt_idx, gene_idx = None, None, None, None, None
 
 	for idx in xrange(len(field_names)):
-		field = field_names[idx]
-		if re.match(r'chrom', field, re.I): chrom_idx = idx
-		if re.match(r'pos|start', field, re.I): pos_idx = idx
-		if re.match(r'ref', field, re.I): ref_idx = idx
-		if re.match(r'alt|allele 1', field, re.I): alt_idx = idx
-		if re.match(r'gene (gene)|gene', field, re.I): gene_idx = idx
+	    field = field_names[idx]
+	    if re.match(r'chrom|#chrom', field, re.I): chrom_idx = idx
+	    if re.match(r'pos|start', field, re.I): pos_idx = idx
+	    if re.match(r'ref', field, re.I): ref_idx = idx
+	    if re.match(r'alt|allele 1', field, re.I): alt_idx = idx
+	    if re.match(r'gene (gene)|gene', field, re.I): gene_idx = idx
 
 	input_gene_list = []
 	CANDIDATE_GENES = []
 	for line in input_gene[1:]:
 		if not line:
+			continue	
+		if line.startswith("#"):
 			continue
 		line = line.rstrip()
+		# print line
 		parts = re.split(r'%s' % delimiter, line)
 		input_gene_list.append(parts)
-		gene = parts[gene_idx]
-		CANDIDATE_GENES.append(gene)
-		transcript, variant, variant_id = '', '', ''
+		gene, transcript, variant, variant_id = '', '', '', ''
+		if gene_idx is not None:
+			gene = parts[gene_idx]
+			CANDIDATE_GENES.append(gene)
 		for part in parts:
+			# print part
 			if re.search(r'_.*:c\.', part):
 				transcript, variant = part.split(':')
 			else:
@@ -126,26 +139,27 @@ def read_input_gene_file(input_gene):
 				variant_id = 'chr' + part.split(':')[0].split('.')[-1] + part.split(':')[-1]
 			if re.search(r'chr.*:g\.', part, re.I):
 				variant_id = part
-		if not variant_id and (chrom_idx and pos_idx and ref_idx and alt_idx):
+		if not variant_id and (chrom_idx is not None and pos_idx is not None and ref_idx is not None and alt_idx is not None):
 			chrome, pos, ref, alt = parts[chrom_idx], parts[pos_idx], parts[ref_idx], parts[alt_idx]
 			variant_id = format_hgvs(chrome, pos, ref, alt)
+		# print gene, variant, transcript, variant_id
 		candidate_vars.append((gene, variant, transcript, variant_id))
 
-        # remove lines in the input file which has wrong number of fields
-        field_nums = []
-        for line in input_gene_list:
-			field_nums.append(len(line))
-        count = Counter(field_nums)
-        correct_field_num = count.most_common()[0][0]
-        correct_input_gene_list = []
-        for line in input_gene_list:
-			if len(line) == correct_field_num:
-				correct_input_gene_list.append(line)
-        df_genes = pd.DataFrame(correct_input_gene_list, columns = field_names)
-        return candidate_vars, CANDIDATE_GENES, df_genes, field_names 
+	# remove lines in the input file which has wrong number of fields
+	field_nums = []
+	for line in input_gene_list:
+	    field_nums.append(len(line))
+	count = Counter(field_nums)
+	correct_field_num = count.most_common()[0][0]
+	correct_input_gene_list = []
+	for line in input_gene_list:
+	    if len(line) == correct_field_num:
+	        correct_input_gene_list.append(line)
+	df_genes = pd.DataFrame(correct_input_gene_list, columns = field_names)
+	return candidate_vars, CANDIDATE_GENES, df_genes, field_names 
 
-def map_phenotype2gene(CANDIDATE_GENES, phenos, corner_cases, candidate_vars):
-	ranking_genes, ranking_disease = map_phenotype_to_gene.generate_score(phenos, CANDIDATE_GENES, corner_cases)
+def map_phenotype2gene(CANDIDATE_GENES, phenos, corner_cases, candidate_vars, original_phenos):
+	ranking_genes, ranking_disease = map_phenotype_to_gene.generate_score(phenos, CANDIDATE_GENES, corner_cases, original_phenos)
 	# collect variant info
 	hpo_filtered_genes = np.unique([i[0] for i in ranking_genes]).tolist()
 
@@ -163,50 +177,73 @@ def master_function(raw_input_id):
 	input_phenotype = raw_input.raw_input_phenotype
 
 	# Read input pheno file and generate phenos and corner_cases 
-	phenos, corner_cases = read_input_pheno_file(input_phenotype)
+	phenos, corner_cases, original_phenos = read_input_pheno_file(input_phenotype)
 
 
 	# Read input gene file and generate candidate_vars. candidate_vars are (gene, variant, transcript, variant_id); CANDIDATE_GENES is a list of gene symbols; df_genes is a dataframe that keeps all the data that user uploaded; field_names are header of the input gene file 
 	candidate_vars, CANDIDATE_GENES, df_genes, field_names = read_input_gene_file(input_gene)
-
-	# map phenotype to gene; the candidate_vars was filtered: if it is a gene associated with phenos, then keep it.
-
-	if phenos:
-		raw_input.status = "Maping phenotypes to genes"
+	print candidate_vars
+	print CANDIDATE_GENES
+	print df_genes
+	print field_names
+	if not CANDIDATE_GENES:
+		# collect variant info
+		raw_input.status = "Annotating variants using genomic databases"
 		raw_input.save()
-		ranking_genes, candidate_vars = map_phenotype2gene(CANDIDATE_GENES, phenos, corner_cases, candidate_vars)
+		final_res, variants = collectVariantInfo.get_variants_from_vcf(candidate_vars)
+		CANDIDATE_GENES = [_[0] for _ in final_res]
+		# map phenotype to gene; the candidate_vars was filtered: if it is a gene associated with phenos, then keep it.
+		if phenos:
+			raw_input.status = "Maping phenotypes to genes"
+			raw_input.save()
+			ranking_genes, candidate_vars = map_phenotype2gene(CANDIDATE_GENES, phenos, corner_cases, candidate_vars, original_phenos)
+		else:
+			ranking_genes = []
+			for gene in CANDIDATE_GENES:
+				ranking_genes.append((gene, 1.0, 1, 1.0))
 	else:
-		ranking_genes = []
-		for gene in CANDIDATE_GENES:
-			ranking_genes.append((gene, 1.0, 1))
-
-	# collect variant info
-	raw_input.status = "Annotating variants using genomic databases"
-	raw_input.save()
-	mv = myvariant.MyVariantInfo()
-	final_res, variants = collectVariantInfo.get_variants(candidate_vars)
-
-	# pubmed
-	raw_input.status = "Searching biomedical literatures"
-	raw_input.save()
-	df_pubmed = pubmed.queryPubmedDB(final_res)
-
-	# ACMG
-	raw_input.status = "Checking ACMG standard"
-	raw_input.save()
-	df_hpo_ranking_genes = pd.DataFrame(ranking_genes, columns=['gene', 'score', 'hits'])
-	df_hpo_ranking_genes = df_hpo_ranking_genes[['gene', 'score']]
-	ACMG_result, variant_ACMG_interpretation, variant_ACMG_interpret_chinese, df_variant_ACMG_interpret, df_variant_ACMG_interpret_chinese = ACMG.Get_ACMG_result(df_hpo_ranking_genes, variants, df_pubmed)
-
-	# filter variant on phenotype
-
-	if phenos:
-		raw_input.status = "Filtering variants based on phenotypes"
+		# map phenotype to gene; the candidate_vars was filtered: if it is a gene associated with phenos, then keep it.
+		if phenos:
+			raw_input.status = "Maping phenotypes to genes"
+			raw_input.save()
+			ranking_genes, candidate_vars = map_phenotype2gene(CANDIDATE_GENES, phenos, corner_cases, candidate_vars, original_phenos)
+		else:
+			ranking_genes = []
+			for gene in CANDIDATE_GENES:
+				ranking_genes.append((gene, 1.0, 1, 1.0))
+		# collect variant info
+		raw_input.status = "Annotating variants using genomic databases"
 		raw_input.save()
-		df_final_res, variant_ACMG_interpretation, variant_ACMG_interpret_chinese = filterVariantOnPhenotype.generateOutput(variants, ACMG_result, phenos, variant_ACMG_interpretation, variant_ACMG_interpret_chinese)
-		return df_final_res, df_genes, phenos, field_names, variant_ACMG_interpretation, variant_ACMG_interpret_chinese
+		final_res, variants = collectVariantInfo.get_variants(candidate_vars)
+	print ranking_genes
+	print candidate_vars
+	print final_res
+	print variants
 
+	if final_res == [] and variants == defaultdict(dict):
+		return pd.DataFrame(), df_genes, phenos, field_names, pd.DataFrame(), pd.DataFrame()
 	else:
-	    return ACMG_result, df_genes, phenos, field_names, df_variant_ACMG_interpret, df_variant_ACMG_interpret_chinese
+		# pubmed
+		raw_input.status = "Searching biomedical literatures"
+		raw_input.save()
+		df_pubmed = pubmed.queryPubmedDB(final_res)
+
+		# ACMG
+		raw_input.status = "Checking ACMG standard"
+		raw_input.save()
+		df_hpo_ranking_genes = pd.DataFrame(ranking_genes, columns=['gene', 'score_sim', 'hits', 'score'])
+		df_hpo_ranking_genes = df_hpo_ranking_genes[['gene', 'score']]
+		ACMG_result, variant_ACMG_interpretation, variant_ACMG_interpret_chinese, df_variant_ACMG_interpret, df_variant_ACMG_interpret_chinese = ACMG.Get_ACMG_result(df_hpo_ranking_genes, variants, df_pubmed)
+
+		# filter variant on phenotype
+
+		if phenos:
+			raw_input.status = "Filtering variants based on phenotypes"
+			raw_input.save()
+			df_final_res, variant_ACMG_interpretation, variant_ACMG_interpret_chinese = filterVariantOnPhenotype.generateOutput(variants, ACMG_result, phenos, variant_ACMG_interpretation, variant_ACMG_interpret_chinese)
+			return df_final_res, df_genes, phenos, field_names, variant_ACMG_interpretation, variant_ACMG_interpret_chinese
+
+		else:
+		    return ACMG_result, df_genes, phenos, field_names, df_variant_ACMG_interpret, df_variant_ACMG_interpret_chinese
 
 

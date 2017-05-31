@@ -103,6 +103,20 @@ def collectSnpeff(gene, variant, transcript):
           protein = var['hgvs_p'] if 'hgvs_p' in var else ''
   return effect, protein
 
+def collectSnpeffWithGeneVariantInfo():
+  try:
+    ann = non_snpeff['snpeff']['ann']
+  except KeyError:
+    return '', '', '', '', ''
+  if isinstance(ann, list):
+    ann = ann[0]
+  gene = ann['gene_id'] if 'gene_id' in ann else ''
+  variant = ann['hgvs_c'] if 'hgvs_c' in ann else ''
+  protein = ann['hgvs_p'] if 'hgvs_p' in ann else ''
+  transcript = ann['feature_id'] if 'feature_id' in ann else ''
+  effect = ann['effect'] if 'effect' in ann else ''
+  return gene, variant, protein, transcript, effect
+
 def collectExAC():
   try:
     maf_exac = float(non_snpeff['exac']['ac']['ac_adj']) / non_snpeff['exac']['an']['an_adj']
@@ -446,3 +460,123 @@ def get_variants(candidate_vars):
 
   # df_final_res.to_csv('result/variants.txt', sep = '\t', index = False)
   return final_res, variants
+
+
+def get_variants_from_vcf(candidate_vars):
+  # if the input file is VCF, then candidate_vars do not contain gene symbol information; they only have variant ids; need to query gene, variant, transcript information from myvariant
+  mv = myvariant.MyVariantInfo()
+
+  variant_ids = []
+  variants = defaultdict(dict)
+
+  # The dbscsnv (splicing effect prediction) can not be obtained from myvariant; instead, we have local flat dbscsnv files
+  dbscsnv_chromosomes, dbscsnv_variants = [], {}
+
+  for var in candidate_vars:
+    variant_ids.append(var[3])
+
+  variant_ids = list(set(variant_ids))
+  non_snpeff_var_data = []
+  batch_size = 100
+  start, end = 0, 0
+  num_variant_ids = len(variant_ids)
+  while True:
+    start = end
+    end += batch_size
+    end = min(end, num_variant_ids)
+    tmp = mv.getvariants(variant_ids[start:end], fields = ['exac.ac.ac_adj','exac.an.an_adj', 'exac_nontcga.ac.ac_adj', 'exac_nontcga.an.an_adj',
+                               'dbnsfp', 'cadd.1000g.af', 'cadd.esp.af', 'clinvar.omim', 'clinvar.rcv',
+                               'cadd.annotype', 'cadd.consequence', 'cadd.consdetail', 'cadd.grantham',
+                               'cadd.phred', 'cadd.exon', 'vcf.ref', 'vcf.alt', 'dbsnp.rsid',
+                               'snpeff.ann.effect', 'snpeff.ann.gene_id', 'snpeff.ann.hgvs_p', 'snpeff.ann.hgvs_c', 'snpeff.ann.feature_id'])
+    non_snpeff_var_data += tmp
+    if end >= num_variant_ids:
+      break
+
+  global non_snpeff
+  for data in non_snpeff_var_data:
+    non_snpeff = data
+    try:
+      variant_id = non_snpeff['_id'] 
+    except KeyError:
+      continue
+    gene, variant, protein, transcript, effect = collectSnpeffWithGeneVariantInfo()
+    if not gene:
+      continue
+    key = (gene, variant)
+    variants[key]['id'] = variant_id 
+    variants[key]['gene'] = gene 
+    variants[key]['variant'] = variant 
+    variants[key]['protein'] = protein
+    variants[key]['transcript'] = transcript 
+    variants[key]['effect'] = effect
+
+    maf_exac, maf_exac_nontcga = collectExAC()
+    maf_exac = maf_exac_nontcga if not maf_exac and maf_exac_nontcga else maf_exac
+
+    dbnsfp_exac, dbnsfp_1000g, cadd_1000g, cadd_esp = collectMAF()
+    variants[key]['maf_exac'] = dbnsfp_exac if dbnsfp_exac else maf_exac
+    variants[key]['maf_1000g'] = dbnsfp_1000g if dbnsfp_1000g else cadd_1000g
+    variants[key]['maf_esp6500'] = cadd_esp
+
+    pathogenicity_scores, interpro_domain = collectdbNSFP()
+    dann, fathmm, metasvm, gerp = pathogenicity_scores 
+    variants[key]['dann'], variants[key]['fathmm'], variants[key]['metasvm'], variants[key]['gerp++'] = dann, fathmm, metasvm, gerp
+    variants[key]['interpro_domain'] = interpro_domain
+
+    clinvar_data = collectClinvar()
+    variants[key]['clinvar_pathogenicity'] = clinvar_data
+    variants[key]['clinvar_pmids'] = []
+    variants[key]['clinvar_variation_ids'] = ''
+    variants[key]['clinvar_review_status'] = ''
+
+    annotype, consequence, consdetail, grantham_score, phred_score, exon = collectCadd()
+    variants[key]['exon'] = exon.split('/')[0]
+
+    ref, alt = collectVCF()
+    variants[key]['ref'], variants[key]['alt'] = ref, alt
+     
+    rsid = collectdbsnp()
+    variants[key]['rsid'] = rsid
+
+    chromosome = variant_id.split(':')[0]
+    allele_start_pos = re.findall(r'[0-9]{1,20}', variant_id.split('.')[-1])[0]
+    dbscsnv_chromosomes.append(chromosome) 
+    dbscsnv_variants[(chromosome, allele_start_pos, ref, alt)] = key
+
+  ## Get dbscSNV splicing effect data from local files
+  for chromosome in set(dbscsnv_chromosomes):
+    with open(os.path.join(BASE, ('data/dbscSNV/dbscSNV1.1.' + chromosome)), 'rb') as f:
+      f.readline()
+      for line in f:
+        line = line.rstrip()
+        parts = line.split('\t')
+        chromo, pos, ref, alt, ada_score, rf_score = 'chr' + parts[0], parts[1], parts[2], parts[3], parts[4], parts[5]
+        if (chromo, pos, ref, alt) in dbscsnv_variants:
+          variants[dbscsnv_variants[(chromo, pos, ref, alt)]]['dbscSNV_rf_score'] = rf_score
+          variants[dbscsnv_variants[(chromo, pos, ref, alt)]]['dbscSNV_ada_score'] = ada_score
+  for key in variants.keys():
+    if 'dbscSNV_rf_score' not in variants[key] or variants[key]['dbscSNV_rf_score'] == '.': variants[key]['dbscSNV_rf_score'] = ''
+    if 'dbscSNV_ada_score' not in variants[key] or variants[key]['dbscSNV_ada_score'] == '.': variants[key]['dbscSNV_ada_score'] = ''
+
+  ## Get Clinvar assertion data from local file if the record can not be find in myvariant
+  genes = [var[0] for var in candidate_vars]
+  gene_variants = [(var[0], var[1]) for var in candidate_vars]
+  clinvar_pathogenicity, clinvar_pmids, clinvar_variation_ids, clinvar_review_status = getClinvarData(genes, gene_variants)
+  for key in variants.keys():
+    if key in clinvar_pathogenicity:
+      variants[key]['clinvar_pathogenicity'] = clinvar_pathogenicity[key]
+    if key in clinvar_pmids:
+      variants[key]['clinvar_pmids'] = clinvar_pmids[key]
+    if key in clinvar_variation_ids:
+      variants[key]['clinvar_variation_ids'] = clinvar_variation_ids[key]
+    if key in clinvar_review_status:
+      variants[key]['clinvar_review_status'] = clinvar_review_status[key]
+
+  final_res = []
+  for key in variants:
+    v = variants[key]
+    final_res.append((v['gene'], v['variant'], v['protein']))
+
+  return final_res, variants
+

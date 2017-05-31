@@ -233,7 +233,7 @@ class HomeView_ch(LoginRequiredMixin, ListView):
             a = self.kwargs['show_all']
             context['all_back'] = 1
         except:
-            if task_count > 6:
+            if task_count > 5:
                 context['show_all'] = "all"
                 context['task_count'] = task_count
 
