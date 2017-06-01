@@ -153,6 +153,8 @@ def read_input_gene_file(input_gene):
 				if not gene and not variant and not transcript and not variant_id:
 					continue
 				candidate_vars.append((gene, variant, transcript, variant_id))
+		else:
+			candidate_vars.append((gene, variant, transcript, variant_id))
 
 	# remove lines in the input file which has wrong number of fields
 	field_nums = []
