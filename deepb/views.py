@@ -168,7 +168,7 @@ def handle_uploaded_file(raw_input_gene_file, raw_input_phenotype_file, user_nam
 @login_required(login_url='/login/')
 def result(request, pk):
     main_table = get_object_or_404(Main_table, pk=pk)
-    input_gene_field = [i.split(":")[0][1:-1] for i in main_table.input_gene.split("},{")[0][2:].split(',')]
+    input_gene_field = [i.split('":"')[0] for i in main_table.input_gene.split("},{")[0][3:].split('","')]
 
     return render(request, 'result.html', {
         'task_name': main_table.task_name,
@@ -183,8 +183,8 @@ def result(request, pk):
 @login_required(login_url='/login/')
 def result_ch(request, pk):
     main_table = get_object_or_404(Main_table, pk=pk)
-    input_gene_field = [i.split(":")[0][1:-1] for i in main_table.input_gene.split("},{")[0][2:].split(',')]
-
+    input_gene_field = [i.split('":"')[0] for i in main_table.input_gene.split("},{")[0][3:].split('","')]
+    
     return render(request, 'result_ch.html', {
         'task_name': main_table.task_name,
         'result': mark_safe(main_table.result),

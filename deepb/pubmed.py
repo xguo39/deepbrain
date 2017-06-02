@@ -2,6 +2,8 @@ import pandas as pd
 import time
 import sys
 import MySQLdb
+import amino_acid_mapping
+import re
 import os.path
 BASE = os.path.dirname(os.path.abspath(__file__))
 
@@ -24,6 +26,12 @@ pd.options.display.max_colwidth = 10000
 #             candidate_vars.append((gene, variant, protein))
 #     return candidate_vars 
 
+def convertAminoAcidLowertoCap1letter(protein):
+  global robj_amino_acid
+  protein = protein.lower()
+  protein = robj_amino_acid.sub(lambda m: amino_acid_mapping.mapl2u[m.group(0)], protein)
+  return protein
+
 def queryPubmedDB(candidate_vars):
   db = MySQLdb.connect(host="127.0.0.1",    
                      user="root",       
@@ -42,9 +50,14 @@ def queryPubmedDB(candidate_vars):
   data = cursor.fetchall()
   db.close()
   res = []
+  
+  global robj_amino_acid
+  robj_amino_acid = re.compile('|'.join(amino_acid_mapping.mapl2u.keys()))  
+
   for line in data:
     gene, protein_variant, pmid, title, journal, year, impact_factor, abstract, pathogenicity_score = line 
     if protein_variant.startswith('p.'):
+      protein_variant = convertAminoAcidLowertoCap1letter(protein_variant) 
       variant, protein = geneprotein2var[(gene, protein_variant)], protein_variant
     else:
       variant, protein = protein_variant, genevar2protein[(gene, protein_variant)]

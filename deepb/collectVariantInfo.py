@@ -22,6 +22,12 @@ PARSED_CLINVAR = os.path.join(BASE, 'data/parsed_clinvar.txt')
 
 ## Collect information from myvariant 
 
+def convertAminoAcidLowertoCap1letter(protein):
+  global robj_amino_acid
+  protein = protein.lower()
+  protein = robj_amino_acid.sub(lambda m: amino_acid_mapping.mapl2u[m.group(0)], protein)
+  return protein
+
 def collectAll(gene, variant, transcript):
   mv = myvariant.MyVariantInfo()
   attempt, max_attempts = 0, 3
@@ -101,6 +107,7 @@ def collectSnpeff(gene, variant, transcript):
           max_similarity = sim
           effect = var['effect'] if 'effect' in var else ''
           protein = var['hgvs_p'] if 'hgvs_p' in var else ''
+  protein = convertAminoAcidLowertoCap1letter(protein) 
   return effect, protein
 
 def collectSnpeffWithGeneVariantInfo():
@@ -115,6 +122,7 @@ def collectSnpeffWithGeneVariantInfo():
   protein = ann['hgvs_p'] if 'hgvs_p' in ann else ''
   transcript = ann['feature_id'] if 'feature_id' in ann else ''
   effect = ann['effect'] if 'effect' in ann else ''
+  protein = convertAminoAcidLowertoCap1letter(protein)
   return gene, variant, protein, transcript, effect
 
 def collectExAC():
@@ -370,7 +378,9 @@ def get_variants(candidate_vars):
     if end >= num_variant_ids:
       break
 
-  global non_snpeff
+  global non_snpeff, robj_amino_acid
+  robj_amino_acid = re.compile('|'.join(amino_acid_mapping.mapl2u.keys()))
+
   for data in non_snpeff_var_data:
     non_snpeff = data
     if "_id" not in non_snpeff:
@@ -495,7 +505,9 @@ def get_variants_from_vcf(candidate_vars):
     if end >= num_variant_ids:
       break
 
-  global non_snpeff
+  global non_snpeff, robj_amino_acid
+  robj_amino_acid = re.compile('|'.join(amino_acid_mapping.mapl2u.keys()))
+    
   for data in non_snpeff_var_data:
     non_snpeff = data
     try:
