@@ -174,7 +174,7 @@ def result(request, pk):
         'task_name': main_table.task_name,
         'result': mark_safe(main_table.result),
         'input_gene': mark_safe(main_table.input_gene),
-        'input_phenotype': main_table.input_phenotype,
+        'input_phenotype': Raw_input_table.objects.get(id=main_table.task_id).raw_input_phenotype,
         'User_name': request.user.username,
         'field_names': input_gene_field,
         'pk': pk,
@@ -184,12 +184,13 @@ def result(request, pk):
 def result_ch(request, pk):
     main_table = get_object_or_404(Main_table, pk=pk)
     input_gene_field = [i.split('":"')[0] for i in main_table.input_gene.split("},{")[0][3:].split('","')]
-    
+
     return render(request, 'result_ch.html', {
         'task_name': main_table.task_name,
         'result': mark_safe(main_table.result),
         'input_gene': mark_safe(main_table.input_gene),
-        'input_phenotype': main_table.input_phenotype,
+        'input_phenotype': Raw_input_table.objects.get(id=main_table.task_id).raw_input_phenotype,
+        'input_phenotype_hpo': main_table.input_phenotype,
         'User_name': request.user.username,
         'field_names': input_gene_field,
         'pk': pk,

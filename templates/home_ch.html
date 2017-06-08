@@ -23,7 +23,7 @@
         </div>
 
         <div class = "container" id = "input_gene_file">
-          <label>输入基因信息文件 <small>(.txt 或 .xls 文件)</small> <small><i>*需要</i></small></label></br>
+          <label>输入基因信息文件 <small>(支持 .txt .xls .csv .vcf)</small> <small><i>*需要</i></small></label></br>
           <p><small>文件需包含 gene 与 HGVS cDNA </small></p>
           <input type="file" name="gene_file" required accept=".txt,.xlsx,.xls,.csv,.vcf">
         </div>
@@ -37,7 +37,7 @@
                     rows = "7"
                     cols = "45"
                     maxlength = "800"
-                    placeholder = "表型间使用逗号分割&nbsp;(目前仅支持英文表型)"></textarea>
+                    placeholder = "表型间使用逗号分割&nbsp;(表型支持中英文输入)"></textarea>
         </div>
 
         <div class = "container" id = "run_task">
@@ -101,7 +101,7 @@
     {% if refresh %}
       window.setTimeout(function () {
           location.href = "";
-        }, 15000);
+        }, 20000);
     {% endif %}
 
   </script>

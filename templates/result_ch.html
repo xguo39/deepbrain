@@ -52,9 +52,10 @@
     </div>
     <br /><br />
     <div class="container">
-    <h4>输入症状</h4>
-    <p>{{ input_phenotype }}</p>
-    {% if not input_phenotype %}
+    <h4>输入表型</h4>
+    {% if input_phenotype %} 
+        <p>{{ input_phenotype }}</p>
+    {% else %}
         <p>无</p>
     {% endif %}
     <br /> 

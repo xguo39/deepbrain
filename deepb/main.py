@@ -13,6 +13,9 @@ from deepb.models import Main_table, Raw_input_table
 from io import StringIO
 from collections import Counter
 from collections import defaultdict
+from langdetect import detect
+import urllib2
+import json
 
 
 # input_phenotype = 'data/sample_patient_phenotype.txt'
@@ -63,33 +66,49 @@ def format_hgvs(chrom, pos, ref, alt):
     return hgvs
 
 def read_input_pheno_file(input_phenotype):
-    if not input_phenotype:
-        return '', '', ''
-    text = StringIO(unicode(input_phenotype), newline=None)
-    lines = text.readlines()
-    lines = [line.strip() for line in lines]
-    phenos = []
-    for line in lines:
-        if not line:
-            continue
+	if not input_phenotype:
+		return '', '', ''
+	language = detect(unicode(input_phenotype))
+	if language == "zh-cn":
+		site = "https://translate.googleapis.com/translate_a/single?client=gtx&sl=zh-Hans&tl=en&dt=t&q="+input_phenotype
+		hdr = {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.64 Safari/537.11',
+				'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+				'Accept-Charset': 'ISO-8859-1,utf-8;q=0.7,*;q=0.3',
+				'Accept-Encoding': 'none',
+				'Accept-Language': 'en-US,en;q=0.8',
+				'Connection': 'keep-alive'}
+		req = urllib2.Request(site, headers=hdr)
+		try:
+			page = urllib2.urlopen(req)
+			content = page.read()
+			input_phenotype = json.loads(content)[0][0][0]
+		except urllib2.HTTPError, e:
+			return '', '', ''
+	text = StringIO(unicode(input_phenotype), newline=None)
+	lines = text.readlines()
+	lines = [line.strip() for line in lines]
+	phenos = []
+	for line in lines:
+		if not line:
+			continue
         phenos_each_line = re.split(r'  +|\t+|,|;|\.|\|', line.strip())
         phenos_each_line = [re.sub(r'^\W+|\W+$', '', s) for s in phenos_each_line]
         phenos_each_line = [s.lower() for s in phenos_each_line if s]
         phenos += phenos_each_line
 
-    corner_cases = dict()
-    original_phenos = [_.strip() for _ in phenos]
-    for pheno in phenos:
-        if re.search('development', pheno) and re.search('delay', pheno) and not re.search('growth', pheno):
-            phenos.append('growth delay')
-            corner_cases['growth delay'] = pheno.strip()
-    for pheno in phenos:
-        if re.search('growth', pheno) and re.search('delay', pheno) and not re.search('development', pheno):
-            phenos.append('developmental delay')
-            corner_cases['developmental delay'] = pheno.strip()
-    phenos = [_.strip() for _ in phenos]
-    phenos = list(set(phenos))
-    return phenos, corner_cases, original_phenos
+	corner_cases = dict()
+	original_phenos = [_.strip() for _ in phenos]
+	for pheno in phenos:
+		if re.search('development', pheno) and re.search('delay', pheno) and not re.search('growth', pheno):
+			phenos.append('growth delay')
+			orner_cases['growth delay'] = pheno.strip()
+		for pheno in phenos:
+			if re.search('growth', pheno) and re.search('delay', pheno) and not re.search('development', pheno):
+				phenos.append('developmental delay')
+				corner_cases['developmental delay'] = pheno.strip()
+		phenos = [_.strip() for _ in phenos]
+		phenos = list(set(phenos))
+		return phenos, corner_cases, original_phenos
 
 def read_input_gene_file(input_gene):
 	candidate_vars = []
