@@ -16,20 +16,6 @@ HPO_FILE = os.path.join(BASE, "data/all_hpo_terms_and_synonyms.txt")
 PHENOTYPE_TO_GENE_FILE = os.path.join(BASE, "data/Expanded_OMIM_ALL_FREQUENCIES_phenotype_to_genes_without_synonym.txt")
 PHENOTYPE_TO_DISEASE_FILE = os.path.join(BASE, 'data/Expanded_ALL_SOURCES_ALL_FREQUENCIES_diseases_to_phenotypes.txt')
 
-# In practice, we don't need to screen through all genes. Only a few gene candidates are examined.
-#CANDIDATE_GENES = ['GRIN1', 'HDGFRP2']
-# Get CANDIDATE_GENES from file
-
-# df_genes = pd.read_csv('data/sample_genes.txt', sep = '\t')
-# CANDIDATE_GENES = pd.unique(df_genes.Gene.values).tolist()
-
-# print CANDIDATE_GENES
-# print ("===========================================================================================")
-
-# Output matching results
-# OUT_FILE = 'result/ranking_genes.txt'
-# OUT_FILE_DISEASE = 'result/ranking_diseases.txt'
-
 ## Get levels of each hpo term; e.g., HP:0000001 is the first level; its direct children are the second level.
 ## Phenotypic abnormality is level 1; Abnormality of prenatal development or birth is level 2.
 ## In the search for the common ancestors, we should stop at level 2; if two terms have the common ancestor below or equal at level 2, then we deem them to be semantically similar.

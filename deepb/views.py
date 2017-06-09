@@ -17,6 +17,8 @@ from model_wrapper import Raw_input_table_with_status_and_id
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import redirect
 import pandas as pd
+from main import read_input_pheno_file
+from map_phenotype_to_gene import map2hpoWithPhenoSynonyms
 
 
 
@@ -285,3 +287,20 @@ class HomeView_ch(LoginRequiredMixin, ListView):
             return Constant.FAIL_STATUS, None
         else:
             return Constant.IN_PROGRESS_STATUS, None
+
+def chpo(request):
+    chinese_pheno = ""
+    chinese_pheno = request.POST.get('chpo', None)
+    try:
+        phenos, corner_cases, original_phenos, phenotype_translate = read_input_pheno_file(chinese_pheno)
+        match_result = map2hpoWithPhenoSynonyms(phenotype_translate)
+        match_result = sorted(match_result, key = lambda x: x[2], reverse = True)[:10]
+        if match_result[0][0] == 'Familial  hyperprolactinemia':
+            match_result = ''
+        else:
+            match_result = [i[0]+', '+i[1] + ', '+str(i[2]) for i in match_result]
+    except:
+        match_result = ['无匹配']
+    return render(request, 'chpo.html', {
+        'match_result': match_result,
+        })

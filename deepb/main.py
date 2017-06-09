@@ -67,7 +67,7 @@ def format_hgvs(chrom, pos, ref, alt):
 
 def read_input_pheno_file(input_phenotype):
 	if not input_phenotype:
-		return '', '', ''
+		return '', '', '', ''
 	language = detect(unicode(input_phenotype))
 	if language == "zh-cn":
 		site = "https://translate.googleapis.com/translate_a/single?client=gtx&sl=zh-Hans&tl=en&dt=t&q="+input_phenotype
@@ -81,9 +81,10 @@ def read_input_pheno_file(input_phenotype):
 		try:
 			page = urllib2.urlopen(req)
 			content = page.read()
-			input_phenotype = json.loads(content)[0][0][0]
+			phenotype_translate = json.loads(content)[0][0][0]
+			input_phenotype = phenotype_translate
 		except urllib2.HTTPError, e:
-			return '', '', ''
+			return '', '', '', ''
 	text = StringIO(unicode(input_phenotype), newline=None)
 	lines = text.readlines()
 	lines = [line.strip() for line in lines]
@@ -108,7 +109,7 @@ def read_input_pheno_file(input_phenotype):
 				corner_cases['developmental delay'] = pheno.strip()
 		phenos = [_.strip() for _ in phenos]
 		phenos = list(set(phenos))
-		return phenos, corner_cases, original_phenos
+		return phenos, corner_cases, original_phenos, phenotype_translate
 
 def read_input_gene_file(input_gene):
 	candidate_vars = []
@@ -213,8 +214,7 @@ def master_function(raw_input_id):
 	input_phenotype = raw_input.raw_input_phenotype
 
 	# Read input pheno file and generate phenos and corner_cases 
-	phenos, corner_cases, original_phenos = read_input_pheno_file(input_phenotype)
-
+	phenos, corner_cases, original_phenos, phenotype_translate = read_input_pheno_file(input_phenotype)
 
 	# Read input gene file and generate candidate_vars. candidate_vars are (gene, variant, transcript, variant_id); CANDIDATE_GENES is a list of gene symbols; df_genes is a dataframe that keeps all the data that user uploaded; field_names are header of the input gene file 
 	candidate_vars, CANDIDATE_GENES, df_genes, field_names = read_input_gene_file(input_gene)

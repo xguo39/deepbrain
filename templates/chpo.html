@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block css %}
+{% endblock %}
+
+{% block content %}
+<form name="chpo" method="post" action="{% url 'deepb:chpo' %}" enctype="multipart/form-data">
+  {% csrf_token %}
+  <div class = "container" id = "enter_task_name">
+    <label>输入中文表型匹配HPO<small><i></i></small></label> &nbsp;</br>
+    <input type="text" name="chpo" placeholder="" required>
+    <label></label><br />
+  </div>
+  <div class = "container" id = "submit">
+    <button type="submit", onClick="return">Submit</button>
+  </div>
+</form>
+<br />
+<div class = "container">
+  {% if match_result %}
+    {% for i in match_result %}
+      <p>{{i}}<p>
+    {% endfor %}
+  {% endif %}
+</div>
+{% endblock %}
