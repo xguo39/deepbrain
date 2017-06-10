@@ -6,6 +6,8 @@ from deepb.models import Main_table, Raw_input_table
 from django.utils import timezone
 import pandas as pd
 import time
+import sys
+import logging
 
 
 logger = get_task_logger(__name__)
@@ -29,7 +31,7 @@ def trigger_background_main_task(raw_input_id):
 
         logger.info("Finish processing data, start writing data to DB in background main task")
 
-        
+
         sample = Main_table(
             task_id=raw_input_id,
             input_gene=input_gene,
@@ -47,13 +49,7 @@ def trigger_background_main_task(raw_input_id):
         raw_input.process_time = (time.time()-start_point)/60
         raw_input.save()
 
-    except:
+    except Exception as ex:
         raw_input.status = raw_input.status + " failed"
         raw_input.save()
-        logger.info("Failed")
-
-
-
-
-
-    
+        logger.error(logging.exception("The task is failed!"))

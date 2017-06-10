@@ -153,6 +153,7 @@ def handle_uploaded_file(raw_input_gene_file, raw_input_phenotype_file, user_nam
         input_gene = raw_input_gene_file.read()
 
     estimate_time = round((0.14*len(input_gene.split('\n')) + 1.69*len(raw_input_phenotype_file.split(','))+93.83)/60, 0)+1
+    print("raw_input_phenotype: {}".format(raw_input_phenotype_file))
 
     raw_gene_input = Raw_input_table(
         raw_input_gene=input_gene,

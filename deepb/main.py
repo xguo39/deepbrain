@@ -75,6 +75,7 @@ def read_input_pheno_file(input_phenotype):
 	if not input_phenotype:
 		return '', '', '', ''
 	language = detect(unicode(input_phenotype))
+	phenotype_translate = None
 	if language == "zh-cn" or language == "ko":
 		site = "https://translate.googleapis.com/translate_a/single?client=gtx&sl=zh-Hans&tl=en&dt=t&q="+input_phenotype
 		hdr = {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.64 Safari/537.11',
