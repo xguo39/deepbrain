@@ -294,7 +294,7 @@ def chpo(request):
     try:
         phenos, corner_cases, original_phenos, phenotype_translate = read_input_pheno_file(chinese_pheno)
         match_result = map2hpoWithPhenoSynonyms(phenotype_translate)
-        match_result = sorted(match_result, key = lambda x: x[2], reverse = True)[:10]
+        match_result = sorted(match_result, key = lambda x: x[2], reverse = True)
         if match_result[0][0] == 'Familial  hyperprolactinemia':
             match_result = ''
         else:

@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import map_phenotype_to_gene
 import collectVariantInfo
 import pubmed
@@ -16,7 +18,11 @@ from collections import defaultdict
 from langdetect import detect
 import urllib2
 import json
+import sys
 
+
+reload(sys)
+sys.setdefaultencoding('utf-8')
 
 # input_phenotype = 'data/sample_patient_phenotype.txt'
 # input_genes = 'data/sample_genes.txt'
@@ -69,7 +75,7 @@ def read_input_pheno_file(input_phenotype):
 	if not input_phenotype:
 		return '', '', '', ''
 	language = detect(unicode(input_phenotype))
-	if language == "zh-cn":
+	if language == "zh-cn" or language == "ko":
 		site = "https://translate.googleapis.com/translate_a/single?client=gtx&sl=zh-Hans&tl=en&dt=t&q="+input_phenotype
 		hdr = {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.64 Safari/537.11',
 				'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',

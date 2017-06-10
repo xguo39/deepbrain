@@ -352,7 +352,6 @@ def map2hpoWithPhenoSynonyms(pheno):
             hposynonyms = hpo_id2synonyms[hpoid]
             for synonym in hposynonyms:
                 if synonym != hponame:
-                    # print synonym
                     matches_ = map2hpo(synonym)
                     indirect_matches = filterMatchesOnCommonAncestors(matches_)
                     final_matches = final_matches + indirect_matches
