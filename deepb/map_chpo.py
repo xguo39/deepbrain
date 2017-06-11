@@ -17,8 +17,9 @@ def map_chpo(chinese_pheno):
     phenos, corner_cases, original_phenos, phenotype_translate = read_input_pheno_file(chinese_pheno)
     match_result = map2hpoWithPhenoSynonyms(phenotype_translate)
     match_result = sorted(match_result, key = lambda x: x[2], reverse = True)
-
-    if match_result[0][0] == 'Familial  hyperprolactinemia':
+    if match_result == []:
+        match_result = []
+    elif match_result[0][0] == 'Familial  hyperprolactinemia':
         match_result = ''
     else:
         chpo = pd.read_excel(CHPO)
