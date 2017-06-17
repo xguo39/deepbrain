@@ -27,6 +27,7 @@
       <ul class="nav navbar-nav navbar-right">
         <li><a href="#test">基因解读</a></li>
         <li><a href="#introduction">公司介绍</a></li>
+        <li><a href="#product">产品介绍</a></li>
         <li><a href="#partner">合作伙伴</a></li>
         <li><a href="#contact">联系我们</a></li>
         <li class="dropdown">
@@ -56,7 +57,7 @@
       <img src="{% static 'images/carousel_1.jpg' %}" alt="First Carousel">
       <div class="carousel-caption">
         <h3>诺亚基因</h3>
-        <p>智慧医疗领跑者</p>
+        <p>医学语言处理专家，基因数据智能解读专家</p>
       </div>
     </div>
 
@@ -64,7 +65,7 @@
       <img src="{% static 'images/carousel_2.jpg' %}" alt="Second Carousel">
       <div class="carousel-caption">
         <h3>诺亚基因</h3>
-        <p>一键式解读基因测序海量数据</p>
+        <p>肿瘤分级诊断专家</p>
       </div>
     </div>
 
@@ -72,7 +73,7 @@
       <img src="{% static 'images/carousel_3.jpg' %}" alt="Third Carousel">
       <div class="carousel-caption">
         <h3>诺亚基因</h3>
-        <p>源自美国ACMG金标准</p>
+        <p>着力打造涵盖基因组学图谱、微生物组学图谱、医学知识图谱的"诺亚超级医生"</p>
       </div>
     </div>
   </div>
@@ -109,13 +110,52 @@
   </ul>
 </div>
 
+<div id="product" class="container text-center">
+  <h3 class="text-center">产品介绍</h3>
+  <ul class="nav nav-tabs">
+    <li class="active"><a data-toggle="tab" href="#home">诺亚肿瘤分级诊断专家</a></li>
+    <li><a data-toggle="tab" href="#menu1">基因测序智能解读</a></li>
+  </ul>
+
+  <div class="tab-content">
+    <div id="home" class="tab-pane fade in active">
+      <h4>诺亚肿瘤分级诊断专家</h4>
+      <br>
+      <img src="{% static 'images/intro.png' %}" alt="intro">
+      <br><br><br>
+      <ul>
+      <li><span>通过遵循NCCN(National Cancer Comprehensive Network)指南，获得世界顶级肿瘤学专业国际水准肿瘤治疗专业知识</span></li>
+      <li><span>通过对医学文献进行打分评级，迅速整理病患医疗记录，以提高肿瘤学家的工作效率</span></li>
+      <li><span>通过分析海量医学文献，确定个性化诊疗方案，助力肿瘤学家为患者提供高质量、循证型癌症治疗方案</span></li>
+      <li><span>通过与亚洲最大的肿瘤医院——中国国家癌症中心合作，获得具有东亚人特征的肿瘤诊治专业方法与万例真实临床病人病例</span></li>
+      <li><span>诺亚肿瘤分级诊断专家代表着计算范式方面的根本性转变，通过处理海量知识而不断自我进步的学习系统正在逐步替代可编程系统并成为主导。而在过去的几十年中，可编程系统是主流之一。
+          诺亚肿瘤分级诊断专家基于Nova专家的前沿研究，已具备阅读和理解自然语言的能力。Nova肿瘤解决方案由诺亚科技开发，和亚洲最大的癌症研究中心——中国国家癌症中心共同推进。</span></li>
+      <li><span>诺亚肿瘤分级诊断专家能够汲取海量信息，其中包括300多份医学期刊、200余种教科书以及近1500万页的文字，进而能够就药物选择及用药方案方面提供建议。同时，诺亚肿瘤分级诊断专家还能够链接
+          至经业界权威评审的研究以及临床指南。其机器学习能力也意味着它可以随着时间的推移而不断地学习。</span></li>
+      </ul>
+    </div>
+    <div id="menu1" class="tab-pane fade">
+      <h4>基因测序智能解读</h4>
+      <br>
+      <img src="{% static 'images/gene.png' %}" alt="gene">
+      <br><br><br>
+      <ul>
+      <li><span>基于人工智能——深度自然语言理解（NLP）技术使基因检测数据解读全站实现智能化</span></li>
+      <li><span>整个流程智能化，包括从病历表型匹配到HPO标准词，使用者无需医学或相关知识背景即可无障碍操作</span></li>
+      <li><span>发挥AI独有优势每日更新15+权威数据库（可无限延展），并应用深度自然语言理解技术对每日更新的超过两千万篇生物医学文献自动搜索摘要和全文，
+          检查相关表型，提取变异位点相关信息包括相似变异位点、蛋白功能区影响、致病性、疾病表型关联、动物实验、功能研究等；且整个流程标准化，避免人工解读的误差</span></li>
+      <li><span>基于美国ACMG标准，诺亚基因创立独有定量化变异位点致病性排序系统，为辅助诊断提供更全面的参考系</span></li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+
 <div id="partner" class="container text-center">
   <h3>合作伙伴</h3>
   <div class="logos center">
     <img src="{% static 'images/aecm-logo.jpg' %}" alt="aecm-logo">
     <img src="{% static 'images/alexion-logo.jpg' %}" alt="alexion-logo">
-    <img src="{% static 'images/berkeley-logo.jpg' %}" alt="berkeley-logo">
-    <img src="{% static 'images/boston-university-logo.jpg' %}" alt="boston-university-logo">
     <img src="{% static 'images/bwh-logo.jpg' %}" alt="bwh-logo">
     <img src="{% static 'images/cancer-research-logo.jpg' %}" alt="cancer-research-logo">
     <img src="{% static 'images/case-western-logo.jpg' %}" alt="case-western-logo">
@@ -124,12 +164,9 @@
     <img src="{% static 'images/conv-bio-logo.jpg' %}" alt="conv-bio-logo">
     <img src="{% static 'images/cshl-logo.jpg' %}" alt="cshl-logo">
     <img src="{% static 'images/dana-farber-logo.jpg' %}" alt="dana-farber-logo">
-    <img src="{% static 'images/duke-logo.jpg' %}" alt="duke-logo">
     <img src="{% static 'images/fhutch-logo.jpg' %}" alt="fhutch-logo">
     <img src="{% static 'images/gus-logo.jpg' %}" alt="gus-logo">
     <img src="{% static 'images/h3-biomed-logo.jpg' %}" alt="h3-biomed-logo">
-    <img src="{% static 'images/harvard-logo.jpg' %}" alt="harvard-logo">
-    <img src="{% static 'images/hhmi-logo.jpg' %}" alt="hhmi-logo">
     <img src="{% static 'images/jackson-laboratory-logo.jpg' %}" alt="jackson-laboratory-logo">
     <img src="{% static 'images/lioh-logo.jpg' %}" alt="lioh-logo">
     <img src="{% static 'images/md-anderson-logo.jpg' %}" alt="md-anderson-logo">
@@ -140,7 +177,6 @@
     <img src="{% static 'images/NIH-logo.jpg' %}" alt="NIH-logo">
     <img src="{% static 'images/novo-nordisk-logo.jpg' %}" alt="novo-nordisk-logo">
     <img src="{% static 'images/novus-logo.jpg' %}" alt="novus-logo">
-    <img src="{% static 'images/nyusm-logo.jpg' %}" alt="nyusm-logo">
     <img src="{% static 'images/otsuka-logo.jpg' %}" alt="otsuka-logo">
     <img src="{% static 'images/penn-logo.jpg' %}" alt="penn-logo">
     <img src="{% static 'images/pfizer-logo.jpg' %}" alt="pfizer-logo">
@@ -149,11 +185,8 @@
     <img src="{% static 'images/rockland-logo.jpg' %}" alt="rockland-logo">
     <img src="{% static 'images/rocku-logo.jpg' %}" alt="rocku-logo">
     <img src="{% static 'images/stanford-logo.jpg' %}" alt="stanford-logo">
-    <img src="{% static 'images/suny-downstate-logo.jpg' %}" alt="suny-downstate-logo">
     <img src="{% static 'images/ucf-logo.jpg' %}" alt="ucf-logo">
     <img src="{% static 'images/ucsf-logo.jpg' %}" alt="ucsf-logo">
-    <img src="{% static 'images/uom-logo.jpg' %}" alt="uom-logo">
-    <img src="{% static 'images/usf-logo.jpg' %}" alt="usf-logo">
     <img src="{% static 'images/wcmc-logo.jpg' %}" alt="wcmc-logo">
     <img src="{% static 'images/wistar-logo.jpg' %}" alt="wistar-logo">
     <img src="{% static 'images/yale-logo.jpg' %}" alt="yale-logo">
@@ -164,7 +197,7 @@
 
 <div id="contact" class="container text-center">
   <h3>联系我们</h3>
-  <p>pandatechdeepbrain@gmail.com</p>
+  <p>contact@genonova.com</p>
   <br>
 </div>
 

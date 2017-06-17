@@ -134,6 +134,31 @@
     color: black;
 }
 
+#product img {
+    -webkit-filter: grayscale(0%);
+    filter: grayscale(0%); /* make all photos black and white */
+    width: 90%; /* Set width to 100% */
+    margin: auto;
+}
+
+#product ul li {
+    list-style-type: disc;
+    text-align: left;
+    line-height: 150%;
+    margin: 10px;
+    color: #000;
+}
+
+#product p {
+    text-align: left;
+    margin: 0px;
+    line-height: 200%;
+}
+
+.nav-tabs li a {
+    color: #777;
+}
+
 footer {
     background-color: #2d2d30;
     color: #f5f5f5;
