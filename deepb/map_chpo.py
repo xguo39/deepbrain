@@ -6,6 +6,7 @@ from main import read_input_pheno_file
 from map_phenotype_to_gene import map2hpoWithPhenoSynonyms
 import pandas as pd
 from langdetect import detect
+from google import google
 
 reload(sys)
 sys.setdefaultencoding('utf-8')
@@ -15,6 +16,15 @@ CHPO = os.path.join(BASE, "data/chpo.2016-10.xls")
 
 
 def smart_match(input_en, chpo):
+    search_results = google.search("afraid of light", 1)
+    wiki = list(set([i.name[:-12] for i in search_results if i.name[-9:]=='Wikipedia']))
+    for i in wiki:
+        try:
+            wiki_match = chpo[chpo['表型英文名']==i]
+            return wiki_match.to_json(orient='records')
+        except:
+            pass
+
     match_result = map2hpoWithPhenoSynonyms(input_en)
     match_result = sorted(match_result, key = lambda x: x[2], reverse = True)
     if match_result == []:
