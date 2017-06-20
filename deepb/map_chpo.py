@@ -16,7 +16,7 @@ CHPO = os.path.join(BASE, "data/chpo.2016-10.xls")
 
 
 def smart_match(input_en, chpo):
-    search_results = google.search("afraid of light", 1)
+    search_results = google.search(input_en, 1)
     wiki = list(set([i.name[:-12] for i in search_results if i.name[-9:]=='Wikipedia']))
     for i in wiki:
         try:
