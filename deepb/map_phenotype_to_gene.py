@@ -9,6 +9,19 @@ import os.path
 import numpy as np
 BASE = os.path.dirname(os.path.abspath(__file__))
 
+"""
+For each input phenotype of the patient, we do preliminary mapping of it to hpo standard terms.
+We convert the input phenotype term and hpo standard terms to a word list and strip symbols in the word and lemmatize the word.
+The word list of hpo standard term and its synonyms and the word list of input phenotype are compared and if they are a match or partial match and they do not contain non-overlapped words with opposite meanings, we consider the hpo term as a candidate.
+The matched hpo terms are filtered on their common ancestors, which basically reflect semantics of the hpo terms. The hpo term with the highest similarity score is used as the gold standard. If another hpo candidate has a very high level common ancestor (not close in semantics) with it, then that hpo candidate will be removed. Matches after this filtering step are direct matches (from input phenotype).
+We also get indirect matches by mapping the synonyms of hpo term with very high similarity score to other hpo terms. 
+The direct and indirect matches are combined and if they do not have non-overlapped opposite meaning words, they are taken into the final matches.
+
+The hpo dictionary is like a graph. It has a root node.
+hpo_subclass: dictionary with a hpo term (id) as key and its direct children as value.
+hpo_superclass: dictionary with a hpo term (id) as key and its direct parents as value.
+"""
+
 HPO_SUBCLASS = os.path.join(BASE, "data/hpo_subclasses.txt")
 HPO_SUPERCLASSES = os.path.join(BASE, "data/hpo_superclasses.txt")
 HPO_NAMES = os.path.join(BASE, "data/hpo_names.txt")
@@ -75,6 +88,18 @@ with open(HPO_NAMES, 'rb') as f:
 
 # tree = hpo_superclass
 def getAllAncestorsBFS(node, tree):
+
+    """ get all ancestors of a node using BFS
+
+    Args:
+        node (string): node in a tree
+        tree (dict): dictionary with node as key and its direct parents as value
+
+    Returns:
+        P (list): the ancestors of a node with the first element as the direct parent and so on
+
+    """
+
     P, Q = [node], deque([node])
     while Q:
         u = Q.popleft()
@@ -90,6 +115,20 @@ def getAllAncestorsBFS(node, tree):
     return P 
 
 def findLowestCommonAncestor(node1, node2, tree):
+
+    """ find the lowest common ancestor of two nodes in a tree
+
+    Args:
+        node1 (string): hpoid of a phenotype
+        node2 (string): hpoid of another phenotype
+        tree (dict): dictionary with key as a node and value as the direct parents of the node
+
+    Returns:
+        lca (tuple): lowest common ancestor (hpoid, level, hponame)
+        common_ancestors (list): common ancestors from lowest common ancestor to top level common ancestor
+
+    """
+
     node1_ancestors = getAllAncestorsBFS(node1, tree) 
     node2_ancestors = getAllAncestorsBFS(node2, tree)
     common_ancestors = [] 
@@ -103,6 +142,17 @@ def findLowestCommonAncestor(node1, node2, tree):
 
 ## Generate antonyms of a word using NLTK and wordnet
 def get_antonyms(word):
+
+    """ generate antonyms of a word using NLTK and wordnet
+
+    Args:
+        word (string): input word
+
+    Returns:
+         antonyms (set): a set of antonyms of the input word
+
+    """
+
     antonyms = []
     for synset in wn.synsets(word):
         for lemma in synset.lemmas():
@@ -123,26 +173,6 @@ def get_antonyms(word):
     antonyms = list(set(antonyms))
     antonyms = set([_.name() for _ in antonyms])
     return antonyms
-
-## Map patient phenotypes to hpo standard terms 
-# corner_cases = dict()
-# with open(PHENOTYPE_FILE, 'rb') as infile:
-#     phenos = []
-#     for line in infile:
-#         if line.startswith('#') or not line.strip():
-#             continue
-#         line = line.rstrip()
-#         phenos += line.split(',')
-#         for pheno in phenos:
-#             if re.search('development', pheno) and re.search('delay', pheno) and not re.search('growth', pheno):
-#                 phenos.append('growth delay')
-#                 corner_cases['growth delay'] = pheno.strip()
-#         for pheno in phenos:
-#             if re.search('growth', pheno) and re.search('delay', pheno) and not re.search('development', pheno):
-#                 phenos.append('developmental delay')
-#                 corner_cases['developmental delay'] = pheno.strip()
-#     phenos = [_.strip() for _ in phenos]
-# print phenos
 
 
 with open(HPO_FILE, 'rb') as infile:
@@ -167,6 +197,17 @@ with open(HPO_FILE, 'rb') as infile:
 # Use lemmatizer to lemmatize words e.g., disturbances --> distrubance
 processed_antonyms = dict()
 def isOppositeMeaning(words_in_pheno_only, words_in_hpo_only):
+    """ check if the input two word lists contain words with opposite meaning
+
+    Args:
+        words_in_pheno_only (set): a set of words that appear in the phenotype word list only
+        word_in_hpo_only (set): a set of words that appear in the hpo term word list only
+
+    Returns:
+         bool: True or False
+
+    """
+
     global processed_antonyms
     # If any word ends with ness, convert to its noun form
     words_in_pheno_only |= set([_[0:-4] for _ in words_in_pheno_only if _.endswith('ness')])
@@ -214,6 +255,19 @@ def isOppositeMeaning(words_in_pheno_only, words_in_hpo_only):
     return False 
 
 def processhpoterms(hpo_):
+    """ process each hpo term by transforming each term to a list of individual words, and strip ,()' in the word
+        and lemmatize each word. Use a global dictionary to record the mapping from original hpo term to the processed list.
+        Use re for split hpo terms
+        Use lemmatizer to lemmatize words e.g., disturbances --> distrubance
+
+    Args:
+        hpo_ (string); a hpo term
+
+    Returns:
+        None
+
+    """
+
     global hpo_words_dict
     hpo_words =  [_.strip(",()'") for _ in re.split(' |/', hpo_)]
     try:
@@ -229,6 +283,16 @@ hpo_words_dict = dict()
 lemmatizer = WordNetLemmatizer()
 
 def map2hpo(pheno):
+    """ preliminary mapping of each input phenotype of the patient to hpo standard terms
+
+    Args:
+        pheno (string): an input phenotype of the patient
+
+    Returns:
+        matches (list): each element is a tuple (hpoid, hponame, match_type, similarity_score)
+            e.g., [('HP:0012171', 'Stereotypical hand wringing', 'OVERLAP', 0.6666666666666666), ...]
+    """
+
     global unmatches_due_to_opposite_meanings, hpo_words_dict
     matches = []
     # Use lemmatizer to lemmatize words e.g., disturbances --> distrubance
@@ -312,10 +376,22 @@ def map2hpo(pheno):
     return matches
 
 def filterMatchesOnCommonAncestors(matches):
-    ## e.g., for "Central hypotonia", matches is like: 
-    ## [('Central', 'SUPER', 0.5), ('Central hypotonia', 'EXACT', '1.0'), ('Hypotonia', 'SUPER', 0.5)]
-    ## lca is like ('HP:0005872', 9, 'Brachytelomesophalangy')
-    ## The function returns like: [('Stereotypical hand wringing', 'HP:0012171', 0.6666666666666666)]
+    """ this function filters matches on common ancestors. One input phenotype may map to multiple hpo standard terms
+        with different similarity score. We pick up the one with best match score, and check the common ancestor of
+        other hpo terms with it. The common ancestor is literally in the cengji jigou, e.g., abnormality of head -- abnormality
+        of eye -- baineichang. If the common ancestor of a hpo term and the best-match hpo term are very high level, then they are likely NOT
+        describing the same phenotype. This hpo term will be removed from the matches.
+
+    Args:
+        matches (list): each element is a tuple (hpoid, hponame, match_type, similarity_score)
+            e.g., [('HP:0012171', 'Stereotypical hand wringing', 'OVERLAP', 0.6666666666666666), ...]
+
+    Returns:
+        final_matches (list): each element is a tuple (hponame, hpoid, similarity_score).
+            e.g., [('Postnatal macrocephaly','HP:0005490',0.5), ('Macrocephaly,relative','HP:0004482-synonym', 0.5), ...]
+
+    """
+
     if not matches:
         return matches 
     final_matches = []
@@ -340,6 +416,17 @@ def filterMatchesOnCommonAncestors(matches):
     return final_matches    
 
 def map2hpoWithPhenoSynonyms(pheno):
+    """ map each input phenotype of the patient to hpo standard terms
+
+    Args:
+        pheno (string): an input phenotype of the patient 
+
+    Returns: 
+        final_matches (list): each element is a tuple (hponame, hpoid, similarity_score)
+            e.g., [('Postnatal macrocephaly','HP:0005490',0.5), ('Macrocephaly,relative','HP:0004482-synonym', 0.5), ...]
+
+    """
+
     global unmatches_due_to_opposite_meanings
     matches = map2hpo(pheno)
     direct_matches = filterMatchesOnCommonAncestors(matches)  
@@ -378,6 +465,17 @@ with open(PHENOTYPE_TO_GENE_FILE, 'rb') as f:
             hpoid2gene[hpoid] = [genesymbol]
 
 def map2gene(final_matches, CANDIDATE_GENES):
+    """ Map to genes for each phenotype without similarity score (one phenotype at one time)
+
+    Args:
+        final_matches (list): each element is a tuple (hponame, hpoid, similarity_score)
+        CANDIDATE_GENES (list): input candidate genes of the patient
+       
+    Returns:
+        mapped_genes (list): genes associated with the phenotype 
+
+    """
+
     # Map to genes for each phenotype (one phenotype at one time)
     # Pre-process the final_matches by remove '-synonym' from the hpoid and then unique the hpoids
     final_matches = [_[1] for _ in final_matches] 
@@ -397,10 +495,20 @@ def map2gene(final_matches, CANDIDATE_GENES):
     return mapped_genes
 
 def map2geneWithSim(final_matches, CANDIDATE_GENES):
-    # Map to genes for each phenotype (one phenotype at one time) with similarity information (word len)
-    # final_matches like: [('Postnatal macrocephaly','HP:0005490',0.5), ('Macrocephaly,relative','HP:0004482-synonym', 0.5), ...]
-    # map2gene function returns a list while this function returns a dict with genesymbol as key and similarity as value 
-    ##**** new
+    """ Map to genes for each phenotype (one phenotype at one time) with similarity score 
+    final_matches like: [('Postnatal macrocephaly','HP:0005490',0.5), ('Macrocephaly,relative','HP:0004482-synonym', 0.5), ...]
+
+    Args:
+        final_matches (list): each element is a tuple (hponame, hpoid, similarity_score)
+        CANDIDATE_GENES (list): input candidate genes of the patient
+
+    Returns:
+        mapped_genes_score (dict): a dict with gene symbol as key and similarity score as value 
+        mapped_genes_score_phenospecificity (dict): a dict with gene symbol as key and similarity score 
+            that is weighted by phenotype rareness as value 
+
+    """
+
     global hpoidpheno_count
     hpoid_sim = dict() 
     for match in final_matches:
@@ -453,6 +561,15 @@ with open(PHENOTYPE_TO_DISEASE_FILE, 'rb') as f:
             hpoid2disease[hpoid] = [diseasename]
 
 def map2disease(final_matches):
+    """ Map to diseases for each phenotype without similarity score (one phenotype at one time)
+
+    Args:
+        final_matches (list): each element is a tuple (hponame, hpoid, similarity_score)
+       
+    Returns:
+        mapped_diseases (list): diseases associated with the phenotype 
+
+    """
     # Map to diseases for each phenotype (one phenotype at one time)
     # Pre-process the final_matches by remove '-synonym' from the hpoid and then unique the hpoids
     final_matches = [_[1] for _ in final_matches] 
@@ -472,9 +589,16 @@ def map2disease(final_matches):
     return mapped_diseases
 
 def map2diseaseWithSim(final_matches):
-    # Map to diseases for each phenotype (one phenotype at one time) with similarity information (word len)
-    # final_matches like: [('Postnatal macrocephaly','HP:0005490',0.5), ('Macrocephaly,relative','HP:0004482-synonym', 0.5), ...]
-    # map2disease function returns a list while this function returns a dict with diseasename as key and similarity as value 
+    """ Map to diseases for each phenotype (one phenotype at one time) with similarity score 
+    final_matches like: [('Postnatal macrocephaly','HP:0005490',0.5), ('Macrocephaly,relative','HP:0004482-synonym', 0.5), ...]
+
+    Args:
+        final_matches (list): each element is a tuple (hponame, hpoid, similarity_score)
+
+    Returns:
+        mapped_diseases_score (dict): a dict with diseasename as key and similarity score as value 
+
+    """
     hpoid_sim = dict() 
     for match in final_matches:
         hpoid = match[1].split('-')[0]
@@ -499,6 +623,23 @@ def map2diseaseWithSim(final_matches):
 
 
 def generate_score(phenos, CANDIDATE_GENES, corner_cases, original_phenos):
+    """ This is the main function in this .py file. It is called in the main.py file.
+
+    Args:
+        phenos (list): input patient's phenotypes
+        CANDIDATE_GENES (list): input candidate genes of the patient
+        corner_cases (dict): corner cases of input patient's phenotypes that need to be handled. Currently the corner cases are to make growth delay and development delay interchangebly. 
+        original_phenos (list): input patient's phenotypes before handling the corner cases
+
+    Returns:
+        ranking_genes (list): each element in the list is a tuple (gene, score, hits, phenospecificity_score). 
+            It records gene symbol, phenotype hit score for this gene, nubmer of phenotypes associated with this gene, 
+            and the phenotype correlation score by weighing the rareness of each phenotype.  
+        ranking_diseases (list): each element in the list is a tuple (disease, score, hits). 
+            It records the disease name, phenotype hit score for this disease, and number of phenotypes associated with this disease.
+        gene_associated_phenos (dict): phenotypes associated with each gene
+
+    """
     all_mapped_genes = []
     all_mapped_genes_score = {}
     gene_phenos = {} 
