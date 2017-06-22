@@ -24,7 +24,8 @@ def smart_match(input_en, chpo):
     for i in wiki:
         try:
             wiki_match = chpo[chpo['表型英文名']==i]
-            return wiki_match.to_json(orient='records')
+            if len(wiki_match) > 0:
+                return wiki_match.to_json(orient='records')
         except:
             pass
 
