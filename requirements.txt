@@ -5,7 +5,7 @@ appdirs==1.4.3
 backports-abc==0.5
 bdist-mpkg==0.5.0
 BeautifulSoup==3.2.1
-beautifulsoup4==4.5.3
+beautifulsoup4==4.6.0
 billiard==3.3.0.23
 boto==2.46.1
 bz2file==0.98
@@ -47,4 +47,6 @@ zope.interface==4.1.1
 xlrd==0.9.3
 langdetect==1.0.7
 urllib2
-json
+Google-Search-API
+bs4==0.0.1
+html5lib
