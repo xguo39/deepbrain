@@ -7,6 +7,9 @@ from map_phenotype_to_gene import map2hpoWithPhenoSynonyms
 import pandas as pd
 from langdetect import detect
 from google import google
+import json
+import requests
+import jieba
 
 reload(sys)
 sys.setdefaultencoding('utf-8')
@@ -21,7 +24,8 @@ def smart_match(input_en, chpo):
     for i in wiki:
         try:
             wiki_match = chpo[chpo['表型英文名']==i]
-            return wiki_match.to_json(orient='records')
+            if len(wiki_match) > 0:
+                return wiki_match.to_json(orient='records')
         except:
             pass
 
@@ -48,9 +52,13 @@ def map_chpo(input_pheno):
             chpo = pd.read_excel(CHPO)
             chpo.columns = ['类别','HPO编号','表型英文名','表型中文名','英文释义','释义']
             chpo = chpo.iloc[:,[3,2,1,0,5]]
-            if detect(unicode(input_pheno)) in ["zh-cn","ko"]:
+            word_cant_be_detected = ['癫痫']
+            manual_dir = {u'愣神': u'癫痫'}
+            if input_pheno in manual_dir.keys():
+                input_pheno = manual_dir[input_pheno]
+            if input_pheno in word_cant_be_detected or detect(unicode(input_pheno)) in ["zh-cn","ko"]:
                 direct_match = chpo[chpo['表型中文名']==input_pheno]
-                substring_match = [i for i,j in enumerate(list(chpo['表型中文名'])) if input_pheno in j]
+                substring_match = [i for i,j in enumerate(list(chpo['表型中文名'])) if set(list(jieba.cut_for_search(input_pheno))).issubset(set(list(jieba.cut_for_search(j))))]
                 if len(direct_match) > 0:
                     match_result = direct_match.to_json(orient='records')
                 elif len(substring_match) > 0:
