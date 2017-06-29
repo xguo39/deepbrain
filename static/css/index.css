@@ -113,6 +113,7 @@
 
 .logos img {
     padding: 10px;
+    width: 170px;
 }
 
 #introduction p {
@@ -132,11 +133,12 @@
 #introduction ul li span {
     /* Text color */
     color: black;
+    font-size: 15px;
 }
 
 #product img {
-    -webkit-filter: grayscale(0%);
-    filter: grayscale(0%); /* make all photos black and white */
+    -webkit-filter: grayscale(100%);
+    filter: grayscale(100%); /* make all photos black and white */
     width: 90%; /* Set width to 100% */
     margin: auto;
 }
