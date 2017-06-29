@@ -1,13 +1,20 @@
+# -*- coding: utf-8 -*-
+
 import pandas as pd
 import re
 from nltk.corpus import wordnet as wn
 from collections import deque
-import re
 from nltk.stem.wordnet import WordNetLemmatizer
 from collections import Counter
 import os.path
 import numpy as np
+import MySQLdb
+import sys
+
 BASE = os.path.dirname(os.path.abspath(__file__))
+
+reload(sys)
+sys.setdefaultencoding("utf-8")
 
 """
 For each input phenotype of the patient, we do preliminary mapping of it to hpo standard terms.
@@ -494,13 +501,14 @@ def map2gene(final_matches, CANDIDATE_GENES):
     mapped_genes = list(set(mapped_genes) & set(CANDIDATE_GENES))
     return mapped_genes
 
-def map2geneWithSim(final_matches, CANDIDATE_GENES):
+def map2geneWithSim(final_matches, CANDIDATE_GENES, associated_genes_for_curr_pheno_from_pubmed):
     """ Map to genes for each phenotype (one phenotype at one time) with similarity score 
     final_matches like: [('Postnatal macrocephaly','HP:0005490',0.5), ('Macrocephaly,relative','HP:0004482-synonym', 0.5), ...]
 
     Args:
         final_matches (list): each element is a tuple (hponame, hpoid, similarity_score)
         CANDIDATE_GENES (list): input candidate genes of the patient
+        associated_genes_for_curr_pheno_from_pubmed (list): genes associated with patient's phenotypes searched form Pubmed
 
     Returns:
         mapped_genes_score (dict): a dict with gene symbol as key and similarity score as value 
@@ -523,8 +531,13 @@ def map2geneWithSim(final_matches, CANDIDATE_GENES):
     for hpoid in hpoid_sim:
         try:
             mapped_genes = hpoid2gene[hpoid]
+            # add genes searched from pubmed
+            mapped_genes = list(set(mapped_genes + associated_genes_for_curr_pheno_from_pubmed))
         except KeyError:
-            continue
+            if not associated_genes_for_curr_pheno_from_pubmed:
+                continue
+            else:
+                mapped_genes = associated_genes_for_curr_pheno_from_pubmed
         sim = hpoid_sim[hpoid]
         for gene in mapped_genes:
             # In practice, we don't need to screen through all genes. 
@@ -621,6 +634,89 @@ def map2diseaseWithSim(final_matches):
                 mapped_diseases_score[disease] = sim
     return mapped_diseases_score 
 
+def getRelatedPubmedArticles(phenos, CANDIDATE_GENES):
+    db = MySQLdb.connect(host="localhost",
+                 user="root",
+                 passwd="Tianqi12",
+                 db="DB_offline")
+
+    variantphenosfromPubmed = dict()
+    query = "select gene, protein_variant, pmid, title, abstract from pubmed_var where "
+    for gene in CANDIDATE_GENES:
+        query += "gene = '%s' or " % gene
+    query = query[0:-4]
+    cursor = db.cursor()
+    cursor.execute(query)
+    pubmed_data = cursor.fetchall()
+    db.close()
+    return pubmed_data
+
+def initWordDifficultyIndex():
+    df = pd.read_csv(os.path.join(BASE, 'data/word_difficulty_index.txt'), usecols = [0, 1, 2])
+    df['Word'] = df['Word'].str.lower()
+    word_difficulty_index = df.set_index(['Word']).to_dict()['Freq_HAL']
+    return word_difficulty_index
+
+def searchPhenosFromPubmed(phenos, CANDIDATE_GENES):
+    pubmed_data = getRelatedPubmedArticles(phenos, CANDIDATE_GENES)
+    word_difficulty_index = initWordDifficultyIndex()
+    patient_phenotypes_wordbreak = []
+    phenowordbreak2originalpheno = dict()
+    for pheno in phenos:
+        pheno_wordlist = pheno.split()
+        append_wordlist = False
+        for word in pheno_wordlist: 
+            word = word.lower()
+            if word not in word_difficulty_index.keys() or word_difficulty_index[word] < 100:
+                append_wordlist = True
+                rare_words_in_pheno_wordlist = [word for word in pheno_wordlist if word not in word_difficulty_index or word_difficulty_index[word] < 1000]
+                patient_phenotypes_wordbreak += rare_words_in_pheno_wordlist
+                for rare_word in rare_words_in_pheno_wordlist:
+                    phenowordbreak2originalpheno[rare_word.lower()] = pheno
+                break
+        if not append_wordlist:
+            patient_phenotypes_wordbreak.append(pheno)
+            phenowordbreak2originalpheno[pheno.lower()] = pheno
+
+    tmp_patient_phenotypes_wordbreak = []
+    for pheno in patient_phenotypes_wordbreak:
+        if pheno not in word_difficulty_index.keys() or word_difficulty_index[pheno] < 160000:
+            tmp_patient_phenotypes_wordbreak.append(pheno)
+    patient_phenotypes_wordbreak = tmp_patient_phenotypes_wordbreak
+
+    re_pubmed = re.compile(r'\b(' +'|'.join(patient_phenotypes_wordbreak) + r')', re.I)
+
+    phenosgenefromPubmed = dict()
+    genephenosfromPubmed = dict()
+    genephenospmids = dict()
+    for data in pubmed_data:
+        gene, protein_variant, pmid, title, abstract = data
+        text = title + ' ' + abstract
+        if not re_pubmed.search(text):
+            continue
+        pubmed_phenos_wordbreak = re_pubmed.findall(text)
+        if gene in genephenosfromPubmed:
+            genephenosfromPubmed[gene] += [phenowordbreak2originalpheno[pheno.lower()] for pheno in pubmed_phenos_wordbreak]
+            genephenospmids[gene].append(pmid)
+        else:
+            genephenosfromPubmed[gene] = [phenowordbreak2originalpheno[pheno.lower()] for pheno in pubmed_phenos_wordbreak]
+            genephenospmids[gene] = [pmid]
+        for pheno_wordbreak in pubmed_phenos_wordbreak:
+            pheno = phenowordbreak2originalpheno[pheno_wordbreak.lower()] 
+            if pheno in phenosgenefromPubmed:
+                phenosgenefromPubmed[pheno].append(gene)
+            else:
+                phenosgenefromPubmed[pheno] = [gene]
+
+    # make the value in each dict to be a unique list 
+    for key in phenosgenefromPubmed.keys():
+        phenosgenefromPubmed[key] = list(set(phenosgenefromPubmed[key]))
+    for key in genephenosfromPubmed.keys():
+        genephenosfromPubmed[key] = list(set(genephenosfromPubmed[key]))
+    for key in genephenospmids.keys():
+        genephenospmids[key] = list(set(genephenospmids[key]))
+
+    return phenosgenefromPubmed
 
 def generate_score(phenos, CANDIDATE_GENES, corner_cases, original_phenos):
     """ This is the main function in this .py file. It is called in the main.py file.
@@ -650,6 +746,9 @@ def generate_score(phenos, CANDIDATE_GENES, corner_cases, original_phenos):
     gene_associated_phenos = dict()
     all_mapped_genes_score_phenospecificity = {}
 
+    # Get phenotype-gene associations from Pubmed
+    phenosgenefromPubmed = searchPhenosFromPubmed(phenos, CANDIDATE_GENES)
+
     for pheno in phenos:
         # print ("===========================================================================================")
         # pprint.pprint(pheno)
@@ -665,10 +764,21 @@ def generate_score(phenos, CANDIDATE_GENES, corner_cases, original_phenos):
                 gene_associated_phenos[gene].append(pheno)
             else:
                 gene_associated_phenos[gene] = [pheno]
+        # Add genes searched from pubmed to gene_associated_phenos
+        associated_genes_for_curr_pheno_from_pubmed = []
+        if pheno in phenosgenefromPubmed:   
+            associated_genes_for_curr_pheno_from_pubmed = phenosgenefromPubmed[pheno] 
+        for gene in associated_genes_for_curr_pheno_from_pubmed:
+            if gene in mapped_genes:
+                continue
+            if gene in gene_associated_phenos:
+                gene_associated_phenos[gene].append(pheno)
+            else:
+                gene_associated_phenos[gene] = [pheno]
 
         # pprint.pprint(mapped_genes)
-        all_mapped_genes += mapped_genes
-        mapped_genes_score, mapped_genes_score_phenospecificity = map2geneWithSim(final_matches, CANDIDATE_GENES)
+        all_mapped_genes += list(set(mapped_genes) | set(associated_genes_for_curr_pheno_from_pubmed))
+        mapped_genes_score, mapped_genes_score_phenospecificity = map2geneWithSim(final_matches, CANDIDATE_GENES, associated_genes_for_curr_pheno_from_pubmed)
         if pheno in corner_cases:
             pheno = corner_cases[pheno]
         for gene in mapped_genes_score:

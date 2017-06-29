@@ -183,6 +183,7 @@ def searchPhenosFromDBdata(patient_phenotypes, variantphenos):
 def initWordDifficultyIndex():
     global word_difficulty_index
     df = pd.read_csv(os.path.join(BASE, 'data/word_difficulty_index.txt'), usecols = [0, 1, 2])
+    df['Word'] = df['Word'].str.lower()
     word_difficulty_index = df.set_index(['Word']).to_dict()['Freq_HAL']
     return word_difficulty_index
 
@@ -215,15 +216,14 @@ def searchPhenosFromPubmed(patient_phenotypes, samedomainvariants, domainvariant
         #pheno_wordlist = [singularize(word, custom={'toes':'toe'}) for word in pheno_wordlist]
         append_wordlist = False 
         for word in pheno_wordlist:
+            word = word.lower()
             if word not in word_difficulty_index.keys() or word_difficulty_index[word] < 100:
                 append_wordlist = True
-                #*********** New lines (only add rare words)
                 rare_words_in_pheno_wordlist = [word for word in pheno_wordlist if word not in word_difficulty_index or word_difficulty_index[word] < 1000]
                 patient_phenotypes_wordbreak += rare_words_in_pheno_wordlist
                 break   
         if not append_wordlist:
             patient_phenotypes_wordbreak.append(pheno)
-    #*********** New line (remove common words)
     tmp_patient_phenotypes_wordbreak = []
     for pheno in patient_phenotypes_wordbreak:
         if pheno not in word_difficulty_index.keys() or word_difficulty_index[pheno] < 160000:
@@ -440,7 +440,7 @@ def getScores(variantphenosfromPubmed, variantphenosfromDB, variantphenos, patie
 	items_count = Counter(variantphenosfromPubmed[originalvar])
 	#print items_count
 	for item in items_count.keys():
-            #******** New lines
+            item = item.lower()
             difficulty_index = word_difficulty_index[item] if item in word_difficulty_index else 50
             weight = 8.0 / np.log(difficulty_index) ## The more difficult the word, the more weight to be assigned
 	    if originalvar in scores:
@@ -451,7 +451,7 @@ def getScores(variantphenosfromPubmed, variantphenosfromDB, variantphenos, patie
 	items_count = Counter(variantphenosfromDB[originalvar])
 	#print items_count
 	for item in items_count.keys():
-            #******** New lines
+            item = item.lower()
             difficulty_index = word_difficulty_index[item] if item in word_difficulty_index else 50
             weight = 8.0 / np.log(difficulty_index) ## The more difficult the word, the more weight to be assigned
 	    if originalvar in scores:
@@ -514,12 +514,15 @@ def generateOutput(variants, ACMG_result, patient_phenotypes, variant_ACMG_inter
     for key in variantsdata:
         gene, variant, protein = key
         id, final_score, pathogenicity_score, pathogenicity, hit_criteria, hpo_hit_score = variantsdata[key]
-        pheno_match_score = scores[key] if key in scores else 1.0 
-        final_score = float(final_score) * pheno_match_score       
+        pheno_match_score = scores[key] if key in scores else 1.0
+        final_score = float(final_score) * pheno_match_score
         final_res.append([gene, variant, protein, id, final_score, pathogenicity, hit_criteria, pathogenicity_score, hpo_hit_score, pheno_match_score])	
     df_final_res = pd.DataFrame(final_res, columns = ['gene', 'variant', 'protein', 'id', 'final_score', 'pathogenicity', 'hit_criteria', 'pathogenicity_score', 'hpo_hit_score', 'pheno_match_score'])
+    df_final_res['pheno_match_score'] = df_final_res['pheno_match_score']+0.03*df_final_res['hpo_hit_score']
+    # df_final_res['pheno_match_score'] = df_final_res['hpo_hit_score']
     df_final_res['final_score'] = df_final_res['final_score'].apply(lambda x: round(x,2))
-    df_final_res.sort(['final_score'], ascending = [0], inplace = True)
+    df_final_res['pheno_match_score'] = df_final_res['pheno_match_score'].apply(lambda x: round(x,2))
+    df_final_res.sort_values(by=['final_score'], ascending = [0], inplace = True)
 
     tmp_df_final_res = df_final_res.copy()
     tmp_df_final_res.drop_duplicates(subset = ['gene', 'variant'], inplace = True)

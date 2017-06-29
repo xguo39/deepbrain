@@ -484,6 +484,7 @@ def get_variants_from_vcf(candidate_vars):
   # The dbscsnv (splicing effect prediction) can not be obtained from myvariant; instead, we have local flat dbscsnv files
   dbscsnv_chromosomes, dbscsnv_variants = [], {}
 
+  tmp_candidate_vars = []
   for var in candidate_vars:
     variant_ids.append(var[3])
 
@@ -524,6 +525,8 @@ def get_variants_from_vcf(candidate_vars):
     variants[key]['protein'] = protein
     variants[key]['transcript'] = transcript 
     variants[key]['effect'] = effect
+
+    tmp_candidate_vars.append((gene, variant, transcript, variant_id))
 
     maf_exac, maf_exac_nontcga = collectExAC()
     maf_exac = maf_exac_nontcga if not maf_exac and maf_exac_nontcga else maf_exac
@@ -574,6 +577,8 @@ def get_variants_from_vcf(candidate_vars):
     if 'dbscSNV_ada_score' not in variants[key] or variants[key]['dbscSNV_ada_score'] == '.': variants[key]['dbscSNV_ada_score'] = ''
 
   ## Get Clinvar assertion data from local file if the record can not be find in myvariant
+  ## The old candidate_vars form vcf file only contains variant_id, the other records are '', so it is updated
+  candidate_vars = tmp_candidate_vars
   genes = [var[0] for var in candidate_vars]
   gene_variants = [(var[0], var[1]) for var in candidate_vars]
   clinvar_pathogenicity, clinvar_pmids, clinvar_variation_ids, clinvar_review_status = getClinvarData(genes, gene_variants)
@@ -592,5 +597,5 @@ def get_variants_from_vcf(candidate_vars):
     v = variants[key]
     final_res.append((v['gene'], v['variant'], v['protein']))
 
-  return final_res, variants
+  return final_res, variants, candidate_vars
 

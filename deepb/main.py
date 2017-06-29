@@ -5,6 +5,7 @@ import collectVariantInfo
 import pubmed
 import ACMG
 import filterVariantOnPhenotype
+import update_phenotype_to_gene
 import csv
 
 import pandas as pd
@@ -109,7 +110,7 @@ def read_input_pheno_file(input_phenotype):
 	for pheno in phenos:
 		if re.search('development', pheno) and re.search('delay', pheno) and not re.search('growth', pheno):
 			phenos.append('growth delay')
-			orner_cases['growth delay'] = pheno.strip()
+			corner_cases['growth delay'] = pheno.strip()
 		for pheno in phenos:
 			if re.search('growth', pheno) and re.search('delay', pheno) and not re.search('development', pheno):
 				phenos.append('developmental delay')
@@ -130,8 +131,9 @@ def read_input_gene_file(input_gene):
 	        delimiter =  dialect.delimiter
 	        field_names = header.split(delimiter)
 	        break
-	        
-	chrom_idx, pos_idx, ref_idx, alt_idx, gene_idx = None, None, None, None, None
+	
+	chrom_idx, pos_idx, ref_idx, alt_idx, gene_idx, zygosity_idx = None, None, None, None, None, None
+	mother_idx, father_idx = None, None
 
 	for idx in xrange(len(field_names)):
 	    field = field_names[idx]
@@ -140,8 +142,13 @@ def read_input_gene_file(input_gene):
 	    if re.match(r'ref', field, re.I): ref_idx = idx
 	    if re.match(r'alt|allele 1', field, re.I): alt_idx = idx
 	    if re.match(r'gene \(gene\)|gene$', field, re.I): gene_idx = idx
+	    if re.match(r'zygo', field, re.I): zygosity_idx = idx
+	    if re.match(r'mot', field, re.I): mother_idx = idx
+	    if re.match(r'fat', field, re.I): father_idx = idx
+
 	input_gene_list = []
 	CANDIDATE_GENES = []
+	candidate_vars_zygosity = []
 	for line in input_gene[1:]:
 		if not line:
 			continue	
@@ -151,7 +158,7 @@ def read_input_gene_file(input_gene):
 		# print line
 		parts = re.split(r'%s' % delimiter, line)
 		input_gene_list.append(parts)
-		gene, transcript, variant, variant_id = '', '', '', ''
+		gene, transcript, variant, variant_id, zygosity = '', '', '', '', ''
 		if gene_idx is not None:
 			gene = parts[gene_idx]
 			CANDIDATE_GENES.append(gene)
@@ -168,6 +175,9 @@ def read_input_gene_file(input_gene):
 				variant_id = 'chr' + part.split(':')[0].split('.')[-1] + part.split(':')[-1]
 			if re.search(r'chr.*:g\.', part, re.I):
 				variant_id = part
+			if re.match(r'het|hom|hem|de |comp', part, re.I):	
+				zygosity = part
+
 		if not variant_id and (chrom_idx is not None and pos_idx is not None and ref_idx is not None and alt_idx is not None):
 			chrome, pos, ref, alt = parts[chrom_idx], parts[pos_idx], parts[ref_idx], parts[alt_idx]
 			alts = alt.split(',')
@@ -179,9 +189,63 @@ def read_input_gene_file(input_gene):
 				# print gene, variant, transcript, variant_id
 				if not gene and not variant and not transcript and not variant_id:
 					continue
-				candidate_vars.append((gene, variant, transcript, variant_id))
+				if mother_idx is not None and father_idx is not None:
+					mother, father = parts[mother_idx], parts[father_idx]                   
+					candidate_vars_zygosity.append((gene, variant, transcript, variant_id, ref, alt, mother, father))
+				candidate_vars.append((gene, variant, transcript, variant_id, zygosity))
 		else:
-			candidate_vars.append((gene, variant, transcript, variant_id))
+			candidate_vars.append((gene, variant, transcript, variant_id, zygosity))
+
+	def getZygosityFromVCF():
+		gene_zygosity = dict()
+		for item in candidate_vars_zygosity:
+			gene, variant, transcript, variant_id, ref, alt, mother, father = item
+			if gene in gene_zygosity:
+				gene_zygosity[gene].append((ref, alt, mother, father)) 
+			else:
+				gene_zygosity[gene] = [(ref, alt, mother, father)]
+	
+		comp_het_genes = [] 
+		for gene in gene_zygosity.keys():
+			if len(gene_zygosity[gene]) > 1:
+				var_from_mother, var_from_father = False, False
+				for item in gene_zygosity[gene]:
+					if mother == alt and father == ref:
+						var_from_mother = True
+					if mother == ref and father == alt:
+						var_from_father = True
+				if var_from_mother and var_from_father:
+					comp_het_genes.append(gene)
+		return comp_het_genes	
+
+	if candidate_vars_zygosity:
+		candidate_vars = []
+		comp_het_genes = getZygosityFromVCF()
+		for item in candidate_vars_zygosity:
+			gene, variant, transcript, variant_id, ref, alt, mother, father = item
+			if gene in comp_het_genes:
+				zygosity = 'comp het'
+			elif not mother or not father:
+ 				zygosity = 'hem'
+			else:
+				if mother == alt and father == alt:
+					zygosity = 'hom'
+				elif mother == ref and father == ref:
+					zygosity = 'de novo'
+				else:
+					zygosity = 'het'
+			candidate_vars.append((gene, variant, transcript, variant_id, zygosity))
+
+	tmp_candidate_vars = []
+	gene_zygosity = dict()
+	for var in candidate_vars:
+		gene, variant, transcript, variant_id, zygosity = var
+		tmp_candidate_vars.append((gene, variant, transcript, variant_id))
+		if variant_id:
+			gene_zygosity[variant_id] = zygosity
+		if gene and variant:
+			gene_zygosity[(gene, variant)] = zygosity
+	candidate_vars = tmp_candidate_vars
 
 	# remove lines in the input file which has wrong number of fields
 	field_nums = []
@@ -194,7 +258,7 @@ def read_input_gene_file(input_gene):
 	    if len(line) == correct_field_num:
 	        correct_input_gene_list.append(line)
 	df_genes = pd.DataFrame(correct_input_gene_list, columns = field_names)
-	return candidate_vars, CANDIDATE_GENES, df_genes, field_names 
+	return candidate_vars, CANDIDATE_GENES, df_genes, field_names, gene_zygosity 
 
 def map_phenotype2gene(CANDIDATE_GENES, phenos, corner_cases, candidate_vars, original_phenos):
 	ranking_genes, ranking_disease, gene_associated_phenos = map_phenotype_to_gene.generate_score(phenos, CANDIDATE_GENES, corner_cases, original_phenos)
@@ -214,6 +278,11 @@ def map_phenotype2gene(CANDIDATE_GENES, phenos, corner_cases, candidate_vars, or
 	candidate_vars = tmp_candidate_vars
 	return ranking_genes, candidate_vars, df_gene_associated_phenos
 
+def update_phenotype2gene(final_res, variants, ranking_genes, gene_zygosity, candidate_vars):
+	ranking_genes = update_phenotype_to_gene.rankGenePhenoByCodingEffect(final_res, variants, ranking_genes)
+	ranking_genes = update_phenotype_to_gene.rankGenePhenoByInheritancePattern(ranking_genes, gene_zygosity, candidate_vars)
+	return ranking_genes
+
 def master_function(raw_input_id):
 	status_step = "generating candidate variants ..." 
 	raw_input = Raw_input_table.objects.get(id=raw_input_id)
@@ -224,16 +293,17 @@ def master_function(raw_input_id):
 	phenos, corner_cases, original_phenos, phenotype_translate = read_input_pheno_file(input_phenotype)
 
 	# Read input gene file and generate candidate_vars. candidate_vars are (gene, variant, transcript, variant_id); CANDIDATE_GENES is a list of gene symbols; df_genes is a dataframe that keeps all the data that user uploaded; field_names are header of the input gene file 
-	candidate_vars, CANDIDATE_GENES, df_genes, field_names = read_input_gene_file(input_gene)
-	# print candidate_vars
-	# print CANDIDATE_GENES
-	# print df_genes
-	# print field_names
+	candidate_vars, CANDIDATE_GENES, df_genes, field_names, gene_zygosity = read_input_gene_file(input_gene)
+	# print 'candidate_vars', candidate_vars
+	# print 'CANDIDATE_GENES', CANDIDATE_GENES
+	# print 'df_genes', df_genes
+	# print 'field_names', field_names
 	if not CANDIDATE_GENES:
 		# collect variant info
 		raw_input.status = "Annotating variants using genomic databases"
 		raw_input.save()
-		final_res, variants = collectVariantInfo.get_variants_from_vcf(candidate_vars)
+		# candidate_vars from vcf file was updated, because gene, variant, transcript were empty
+		final_res, variant, candidate_vars = collectVariantInfo.get_variants_from_vcf(candidate_vars)
 		CANDIDATE_GENES = [_[0] for _ in final_res]
 		# map phenotype to gene; the candidate_vars was filtered: if it is a gene associated with phenos, then keep it.
 		if phenos:
@@ -242,8 +312,11 @@ def master_function(raw_input_id):
 			ranking_genes, candidate_vars, df_gene_associated_phenos = map_phenotype2gene(CANDIDATE_GENES, phenos, corner_cases, candidate_vars, original_phenos)
 		else:
 			ranking_genes = []
-			for gene in CANDIDATE_GENES:
-				ranking_genes.append((gene, 1.0, 1, 1.0))
+			for key in variant.keys():
+				gene, variant = key
+				variant_id = variant[key][id]
+				zygosity = gene_zygosity[variant_id]
+				ranking_genes.append((gene, variant, 1.0, 1, 1.0, zygosity))
 	else:
 		# map phenotype to gene; the candidate_vars was filtered: if it is a gene associated with phenos, then keep it.
 		if phenos:
@@ -252,20 +325,41 @@ def master_function(raw_input_id):
 			ranking_genes, candidate_vars, df_gene_associated_phenos = map_phenotype2gene(CANDIDATE_GENES, phenos, corner_cases, candidate_vars, original_phenos)
 		else:
 			ranking_genes = []
-			for gene in CANDIDATE_GENES:
-				ranking_genes.append((gene, 1.0, 1, 1.0))
+			for key in gene_zygosity.keys():
+				try:
+					gene, variant = key
+				except:
+					continue
+				zygosity = gene_zygosity[key]
+				ranking_genes.append((gene, variant, 1.0, 1, 1.0, zygosity))
 		# collect variant info
 		raw_input.status = "Annotating variants using genomic databases"
 		raw_input.save()
 		final_res, variants = collectVariantInfo.get_variants(candidate_vars)
-	# print ranking_genes
-	# print candidate_vars
-	# print final_res
-	# print variants
+	# print 'ranking_genes', ranking_genes
+	# print 'candidate_vars', candidate_vars
+	# print 'final_res', final_res
+	# print 'variants', variants
 
 	if final_res == [] and variants == defaultdict(dict):
-		return pd.DataFrame(), df_genes, phenos, field_names, pd.DataFrame(), pd.DataFrame()
+		return pd.DataFrame(), df_genes, phenos, field_names, pd.DataFrame(), pd.DataFrame(), pd.DataFrame()
 	else:
+		if phenos:
+			# update phenotype correlation using coding effect and zygosity 
+			ranking_genes = update_phenotype2gene(final_res, variants, ranking_genes, gene_zygosity, candidate_vars)
+			df_ranking_genes = pd.DataFrame(ranking_genes, columns=['gene', 'variant', 'score_sim', 'hits', 'score', 'zygosity'])
+			df_ranking_genes = df_ranking_genes[['gene', 'variant', 'score', 'zygosity']]
+			df_ranking_genes = df_ranking_genes.merge(df_gene_associated_phenos, on = 'gene', how = 'left')
+			df_ranking_genes.sort_values(by=['score'], ascending = [0], inplace = True)
+			df_hpo_ranking_genes = df_ranking_genes[['gene', 'variant', 'score']] 
+		else:
+			df_hpo_ranking_genes = pd.DataFrame(ranking_genes, columns=['gene', 'variant', 'score_sim', 'hits', 'score', 'zygosity'])
+			df_ranking_genes = df_hpo_ranking_genes[['gene', 'variant', 'score_sim', 'hits', 'score', 'zygosity']]
+			df_ranking_genes['score_sim'] = np.nan
+			df_ranking_genes['hits'] = np.nan
+			df_ranking_genes['score'] = np.nan
+			df_hpo_ranking_genes = df_hpo_ranking_genes[['gene', 'variant', 'score']]
+
 		# pubmed
 		raw_input.status = "Searching biomedical literatures"
 		raw_input.save()
@@ -274,8 +368,7 @@ def master_function(raw_input_id):
 		# ACMG
 		raw_input.status = "Checking ACMG standard"
 		raw_input.save()
-		df_hpo_ranking_genes = pd.DataFrame(ranking_genes, columns=['gene', 'score_sim', 'hits', 'score'])
-		df_hpo_ranking_genes = df_hpo_ranking_genes[['gene', 'score']]
+
 		ACMG_result, variant_ACMG_interpretation, variant_ACMG_interpret_chinese, df_variant_ACMG_interpret, df_variant_ACMG_interpret_chinese = ACMG.Get_ACMG_result(df_hpo_ranking_genes, variants, df_pubmed)
 
 		# filter variant on phenotype
@@ -284,10 +377,15 @@ def master_function(raw_input_id):
 			raw_input.status = "Filtering variants based on phenotypes"
 			raw_input.save()
 			df_final_res, variant_ACMG_interpretation, variant_ACMG_interpret_chinese = filterVariantOnPhenotype.generateOutput(variants, ACMG_result, phenos, variant_ACMG_interpretation, variant_ACMG_interpret_chinese)
-			df_final_res = df_final_res.merge(df_gene_associated_phenos, on = 'gene', how = 'left')
-			return df_final_res, df_genes, phenos, field_names, variant_ACMG_interpretation, variant_ACMG_interpret_chinese
+			# df_final_res = df_final_res.merge(df_gene_associated_phenos, on = 'gene', how = 'left')
+			df_ranking_genes = df_ranking_genes[['gene', 'zygosity', 'correlated_phenotypes']]
+			df_final_res = df_final_res.merge(df_ranking_genes, on = 'gene', how = 'left')
+			df_final_res = df_final_res[['gene', 'id', 'variant', 'zygosity','correlated_phenotypes', 'pheno_match_score', 'hit_criteria', 'pathogenicity', 'final_score']]
+			# if phenos are provided, we return a df_ranking_genes dataframe, which contains 'gene', 'variant', 'score_sim', 'hits', 'score', 'zygosity', 'associated_phenotypes'
+			return df_final_res, df_genes, phenos, field_names, variant_ACMG_interpretation, variant_ACMG_interpret_chinese, df_ranking_genes
 
 		else:
-		    return ACMG_result, df_genes, phenos, field_names, df_variant_ACMG_interpret, df_variant_ACMG_interpret_chinese
-
+			df_ranking_genes = df_ranking_genes[['gene', 'zygosity']]
+			ACMG_result = ACMG_result.merge(df_ranking_genes, on = 'gene', how = 'left')
+			return ACMG_result, df_genes, phenos, field_names, df_variant_ACMG_interpret, df_variant_ACMG_interpret_chinese, df_ranking_genes
 

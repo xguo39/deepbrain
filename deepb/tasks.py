@@ -20,8 +20,7 @@ def trigger_background_main_task(raw_input_id):
     raw_input = Raw_input_table.objects.get(id=raw_input_id)
     try:
         start_point = time.time()
-        ACMG_result, df_genes, phenos, field_names, variant_ACMG_interpretation, variant_ACMG_interpret_chinese = master_function(raw_input_id)
-
+        ACMG_result, df_genes, phenos, field_names, variant_ACMG_interpretation, variant_ACMG_interpret_chinese, df_ranking_genes = master_function(raw_input_id)
         input_gene = df_genes.to_json(orient='records')
         input_phenotype = ', '.join(phenos)
         result_table = ACMG_result.to_json(orient='records')

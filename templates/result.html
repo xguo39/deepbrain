@@ -24,14 +24,24 @@
     <table id="result" class="table table-bordered table-striped table-hover" border="1">
         <thead>
             <tr>
-                <th>Gene</th>
-                <th>Variant</th>
-                <th>Id</th>
-                <th>GNova Score</th>
-                <th>Pathogenicity</th>
-                <th>Hit Criteria</th>
                 {% if input_phenotype %}
-                    <th>Correlated Phenotypes</th>
+                    <th>Gene</th>
+                    <th>Transcript</th>
+                    <th>Variant</th>
+                    <th>Zygocity</th>
+                    <th>Phenotypes Matched</th>
+                    <th>Pheno Matched Score</th>
+                    <th>ACMG Hits</th>
+                    <th>Pathogenicity</th>
+                    <th>Total Score</th>
+                {% else %}
+                    <th>Gene</th>
+                    <th>Transcript</th>
+                    <th>Variant</th>
+                    <th>Zygocity</th>
+                    <th>ACMG Hits</th>
+                    <th>Pathogenicity</th>
+                    <th>Total Score</th>
                 {% endif %}
             </tr>
         </thead>
@@ -74,33 +84,40 @@
     var result = {{ result }}
     $(document).ready(function() {
         $('#result').dataTable({
-        	"order": [ 3, 'desc' ],
             "data": result,
             "autoWidth": false,
-            "columns": [
             {% if input_phenotype %}
-                { "data" : "gene" , "width": "9%" },
-                { "data" : "variant" , "width": "9%" },
-                { "data" : "id" , "width": "16%" },
-                { "data" : "final_score" , "width": "5%" },
-                { "data" : "pathogenicity" , "width": "10%" },
-                { "data" : "hit_criteria" , "width": "10%" },
-                { "data" : "correlated_phenotypes" , "width": "41%" }
+                "order": [ 5, 'desc' ],
+                "columns": [
+                    { "data" : "gene" , "width": "7%" },
+                    { "data" : "id" , "width": "18%" , "orderable": false },
+                    { "data" : "variant" , "width": "9%" , "orderable": false },
+                    { "data" : "zygosity" , "width": "8%" , "orderable": false },
+                    { "data" : "correlated_phenotypes" , "width": "28%" , "orderable": false },
+                    { "data" : "pheno_match_score" , "width": "5%" , "orderSequence": [  "desc", "asc" ] },
+                    { "data" : "hit_criteria" , "width": "10%" , "orderable": false },
+                    { "data" : "pathogenicity" , "width": "10%" },
+                    { "data" : "final_score" , "width": "5%" , "orderSequence": [ "desc", "asc" ] }
+                ]
             {% else %}
-                { "data" : "gene" , "width": "14%" },
-                { "data" : "variant" , "width": "14%" },
-                { "data" : "id" , "width": "20%" },
-                { "data" : "final_score" , "width": "12%" },
-                { "data" : "pathogenicity" , "width": "16%" },
-                { "data" : "hit_criteria" , "width": "24%" }
+                "order": [ 6, 'desc' ],
+                "columns": [
+                    { "data" : "gene" , "width": "12%" },
+                    { "data" : "id" , "width": "18%" , "orderable": false },
+                    { "data" : "variant" , "width": "12%" , "orderable": false },
+                    { "data" : "zygosity" , "width": "10%" , "orderable": false },
+                    { "data" : "hit_criteria" , "width": "22%" , "orderable": false },
+                    { "data" : "pathogenicity" , "width": "14%" },
+                    { "data" : "final_score" , "width": "12%" , "orderSequence": [ "desc", "asc" ] }
+                ]
             {% endif %}
-            ]
         } );
     } );
     var input_gene = {{ input_gene }}
     $(document).ready(function() {
         $('#input_gene').dataTable({
             "data": input_gene,
+            "ordering": false,
             "autoWidth": false,
             "scrollX": true,
             "columns": [

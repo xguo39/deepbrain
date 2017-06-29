@@ -58,7 +58,8 @@ def map_chpo(input_pheno):
                 input_pheno = manual_dir[input_pheno]
             if input_pheno in word_cant_be_detected or detect(unicode(input_pheno)) in ["zh-cn","ko"]:
                 direct_match = chpo[chpo['表型中文名']==input_pheno]
-                substring_match = [i for i,j in enumerate(list(chpo['表型中文名'])) if set(list(jieba.cut_for_search(input_pheno))).issubset(set(list(jieba.cut_for_search(j))))]
+                input_cut = list(jieba.cut_for_search(input_pheno))
+                substring_match = [i for i,j in enumerate(list(chpo['表型中文名'])) if set(input_cut).issubset(set(list(jieba.cut_for_search(j))))]
                 if len(direct_match) > 0:
                     match_result = direct_match.to_json(orient='records')
                 elif len(substring_match) > 0:
