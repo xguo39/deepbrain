@@ -518,7 +518,7 @@ def generateOutput(variants, ACMG_result, patient_phenotypes, variant_ACMG_inter
         final_score = float(final_score) * pheno_match_score
         final_res.append([gene, variant, protein, id, final_score, pathogenicity, hit_criteria, pathogenicity_score, hpo_hit_score, pheno_match_score])	
     df_final_res = pd.DataFrame(final_res, columns = ['gene', 'variant', 'protein', 'id', 'final_score', 'pathogenicity', 'hit_criteria', 'pathogenicity_score', 'hpo_hit_score', 'pheno_match_score'])
-    df_final_res['pheno_match_score'] = df_final_res['pheno_match_score']+0.03*df_final_res['hpo_hit_score']
+    df_final_res['pheno_match_score'] = df_final_res['pheno_match_score']*df_final_res['hpo_hit_score']
     # df_final_res['pheno_match_score'] = df_final_res['hpo_hit_score']
     df_final_res['final_score'] = df_final_res['final_score'].apply(lambda x: round(x,2))
     df_final_res['pheno_match_score'] = df_final_res['pheno_match_score'].apply(lambda x: round(x,2))

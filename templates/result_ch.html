@@ -24,14 +24,24 @@
     <table id="result" class="table table-bordered table-striped table-hover" border="1">
         <thead>
             <tr>
-                <th>基因</th>
-                <th>变异</th>
-                <th>Id</th>
-                <th>GNova得分</th>
-                <th>致病性</th>
-                <th>标准</th>
                 {% if input_phenotype %}
+                    <th>基因</th>
+                    <th>转录本</th>
+                    <th>变异</th>
+                    <th>合子</th>
                     <th>关联表型</th>
+                    <th>表型匹配得分</th>
+                    <th>ACMG 标准</th>
+                    <th>致病性</th>
+                    <th>致病性得分</th>
+                {% else %}
+                    <th>基因</th>
+                    <th>转录本</th>
+                    <th>变异</th>
+                    <th>合子</th>
+                    <th>ACMG 标准</th>
+                    <th>致病性</th>
+                    <th>致病性得分</th>
                 {% endif %}
             </tr>
         </thead>
@@ -75,27 +85,33 @@
     var result = {{ result }}
     $(document).ready(function() {
         $('#result').dataTable({
-        	"order": [ 3, 'desc' ],
             "data": result,
             "autoWidth": false,
-            "columns": [
             {% if input_phenotype %}
-                { "data" : "gene" , "width": "9%" },
-                { "data" : "variant" , "width": "9%" },
-                { "data" : "id" , "width": "16%" },
-                { "data" : "final_score" , "width": "5%" },
-                { "data" : "pathogenicity" , "width": "10%" },
-                { "data" : "hit_criteria" , "width": "10%" },
-                { "data" : "correlated_phenotypes" , "width": "41%" }
+                "order": [ 5, 'desc' ],
+                "columns": [
+                    { "data" : "gene" , "width": "7%" },
+                    { "data" : "id" , "width": "18%" , "orderable": false },
+                    { "data" : "variant" , "width": "9%" , "orderable": false },
+                    { "data" : "zygosity" , "width": "8%" , "orderable": false },
+                    { "data" : "correlated_phenotypes" , "width": "28%" , "orderable": false },
+                    { "data" : "pheno_match_score" , "width": "5%" , "orderSequence": [  "desc", "asc" ] },
+                    { "data" : "hit_criteria" , "width": "10%" , "orderable": false },
+                    { "data" : "pathogenicity" , "width": "10%" },
+                    { "data" : "final_score" , "width": "5%" , "orderSequence": [ "desc", "asc" ] }
+                ], 
             {% else %}
-                { "data" : "gene" , "width": "14%" },
-                { "data" : "variant" , "width": "14%" },
-                { "data" : "id" , "width": "20%" },
-                { "data" : "final_score" , "width": "12%" },
-                { "data" : "pathogenicity" , "width": "16%" },
-                { "data" : "hit_criteria" , "width": "24%" }
+                "order": [ 6, 'desc' ],
+                "columns": [
+                    { "data" : "gene" , "width": "12%" },
+                    { "data" : "id" , "width": "18%" , "orderable": false },
+                    { "data" : "variant" , "width": "12%" , "orderable": false },
+                    { "data" : "zygosity" , "width": "10%" , "orderable": false },
+                    { "data" : "hit_criteria" , "width": "22%" , "orderable": false },
+                    { "data" : "pathogenicity" , "width": "14%" },
+                    { "data" : "final_score" , "width": "12%" , "orderSequence": [ "desc", "asc" ] }
+                ],
             {% endif %}
-            ],
             "language": {
                         "sProcessing":   "处理中...",
                         "sLengthMenu":   "显示 _MENU_ 项结果",
