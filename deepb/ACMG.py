@@ -75,13 +75,13 @@ def check_PVS1(variant_):
         else:
             continue
         break
-    if lof = 1:
+    if lof == 1:
         curr_interpret.append('Allele in a gene where loss of function (LOF) is a known mechanism of disease.')
         curr_interpret_chinese.append('变异位点所在基因的功能丢失(loss of function)是已知的致病机制.')
     else:
         curr_interpret.append('Variant NOT in null variant type.')
         curr_interpret_chinese.append('基因变异类型不是无效变异(null variant).')
-    
+
     curr_interpret.append('The variant does NOT have damaging splicing effect.') if not_benign_splicing else curr_interpret.append('The variant has damaging splicing effect.') 
     curr_interpret_chinese.append('此变异不具有害的剪接效应(splicing effect).') if not_benign_splicing else curr_interpret_chinese.append('此变异具有有害的剪接效应(splicing effect).') 
 

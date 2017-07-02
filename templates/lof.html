@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block content %}
+<form name="gene" method="post" action="{% url 'deepb:lof' %}" enctype="multipart/form-data">
+  {% csrf_token %}
+  <div class = "container" id = "enter_task_name">
+    <label>输入基因查询 Loss of function</label> &nbsp;</br>     
+    <input type="text" name="gene" placeholder="" required>
+    <button type="submit", onClick="return">Submit</button>
+  </div>
+</form>
+<br /><br />
+<div class = "container">
+  {% if status == 0 %}
+    <p></p>
+  {% elif status == 1 %}
+    <p>该基因的功能丢失(loss of function)是已知的致病机制</p><br /><br />
+      {% for i in lof_result %}
+          Title: &nbsp;
+          {{ i.name }}<br />
+          Link: &nbsp;
+          <a target="_blank" href="i.link">{{ i.link }}</a><br />
+          Description: &nbsp;
+          {{ i.description }}<br /><br />
+      {% endfor %}
+  {% else %}
+    <p>该基因的功能丢失(loss of function)不是已知的致病机制</p>
+  {% endif %}
+</div>
+<br /><br />
+{% endblock %}

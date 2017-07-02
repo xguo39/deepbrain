@@ -18,7 +18,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import redirect
 import pandas as pd
 from deepb.map_chpo import map_chpo
-
+from lof import check_lof
 
 
 
@@ -294,4 +294,16 @@ def chpo(request):
     match_result = map_chpo(chinese_pheno)
     return render(request, 'chpo.html', {
         'match_result': mark_safe(match_result),
+        })
+
+def lof(request):
+    input_gene = request.POST.get('gene', None)
+    lof_result = []
+    if not input_gene:
+        status = 0
+    else:
+        status, lof_result = check_lof(input_gene)
+    return render(request, 'lof.html', {
+        'status': status,
+        'lof_result': lof_result,
         })
