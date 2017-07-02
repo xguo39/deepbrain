@@ -9,6 +9,7 @@ import numpy as np
 import os
 import time
 import sys
+from google import google
 
 BASE = os.path.dirname(os.path.abspath(__file__))
 
@@ -59,8 +60,28 @@ def check_PVS1(variant_):
     not_benign_splicing = True if ((not dbscSNV_rf_score and not dbscSNV_ada_score) or (dbscSNV_rf_score and float(dbscSNV_rf_score) > dbscSNV_cutoff) or (dbscSNV_ada_score and float(dbscSNV_ada_score) > dbscSNV_cutoff)) else False 
     curr_interpret.append('Variant belongs to null variant type.') if effect_in_null_variant_types else curr_interpret.append('Variant NOT in null variant type.') 
     curr_interpret_chinese.append('基因变异类型是无效变异(null variant).') if effect_in_null_variant_types else curr_interpret_chinese.append('基因变异类型不是无效变异(null variant).') 
-    curr_interpret.append('Allele in a gene where loss of function (LOF) is a known mechanism of disease.') if in_LOF_genes else curr_interpret.append('Allele in a gene where loss of function (LOF) is NOT a known mechanism of disease.') 
-    curr_interpret_chinese.append('变异位点所在基因的功能丢失(loss of function)是已知的致病机制.') if in_LOF_genes else curr_interpret_chinese.append('变异位点所在基因的功能丢失(loss of function)不是已知的致病机制.') 
+    # curr_interpret.append('Allele in a gene where loss of function (LOF) is a known mechanism of disease.') if in_LOF_genes else curr_interpret.append('Allele in a gene where loss of function (LOF) is NOT a known mechanism of disease.') 
+    # curr_interpret_chinese.append('变异位点所在基因的功能丢失(loss of function)是已知的致病机制.') if in_LOF_genes else curr_interpret_chinese.append('变异位点所在基因的功能丢失(loss of function)不是已知的致病机制.') 
+
+    google_input = gene+' loss of function'
+    search_results = google.search(google_input, 1)
+    lof = 0
+    for i in search_results:
+        for j in i.description.split("..."):
+            j = j.replace("\n", "")
+            if ('loss-of-function ' in j or 'Loss-of-function ' in j or 'loss of function'in j or 'Loss of function'in j) and (input_gene in j) and (('no' and 'not' and 'whether') not in j):
+                lof = 1
+                break
+        else:
+            continue
+        break
+    if lof = 1:
+        curr_interpret.append('Allele in a gene where loss of function (LOF) is a known mechanism of disease.')
+        curr_interpret_chinese.append('变异位点所在基因的功能丢失(loss of function)是已知的致病机制.')
+    else:
+        curr_interpret.append('Variant NOT in null variant type.')
+        curr_interpret_chinese.append('基因变异类型不是无效变异(null variant).')
+    
     curr_interpret.append('The variant does NOT have damaging splicing effect.') if not_benign_splicing else curr_interpret.append('The variant has damaging splicing effect.') 
     curr_interpret_chinese.append('此变异不具有害的剪接效应(splicing effect).') if not_benign_splicing else curr_interpret_chinese.append('此变异具有有害的剪接效应(splicing effect).') 
 
