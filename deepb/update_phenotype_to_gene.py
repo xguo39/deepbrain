@@ -38,9 +38,20 @@ def rankGenePhenoByCodingEffect(final_res, variants, ranking_genes):
                 continue
 
         # For every critical coding effect of variant for a gene, add 0.5 to the score
-        coding_effect_score = 0.5 * sum(coding_effects)
-        score = float(score) + coding_effect_score
-        updated_ranking_genes.append((gene, score_sim, hits, score)) 
+        coding_effect_score_for_critical_var = min(0.5 * sum(coding_effects), 0.5)
+        coding_effect_score_for_noncritical_var = max(coding_effect_score_for_critical_var - 0.01, 0.0)
+        for variant in gene_variants:
+            try:
+                effect = variants[(gene, variant)]['effect'] 
+                effect_is_critical = re.search('|'.join(critical_coding_effects), effect, re.I)
+                if effect_is_critical:
+                    score = float(score) + coding_effect_score_for_critical_var
+                else:
+                    score = float(score) + coding_effect_score_for_noncritical_var
+            except KeyError:
+                    score = float(score) + coding_effect_score_for_noncritical_var
+            updated_ranking_genes.append((gene, variant, score_sim, hits, score)) 
+
     return updated_ranking_genes
 
 
@@ -74,28 +85,26 @@ def rankGenePhenoByInheritancePattern(ranking_genes, gene_zygosity, candidate_va
 
     updated_ranking_genes = []
     for data in ranking_genes: 
-        gene, score_sim, hits, score = data
+        gene, variant, score_sim, hits, score = data
         gene_is_dominant, gene_is_recessive = False, False
         if gene in dominant_genes:
             gene_is_dominant = True
         if gene in recessive_genes:
             gene_is_recessive = True
-        variants = gene2variants[gene]
-        for variant in variants:
-            if (gene, variant) in gene_zygosity: 
-                zygosity = gene_zygosity[(gene, variant)]
-                inheritance_pattern_score = 0.0
-                if gene_is_dominant and not gene_is_recessive:
-                    if re.match(r'de ', zygosity, re.I): inheritance_pattern_score = 0.5 
-                    if re.match(r'hem', zygosity, re.I): inheritance_pattern_score = 0.25 
-                    if re.match(r'hom|comp', zygosity, re.I): inheritance_pattern_score = 0.1 
-                    if re.match(r'het', zygosity, re.I): inheritance_pattern_score = 0.0
-                elif not gene_is_dominant and gene_is_recessive:
-                    if re.match(r'hom|comp', zygosity, re.I): inheritance_pattern_score = 0.5 
-                    if re.match(r'de |hem', zygosity, re.I): inheritance_pattern_score = 0.25 
-                    if re.match(r'het', zygosity, re.I): inheritance_pattern_score = 0.0
-                score = float(score) + inheritance_pattern_score
-                updated_ranking_genes.append((gene, variant, score_sim, hits, score, zygosity))
+	if (gene, variant) in gene_zygosity: 
+	    zygosity = gene_zygosity[(gene, variant)]
+	    inheritance_pattern_score = 0.0
+	    if gene_is_dominant and not gene_is_recessive:
+		if re.match(r'de ', zygosity, re.I): inheritance_pattern_score = 0.5 
+		if re.match(r'hem', zygosity, re.I): inheritance_pattern_score = 0.25 
+		if re.match(r'hom|comp', zygosity, re.I): inheritance_pattern_score = 0.1 
+		if re.match(r'het', zygosity, re.I): inheritance_pattern_score = 0.0
+	    elif not gene_is_dominant and gene_is_recessive:
+		if re.match(r'hom|comp', zygosity, re.I): inheritance_pattern_score = 0.5 
+		if re.match(r'de |hem', zygosity, re.I): inheritance_pattern_score = 0.25 
+		if re.match(r'het', zygosity, re.I): inheritance_pattern_score = 0.0
+	    score = float(score) + inheritance_pattern_score
+	    updated_ranking_genes.append((gene, variant, score_sim, hits, score, zygosity))
     # Noew updated_ranking genes has one more column: variant
     return updated_ranking_genes
  

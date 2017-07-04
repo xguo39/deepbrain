@@ -16,7 +16,7 @@
   {% if status == 0 %}
     <p></p>
   {% elif status == 1 %}
-    <p>该基因的功能丢失(loss of function)是已知的致病机制</p>
+    <p>查找到该基因的功能丢失(loss of function)是已知的致病机制</p>
     <p></p>
       {% for i in lof_result %}
           Title: &nbsp;
@@ -27,7 +27,7 @@
           {{ i.description }}<br /><br />
       {% endfor %}
   {% else %}
-    <p>该基因的功能丢失(loss of function)不是已知的致病机制</p>
+    <p>未查找到该基因的功能丢失(loss of function)是已知的致病机制</p>
   {% endif %}
 </div>
 <br /><br />

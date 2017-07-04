@@ -51,6 +51,9 @@ def queryPubmedDB(candidate_vars):
   db.close()
   res = []
   
+  # print 'candidate_vars', candidate_vars
+  # print 'genevar2protein', genevar2protein
+
   global robj_amino_acid
   robj_amino_acid = re.compile('|'.join(amino_acid_mapping.mapl2u.keys()))  
 
