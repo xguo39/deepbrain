@@ -373,8 +373,8 @@ def master_function(raw_input_id):
 
 		print 'ACMG_result', ACMG_result.shape
 		# filter variant on phenotype
-		print ACMG_result.head()
-		print df_ranking_genes.head()
+		# print ACMG_result.head()
+		# print df_ranking_genes.head()
 		# print df_ranking_genes[['gene', 'zygosity']]
 
 		if phenos:
@@ -390,9 +390,9 @@ def master_function(raw_input_id):
 
 		else:
 			df_ranking_genes = df_ranking_genes[['gene', 'variant', 'zygosity']]
-			print 'df_ranking_genes', df_ranking_genes.shape
+			# print 'df_ranking_genes', df_ranking_genes.shape
 
 			ACMG_result = pd.merge(ACMG_result, df_ranking_genes, how='left', left_on=['gene','variant'], right_on=['gene','variant'])
-			print 'ACMG_result_merge', ACMG_result.shape
+			# print 'ACMG_result_merge', ACMG_result.shape
 			return ACMG_result, df_genes, phenos, field_names, df_variant_ACMG_interpret, df_variant_ACMG_interpret_chinese, df_ranking_genes
 
