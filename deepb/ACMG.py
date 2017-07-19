@@ -575,10 +575,10 @@ def getRepeatRegion():
             line = line.rstrip()
             parts = line.split('\t')
             chromosome, startpos, endpos= parts
-            if chromosome in repeat_regions: 
-                repeat_regions[chromosome].append((startpos, endpos))
+            if chromosome in repeat_regions:
+                repeat_regions[chromosome].append((int(startpos), int(endpos)))
             else:
-                repeat_regions[chromosome] = [(startpos, endpos)]
+                repeat_regions[chromosome] = [(int(startpos), int(endpos))]
 
 def check_PM4_BP3(variant_):
     '''
@@ -598,6 +598,7 @@ def check_PM4_BP3(variant_):
         allele_start_pos = allele_end_pos = allele_start_end_pos[0]
     elif len(allele_start_end_pos) == 2:
         allele_start_pos, allele_end_pos = allele_start_end_pos
+    allele_start_pos, allele_end_pos = int(allele_start_pos), int(allele_end_pos)
  
     PM4, BP3 = 0, 0
     effect_in_inframe_indel_variant_types = re.search('|'.join(inframe_indel_variant_types), variant_effect, re.I)

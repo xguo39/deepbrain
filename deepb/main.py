@@ -303,7 +303,7 @@ def master_function(raw_input_id):
 		raw_input.status = "Annotating variants using genomic databases"
 		raw_input.save()
 		# candidate_vars from vcf file was updated, because gene, variant, transcript were empty
-		final_res, variant, candidate_vars = collectVariantInfo.get_variants_from_vcf(candidate_vars)
+		final_res, variants, candidate_vars = collectVariantInfo.get_variants_from_vcf(candidate_vars)
 		CANDIDATE_GENES = [_[0] for _ in final_res]
 		# map phenotype to gene; the candidate_vars was filtered: if it is a gene associated with phenos, then keep it.
 		if phenos:
@@ -312,9 +312,9 @@ def master_function(raw_input_id):
 			ranking_genes, candidate_vars, df_gene_associated_phenos = map_phenotype2gene(CANDIDATE_GENES, phenos, corner_cases, candidate_vars, original_phenos)
 		else:
 			ranking_genes = []
-			for key in variant.keys():
+			for key in variants.keys():
 				gene, variant = key
-				variant_id = variant[key][id]
+				variant_id = variants[key]['id']
 				zygosity = gene_zygosity[variant_id]
 				ranking_genes.append((gene, variant, 1.0, 1, 1.0, zygosity))
 	else:
@@ -336,10 +336,10 @@ def master_function(raw_input_id):
 		raw_input.status = "Annotating variants using genomic databases"
 		raw_input.save()
 		final_res, variants = collectVariantInfo.get_variants(candidate_vars)
-	# print 'ranking_genes', ranking_genes
-	# print 'candidate_vars', candidate_vars
-	# print 'final_res', final_res
-	# print 'variants', variants
+	# print 'ranking_genes', len(ranking_genes)
+	# print 'candidate_vars', len(candidate_vars)
+	# print 'final_res', len(final_res)
+	# print 'variants', len(variants)
 
 	if final_res == [] and variants == defaultdict(dict):
 		return pd.DataFrame(), df_genes, phenos, field_names, pd.DataFrame(), pd.DataFrame(), pd.DataFrame()
@@ -358,7 +358,7 @@ def master_function(raw_input_id):
 			df_ranking_genes['score_sim'] = np.nan
 			df_ranking_genes['hits'] = np.nan
 			df_ranking_genes['score'] = np.nan
-			df_hpo_ranking_genes = df_hpo_ranking_genes[['gene', 'variant', 'score']]
+			df_hpo_ranking_genes = df_ranking_genes[['gene', 'variant', 'score']]
 
 		# pubmed
 		raw_input.status = "Searching biomedical literatures"
@@ -371,21 +371,28 @@ def master_function(raw_input_id):
 
 		ACMG_result, variant_ACMG_interpretation, variant_ACMG_interpret_chinese, df_variant_ACMG_interpret, df_variant_ACMG_interpret_chinese = ACMG.Get_ACMG_result(df_hpo_ranking_genes, variants, df_pubmed)
 
+		print 'ACMG_result', ACMG_result.shape
 		# filter variant on phenotype
+		print ACMG_result.head()
+		print df_ranking_genes.head()
+		# print df_ranking_genes[['gene', 'zygosity']]
 
 		if phenos:
 			raw_input.status = "Filtering variants based on phenotypes"
 			raw_input.save()
 			df_final_res, variant_ACMG_interpretation, variant_ACMG_interpret_chinese = filterVariantOnPhenotype.generateOutput(variants, ACMG_result, phenos, variant_ACMG_interpretation, variant_ACMG_interpret_chinese)
 			# df_final_res = df_final_res.merge(df_gene_associated_phenos, on = 'gene', how = 'left')
-			df_ranking_genes = df_ranking_genes[['gene', 'zygosity', 'correlated_phenotypes']]
-			df_final_res = df_final_res.merge(df_ranking_genes, on = 'gene', how = 'left')
+			df_ranking_genes = df_ranking_genes[['gene', 'variant', 'zygosity', 'correlated_phenotypes']]
+			df_final_res = pd.merge(df_final_res, df_ranking_genes, how='left', left_on=['gene','variant'], right_on=['gene','variant'])
 			df_final_res = df_final_res[['gene', 'id', 'variant', 'zygosity','correlated_phenotypes', 'pheno_match_score', 'hit_criteria', 'pathogenicity', 'final_score']]
 			# if phenos are provided, we return a df_ranking_genes dataframe, which contains 'gene', 'variant', 'score_sim', 'hits', 'score', 'zygosity', 'associated_phenotypes'
 			return df_final_res, df_genes, phenos, field_names, variant_ACMG_interpretation, variant_ACMG_interpret_chinese, df_ranking_genes
 
 		else:
-			df_ranking_genes = df_ranking_genes[['gene', 'zygosity']]
-			ACMG_result = ACMG_result.merge(df_ranking_genes, on = 'gene', how = 'left')
+			df_ranking_genes = df_ranking_genes[['gene', 'variant', 'zygosity']]
+			print 'df_ranking_genes', df_ranking_genes.shape
+
+			ACMG_result = pd.merge(ACMG_result, df_ranking_genes, how='left', left_on=['gene','variant'], right_on=['gene','variant'])
+			print 'ACMG_result_merge', ACMG_result.shape
 			return ACMG_result, df_genes, phenos, field_names, df_variant_ACMG_interpret, df_variant_ACMG_interpret_chinese, df_ranking_genes
 
