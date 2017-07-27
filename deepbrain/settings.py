@@ -62,7 +62,7 @@ ROOT_URLCONF = 'deepbrain.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': ["templates"],
+        'DIRS': ["templates","templates/gene_intepretation","templates/homepage","templates/chpo","templates/loss_of_function"],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

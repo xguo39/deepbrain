@@ -371,7 +371,7 @@ def master_function(raw_input_id):
 
 		ACMG_result, variant_ACMG_interpretation, variant_ACMG_interpret_chinese, df_variant_ACMG_interpret, df_variant_ACMG_interpret_chinese = ACMG.Get_ACMG_result(df_hpo_ranking_genes, variants, df_pubmed)
 
-		print 'ACMG_result', ACMG_result.shape
+		# print 'ACMG_result', ACMG_result.shape
 		# filter variant on phenotype
 		# print ACMG_result.head()
 		# print df_ranking_genes.head()
