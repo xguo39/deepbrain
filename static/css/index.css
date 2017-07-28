@@ -6,6 +6,12 @@ p{
     padding: 40px 120px;
 }
 
+@media (max-width: 600px) {
+  .container{
+    padding: 40px 10px;
+  }
+}
+
 .person {
     border: 10px solid transparent;
     margin-bottom: 25px;
@@ -19,7 +25,7 @@ p{
 
 /* Define the caption of the carousel*/
 .carousel-inner{
-  min-height: 710px;
+  /*min-height: 710px;*/
   background-color: #ffffff;
   filter: drop-shadow(0px 5px 8px #b3b3b3);
 }
@@ -50,11 +56,27 @@ p{
     font-weight: normal;
 }
 
-@media (max-width: 600px) {
+@media (max-width: 620px) {
+
     .carousel-caption {
-        display: none; /* Hide the carousel text when the screen is less than 600 pixels wide */
+        color: #fff !important;
+        top:20%;
     }
+
+    .carousel-caption h3{
+      font-size: 20px;
+      margin-bottom: 20px;
+    }
+
+    .carousel-caption p {
+        /*margin-bottom: 250px;*/
+        font-size: 12px;
+    }
+
+
 }
+
+
 
 /* Add a dark background color with a little bit see-through */
 .navbar {
@@ -166,7 +188,7 @@ p{
 }
 
 .pds a:focus{
-    text-decoration: none;
+  text-decoration: none;
 }
 
 
@@ -181,10 +203,8 @@ p{
 }
 
 .pds a p{
-  /*margin-top: 20px;*/
   margin-bottom: 20px;
   font-size: 20px;
-  /*color:black;*/
 }
 
 .pd-small img{
@@ -284,11 +304,18 @@ p{
   justify-content:space-between;
 }
 
+.pd-intro .nav li{
+  flex-basis: 0;
+  flex-grow: 1;
+}
+
 .pd-intro .nav a{
   /*margin: 10px auto;*/
   text-align: center;
   margin-right: 0px;
-  width: 180px;
+  padding-left: 20px;
+  padding-right:20px;
+  /*width: 180px;*/
 }
 
 .pd-intro p {
@@ -318,8 +345,8 @@ p{
   opacity:1;
   background:rgba(105,241,255,.4);
   border: 0px solid #ddd;
-  padding-left: 5px;
-  padding-right:5px;
+  padding-left: 25px;
+  padding-right:25px;
   z-index: 10;
 }
 
@@ -328,9 +355,10 @@ p{
     text-align: left;
     line-height: 150%;
     margin: 10px;
-    padding-left: 35px;
-    padding-right: 40px;
+    /*padding-left: 35px;
+    padding-right: 40px;*/
 }
+
 
 .pd-intro .tab-content{
   margin: 30px auto;
@@ -350,7 +378,7 @@ p{
 
 
 footer {
-    background-color: #005E80;
+    background-color: #005e80;
     color: #f5f5f5;
     padding: 32px;
 }
