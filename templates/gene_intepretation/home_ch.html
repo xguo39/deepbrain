@@ -1,108 +1,116 @@
+{% load static %}
+<!DOCTYPE html>
+
+<html lang = 'zh-CN'>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>诺亚基因解读</title>
+    <link rel="icon" type="image/png" href="{% static 'images/logo.png' %}" />
+    <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/latest/css/bootstrap.min.css"> -->
+    <link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link href="https://fonts.googleapis.com/css?family=Noto+Sans" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/draft-js/0.7.0/Draft.min.css">
+    <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
+  </head>
+
+  <body>
+    <div id = 'root'></div>
+    <script src = "{% static 'js/jquery.min.js' %}"></script>
+    <script src = "{% static 'js/bootstrap.min.js' %}"></script>
+    <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
+    <script src = "{% static 'app_ch/app.bundle.js' %}"></script>
+  </body>
+
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+{%comment%}
 {% extends 'base_ch.html' %}
 {% load static %}
 
-{% block css %}
+{% block second_css %}
+ <link href="{% static 'css/gene_intepretation_style.css' %}" rel="stylesheet">
 {% endblock %}
 
-{% block content %}
-  <div class="container">
 
-    <div class = "col-sm-6" id = "upload">
-      <div class="container">
-        <h3 style= "float: left;">新任务</h3>
-        <h6 style= "float: left; margin: 33px 0px 0px 25px"><a target="_blank" href="{% static 'file/genonova_user_guide.pdf' %}">使用说明</a></h6>
-      </div>
-      <br />
-      <form name="form1" method="post" action="{% url 'deepb:upload_ch' %}" enctype="multipart/form-data">
-        {% csrf_token %}
+{% block second_content %}
+  <div class='container-fluid'>
+    <div class='row'>
+      <nav class='col-sm-2 sidebar'>
+        <div class='bg-filter'></div>
+        <img class='bg' src="{% static 'images/toolbar-bg.png' %}" alt='sidebar-bg'>
+        <ul class='nav flex-column'>
+          <li class='nav-item'>
+             <a class='nav-link active' href='#'>
+               <img src="{% static 'images/newtask-icon.png' %}" alt='new_task'>
+               <span>新任务</span>
+             </a>
+          </li>
+          <li class='nav-item'>
+             <a class='nav-link' href='#'>
+               <img src="{% static 'images/tasklist-icon.png' %}" alt='task-list'>
+               <span>任务列表</span>
+             </a>
+          </li>
+          <li class='nav-item'>
+             <a class='nav-link' href='#'>
+               <img src="{% static 'images/feedback-icon.png' %}" alt='result-review'>
+               <span>结果评估</span>
+             </a>
+          </li>
+        </ul>
+      </nav>
 
-        <div class = "container" id = "enter_task_name">
-          <label>名称 <small><i>*需要</i></small></label> &nbsp;</br>
-          <input type="text" name="task_name" placeholder="" required>
-          <label></label><br />
-        </div>
+      <main class='col-sm-10 content'>
+        {% block main_content %}
+           {% endblock %}
 
-        <div class = "container" id = "input_gene_file">
-          <label>输入基因信息文件 <small>(支持 .txt .xls .csv .vcf)</small> <small><i>*需要</i></small></label></br>
-          <p><small>文件需包含 gene 与 HGVS cDNA </small></p>
-          <input type="file" name="gene_file" required accept=".txt,.xlsx,.xls,.csv,.vcf">
-        </div>
 
-        <div class = "container" id = "input_phen">
-          <label>输入表型信息 <small>(.txt 文件 或 文字录入)</small> <small><i>*可选</i></small> </label></br>
-          <input type="file" name="symptom_file" accept=".txt">
-          <p></p>
-          <textarea id = "myTextArea"
-                    name = "input_text_phenotype"
-                    rows = "7"
-                    cols = "45"
-                    maxlength = "800"
-                    placeholder = "表型间使用逗号分割&nbsp;(表型支持中英文输入)"></textarea>
-        </div>
+          {% include './new_task_ch.html' %}
 
-        <div class = "container" id = "run_task">
-          <button type="submit", onClick="return">提交</button>
-        </div>
-        <br />
-      </form>
-    </div>
-
-    <div class = "col-sm-6" id="results">
-      <h3>任务列表</h3>
-      <br />
-      <div id = "result_list">
-      {% for result in latest_task_list %}
-        {% if result.status == 'In progress' %}
-          名称: &nbsp;
-          {{ result.raw_input_table.task_name }}<br />
-          状态: 运行中  &nbsp;(运行时间预计 {{ result.raw_input_table.process_time }} 分钟)<br />
-          提交时间: &nbsp;
-          {{ result.raw_input_table.pub_date }}<br />
-          <p style="color:blue;float:left"><i>{{ result.raw_input_table.status }}</i></p><img src="{% static 'images/blue_loading_dots.gif' %}" width="30" height="30" style="float:left"><br />
-        {% elif result.status == 'Failed'%}
-          名称: &nbsp;
-          {{ result.raw_input_table.task_name }}<br />
-          状态: 失败<br />
-          提交时间: &nbsp;
-          {{ result.raw_input_table.pub_date }}<br />
-        {% elif result.status == 'Succeed' %}
-          名称: &nbsp;
-          {{ result.raw_input_table.task_name }} &nbsp;
-          <a href="{% url 'deepb:result_ch' result.main_table_id %}">查看结果</a><br />
-          状态: 成功<br />
-          提交时间: &nbsp;
-          {{ result.raw_input_table.pub_date }}<br />
-        {% else %}
-          名称: &nbsp;
-          {{ result.raw_input_table.task_name }}<br />
-          状态: 系统错误<br />
-          提交时间: &nbsp;
-          {{ result.raw_input_table.pub_date }}<br />
-        {% endif %}
-        <br />
-      {% endfor %}
-      {% if show_all %}
-      <a href="{% url 'deepb:home_all_ch' show_all %}"> 显示全部 {{ task_count }} 个任务</a>
-      {% endif %}
-      {% if all_back %}
-      <a href="{% url 'deepb:home_ch' %}"> 收起 </a>
-      {% endif %}
-      <br />
-      <br />
-      <br />
-      </div>
+      </main>
     </div>
   </div>
 {% endblock %}
 
-{% block javascript %}
-  <script>
 
-    {% if refresh %}
-      window.setTimeout(function () {
-          location.href = "";
-        }, 20000);
-    {% endif %}
+{% block main_javascript %}
 
-  </script>
 {% endblock %}
+
+{%endcomment%}

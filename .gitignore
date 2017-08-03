@@ -7,3 +7,4 @@ deepb/migrations/
 .gitignore
 dump.rdb
 local_data/
+node_modules/

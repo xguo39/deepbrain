@@ -1,0 +1,214 @@
+@import "./new_task_style.scss";
+
+body{
+  overflow: hidden;
+  background-color: #F5F8FA;
+}
+
+html, body, #root, #root>div,.container-fluid, .row{
+    height: 100%;
+}
+
+
+// Define the top nav bar and main display area styles
+.navbar{
+  position: relative;
+  background: #00061D;
+	opacity: 0.85;
+	box-shadow: 0 2px 8px 0 rgba(0,0,0,0.50);
+  // height: 8%;
+	margin-bottom: 0;
+	border: 0px;
+	border-radius: 0px;
+	z-index: 10;
+}
+
+.main_area{
+  position: relative;
+}
+
+// Define the side bar styles
+.sidebar{
+  position: relative;
+  z-index: 5;
+  height: 100%;
+  padding-left: 0px;
+  padding-right: 0px;
+  overflow: hidden;
+
+  .bg{
+    position: absolute;
+    left:0;
+    top: 0;
+    width: 100%;
+    height:100%;
+    z-index: 8;
+  }
+  .bg-filter{
+    position: absolute;
+    background: linear-gradient(#0b4774, #09385D);
+    left:0;
+    top: 0;
+    width: 100%;
+    height:100%;
+    opacity: 0.8;
+    z-index: 10;
+  }
+  ul{
+    position: relative;
+    margin-top: 10px;
+    z-index: 20;
+  }
+  .nav-item{
+    margin: 10px auto;
+  }
+  .nav-link img{
+    display: inline;
+    margin-right: 20px;
+    margin-left: 15%;
+    width: 10%;
+  }
+  .nav-link span{
+    color:white;
+    font-size: 16px;
+    font-weight: lighter;
+    letter-spacing: 3px;
+    line-height: 150%;
+    vertical-align: middle;
+  }
+}
+
+// Define the shift main area;
+main{
+  position: relative;
+  background-color: #F5F8FA;
+  height:90%;
+  overflow:scroll;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+// Define the new task style
+.tb-section{
+  margin-bottom: 25px;
+  background-color: white;
+  box-shadow: -3px 2px 2px 0 rgba(119,151,178,0.16);
+}
+
+.tr{
+  position: relative;
+  width: 100%;
+  display: flex;
+}
+
+.td1{
+  position: relative;
+  display: inline;
+  width: 20%;
+  height: 100%;
+  text-align: center;
+  margin: auto 0px;
+  padding-top:15px;
+  padding-bottom: 15px;
+}
+
+.td2{
+  position: relative;
+  display: inline;
+  width: 40%;
+  height: 100%;
+  margin: auto 0px;
+  padding: 10px 0px;
+  font-size: 13px;
+  input{
+    // vertical-align: middle;
+  }
+}
+
+.td3{
+  position: relative;
+  width: 100%;
+  padding:15px 20px;
+  font-size: 12px;
+  // max-height:80px;
+  p{
+    margin-bottom: 5px;
+  }
+  .progress{
+    margin-bottom: 5px;
+    height:8px;
+  }
+  .completed_text{
+    padding: 15px 0px;
+  }
+
+}
+
+
+.tr-stripe{
+  background-color: #F5F6F7;
+  padding-top: 15px;
+  padding-bottom: 30px;
+}
+
+.td-stripe{
+  background-color: #F5F6F7;
+}
+
+// The switch input button
+$slide_size: 0.6;
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 60px * $slide_size;
+  height: 34px * $slide_size;
+  margin-right: 5px;
+  input{
+    // display: none;
+    visibility: hidden;
+  }
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    -webkit-transition: .4s;
+    transition: .4s;
+  }
+  .slider:before {
+    position: absolute;
+    content: "";
+    height: 26px* $slide_size;
+    width: 26px* $slide_size;
+    left: 4px* $slide_size;
+    bottom: 4px* $slide_size;
+    background-color: white;
+    -webkit-transition: .4s;
+    transition: .4s;
+  }
+  input:checked + .slider {
+    background-color: #2196F3;
+  }
+
+  input:focus + .slider {
+    box-shadow: 0 0 1px #2196F3;
+  }
+  input:checked + .slider:before {
+    -webkit-transform: translateX(26px* $slide_size);
+    -ms-transform: translateX(26px* $slide_size);
+    transform: translateX(26px* $slide_size);
+  }
+
+  .slider.round {
+    border-radius: 34px* $slide_size;
+  }
+
+  .slider.round:before {
+    border-radius: 50%;
+  }
+
+}
