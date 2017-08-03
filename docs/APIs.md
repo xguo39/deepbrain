@@ -94,6 +94,7 @@ http/1.1 200 OK
     completed_missons: 5,
     total_missions: 10,
     current_misson:“正在处理xxx基因”，
+    estimated_time:”5分钟“，
     checked: false
    },
    {
@@ -101,6 +102,7 @@ http/1.1 200 OK
      completed_missions:10,
      total_missions:10,
      current_mission:””,
+     estimated_time:”4分钟”，
      checked:false
    }, …  
  ]
