@@ -7,9 +7,11 @@ APIs
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 **Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
 
-- [Template Gene_task_form](#template-gene_task_form)
-- [Upload_task](#upload_task)
-- [Progress_list](#progress_list)
+- [Template](#template)
+  - [Template Gene_task_form](#template-gene_task_form)
+- [Tasks](#tasks)
+  - [Upload_task](#upload_task)
+  - [Progress_task_list](#progress_task_list)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 ---------------------------
