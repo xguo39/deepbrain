@@ -2,7 +2,7 @@ APIs
 ======
 * Note: if not specified, the default format for request and response is [JSON](http://www.json.org/), so there should be a field `Content-Type: application/json` in the HTTP header of such request.
 
-—————————————————
+--------------------------
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 **Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
@@ -12,10 +12,10 @@ APIs
 - [Progress_list](#progress_list)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
-—————————————————--
+---------------------------
 
 Template
-—————
+---
 ### Template Gene_task_form
 ```bash
 {
@@ -39,7 +39,7 @@ Template
 ```
 
 Tasks
-————
+---
 ### Upload_task
 * Description: For uploading the new task form
 * URL: `/api/tasks/new_task`
@@ -73,9 +73,9 @@ http/1.1 200 OK
 }
 ```
 
-### Progress_list
+### Progress_task_list
 * Description: For fetching the processing task list
-* URL: `/api/task/progress-list/`
+* URL: `/api/task/progress_task_list/`
 * Method: `GET`
 * Request Example”
 `{}`
