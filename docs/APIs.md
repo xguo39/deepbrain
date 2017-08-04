@@ -12,6 +12,7 @@ APIs
 - [Tasks](#tasks)
   - [Upload_task](#upload_task)
   - [Progress_task_list](#progress_task_list)
+  - [All_task_list](#all_task_list)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 ---------------------------
@@ -117,6 +118,48 @@ http/1.1 200 OK
  success:failure,
  errorCode: BACKEND_MAINTAINANCE
 } 
+```
+
+### All_task_list
+* Description: For fetching all the task list
+* URL: `/api/task/all_task_list/`
+* Method: `GET`
+* Request Example
+`{}`
+* Response Example on `success`:
+```
+http/1.1 200 OK
+```
+```javascript
+{
+ success:true,
+ list:[
+  {
+   id:1,
+   name:xiaonan,
+   time: 2017-06-18, 12:03pm,
+   status:true,
+   checked:false
+  },
+  {
+   id:2,
+   name:tianqi,
+   time: 2017-06-24, 11:03pm,
+   status:false,
+   checked:true
+  }…
+ ]
+}
+```
+* Response Example on `failure`:
+```
+http/1.1 200 OK
+```
+```javascript
+{
+ success:false,
+ errCode: BACKEND_MAINTANANCE
+}
 ```
 
 

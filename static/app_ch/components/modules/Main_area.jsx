@@ -7,6 +7,7 @@ import {
 import Side_navbar from './Side_navbar.jsx';
 import {static_image} from 'base.config';
 import New_task from './New_task.jsx';
+import Task_list from './Task_list.jsx';
 
 
 class Main_area extends React.Component{
@@ -22,8 +23,8 @@ class Main_area extends React.Component{
              <Side_navbar />
              <main className='col-sm-10 content'>
                <Route exact path="/home/ch/" component={New_task}/>
-               {/* <Route path="/about" component={Task_list}/>
-               <Route path="/topics" component={Feedback}/> */}
+               <Route path="/home/ch/task_list" component={Task_list}/>
+               {/* <Route path="/topics" component={Feedback}/> */}
              </main>
            </div>
          </Router>

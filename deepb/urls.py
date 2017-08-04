@@ -7,6 +7,7 @@ urlpatterns = [
     url(r'^en/$', views.index_en, name='index_en'),
     url(r'^home/$', views.HomeView.as_view(), name='home'),
     url(r'^home/ch$', views.HomeView_ch.as_view(), name='home_ch'),
+	url(r'^home/ch/task_list$', views.HomeView_ch.as_view(), name='home_ch'),
     url(r'^home/(?P<show_all>[-\w]+)/$', views.HomeView.as_view(), name='home_all'),
     url(r'^home/(?P<show_all>[-\w]+)/ch$', views.HomeView_ch.as_view(), name='home_all_ch'),
     url(r'^upload/$', views.upload, name='upload'),
