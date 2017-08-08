@@ -127,28 +127,322 @@ def collectSnpeffWithGeneVariantInfo():
 
 def collectExAC():
   try:
-    maf_exac = float(non_snpeff['exac']['ac']['ac_adj']) / non_snpeff['exac']['an']['an_adj']
+    maf_exac = float(non_snpeff['exac']['ac']['ac_adj']) / float(non_snpeff['exac']['an']['an_adj'])
   except KeyError:
     maf_exac = '' 
   except TypeError:
     try:
-      maf_exac = float(max(non_snpeff['exac']['ac']['ac_adj'])) / non_snpeff['exac']['an']['an_adj']
+      maf_exac = float(max(non_snpeff['exac']['ac']['ac_adj'])) / float(non_snpeff['exac']['an']['an_adj'])
     except ZeroDivisionError:
       maf_exac = '' 
   except ZeroDivisionError:
     maf_exac = '' 
   try:
-    maf_exac_nontcga = float(non_snpeff['exac_nontcga']['ac']['ac_adj']) / non_snpeff['exac_nontcga']['an']['an_adj']
+    maf_exac_nontcga = float(non_snpeff['exac_nontcga']['ac']['ac_adj']) / float(non_snpeff['exac_nontcga']['an']['an_adj'])
   except KeyError:
     maf_exac_nontcga = '' 
   except TypeError:
     try:
-      maf_exac_nontcga = float(max(non_snpeff['exac_nontcga']['ac']['ac_adj'])) / non_snpeff['exac_nontcga']['an']['an_adj']
+      maf_exac_nontcga = float(max(non_snpeff['exac_nontcga']['ac']['ac_adj'])) / float(non_snpeff['exac_nontcga']['an']['an_adj'])
     except ZeroDivisionError:
       maf_exac_nontcga = ''
   except ZeroDivisionError:
     maf_exac_nontcga = '' 
   return str(maf_exac), str(maf_exac_nontcga)
+
+def collectExACDetails_bak():
+  try:
+    exac_tot_ac, exac_tot_an = float(non_snpeff['exac']['ac']['ac_adj']), float(non_snpeff['exac']['an']['an_adj'])
+    maf_exac_tot = exac_tot_ac / exac_tot_an
+  except KeyError:
+    exac_tot_ac, exac_tot_an, maf_exac_tot = '', '', ''
+  except TypeError:
+    try:
+      exac_tot_ac, exac_tot_an = float(max(non_snpeff['exac']['ac']['ac_adj'])), float(non_snpeff['exac']['an']['an_adj'])
+      maf_exac_tot = exac_tot_ac / exac_tot_an
+    except ZeroDivisionError:
+      exac_tot_ac, exac_tot_an, maf_exac_tot = '', '', ''
+  except ZeroDivisionError:
+    exac_tot_ac, exac_tot_an, maf_exac_tot = '', '', ''
+  try:
+    exac_afr_ac, exac_afr_an = float(non_snpeff['exac']['ac']['ac_afr']), float(non_snpeff['exac']['an']['an_afr'])
+    maf_exac_afr = exac_afr_ac / exac_afr_an
+  except KeyError:
+    exac_afr_ac, exac_afr_an, maf_exac_afr = '', '', ''
+  except TypeError:
+    try:
+      exac_afr_ac, exac_afr_an = float(max(non_snpeff['exac']['ac']['ac_afr'])), float(non_snpeff['exac']['an']['an_afr'])
+      maf_exac_afr = exac_afr_ac / exac_afr_an
+    except ZeroDivisionError:
+      exac_afr_ac, exac_afr_an, maf_exac_afr = '', '', ''
+  except ZeroDivisionError:
+    exac_afr_ac, exac_afr_an, maf_exac_afr = '', '', ''
+  try:
+    exac_amr_ac, exac_amr_an = float(non_snpeff['exac']['ac']['ac_amr']), float(non_snpeff['exac']['an']['an_amr'])
+    maf_exac_amr = exac_amr_ac / exac_amr_an
+  except KeyError:
+    exac_amr_ac, exac_amr_an, maf_exac_amr = '', '', ''
+  except TypeError:
+    try:
+      exac_amr_ac, exac_amr_an = float(max(non_snpeff['exac']['ac']['ac_amr'])), float(non_snpeff['exac']['an']['an_amr'])
+      maf_exac_amr = exac_amr_ac / exac_amr_an
+    except ZeroDivisionError:
+      exac_amr_ac, exac_amr_an, maf_exac_amr = '', '', ''
+  except ZeroDivisionError:
+    exac_amr_ac, exac_amr_an, maf_exac_amr = '', '', ''
+  try:
+    exac_eas_ac, exac_eas_an = float(non_snpeff['exac']['ac']['ac_eas']), float(non_snpeff['exac']['an']['an_eas'])
+    maf_exac_eas = exac_eas_ac / exac_eas_an
+  except KeyError:
+    exac_eas_ac, exac_eas_an, maf_exac_eas = '', '', ''
+  except TypeError:
+    try:
+      exac_eas_ac, exac_eas_an = float(max(non_snpeff['exac']['ac']['ac_eas'])), float(non_snpeff['exac']['an']['an_eas'])
+      maf_exac_eas = exac_eas_ac / exac_eas_an
+    except ZeroDivisionError:
+      exac_eas_ac, exac_eas_an, maf_exac_eas = '', '', ''
+  except ZeroDivisionError:
+    exac_eas_ac, exac_eas_an, maf_exac_eas = '', '', ''
+  try:
+    exac_fin_ac, exac_fin_an = float(non_snpeff['exac']['ac']['ac_fin']), float(non_snpeff['exac']['an']['an_fin'])
+    maf_exac_fin = exac_fin_ac / exac_fin_an
+  except KeyError:
+    exac_fin_ac, exac_fin_an, maf_exac_fin = '', '', ''
+  except TypeError:
+    try:
+      exac_fin_ac, exac_fin_an = float(max(non_snpeff['exac']['ac']['ac_fin'])), float(non_snpeff['exac']['an']['an_fin'])
+      maf_exac_fin = exac_fin_ac / exac_fin_an
+    except ZeroDivisionError:
+      exac_fin_ac, exac_fin_an, maf_exac_fin = '', '', ''
+  except ZeroDivisionError:
+    exac_fin_ac, exac_fin_an, maf_exac_fin = '', '', ''
+  try:
+    exac_nfe_ac, exac_nfe_an = float(non_snpeff['exac']['ac']['ac_nfe']), float(non_snpeff['exac']['an']['an_nfe'])
+    maf_exac_nfe = exac_nfe_ac / exac_nfe_an
+  except KeyError:
+    exac_nfe_ac, exac_nfe_an, maf_exac_nfe = '', '', ''
+  except TypeError:
+    try:
+      exac_nfe_ac, exac_nfe_an = float(max(non_snpeff['exac']['ac']['ac_nfe'])), float(non_snpeff['exac']['an']['an_nfe'])
+      maf_exac_nfe = exac_nfe_ac / exac_nfe_an
+    except ZeroDivisionError:
+      exac_nfe_ac, exac_nfe_an, maf_exac_nfe = '', '', ''
+  except ZeroDivisionError:
+    exac_nfe_ac, exac_nfe_an, maf_exac_nfe = '', '', ''
+  try:
+    exac_oth_ac, exac_oth_an = float(non_snpeff['exac']['ac']['ac_oth']), float(non_snpeff['exac']['an']['an_oth'])
+    maf_exac_oth = exac_oth_ac / exac_oth_an
+  except KeyError:
+    exac_oth_ac, exac_oth_an, maf_exac_oth = '', '', ''
+  except TypeError:
+    try:
+      exac_oth_ac, exac_oth_an = float(max(non_snpeff['exac']['ac']['ac_oth'])), float(non_snpeff['exac']['an']['an_oth'])
+      maf_exac_oth = exac_oth_ac / exac_oth_an
+    except ZeroDivisionError:
+      exac_oth_ac, exac_oth_an, maf_exac_oth = '', '', ''
+  except ZeroDivisionError:
+    exac_oth_ac, exac_oth_an, maf_exac_oth = '', '', ''
+  try:
+    exac_sas_ac, exac_sas_an = float(non_snpeff['exac']['ac']['ac_sas']), float(non_snpeff['exac']['an']['an_sas'])
+    maf_exac_sas = exac_sas_ac / exac_sas_an
+  except KeyError:
+    exac_sas_ac, exac_sas_an, maf_exac_sas = '', '', ''
+  except TypeError:
+    try:
+      exac_sas_ac, exac_sas_an = float(max(non_snpeff['exac']['ac']['ac_sas'])), float(non_snpeff['exac']['an']['an_sas'])
+      maf_exac_sas = exac_sas_ac / exac_sas_an
+    except ZeroDivisionError:
+      exac_sas_ac, exac_sas_an, maf_exac_sas = '', '', ''
+  except ZeroDivisionError:
+    exac_sas_ac, exac_sas_an, maf_exac_sas = '', '', ''
+
+  '''   
+  try:
+    exac_het_ac, exac_het_an = float(non_snpeff['exac']['ac']['ac_het']), float(non_snpeff['exac']['an']['an_het'])
+    maf_exac_het = exac_het_ac / exac_het_an
+  except KeyError:
+    exac_het_ac, exac_het_an, maf_exac_het = '', '', ''
+  except TypeError:
+    try:
+      exac_het_ac, exac_het_an = float(max(non_snpeff['exac']['ac']['ac_het'])), float(non_snpeff['exac']['an']['an_het'])
+      maf_exac_het = exac_het_ac / exac_het_an
+    except ZeroDivisionError:
+      exac_het_ac, exac_het_an, maf_exac_het = '', '', ''
+  except ZeroDivisionError:
+    exac_het_ac, exac_het_an, maf_exac_het = '', '', ''
+  '''   
+  try:
+    exac_hom_ac, exac_hom_an = float(non_snpeff['exac']['ac']['ac_hom']), float(non_snpeff['exac']['an']['an_adj'])
+    maf_exac_hom = exac_hom_ac / exac_hom_an
+  except KeyError:
+    exac_hom_ac, exac_hom_an, maf_exac_hom = '', '', ''
+  except TypeError:
+    try:
+      exac_hom_ac, exac_hom_an = float(max(non_snpeff['exac']['ac']['ac_hom'])), float(non_snpeff['exac']['an']['an_adj'])
+      maf_exac_hom = exac_hom_ac / exac_hom_an
+    except ZeroDivisionError:
+      exac_hom_ac, exac_hom_an, maf_exac_hom = '', '', ''
+  except ZeroDivisionError:
+    exac_hom_ac, exac_hom_an, maf_exac_hom = '', '', '' 
+
+  exac_details = ([str(exac_tot_ac), str(exac_tot_an), str(maf_exac_tot),
+                   str(exac_afr_ac), str(exac_afr_an), str(maf_exac_afr),
+                   str(exac_amr_ac), str(exac_amr_an), str(maf_exac_amr), 
+                   str(exac_eas_ac), str(exac_eas_an), str(maf_exac_eas), 
+                   str(exac_fin_ac), str(exac_fin_an), str(maf_exac_fin), 
+                   str(exac_nfe_ac), str(exac_nfe_an), str(maf_exac_nfe), 
+                   str(exac_oth_ac), str(exac_oth_an), str(maf_exac_oth), 
+                   str(exac_sas_ac), str(exac_sas_an), str(maf_exac_sas), 
+                   str(exac_hom_ac), str(maf_exac_hom)])
+
+  return exac_details
+
+def collectExACDetails():
+  try:
+    exac_tot_ac, exac_tot_an = int(non_snpeff['exac']['ac']['ac_adj']), int(non_snpeff['exac']['an']['an_adj'])
+    maf_exac_tot = float(exac_tot_ac) / exac_tot_an
+  except KeyError:
+    exac_tot_ac, exac_tot_an, maf_exac_tot = '', '', ''
+  except TypeError:
+    try:
+      exac_tot_ac, exac_tot_an = int(max(non_snpeff['exac']['ac']['ac_adj'])), int(non_snpeff['exac']['an']['an_adj'])
+      maf_exac_tot = float(exac_tot_ac) / exac_tot_an
+    except ZeroDivisionError:
+      exac_tot_ac, exac_tot_an, maf_exac_tot = '', '', ''
+  except ZeroDivisionError:
+    exac_tot_ac, exac_tot_an, maf_exac_tot = '', '', ''
+  try:
+    exac_afr_ac, exac_afr_an = int(non_snpeff['exac']['ac']['ac_afr']), int(non_snpeff['exac']['an']['an_afr'])
+    maf_exac_afr = float(exac_afr_ac) / exac_afr_an
+  except KeyError:
+    exac_afr_ac, exac_afr_an, maf_exac_afr = '', '', ''
+  except TypeError:
+    try:
+      exac_afr_ac, exac_afr_an = int(max(non_snpeff['exac']['ac']['ac_afr'])), int(non_snpeff['exac']['an']['an_afr'])
+      maf_exac_afr = float(exac_afr_ac) / exac_afr_an
+    except ZeroDivisionError:
+      exac_afr_ac, exac_afr_an, maf_exac_afr = '', '', ''
+  except ZeroDivisionError:
+    exac_afr_ac, exac_afr_an, maf_exac_afr = '', '', ''
+  try:
+    exac_amr_ac, exac_amr_an = int(non_snpeff['exac']['ac']['ac_amr']), int(non_snpeff['exac']['an']['an_amr'])
+    maf_exac_amr = float(exac_amr_ac) / exac_amr_an
+  except KeyError:
+    exac_amr_ac, exac_amr_an, maf_exac_amr = '', '', ''
+  except TypeError:
+    try:
+      exac_amr_ac, exac_amr_an = int(max(non_snpeff['exac']['ac']['ac_amr'])), int(non_snpeff['exac']['an']['an_amr'])
+      maf_exac_amr = float(exac_amr_ac) / exac_amr_an
+    except ZeroDivisionError:
+      exac_amr_ac, exac_amr_an, maf_exac_amr = '', '', ''
+  except ZeroDivisionError:
+    exac_amr_ac, exac_amr_an, maf_exac_amr = '', '', ''
+  try:
+    exac_eas_ac, exac_eas_an = int(non_snpeff['exac']['ac']['ac_eas']), int(non_snpeff['exac']['an']['an_eas'])
+    maf_exac_eas = float(exac_eas_ac) / exac_eas_an
+  except KeyError:
+    exac_eas_ac, exac_eas_an, maf_exac_eas = '', '', ''
+  except TypeError:
+    try:
+      exac_eas_ac, exac_eas_an = int(max(non_snpeff['exac']['ac']['ac_eas'])), int(non_snpeff['exac']['an']['an_eas'])
+      maf_exac_eas = float(exac_eas_ac) / exac_eas_an
+    except ZeroDivisionError:
+      exac_eas_ac, exac_eas_an, maf_exac_eas = '', '', ''
+  except ZeroDivisionError:
+    exac_eas_ac, exac_eas_an, maf_exac_eas = '', '', ''
+  try:
+    exac_fin_ac, exac_fin_an = int(non_snpeff['exac']['ac']['ac_fin']), int(non_snpeff['exac']['an']['an_fin'])
+    maf_exac_fin = float(exac_fin_ac) / exac_fin_an
+  except KeyError:
+    exac_fin_ac, exac_fin_an, maf_exac_fin = '', '', ''
+  except TypeError:
+    try:
+      exac_fin_ac, exac_fin_an = int(max(non_snpeff['exac']['ac']['ac_fin'])), int(non_snpeff['exac']['an']['an_fin'])
+      maf_exac_fin = float(exac_fin_ac) / exac_fin_an
+    except ZeroDivisionError:
+      exac_fin_ac, exac_fin_an, maf_exac_fin = '', '', ''
+  except ZeroDivisionError:
+    exac_fin_ac, exac_fin_an, maf_exac_fin = '', '', ''
+  try:
+    exac_nfe_ac, exac_nfe_an = int(non_snpeff['exac']['ac']['ac_nfe']), int(non_snpeff['exac']['an']['an_nfe'])
+    maf_exac_nfe = float(exac_nfe_ac) / exac_nfe_an
+  except KeyError:
+    exac_nfe_ac, exac_nfe_an, maf_exac_nfe = '', '', ''
+  except TypeError:
+    try:
+      exac_nfe_ac, exac_nfe_an = int(max(non_snpeff['exac']['ac']['ac_nfe'])), int(non_snpeff['exac']['an']['an_nfe'])
+      maf_exac_nfe = float(exac_nfe_ac) / exac_nfe_an
+    except ZeroDivisionError:
+      exac_nfe_ac, exac_nfe_an, maf_exac_nfe = '', '', ''
+  except ZeroDivisionError:
+    exac_nfe_ac, exac_nfe_an, maf_exac_nfe = '', '', ''
+  try:
+    exac_oth_ac, exac_oth_an = int(non_snpeff['exac']['ac']['ac_oth']), int(non_snpeff['exac']['an']['an_oth'])
+    maf_exac_oth = float(exac_oth_ac) / exac_oth_an
+  except KeyError:
+    exac_oth_ac, exac_oth_an, maf_exac_oth = '', '', ''
+  except TypeError:
+    try:
+      exac_oth_ac, exac_oth_an = int(max(non_snpeff['exac']['ac']['ac_oth'])), int(non_snpeff['exac']['an']['an_oth'])
+      maf_exac_oth = float(exac_oth_ac) / exac_oth_an
+    except ZeroDivisionError:
+      exac_oth_ac, exac_oth_an, maf_exac_oth = '', '', ''
+  except ZeroDivisionError:
+    exac_oth_ac, exac_oth_an, maf_exac_oth = '', '', ''
+  try:
+    exac_sas_ac, exac_sas_an = int(non_snpeff['exac']['ac']['ac_sas']), int(non_snpeff['exac']['an']['an_sas'])
+    maf_exac_sas = float(exac_sas_ac) / exac_sas_an
+  except KeyError:
+    exac_sas_ac, exac_sas_an, maf_exac_sas = '', '', ''
+  except TypeError:
+    try:
+      exac_sas_ac, exac_sas_an = int(max(non_snpeff['exac']['ac']['ac_sas'])), int(non_snpeff['exac']['an']['an_sas'])
+      maf_exac_sas = float(exac_sas_ac) / exac_sas_an
+    except ZeroDivisionError:
+      exac_sas_ac, exac_sas_an, maf_exac_sas = '', '', ''
+  except ZeroDivisionError:
+    exac_sas_ac, exac_sas_an, maf_exac_sas = '', '', ''
+
+  '''   
+  try:
+    exac_het_ac, exac_het_an = float(non_snpeff['exac']['ac']['ac_het']), float(non_snpeff['exac']['an']['an_het'])
+    maf_exac_het = exac_het_ac / exac_het_an
+  except KeyError:
+    exac_het_ac, exac_het_an, maf_exac_het = '', '', ''
+  except TypeError:
+    try:
+      exac_het_ac, exac_het_an = float(max(non_snpeff['exac']['ac']['ac_het'])), float(non_snpeff['exac']['an']['an_het'])
+      maf_exac_het = exac_het_ac / exac_het_an
+    except ZeroDivisionError:
+      exac_het_ac, exac_het_an, maf_exac_het = '', '', ''
+  except ZeroDivisionError:
+    exac_het_ac, exac_het_an, maf_exac_het = '', '', ''
+  '''   
+  try:
+    exac_hom_ac, exac_hom_an = int(non_snpeff['exac']['ac']['ac_hom']), int(non_snpeff['exac']['an']['an_adj'])
+    maf_exac_hom = float(exac_hom_ac) / exac_hom_an
+  except KeyError:
+    exac_hom_ac, exac_hom_an, maf_exac_hom = '', '', ''
+  except TypeError:
+    try:
+      exac_hom_ac, exac_hom_an = int(max(non_snpeff['exac']['ac']['ac_hom'])), int(non_snpeff['exac']['an']['an_adj'])
+      maf_exac_hom = float(exac_hom_ac) / exac_hom_an
+    except ZeroDivisionError:
+      exac_hom_ac, exac_hom_an, maf_exac_hom = '', '', ''
+  except ZeroDivisionError:
+    exac_hom_ac, exac_hom_an, maf_exac_hom = '', '', '' 
+
+  exac_details = ([str(exac_tot_ac), str(exac_tot_an), str(maf_exac_tot),
+                   str(exac_afr_ac), str(exac_afr_an), str(maf_exac_afr),
+                   str(exac_amr_ac), str(exac_amr_an), str(maf_exac_amr), 
+                   str(exac_eas_ac), str(exac_eas_an), str(maf_exac_eas), 
+                   str(exac_fin_ac), str(exac_fin_an), str(maf_exac_fin), 
+                   str(exac_nfe_ac), str(exac_nfe_an), str(maf_exac_nfe), 
+                   str(exac_oth_ac), str(exac_oth_an), str(maf_exac_oth), 
+                   str(exac_sas_ac), str(exac_sas_an), str(maf_exac_sas), 
+                   str(exac_hom_ac), str(maf_exac_hom)])
+
+  return exac_details
 
 def collectdbNSFP():
   threshold = {'dann':0.96, 'fathmm':0.81415, 'metasvm':0.83357, 'gerp++':2.0}
@@ -258,6 +552,72 @@ def collectdbsnp():
 
 def getClinvarData(genes, gene_variants):
   global PARSED_CLINVAR
+  clinvar_pathogenicity, clinvar_pmids, clinvar_variation_ids, clinvar_review_status, clinvar_diseases = dict(), dict(), dict(), dict(), dict()
+  #pathos= []
+  with open(PARSED_CLINVAR, 'rU') as f:
+    f.readline()
+    for line in f:
+      line = line.rstrip('\n')
+      parts = line.split('\t')
+      gene, variant, pathogenicity, records, variation_id, review_status, diseases = parts[3], parts[5], parts[10], parts[11], parts[12], parts[9], parts[7]
+      if gene not in genes:
+        continue
+      splitted_records = records.split(' ||| ')
+      description_from_each_submitter = []
+      pathogenicity_from_each_submitter = []
+      for record in splitted_records:
+        assertionID, submitter, datelastevaluated, reviewstatus_, description_, assertionmethod, origin, species, method, citations, comment_, supporting_obs = record.split(' || ')
+        description_ = description_.lower()
+        if description_ == 'pathologic':
+          description_ = 'pathogenic'
+        pathogenicity_from_each_submitter.append((description_, submitter, datelastevaluated, method, comment_))
+      #pathos.append(pathogenicity)
+      pmids = re.findall(r'PubMed : [0-9]{1,20}', records)
+      pmids = [_.split(' : ')[1] for _ in pmids]
+      variants = variant.split('|')
+      variants = [item for item in variants if item]
+      for variant in variants:
+        if (gene, variant) not in gene_variants:
+          continue
+        if (gene, variant) not in clinvar_pathogenicity:
+          clinvar_pathogenicity[(gene, variant)] = [pathogenicity_from_each_submitter]
+          clinvar_pmids[(gene, variant)] = pmids
+          clinvar_variation_ids[(gene, variant)] = [variation_id]
+          clinvar_review_status[(gene, variant)] = [review_status]
+          clinvar_diseases[(gene, variant)] = [diseases]
+        else:
+          clinvar_pathogenicity[(gene, variant)].append(pathogenicity_from_each_submitter)
+          clinvar_pmids[(gene, variant)] += pmids
+          clinvar_variation_ids[(gene, variant)].append(variation_id)
+          clinvar_review_status[(gene, variant)].append(review_status)
+          clinvar_diseases[(gene, variant)].append(diseases)
+    for key in clinvar_pathogenicity:
+      values = clinvar_pathogenicity[key]
+      merged_values = []
+      for value in values:
+        merged_values += value 
+      clinvar_pathogenicity[key] = merged_values # list of tuples
+    for key in clinvar_pmids:
+      values = list(set(clinvar_pmids[key]))
+      clinvar_pmids[key] = values
+    for key in clinvar_variation_ids:
+      values = list(set(clinvar_variation_ids[key]))
+      values = '|'.join(values)
+      clinvar_variation_ids[key] = values
+    for key in clinvar_review_status:
+      values = list(set(clinvar_review_status[key]))
+      values = '|'.join(values)
+      clinvar_review_status[key] = values
+    for key in clinvar_diseases:
+      values = list(set(clinvar_diseases[key]))
+      values = [value for value in values if not re.match(r'not provided', value, re.I)] 
+      values = '|'.join(values)
+      clinvar_diseases[key] = values
+    #print set(pathos)
+  return clinvar_pathogenicity, clinvar_pmids, clinvar_variation_ids, clinvar_review_status, clinvar_diseases
+
+def getClinvarDataBak(genes, gene_variants):
+  global PARSED_CLINVAR
   clinvar_pathogenicity, clinvar_pmids, clinvar_variation_ids, clinvar_review_status = dict(), dict(), dict(), dict()
   #pathos= []
   with open(PARSED_CLINVAR, 'rU') as f:
@@ -304,6 +664,8 @@ def getClinvarData(genes, gene_variants):
     #print set(pathos)
   return clinvar_pathogenicity, clinvar_pmids, clinvar_variation_ids, clinvar_review_status
 
+
+
 def getVariantidfromDB(candidate_vars):
   db = MySQLdb.connect(host="localhost",
                      user="root",
@@ -311,7 +673,7 @@ def getVariantidfromDB(candidate_vars):
                      db="DB_offline")
   query = 'select gene, variant, protein, transcript, variant_id, effect from genevariantproteinmapping where '
   for var in candidate_vars:
-    gene, variant, transcript, variant_id = var
+    gene, variant, transcript, variant_id, zygosity = var
     query += "(gene='%s' and variant='%s' and transcript='%s') or " % (gene, variant, transcript)    
   query = query[0:-4]
   cursor = db.cursor()
@@ -334,22 +696,26 @@ def get_variants(candidate_vars):
 
   # The dbscsnv (splicing effect prediction) can not be obtained from myvariant; instead, we have local flat dbscsnv files
   dbscsnv_chromosomes, dbscsnv_variants = [], {}
+  # dict which records zygosity for each variant id
+  variantid_zygosity = dict()
   for var in candidate_vars:
-    # print var
-    gene, variant, transcript, variant_id = var
+    #print var
+    gene, variant, transcript, variant_id, zygosity = var
     key = (gene, variant)
     if not variant_id:
       if key in variantidfromDB.keys():
         variant_id = variantidfromDB[key]
       else:
         variant_id = collectAll(gene, variant, transcript)
-    variants[key]['gene'], variants[key]['variant'], variants[key]['transcript'], variants[key]['id'] = gene, variant, transcript, variant_id
+    variantid_zygosity[variant_id] = zygosity
+    variants[key]['gene'], variants[key]['variant'], variants[key]['transcript'], variants[key]['id'], variants[key]['zygosity'] = gene, variant, transcript, variant_id, zygosity
   
     # Only 'interpro_domain' is a list; all the other fields are strings 
     if not variant_id:
       variants[key]['maf_exac'] = variants[key]['maf_1000g'] = variants[key]['maf_esp6500'] = variants[key]['dann'] = variants[key]['fathmm'] = variants[key]['metasvm'] = variants[key]['gerp++'] = variants[key]['exon'] = variants[key]['ref'] = variants[key]['alt'] = variants[key]['rsid'] = ''
       variants[key]['interpro_domain'] = []
-      variants[key]['clinvar_pathogenicity'], variants[key]['clinvar_pmids'], variants[key]['clinvar_variation_ids'], variants[key]['clinvar_review_status'] = '', [], '', ''
+      variants[key]['clinvar_pathogenicity'], variants[key]['clinvar_pmids'], variants[key]['clinvar_variation_ids'], variants[key]['clinvar_review_status'] = [], [], '', ''
+      variants[key]['clinvar_associated_diseases'] = ''
       variants[key]['effect'], variants[key]['protein']  = '', ''
       continue
     variant_ids.append(variant_id)
@@ -360,7 +726,7 @@ def get_variants(candidate_vars):
     time.sleep(random.uniform(0.02, 0.1))
 
   variant_ids = list(set(variant_ids))
-  # print variant_ids
+  #print variant_ids
   non_snpeff_var_data = []
   batch_size = 100
   start, end = 0, 0
@@ -369,11 +735,21 @@ def get_variants(candidate_vars):
     start = end
     end += batch_size
     end = min(end, num_variant_ids)
-    tmp = mv.getvariants(variant_ids[start:end], fields = ['exac.ac.ac_adj','exac.an.an_adj', 'exac_nontcga.ac.ac_adj', 'exac_nontcga.an.an_adj',
+    attempt, max_attempts = 0, 3
+    while True:
+      attempt += 1
+      if attempt > max_attempts:
+        break
+      try:
+        tmp = mv.getvariants(variant_ids[start:end], fields = ['exac.ac','exac.an', 'exac_nontcga.ac.ac_adj', 'exac_nontcga.an.an_adj',
                                'dbnsfp', 'cadd.1000g.af', 'cadd.esp.af', 'clinvar.omim', 'clinvar.rcv',
                                'cadd.annotype', 'cadd.consequence', 'cadd.consdetail', 'cadd.grantham',
                                'cadd.phred', 'cadd.exon', 'vcf.ref', 'vcf.alt', 'dbsnp.rsid',
                                'snpeff.ann.effect', 'snpeff.ann.gene_id', 'snpeff.ann.hgvs_p', 'snpeff.ann.hgvs_c', 'snpeff.ann.feature_id'])
+        break
+      except:
+        time.sleep(random.uniform(0.3, 0.5))
+        pass
     non_snpeff_var_data += tmp
     if end >= num_variant_ids:
       break
@@ -403,16 +779,23 @@ def get_variants(candidate_vars):
       variants[key]['maf_1000g'] = dbnsfp_1000g if dbnsfp_1000g else cadd_1000g
       variants[key]['maf_esp6500'] = cadd_esp
 
+      # exac_details is a list which contails detailed exac data like race or
+      # het/hom
+      exac_details = collectExACDetails()
+      variants[key]['exac_details'] = exac_details 
+
       pathogenicity_scores, interpro_domain = collectdbNSFP()
       dann, fathmm, metasvm, gerp = pathogenicity_scores 
       variants[key]['dann'], variants[key]['fathmm'], variants[key]['metasvm'], variants[key]['gerp++'] = dann, fathmm, metasvm, gerp
       variants[key]['interpro_domain'] = interpro_domain
 
-      clinvar_data = collectClinvar()
-      variants[key]['clinvar_pathogenicity'] = clinvar_data
+      #clinvar_data = collectClinvar()
+      #variants[key]['clinvar_pathogenicity'] = clinvar_data
+      variants[key]['clinvar_pathogenicity'] = [] 
       variants[key]['clinvar_pmids'] = []
       variants[key]['clinvar_variation_ids'] = ''
       variants[key]['clinvar_review_status'] = ''
+      variants[key]['clinvar_associated_diseases'] = ''
 
       annotype, consequence, consdetail, grantham_score, phred_score, exon = collectCadd()
       variants[key]['exon'] = exon.split('/')[0]
@@ -449,7 +832,7 @@ def get_variants(candidate_vars):
   # print "Get Clinvar data "
   genes = [var[0] for var in candidate_vars]
   gene_variants = [(var[0], var[1]) for var in candidate_vars]
-  clinvar_pathogenicity, clinvar_pmids, clinvar_variation_ids, clinvar_review_status = getClinvarData(genes, gene_variants)
+  clinvar_pathogenicity, clinvar_pmids, clinvar_variation_ids, clinvar_review_status, clinvar_diseases = getClinvarData(genes, gene_variants)
   for key in variants.keys():
     if key in clinvar_pathogenicity:
       variants[key]['clinvar_pathogenicity'] = clinvar_pathogenicity[key]
@@ -459,12 +842,15 @@ def get_variants(candidate_vars):
       variants[key]['clinvar_variation_ids'] = clinvar_variation_ids[key]
     if key in clinvar_review_status:
       variants[key]['clinvar_review_status'] = clinvar_review_status[key]
+    if key in clinvar_diseases:
+      variants[key]['clinvar_associated_diseases'] = clinvar_diseases[key]
 
-  # pprint.pprint(variants)
+  print variants
   # pickle.dump(variants, open('result/variants.p', 'wb'))
 
   final_res = []
   for key in variants:
+    print key
     v = variants[key]
     # final_res.append([v['gene'], v['variant'], v['protein'], v['id'], v['rsid'], v['transcript'], v['effect'], v['exon'], v['interpro_domain'], v['ref'], v['alt'], v['maf_exac'], v['maf_1000g'], v['maf_esp6500'], v['dann'], v['fathmm'], v['metasvm'], v['gerp++'], v['dbscSNV_rf_score'], v['dbscSNV_ada_score'], v['clinvar_pathogenicity']])
     final_res.append((v['gene'], v['variant'], v['protein']))
@@ -497,11 +883,21 @@ def get_variants_from_vcf(candidate_vars):
     start = end
     end += batch_size
     end = min(end, num_variant_ids)
-    tmp = mv.getvariants(variant_ids[start:end], fields = ['exac.ac.ac_adj','exac.an.an_adj', 'exac_nontcga.ac.ac_adj', 'exac_nontcga.an.an_adj',
+    attempt, max_attempts = 0, 3
+    while True:
+      attempt += 1
+      if attempt > max_attempts:
+        break
+      try:
+        tmp = mv.getvariants(variant_ids[start:end], fields = ['exac.ac','exac.an', 'exac_nontcga.ac.ac_adj', 'exac_nontcga.an.an_adj',
                                'dbnsfp', 'cadd.1000g.af', 'cadd.esp.af', 'clinvar.omim', 'clinvar.rcv',
                                'cadd.annotype', 'cadd.consequence', 'cadd.consdetail', 'cadd.grantham',
                                'cadd.phred', 'cadd.exon', 'vcf.ref', 'vcf.alt', 'dbsnp.rsid',
                                'snpeff.ann.effect', 'snpeff.ann.gene_id', 'snpeff.ann.hgvs_p', 'snpeff.ann.hgvs_c', 'snpeff.ann.feature_id'])
+        break
+      except:
+        time.sleep(random.uniform(0.3, 0.5))
+        pass 
     non_snpeff_var_data += tmp
     if end >= num_variant_ids:
       break
@@ -516,6 +912,7 @@ def get_variants_from_vcf(candidate_vars):
     except KeyError:
       continue
     gene, variant, protein, transcript, effect = collectSnpeffWithGeneVariantInfo()
+    zygosity = variantid_zygosit[variant_id]
     if not gene:
       continue
     key = (gene, variant)
@@ -525,8 +922,9 @@ def get_variants_from_vcf(candidate_vars):
     variants[key]['protein'] = protein
     variants[key]['transcript'] = transcript 
     variants[key]['effect'] = effect
+    variants[key]['zygosity'] = zygosity 
 
-    tmp_candidate_vars.append((gene, variant, transcript, variant_id))
+    tmp_candidate_vars.append((gene, variant, transcript, variant_id, zygosity))
 
     maf_exac, maf_exac_nontcga = collectExAC()
     maf_exac = maf_exac_nontcga if not maf_exac and maf_exac_nontcga else maf_exac
@@ -536,16 +934,22 @@ def get_variants_from_vcf(candidate_vars):
     variants[key]['maf_1000g'] = dbnsfp_1000g if dbnsfp_1000g else cadd_1000g
     variants[key]['maf_esp6500'] = cadd_esp
 
+    # exac_details is a list which contails detailed exac data like race or
+    # het/hom
+    exac_details = collectExACDetails()
+    variants[key]['exac_details'] = exac_details
+
     pathogenicity_scores, interpro_domain = collectdbNSFP()
     dann, fathmm, metasvm, gerp = pathogenicity_scores 
     variants[key]['dann'], variants[key]['fathmm'], variants[key]['metasvm'], variants[key]['gerp++'] = dann, fathmm, metasvm, gerp
     variants[key]['interpro_domain'] = interpro_domain
 
-    clinvar_data = collectClinvar()
-    variants[key]['clinvar_pathogenicity'] = clinvar_data
+    #clinvar_data = collectClinvar()
+    variants[key]['clinvar_pathogenicity'] = [] 
     variants[key]['clinvar_pmids'] = []
     variants[key]['clinvar_variation_ids'] = ''
     variants[key]['clinvar_review_status'] = ''
+    variants[key]['clinvar_associated_diseases'] = ''
 
     annotype, consequence, consdetail, grantham_score, phred_score, exon = collectCadd()
     variants[key]['exon'] = exon.split('/')[0]
@@ -581,7 +985,7 @@ def get_variants_from_vcf(candidate_vars):
   candidate_vars = tmp_candidate_vars
   genes = [var[0] for var in candidate_vars]
   gene_variants = [(var[0], var[1]) for var in candidate_vars]
-  clinvar_pathogenicity, clinvar_pmids, clinvar_variation_ids, clinvar_review_status = getClinvarData(genes, gene_variants)
+  clinvar_pathogenicity, clinvar_pmids, clinvar_variation_ids, clinvar_review_status, clinvar_diseases = getClinvarData(genes, gene_variants)
   for key in variants.keys():
     if key in clinvar_pathogenicity:
       variants[key]['clinvar_pathogenicity'] = clinvar_pathogenicity[key]
@@ -591,6 +995,8 @@ def get_variants_from_vcf(candidate_vars):
       variants[key]['clinvar_variation_ids'] = clinvar_variation_ids[key]
     if key in clinvar_review_status:
       variants[key]['clinvar_review_status'] = clinvar_review_status[key]
+    if key in clinvar_diseases:
+      variants[key]['clinvar_associated_diseases'] = clinvar_diseases[key]
 
   final_res = []
   for key in variants:

@@ -499,7 +499,7 @@ def map2gene(final_matches, CANDIDATE_GENES):
     ## phenotype even if the multiple keywords lead to multiple mappings.
     ## In practice, we don't need to screen through all genes. Only a few gene candidates are examined.
     mapped_genes = list(set(mapped_genes) & set(CANDIDATE_GENES))
-    return mapped_genes
+    return mapped_genes, final_matches
 
 def map2geneWithSim(final_matches, CANDIDATE_GENES, associated_genes_for_curr_pheno_from_pubmed):
     """ Map to genes for each phenotype (one phenotype at one time) with similarity score 
@@ -745,6 +745,7 @@ def generate_score(phenos, CANDIDATE_GENES, corner_cases, original_phenos):
 
     gene_associated_phenos = dict()
     all_mapped_genes_score_phenospecificity = {}
+    gene_associated_pheno_hpoids = dict()
 
     # Get phenotype-gene associations from Pubmed
     phenosgenefromPubmed = searchPhenosFromPubmed(phenos, CANDIDATE_GENES)
@@ -755,7 +756,7 @@ def generate_score(phenos, CANDIDATE_GENES, corner_cases, original_phenos):
         # matches =  map2hpo(pheno)
         final_matches = map2hpoWithPhenoSynonyms(pheno)
         # pprint.pprint(final_matches)
-        mapped_genes = map2gene(final_matches, CANDIDATE_GENES)
+        mapped_genes, final_matches_hpoids = map2gene(final_matches, CANDIDATE_GENES)
 
         for gene in mapped_genes:
             if pheno not in original_phenos:
@@ -764,6 +765,11 @@ def generate_score(phenos, CANDIDATE_GENES, corner_cases, original_phenos):
                 gene_associated_phenos[gene].append(pheno)
             else:
                 gene_associated_phenos[gene] = [pheno]
+            if gene in gene_associated_pheno_hpoids:
+                gene_associated_pheno_hpoids[gene] += final_matches_hpoids
+            else:
+                gene_associated_pheno_hpoids[gene] = final_matches_hpoids
+
         # Add genes searched from pubmed to gene_associated_phenos
         associated_genes_for_curr_pheno_from_pubmed = []
         if pheno in phenosgenefromPubmed:   
@@ -775,6 +781,10 @@ def generate_score(phenos, CANDIDATE_GENES, corner_cases, original_phenos):
                 gene_associated_phenos[gene].append(pheno)
             else:
                 gene_associated_phenos[gene] = [pheno]
+            if gene in gene_associated_pheno_hpoids:
+                gene_associated_pheno_hpoids[gene] += final_matches_hpoids
+            else:
+                gene_associated_pheno_hpoids[gene] = final_matches_hpoids
 
         # pprint.pprint(mapped_genes)
         all_mapped_genes += list(set(mapped_genes) | set(associated_genes_for_curr_pheno_from_pubmed))
@@ -807,6 +817,11 @@ def generate_score(phenos, CANDIDATE_GENES, corner_cases, original_phenos):
             else:
                 disease_phenos[disease].append(pheno)
 
+    # make gene associated pheno hpoids unique
+    for gene in gene_associated_pheno_hpoids.keys():
+        value = list(set(gene_associated_pheno_hpoids[gene]))
+        gene_associated_pheno_hpoids[gene] = value 
+
     num_patient_phenos = len(phenos)
     for disease in all_mapped_diseases_score:
         numphenos = numphenosindisease[disease]
@@ -822,37 +837,8 @@ def generate_score(phenos, CANDIDATE_GENES, corner_cases, original_phenos):
 
     count = Counter(all_mapped_genes)
     count = sorted(count.items(), key = lambda pair: pair[1], reverse = True)
-    #print "********************************************************************************************"
-    #print "********************************************************************************************"
-    #print "Count of matches to phenos: "
-    #pprint.pprint(count[0:])
-    #print len(count)
-    #print "********************************************************************************************"
-    #print "********************************************************************************************"
-    #print "Score of matches to phenos: "
-    #pprint.pprint(all_mapped_genes_score[0:])
-    #print len(all_mapped_genes_score)
-    #print "********************************************************************************************"
-    #print "********************************************************************************************"
-    #print "Matched phenos: "
-    #pprint.pprint(gene_phenos)
-
-    #print "============================================================================================"
-    #print "============================================================================================"
     count_disease = Counter(all_mapped_diseases)
     count_disease = sorted(count_disease.items(), key = lambda pair: pair[1], reverse = True)
-    #print "********************************************************************************************"
-    #print "********************************************************************************************"
-    #print "Count of matches to phenos: "
-    #pprint.pprint(count_disease[0:])
-    #print "********************************************************************************************"
-    #print "********************************************************************************************"
-    #print "Score of matches to phenos: "
-    #pprint.pprint(all_mapped_diseases_score[0:])
-    #print "********************************************************************************************"
-    #print "********************************************************************************************"
-    #print "Matched phenos: "
-    #pprint.pprint(disease_phenos)
     ranking_genes = []
     ranking_diseases = []
     for id in xrange(len(all_mapped_genes_score)):
@@ -876,34 +862,4 @@ def generate_score(phenos, CANDIDATE_GENES, corner_cases, original_phenos):
         if hits:
             ranking_diseases.append((disease, score, hits))
 
-    return ranking_genes, ranking_diseases, gene_associated_phenos
-
-# OUT_FILE = 'result/ranking_genes.txt'
-# OUT_FILE_DISEASE = 'result/ranking_diseases.txt'
-
-# def creat_ranking_gene_and_desease():
-    # with open(OUT_FILE, 'wb') as f:
-    #     f.write('gene\tscore\thits\n')
-    #     for id in xrange(len(all_mapped_genes_score)):
-    #         gene, score = all_mapped_genes_score[id]
-    #         hits = None
-    #         for gene_hits in count:
-    #             if gene_hits[0] == gene:
-    #                 hits = gene_hits[1] 
-    #                 break
-    #         if hits: 
-    #             f.write(gene + '\t' + str(score) + '\t' + str(hits) + '\n')
-
-#     with open(OUT_FILE_DISEASE, 'wb') as f:
-#         f.write('disease\tscore\thits\n')
-#         for id in xrange(len(all_mapped_diseases_score)):
-#             disease, score = all_mapped_diseases_score[id]
-#             hits = None
-#             for disease_hits in count_disease:
-#                 if disease_hits[0] == disease:
-#                     hits = disease_hits[1] 
-#                     break
-#             if hits: 
-#                 f.write(disease + '\t' + str(score) + '\t' + str(hits) + '\n')
-
-
+    return ranking_genes, ranking_diseases, gene_associated_phenos, gene_associated_pheno_hpoids
