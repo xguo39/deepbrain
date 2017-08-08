@@ -34,9 +34,14 @@ class Task_list extends React.Component{
           header:{
             label:'状态'
           },
+          cell:{
+            formatters:[
+              status => status?'成功':'失败'
+            ]
+          },
           props:{
             className:'tc1'
-          }
+          },
         }
       ],
       rows:[
@@ -44,14 +49,14 @@ class Task_list extends React.Component{
           id:1,
           name:'xiaonan',
           time:'July 18, 2017, 12:03 p.m.',
-          status:'成功',
+          status:true,
           checked:true,
         },
         {
           id:2,
           name:'tianqi',
           time:'July 18, 2017, 11:03 p.m.',
-          status:'失败',
+          status:false,
           checked:false
         }
       ],
@@ -61,7 +66,9 @@ class Task_list extends React.Component{
   _handleBodyRow(row, { rowIndex, rowKey }){
     let className = 'clickable';
     return {
-      onClick:()=>console.log(row.id),
+      onClick:()=>{
+        this.props.toResult(row.id, row.name);
+      },
       className:className,
     }
   }
@@ -77,7 +84,6 @@ class Task_list extends React.Component{
     return(
       <div className='task_list'>
         <div className='search_container'>
-
           <search.Field
              column={searchColumn}
              query={query}
@@ -106,21 +112,22 @@ class Task_list extends React.Component{
                 <Table.Body
                   rows={searchedRows}
                   rowKey='name'
-                  onRow={this._handleBodyRow}/>
+                  onRow={(row, { rowIndex, rowKey })=>this._handleBodyRow(row, { rowIndex, rowKey })}/>
 
               </Table.Provider>
         </div>
+        <p>全部共 {this.state.rows.length} 项</p>
       </div>
     )
   }
 }
 
 Task_list.propTypes={
-
+  toResult:React.PropTypes.func.isRequired,
 }
 
 Task_list.defaultProps={
-
+  toResult:()=>{}
 }
 
 export default Task_list;

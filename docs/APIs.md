@@ -13,6 +13,7 @@ APIs
   - [Upload_task](#upload_task)
   - [Progress_task_list](#progress_task_list)
   - [All_task_list](#all_task_list)
+  - [Fetch_case_result](#fetch_case_result)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 ---------------------------
@@ -161,6 +162,83 @@ http/1.1 200 OK
  errCode: BACKEND_MAINTANANCE
 }
 ```
+
+### Fetch_case_result
+* Description: For fetching the single case result
+* URL: `/api/result/:case_id/`
+* Method: `GET`
+* Request Example
+`{}`
+* Response Example on `success`:
+```
+http/1.1 200 OK
+```
+```javascript
+{
+ success:true,
+ result_data:{
+  summary_table_data:[
+    {
+      gene:'WWOX',
+      transcript:'chr16:g.78466583C>G',
+      cDNA:'GCGTG',
+      protein:'danbaizhi',
+      zygosity:'peixing',
+      pheno_matched_score:39,
+      ACMG_criteria_matched:"PM2|BP4",
+      clinical_significance:'Uncertain Significance',
+      clinical_significance_score:55,
+      classification_score:0.88,
+      total_score:1.8	
+    },…
+  ],
+  incidental_table_data:[
+    {
+      gene:’WNT7A’,
+      transcript:'chr16:g.78466583C>G’,
+      cDNA:'GCGTG',
+      protein:’danbaizhi’,
+      zygosity:’peixing’,
+      phenotype_matched:’from paper’,
+      ACMG_criteria_matched:"PM2|BP4",
+      clincial_significance:'Uncertain Significance'
+     },…
+  ],
+  candidate_table_data:[
+    {
+      gene:’WNT7A’,
+      transcript:'chr16:g.78466583C>G’,
+      cDNA:'GCGTG',
+      protein:’danbaizhi’,
+      zygosity:’peixing’,
+      phenotype_matched:’from paper’
+     },…
+  ],
+  input_gene_data:[
+    {
+      
+     }
+  ]
+ }
+```
+* Response Example on `failure`:
+```
+http/1.1 200 OK
+```
+```javascript
+{
+ success:false,
+ errCode: BACKEND_MAINTANANCE
+}
+```
+
+
+
+
+
+
+
+
 
 
 

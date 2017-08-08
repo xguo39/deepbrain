@@ -1,8 +1,8 @@
 const basic_info = {
-  static_image:'../../static/app_ch/files/images/'
+  static_image:'http://127.0.0.1:8000/static/app_ch/files/images/'
 }
 
-const static_image = '../../static/app_ch/files/images/';
+const static_image = 'http://127.0.0.1:8000/static/app_ch/files/images/';
 
 
 

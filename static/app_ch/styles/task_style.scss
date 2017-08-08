@@ -106,10 +106,9 @@
 // Design the task list page table
 .task_list{
   position: relative;
-  margin: 30px 20px;
+  margin: 20px 20px;
   width: 65%;
   height: 90%;
-  // border: 1px solid red;
   .search_container{
     position: relative;
     width: 100%;
@@ -147,6 +146,12 @@
       }
     }
   }
+  p{
+    margin-top: 10px;
+    padding-left: 40px;
+    font-size: 14px;
+    color: #4A90E2;
+  }
 }
 
 .task_list_table{
@@ -160,9 +165,6 @@
     width: 100%;
     text-align: center;
     color: #406A8C;
-    .clickable{
-      cursor: pointer;
-    }
   }
   th{
     text-align: center;
@@ -171,7 +173,6 @@
     padding: 15px 0px;
     border-bottom: 1px solid #f2f2f2;
     font-size: 18px;
-
   }
   tr{
     &:hover{
@@ -188,4 +189,8 @@
   .tc2{
     width: 50%;
   }
+}
+
+.clickable{
+  cursor: pointer;
 }

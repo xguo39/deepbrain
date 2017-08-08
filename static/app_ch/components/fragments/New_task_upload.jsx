@@ -18,13 +18,13 @@ class New_task_upload extends React.Component {
     }
   }
 
-  _handleSubmit(){
-    alert('hahah submit yo!');
+  _handleSubmit(evt){
+    let formData = new FormData(evt.target);
+    // alert('hahah submit yo!');
   }
 
   _handleChange(evt){
     let target = evt.target;
-
     if(target.nodeName==='INPUT'){
          switch (target.id) {
            case 'input_gene_file':
@@ -82,7 +82,7 @@ class New_task_upload extends React.Component {
   render(){
     return (
       <div className='new_task_upload'>
-        <form id="myForm" name="myForm" encType="multipart/form-data" onSubmit={()=>this._handleSubmit()}>
+        <form id="myForm" name="myForm" encType="multipart/form-data" onSubmit={(evt)=>this._handleSubmit(evt)}>
         <div className='form-tb'>
 
           <div className='tb-section'>
