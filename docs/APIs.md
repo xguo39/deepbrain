@@ -13,7 +13,6 @@ APIs
   - [Upload_task](#upload_task)
   - [Progress_task_list](#progress_task_list)
   - [All_task_list](#all_task_list)
-  - [Fetch_case_result](#fetch_case_result)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 ---------------------------
@@ -138,14 +137,14 @@ http/1.1 200 OK
   {
    id:1,
    name:xiaonan,
-   time: 2017-06-18, 12:03pm,
+   time: '2017-06-18, 12:03pm',
    status:true,
    checked:false
   },
   {
    id:2,
    name:tianqi,
-   time: 2017-06-24, 11:03pm,
+   time: '2017-06-18, 12:03pm',
    status:false,
    checked:true
   }…
@@ -194,23 +193,23 @@ http/1.1 200 OK
   ],
   incidental_table_data:[
     {
-      gene:’WNT7A’,
-      transcript:'chr16:g.78466583C>G’,
+      gene:'WWOX',
+      transcript:'chr16:g.78466583C>G',
       cDNA:'GCGTG',
-      protein:’danbaizhi’,
-      zygosity:’peixing’,
-      phenotype_matched:’from paper’,
+      protein:'danbaizhi',
+      zygosity:'peixing',
+      pheno_matched_score:39,
       ACMG_criteria_matched:"PM2|BP4",
-      clincial_significance:'Uncertain Significance'
+      clinical_significance:'Uncertain Significance',
      },…
   ],
   candidate_table_data:[
     {
-      gene:’WNT7A’,
-      transcript:'chr16:g.78466583C>G’,
+      gene:'WWOX',
+      transcript:'chr16:g.78466583C>G',
       cDNA:'GCGTG',
-      protein:’danbaizhi’,
-      zygosity:’peixing’,
+      protein:'danbaizhi',
+      zygosity:'peixing',
       phenotype_matched:’from paper’
      },…
   ],
