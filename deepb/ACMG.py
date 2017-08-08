@@ -847,7 +847,11 @@ def getRepeatRegion():
             line = line.rstrip()
             parts = line.split('\t')
             chromosome, startpos, endpos= parts
+<<<<<<< HEAD
             if chromosome in repeat_regions: 
+=======
+            if chromosome in repeat_regions:
+>>>>>>> d8de006d0893ed1441e3845dd5c7e209a2ba2313
                 repeat_regions[chromosome].append((int(startpos), int(endpos)))
             else:
                 repeat_regions[chromosome] = [(int(startpos), int(endpos))]

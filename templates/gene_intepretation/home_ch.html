@@ -6,11 +6,11 @@
 
 {% block content %}
   <div class="container">
-      
+
     <div class = "col-sm-6" id = "upload">
       <div class="container">
         <h3 style= "float: left;">新任务</h3>
-        <h6 style= "float: left; margin: 33px 0px 0px 25px"><a target="_blank" href="{% static 'file/genonova_user_guide.pdf' %}">使用说明</a></h6> 
+        <h6 style= "float: left; margin: 33px 0px 0px 25px"><a target="_blank" href="{% static 'file/genonova_user_guide.pdf' %}">使用说明</a></h6>
       </div>
       <br />
       <form name="form1" method="post" action="{% url 'deepb:upload_ch' %}" enctype="multipart/form-data">
@@ -92,7 +92,7 @@
       <br />
       </div>
     </div>
-  </div>  
+  </div>
 {% endblock %}
 
 {% block javascript %}
@@ -106,4 +106,3 @@
 
   </script>
 {% endblock %}
-

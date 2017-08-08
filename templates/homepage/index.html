@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+<head>
+  <title>诺亚科技</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <link href="{% static 'css/index.css' %}" rel="stylesheet">
+  <link rel="icon" href="{% static 'images/logo.png' %}">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+
+<body id="myPage" data-spy="scroll" data-target=".navbar" data-offset="50">
+
+<nav class="navbar navbar-default navbar-fixed-top">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="#">
+        <img src="{% static 'images/header-logo.png' %}" alt="header-logo">
+        <span>诺亚科技</span>
+      </a>
+    </div>
+    <div class="collapse navbar-collapse" id="myNavbar">
+      <ul class="nav navbar-nav navbar-right">
+        <li><a href="#test"><span>基因解读</span></a></li>
+        <li><a href="#introduction"><span>公司介绍</span></a></li>
+        <li><a href="#product"><span>产品介绍</span></a></li>
+        <li><a href="#partner"><span>合作伙伴</span></a></li>
+        <li><a href="#contact"><span>联系我们</span></a></li>
+        <!-- <li class="dropdown">
+          <a class="dropdown-toggle" data-toggle="dropdown" href="#">语言
+            <span class="caret"></span>
+          </a>
+          <ul class="dropdown-menu">
+            <li><a href="{% url 'deepb:index_en' %}">English</a></li>
+          </ul>
+        </li> -->
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<div id="myCarousel" class="carousel slide" data-ride="carousel">
+  <!-- Indicators -->
+  <ol class="carousel-indicators">
+    <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
+    <li data-target="#myCarousel" data-slide-to="1"></li>
+    <li data-target="#myCarousel" data-slide-to="2"></li>
+  </ol>
+
+  <!-- Wrapper for slides -->
+  <div class="carousel-inner" role="listbox">
+    <div class="item active">
+      <img src="{% static 'images/carousel_1.jpg' %}" alt="First Carousel">
+      <div class="carousel-caption">
+        <h3>诺亚科技</h3>
+        <p>医学语言处理专家，基因数据智能解读专家</p>
+      </div>
+    </div>
+
+    <div class="item">
+      <img src="{% static 'images/carousel_2.jpg' %}" alt="Second Carousel">
+      <div class="carousel-caption">
+        <h3>诺亚科技</h3>
+        <p>肿瘤分级诊断专家</p>
+      </div>
+    </div>
+
+    <div class="item">
+      <img src="{% static 'images/carousel_3.jpg' %}" alt="Third Carousel">
+      <div class="carousel-caption">
+        <h3>诺亚科技</h3>
+        <p>着力打造涵盖基因组学图谱、微生物组学图谱、医学知识图谱的"诺亚超级医生"</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Left and right controls -->
+  <a class="left carousel-control" href="#myCarousel" role="button" data-slide="prev">
+    <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+    <span class="sr-only">Previous</span>
+  </a>
+  <a class="right carousel-control" href="#myCarousel" role="button" data-slide="next">
+    <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+    <span class="sr-only">Next</span>
+  </a>
+</div>
+
+<div id="test" class="pds container text-center">
+  <h3> 产品体验 </h3>
+  <div class="row">
+      <!-- <a class="col-sm-4" target="_blank" href="{% url 'deepb:chpo' %}"><button class="btn btn1">进入智能解读平台</button></a> -->
+      <a class="col-sm-3 col-xs-12" target="_blank" href="{% url 'deepb:chpo' %}">
+         <div class='pd-small'>
+           <img src="{% static 'images/chpo_icon.png'%}" alt="chpo-icon">
+         </div>
+           <p> CHPO 智能搜 </p>
+      </a>
+      <a class="col-sm-6 col-xs-12" target="_blank" href="{% url 'deepb:home_ch' %}">
+        <div>
+           <img src="{% static 'images/gene_intepretation_icon.png'%}" alt="geneInterpretation-icon">
+        </div>
+        <p> 遗传病基因智能解读 </p>
+      </a>
+      <a class="col-sm-3 col-xs-12" target="_blank" href="{% url 'deepb:lof' %}">
+        <div class='pd-small'>
+           <img src="{% static 'images/lof_icon.png'%}" alt="lof-icon">
+        </div>
+        <p> 基因功能丧失（Loss of function）查询</p>
+      </a>
+  </div>
+</div>
+
+<div class="company-intro container text-center">
+  <div id="introduction">
+    <img src="{% static 'images/logo.png'%}" alt='company_logo'>
+    <h3>关于我们</h3>
+      <ul>
+        <li><span>诺亚科技成立于纽约，是一家人工智能公司，专注于将机器学习（深度学习）、自然语言处理、大数据挖掘分析技术应用于医疗健康领域</span></li>
+        <li><span>团队核心成员具有美国顶尖互联网、金融科技、VC和医院的工作管理经历</span></li>
+        <li><span>核心技术是利用深度学习和自然语言理解，从超过千万篇文献、书籍、数据库里挖掘提取归纳生物医药相关知识，并利用机器学习去分析海量医疗数据，发现潜在数据模式</span></li>
+      </ul>
+  </div>
+</div>
+
+<div id="product" class="pd-intro container text-center">
+  <div class='sub-container'>
+    <h3 class="text-center">产品介绍</h3>
+    <ul class="nav nav-tabs">
+      <li><a data-toggle="tab" href="#menu1">医学语言处理专家</a></li>
+      <li class="active"><a data-toggle="tab" href="#home">基因测序智能解读</a></li>
+      <li><a data-toggle="tab" href="#menu2">诺亚肿瘤分级诊断专家</a></li>
+    </ul>
+    <div class="tab-content">
+      <div id="home" class="tab-pane fade in active">
+        <!-- <h4>基因测序智能解读</h4> -->
+        <ul>
+        <li><span>基于人工智能深度自然语言理解技术（NLP）使基因检测数据解读全站实现智能化</span></li>
+        <li><span>全流程智能化，包括从病历表型匹配到HPO标准词，使用者无需医学或相关知识背景即可无障碍操作</span></li>
+        <li><span>即时更新15+权威数据库，对超过两千万篇生物医学文献自动搜索摘要和全文，检查相关表型，提取变异位点相关信息包括相似变异位点、蛋白功能区影响、致病性、疾病表型关联、动物实验、功能研究等</span></li>
+        <li><span>全流程标准化，基于美国ACMG标准，创立独有定量化变异位点致病性排序系统，为辅助诊断提供更全面的参考系</span></li>
+        </ul>
+      </div>
+      <div id="menu1" class="tab-pane fade">
+        <!-- <h4>医学语言处理专家</h4> -->
+        <ul>
+        <li><span>临床具有复杂性和模糊性特点，每名医生对患者病情的描述和判断上存在差异，导致基因解读结果差异</span></li>
+        <li><span>由于种种问题，临床医生，研究人员，基因机构，患者及家属都无法有效利用标准化医学语言词典如<a href=" " data-toggle="tooltip" title="访问CHPO官网">CHPO</a ></span></li>
+        <li><span>医学语言处理专家基于自然语言语义处理技术，将非标准化的症状描述智能转化为标准化用词，让临床医生和研究人员可以使用以往习惯性医学词汇，患者和家属可以应用他们所熟悉和理解的“门外汉”通俗描述语言</span></li>
+        </ul>
+      </div>
+      <div id="menu2" class="tab-pane fade">
+        <!-- <h4>诺亚肿瘤分级诊断专家</h4> -->
+        <ul>
+        <li><span>诺亚肿瘤分级诊断专家代表着计算范式方面的根本性转变，通过处理海量知识而不断自我进步的学习系统正在逐步替代可编程系统并成为主导。而在过去的几十年中，可编程系统是主流之一。
+            诺亚肿瘤分级诊断专家基于Nova专家的前沿研究，已具备阅读和理解自然语言的能力。Nova肿瘤解决方案由诺亚科技开发，和亚洲最大的癌症研究中心——中国国家癌症中心共同推进。</span></li>
+        <li><span>诺亚肿瘤分级诊断专家能够汲取海量信息，其中包括300多份医学期刊、200余种教科书以及近1500万页的文字，进而能够就药物选择及用药方案方面提供建议。同时，诺亚肿瘤分级诊断专家还能够链接
+            至经业界权威评审的研究以及临床指南。其机器学习能力也意味着它可以随着时间的推移而不断地学习。</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div id="partner" class="container text-center">
+  <h3>合作伙伴</h3>
+  <div class="logos center">
+    <img src="{% static 'images/chinese1-logo.gif' %}" alt="chinese1-logo">
+    <img src="{% static 'images/beijing-logo.jpg' %}" alt="chinese1-logo">
+    <img src="{% static 'images/wcmc-logo.jpg' %}" alt="wcmc-logo">
+    <img src="{% static 'images/gatech-logo.gif' %}" alt="gatech-logo">
+    <img src="{% static 'images/nyu-logo.png' %}" alt="nyu-logo">
+    <img src="{% static 'images/jackson-laboratory-logo.jpg' %}" alt="jackson-laboratory-logo">
+    <img src="{% static 'images/stanford-logo.jpg' %}" alt="stanford-logo">
+    <img src="{% static 'images/tsinghua-logo.png' %}" alt="tsinghua-logo">
+    <img src="{% static 'images/ch-logo.jpg' %}" alt="ch-logo">
+    <img src="{% static 'images/ums-logo.jpg' %}" alt="ums-logo">
+  </div>
+  <br>
+</div>
+
+<div id="contact" class="container text-center">
+  <h3>联系我们</h3>
+  <p>contact@genonova.com</p>
+  <br>
+</div>
+
+<footer class="text-center">
+  <a class="up-arrow" href="#myPage" data-toggle="tooltip" title="TO TOP">
+    <span class="glyphicon glyphicon-chevron-up"></span>
+  </a><br><br>
+  <p>诺亚科技 <a href="https://www.genonova.com" data-toggle="tooltip" title="Visit Genonova">www.genonova.com</a></p>
+</footer>
+
+<script>
+  $(document).ready(function(){
+    // Add smooth scrolling to all links in navbar + footer link
+    $(".navbar a, footer a[href='#myPage']").on('click', function(event) {
+
+    // Make sure this.hash has a value before overriding default behavior
+    if (this.hash !== "") {
+
+      // Prevent default anchor click behavior
+      event.preventDefault();
+
+      // Store hash
+      var hash = this.hash;
+
+      // Using jQuery's animate() method to add smooth page scroll
+      // The optional number (900) specifies the number of milliseconds it takes to scroll to the specified area
+      $('html, body').animate({
+        scrollTop: $(hash).offset().top
+      }, 900, function(){
+
+        // Add hash (#) to URL when done scrolling (default click behavior)
+        window.location.hash = hash;
+        });
+      } // End if
+    });
+  })
+
+  $(document).ready(()=>{
+    var iScrollPos = 0;
+    var carouselHeight = $('.carousel:first').height();
+    $(window).scroll(function () {
+        var iCurScrollPos = $(this).scrollTop();
+        if (iCurScrollPos > iScrollPos + 10) {
+            //Scrolling Down
+            $('.navbar-fixed-top:first').addClass('disappear');
+            $('.navbar-fixed-top:first').removeClass('appear');
+        }
+        else if(iCurScrollPos < iScrollPos - 10) {
+           //Scrolling Up
+            $('.navbar-fixed-top:first').removeClass('disappear');
+            $('.navbar-fixed-top:first').addClass('appear');
+        }
+        iScrollPos = iCurScrollPos;
+        if(iScrollPos > carouselHeight){
+          $('.navbar-fixed-top:first').css("background-color","#005e80");
+        }else{
+          $('.navbar-fixed-top:first').css("background","transparent");
+        }
+    });
+  });
+</script>
+
+<script>
+  $(document).ready(function(){
+      // Initialize Tooltip
+      $('[data-toggle="tooltip"]').tooltip();
+  })
+</script>
+
+
+
+</body>
+</html>

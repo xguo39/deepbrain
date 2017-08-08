@@ -1,5 +1,15 @@
+p{
+  text-decoration: none;
+}
+
 .container {
     padding: 40px 120px;
+}
+
+@media (max-width: 600px) {
+  .container{
+    padding: 40px 10px;
+  }
 }
 
 .person {
@@ -13,58 +23,121 @@
     border-color: #f1f1f1;
 }
 
+/* Define the caption of the carousel*/
+.carousel-inner{
+  /*min-height: 710px;*/
+  background-color: #ffffff;
+  filter: drop-shadow(0px 5px 8px #b3b3b3);
+}
+
 .carousel-inner img {
-    -webkit-filter: grayscale(90%);
-    filter: grayscale(90%); /* make all photos black and white */
+  /* make all photos black and white */
+    -webkit-filter: grayscale(20%);
+    filter: grayscale(0%) brightness(70%);
     width: 100%; /* Set width to 100% */
     margin: auto;
 }
 
 .carousel-caption {
     color: #fff !important;
+    top:33%;
 }
 
 .carousel-caption h3 {
+    /*margin-top: 100px;*/
     margin-bottom: 40px;
     font-size: 40px;
+    font-weight: normal;
 }
 
 .carousel-caption p {
-    margin-bottom: 250px;
+    /*margin-bottom: 250px;*/
     font-size: 25px;
+    font-weight: normal;
 }
 
-@media (max-width: 600px) {
+@media (max-width: 620px) {
+
     .carousel-caption {
-        display: none; /* Hide the carousel text when the screen is less than 600 pixels wide */
+        color: #fff !important;
+        top:20%;
     }
+
+    .carousel-caption h3{
+      font-size: 20px;
+      margin-bottom: 20px;
+    }
+
+    .carousel-caption p {
+        /*margin-bottom: 250px;*/
+        font-size: 12px;
+    }
+
+
 }
+
+
 
 /* Add a dark background color with a little bit see-through */
 .navbar {
-    margin-bottom: 0;
-    background-color: #2d2d30;
-    border: 0;
-    font-size: 15px !important;
-    letter-spacing: 4px;
-    opacity:0.9;
+  margin-bottom: 0;
+  /*background-color: #2d2d30;*/
+  background: transparent;
+  border: 0;
+  font-size: 15px !important;
+  letter-spacing: 4px;
+  opacity:0.9;
+  transition:0.3s;
+}
+
+.navbar.disappear{
+  transform: translateY(-100%);
+}
+
+.navbar.appear{
+  transform: translateY(0%);
+}
+
+.navbar-brand{
+  padding-left: 25px;
+}
+
+.navbar-brand img{
+  width: 13%;
+  height:auto;
+  display: inline;
 }
 
 /* Add a gray color to all navbar links */
 .navbar li a, .navbar .navbar-brand {
-    color: #d5d5d5 !important;
+  color: #ffffff !important;
 }
 
 /* On hover, the links will turn white */
-.navbar-nav li a:hover {
-    color: #fff !important;
+.navbar-nav li span:hover {
+  color: #fff !important;
+  padding-bottom: 5px;
+  border-bottom: 3px solid white !important;
 }
 
 /* The active link */
-.navbar-nav li.active a {
-    color: #fff !important;
-    background-color:#29292c !important;
+.navbar-nav li.active span {
+  color: #fff !important;
+  /*background-color:#29292c !important;*/
+  padding-bottom: 5px;
+  border-bottom: 3px solid white !important;
 }
+
+.navbar-default .active a{
+  background: transparent !important;
+}
+
+.navbar-nav ul li a.active-page
+{
+  background-color:blue;
+}
+
+
 
 /* Remove border color from the collapsible button */
 .navbar-default .navbar-toggle {
@@ -87,16 +160,70 @@
     background-color: gray !important;
 }
 
+/* The products section is a little bit wider*/
+.pds{
+  /*width: 50px;*/
+  /*border: 1px solid black;*/
+  padding: 60px 80px 380px 80px;
+  margin-top:50px;
+}
+
+.pds h3{
+  margin-top: -10px;
+  margin-bottom: 50px;
+  font-weight: normal;
+}
+
+.pds a{
+  height: 280px;
+  color: black;
+}
+
+.pds a:hover{
+  background: radial-gradient(farthest-corner at 0% -225%, #004d66 0%, #4dd2ff 100%);
+  box-shadow: 0 2px 6px 0 rgba(18,46,63,0.50);
+  color: #fff !important;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.pds a:focus{
+  text-decoration: none;
+}
+
+
+.pds a div{
+  min-height: 200px;
+}
+
+.pds a img{
+  padding-top: 20px;
+  padding-bottom: 20px;
+  width: 35%;
+}
+
+.pds a p{
+  margin-bottom: 20px;
+  font-size: 20px;
+}
+
+.pd-small img{
+  padding-top: 50px !important;
+}
+
 /* Black buttons with extra padding and without rounded borders */
 .btn {
-    padding: 10px 20px;
+    padding: 10px 10px;
     background-color: #333;
     color: #f1f1f1 !important;
     border-radius: 0;
     transition: .2s;
-    width: 500px;
-    height: 60px;
     font-size: 20px;
+}
+
+.btn1{
+  height: 250px;
+  width:250px;
 }
 
 /* On hover, the color of .btn will transition to white with black text */
@@ -106,6 +233,139 @@
     color: #000 !important;
 }
 
+/* The introduction section area*/
+.company-intro{
+  /*border: 1px solid blue;*/
+  z-index: 0;
+}
+
+.company-intro div {
+  position: relative;
+  /*border: 1px solid red;*/
+  width: 90%;
+  margin: 0 auto;
+  background-color: white;
+  margin-top: -350px;
+  padding-top: 50px;
+  padding-bottom: 60px;
+  z-index: 10;
+  /* Mask: */
+  box-shadow: 0 12px 42px 12px rgba(0,0,0,0.08);
+}
+
+.company-intro img {
+  width: 15%;
+  margin: 20px 0px;
+}
+
+.company-intro h3{
+  margin-bottom: 40px;
+  color: #727272;
+}
+
+.company-intro ul li{
+  margin: 20px auto;
+  line-height: 200%;
+  width: 70%;
+  text-align: left;
+  list-style-type: disc;
+}
+
+.company-intro span{
+  color: #727272;
+  font-size: 13px;
+}
+
+/* Define the product introduction area*/
+.pd-intro{
+   border: 1px solid green;
+   padding-top: 250px;
+   margin-top: -250px;
+   z-index: 5;
+   background-image: linear-gradient(131deg, #3DBDB6 0%, #0089CE 100%);
+   /*color: white;*/
+}
+
+.pd-intro h3{
+  font-weight: normal;
+  margin-bottom: 25px;
+}
+
+.pd-intro .sub-container{
+  position: relative;
+  width: 80%;
+  margin: 0 auto;
+  color:white;
+}
+
+.pd-intro .nav{
+  display: flex;
+  flex-direction: row;
+  justify-content:space-between;
+}
+
+.pd-intro .nav li{
+  flex-basis: 0;
+  flex-grow: 1;
+}
+
+.pd-intro .nav a{
+  /*margin: 10px auto;*/
+  text-align: center;
+  margin-right: 0px;
+  padding-left: 20px;
+  padding-right:20px;
+  /*width: 180px;*/
+}
+
+.pd-intro p {
+  text-align: left;
+  margin: 0px;
+  line-height: 200%;
+}
+
+.pd-intro .nav{
+  border: 0px;
+  list-style-type: none;
+}
+
+.pd-intro .nav li a{
+  border-radius: 0px;
+  color:white;
+}
+
+.pd-intro .nav li a:hover{
+  background: transparent;
+  cursor: pointer;
+}
+
+.pd-intro .nav li.active a{
+  position: relative;
+  color:white;
+  opacity:1;
+  background:rgba(105,241,255,.4);
+  border: 0px solid #ddd;
+  padding-left: 25px;
+  padding-right:25px;
+  z-index: 10;
+}
+
+.pd-intro .tab-content ul li {
+    list-style-type: disc;
+    text-align: left;
+    line-height: 150%;
+    margin: 10px;
+    /*padding-left: 35px;
+    padding-right: 40px;*/
+}
+
+
+.pd-intro .tab-content{
+  margin: 30px auto;
+}
+
+
+/* Define the partners logo pattern*/
 .logos {
     padding: 20px;
     padding-top: 0px;
@@ -116,53 +376,9 @@
     width: 170px;
 }
 
-#introduction p {
-    text-align: left;
-    margin: 0px;
-    line-height: 200%;
-}
-
-#introduction ul li {
-    list-style-type: disc;
-    text-align: left;
-    line-height: 200%;
-    margin: 10px;
-    color: #000;
-}
-
-#introduction ul li span {
-    /* Text color */
-    color: black;
-    font-size: 15px;
-}
-
-#product img {
-    -webkit-filter: grayscale(100%);
-    filter: grayscale(100%); /* make all photos black and white */
-    width: 90%; /* Set width to 100% */
-    margin: auto;
-}
-
-#product ul li {
-    list-style-type: disc;
-    text-align: left;
-    line-height: 150%;
-    margin: 10px;
-    color: #000;
-}
-
-#product p {
-    text-align: left;
-    margin: 0px;
-    line-height: 200%;
-}
-
-.nav-tabs li a {
-    color: #777;
-}
 
 footer {
-    background-color: #2d2d30;
+    background-color: #005e80;
     color: #f5f5f5;
     padding: 32px;
 }

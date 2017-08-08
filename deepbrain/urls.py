@@ -17,7 +17,10 @@ from django.conf.urls import include, url
 from django.contrib import admin
 from django.contrib.auth import views as auth_views
 from deepb.forms import LoginForm
-
+from django.conf import settings
+from django.conf.urls.static import static
+from django.contrib.staticfiles.views import serve
+from django.views.decorators.cache import never_cache
 
 urlpatterns = [
     url(r'', include('deepb.urls')), 
@@ -30,7 +33,7 @@ urlpatterns = [
     url(r'^password/done/$', auth_views.password_reset_complete, {'template_name': 'password_reset_complete.html'}, name='password_reset_complete'),
     url(r'^password/change/$', auth_views.password_change, {'template_name': 'password_change_form.html'}, name='password_change'),
     url(r'^password/change/done/$', auth_views.password_change_done, {'template_name': 'password_change_done.html'}, name='password_change_done'),
-]
+]+ static(settings.STATIC_URL, view=never_cache(serve))
 
 
 
