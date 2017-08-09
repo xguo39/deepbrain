@@ -20,6 +20,15 @@ import pandas as pd
 from deepb.map_chpo import map_chpo
 from lof import check_lof
 
+from rest_framework.response import Response
+from rest_framework.permissions import IsAdminUser
+from rest_framework.views import APIView
+from rest_framework.decorators import permission_classes
+from rest_framework import status, generics
+from deepb.serializers import New_task_Serializer
+from deepb.serializers import Progress_task_Serializer
+from deepb.serializers import All_task_Serializer
+from deepb.serializers import Case_result_Serializer
 
 
 
@@ -307,3 +316,32 @@ def lof(request):
         'status': status,
         'lof_result': lof_result,
         })
+
+class new_task(APIView):
+
+    @permission_classes((IsAdminUser,))
+    def post(self, request, format=None):
+        user = request.user
+        serializer = New_task_Serializer(data=request.data, context={'user':user})
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class progress_task_list(APIView):
+
+    def get(self, request, format=None):
+        post = Raw_input_table.objects.filter(user_name=request.user.username)
+        serializer = Progress_task_Serializer(post, many=True)
+        return Response(serializer.data)
+
+class all_task_list(APIView):
+
+    def get(self, request, format=None):
+        post = Raw_input_table.objects.filter(user_name=request.user.username)
+        serializer = All_task_Serializer(post, many=True)
+        return Response(serializer.data)
+
+class case_result(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Main_table.objects.all()
+    serializer_class = Case_result_Serializer

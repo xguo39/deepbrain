@@ -278,7 +278,6 @@ p{
 
 /* Define the product introduction area*/
 .pd-intro{
-   border: 1px solid green;
    padding-top: 250px;
    margin-top: -250px;
    z-index: 5;

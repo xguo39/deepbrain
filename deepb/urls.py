@@ -1,4 +1,5 @@
 from django.conf.urls import url
+from rest_framework.urlpatterns import format_suffix_patterns
 from . import views
 
 app_name = 'deepb'
@@ -17,7 +18,11 @@ urlpatterns = [
     url(r'^(?P<pk>[0-9]+)/result/interpretation/ch$', views.interpretation_ch, name='interpretation_ch'),
     url(r'^hpo$', views.chpo, name='chpo'),
     url(r'^lof$', views.lof, name='lof'),
-    # url(r'^waiting/(?P<task_id>[0-9]+)/$', views.waiting_task, name='waiting'),
-    # url(r'^(?P<pk>[0-9]+)/results/$', views.ResultsView.as_view(), name='results'),
-    # url(r'^(?P<question_id>[0-9]+)/vote/$', views.vote, name='vote'),
+    url(r'^api/task/new_task/$', views.new_task.as_view()),
+    url(r'^api/task/progress_task_list/$', views.progress_task_list.as_view()),
+    url(r'^api/task/all_task_list/$', views.all_task_list.as_view()),
+    url(r'^api/task/(?P<pk>[0-9]+)/$', views.case_result.as_view()),
 ]
+
+
+urlpatterns = format_suffix_patterns(urlpatterns)
