@@ -141,8 +141,14 @@ def findLowestCommonAncestor(node1, node2, tree):
     common_ancestors = [] 
     for ancestor in node2_ancestors:
         if ancestor in node1_ancestors:
-            name = hpo_name[ancestor]
-            level = hpo_levels[ancestor]
+            try:
+                name = hpo_name[ancestor]
+            except KeyError:
+                continue
+            try:
+                level = hpo_levels[ancestor]
+            except KeyError:
+                continue
             common_ancestors.append((ancestor, level, name)) 
     lca = common_ancestors[0]
     return lca, common_ancestors

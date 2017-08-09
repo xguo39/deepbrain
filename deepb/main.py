@@ -377,9 +377,9 @@ def master_function(raw_input_id):
     # Read input gene file and generate candidate_vars. candidate_vars are
     # (gene, variant, transcript, variant_id, zygosity); CANDIDATE_GENES is a list of gene symbols; df_genes is a dataframe that keeps all the data that user uploaded; field_names are header of the input gene file 
     candidate_vars, CANDIDATE_GENES, df_genes, field_names, gene_zygosity = read_input_gene_file(input_gene, parent_ngs, father_vcf, mother_vcf)
-    print 'candidate_vars is: ', candidate_vars
-    print 'CANDIDATE_GENES is: ', CANDIDATE_GENES
-    print 'gene_zygosity is: ', gene_zygosity 
+    #print 'candidate_vars is: ', candidate_vars
+    #print 'CANDIDATE_GENES is: ', CANDIDATE_GENES
+    #print 'gene_zygosity is: ', gene_zygosity 
     # gene associated phenos just in case no input phenotypes
     gene_associated_phenos = dict()
     # if the input file is vcf
@@ -390,12 +390,13 @@ def master_function(raw_input_id):
         # candidate_vars from vcf file was updated, because gene, variant, transcript were empty
         final_res, variants, candidate_vars = collectVariantInfo.get_variants_from_vcf(candidate_vars, gene_zygosity)
         CANDIDATE_GENES = [_[0] for _ in final_res]
-        print 'After CANDIDATE_GENES is: ', CANDIDATE_GENES
+        #print 'After CANDIDATE_GENES is: ', CANDIDATE_GENES
         # map phenotype to gene; the candidate_vars was filtered: if it is a gene associated with phenos, then keep it.
         if phenos:
             raw_input.status = "Mapping phenotypes to genes"
             raw_input.save()
             ranking_genes, candidate_vars, df_gene_associated_phenos, gene_associated_phenos, gene_associated_pheno_hpoids = map_phenotype2gene(CANDIDATE_GENES, phenos, corner_cases, candidate_vars, original_phenos)
+            #print 'gene_associated_phenos is: ', gene_associated_phenos
         else:
             ranking_genes = []
             for key in variants.keys():
@@ -423,8 +424,8 @@ def master_function(raw_input_id):
         raw_input.save()
         final_res, variants = collectVariantInfo.get_variants(candidate_vars)
 
-    print 'final_res is: ', final_res
-    print 'variants is: ', variants
+    #print 'final_res is: ', final_res
+    #print 'variants is: ', variants
 
     if final_res == [] and variants == defaultdict(dict):
         return pd.DataFrame(), df_genes, phenos, field_names, pd.DataFrame(), pd.DataFrame(), pd.DataFrame()

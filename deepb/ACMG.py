@@ -1045,11 +1045,11 @@ def check_PP4(variant_, gene_associated_phenos):
         interpret.append(('PP4', 'No phenotypes are provided. PP4 is not met.'))
         interpret_chinese.append(('PP4', '未提供表型信息. 不满足PP4标准.'))
         return PP4
-    matched_phenos = gene_associated_phenos[gene]
-    if not matched_phenos:
+    if gene not in gene_associated_phenos or not gene_associated_phenos[gene]:
         interpret.append(('PP4', 'No phenotypes are associated. PP4 is not met.'))
         interpret_chinese.append(('PP4', '病人无与此基因相关的表型. 不满足PP4标准.'))
     else:
+        matched_phenos = gene_associated_phenos[gene]
         if gene in top_ranked_genes:
             PP4 = 1
             interpret.append(('PP4', "The following phenotypes are associated: %s. And the gene is among the top ranked genes that associate with patient's phenotypes. PP4 is met." % matched_phenos))     
@@ -1367,7 +1367,7 @@ def getDiseasePenetrance():
     complete_penetrance_gr_shortnames, incomplete_penetrance_gr_shortnames = pickle.load(infile)
     infile.close()
 
-def adjustPM3andBP2(variants, variant_ACMG_result, variant_ACMG_weighted_score, variant_ACMG_hit_criteria, variant_ACMG_score):
+def adjustPM3andBP2(variants, variant_ACMG_result, variant_ACMG_weighted_score, variant_ACMG_hit_criteria, variant_ACMG_score, variant_ACMG_interpret, variant_ACMG_interpret_chinese):
     '''
     For recessive disorders, detected in trans with a pathogenic variant
     Observed in trans with a pathogenic variant for a fully penetrant dominant gene/disorder or observed 
@@ -1429,19 +1429,25 @@ def adjustPM3andBP2(variants, variant_ACMG_result, variant_ACMG_weighted_score, 
                         variants_need_to_be_adjusted.append(key2)
 
     for key in variants_need_to_be_adjusted:
-        interpret, interpret_chinese = '', ''
+        curr_interpret, curr_interpret_chinese = [], []
         PM3, BP2 = variant_ACMG_score[key][7], variant_ACMG_score[key][22] 
     	classification_result, ACMG_weighted_score, hit_criteria = classify(variant_ACMG_score[key]) 
     	variant_ACMG_result[key] = classification_result
     	variant_ACMG_weighted_score[key] = ACMG_weighted_score 
     	variant_ACMG_hit_criteria[key] = hit_criteria
         if PM3 > 0:
-            interpret = 'For recessive disorders, detected in trans with a pathogenic variant. PM3 is met.'
+            curr_interpret.append('For recessive disorders, detected in trans with a pathogenic variant. PM3 is met.')
+            curr_interpret_chinese.append('For recessive disorders, detected in trans with a pathogenic variant. PM3 is met.')
         if BP2 > 0:
-            interpret = 'Observed in trans with a pathogenic variant for a fully penetrant dominant gene/disorder or observed in cis with a pathogenic variant in any inheritance pattern. BP2 is met.'
-    	variant_ACMG_interpret[key] = interpret 
-    	variant_ACMG_interpret_chinese[key] = interpret_chinese 
-    return variant_ACMG_score, variant_ACMG_result, variant_ACMG_weighted_score, variant_ACMG_hit_criteria
+            curr_interpret.append('Observed in trans with a pathogenic variant for a fully penetrant dominant gene/disorder or observed in cis with a pathogenic variant in any inheritance pattern. BP2 is met.')
+            curr_interpret_chinese.append('Observed in trans with a pathogenic variant for a fully penetrant dominant gene/disorder or observed in cis with a pathogenic variant in any inheritance pattern. BP2 is met.')
+        curr_interpret = ' '.join(curr_interpret)
+        curr_interpret_chinese = ' '.join(curr_interpret_chinese)
+        interpret.append(('PM3 and BP2', curr_interpret))
+        interpret_chinese.append(('PM3 and BP2', curr_interpret_chinese))
+    	variant_ACMG_interpret[key].append(('PM3 and BP2', curr_interpret))
+    	variant_ACMG_interpret_chinese[key].append(('PM3 and BP2', curr_interpret_chinese))
+    return variant_ACMG_score, variant_ACMG_result, variant_ACMG_weighted_score, variant_ACMG_hit_criteria, variant_ACMG_interpret, variant_ACMG_interpret_chinese
 
 
 def Get_ACMG_result(df_hpo_ranking_genes, variants, df_pubmed, parent_ngs, parent_affects, gene_associated_phenos):
@@ -1502,7 +1508,7 @@ def Get_ACMG_result(df_hpo_ranking_genes, variants, df_pubmed, parent_ngs, paren
 
     for key in variants.keys():
         variant_ = variants[key]
-        print variant_
+        #print variant_
         gene_0, variant_0, protein_0, id_0, rsid_0, transcript_0, effect_0, exon_0, interpro_domain_0, ref_0, alt_0, maf_exac_0, maf_1000g_0, maf_esp6500_0, dann_0, fathmm_0, metasvm_0, gerp_0, dbscSNV_rf_0, dbscSNV_ada_0, clinvar_pathogenicity_0, clinvar_pmids_0, clinvar_variation_ids_0, clinvar_review_status_0, zygosity_0, clinvar_diseases_0 = variant_['gene'], variant_['variant'], variant_['protein'], variant_['id'], variant_['rsid'], variant_['transcript'], variant_['effect'], variant_['exon'], variant_['interpro_domain'], variant_['ref'], variant_['alt'], variant_['maf_exac'], variant_['maf_1000g'], variant_['maf_esp6500'], variant_['dann'], variant_['fathmm'], variant_['metasvm'], variant_['gerp++'], variant_['dbscSNV_rf_score'], variant_['dbscSNV_ada_score'], variant_['clinvar_pathogenicity'], variant_['clinvar_pmids'], variant_['clinvar_variation_ids'], variant_['clinvar_review_status'], variant_['zygosity'], variant_['clinvar_associated_diseases']  
         
         clinvar_pmids_0_ = ["<a href='https://www.ncbi.nlm.nih.gov/pubmed/%s'> %s </a>" %(i,i) for i in clinvar_pmids_0]
@@ -1537,16 +1543,16 @@ def Get_ACMG_result(df_hpo_ranking_genes, variants, df_pubmed, parent_ngs, paren
                     hgvs_id = hgvs_id.replace('T', '-T') 
                     hgvs_id = hgvs_id.replace('C', '-C') 
                     hgvs_id = hgvs_id.replace('G', '-G') 
-                    print id_0, hgvs_id
+                    #print id_0, hgvs_id
                     curr_interpret.append("ExAC MAF: %s (<a href='http://exac.broadinstitute.org/variant/%s'> %s </a>)"  % (maf_exac_0, hgvs_id, hgvs_id)) 
                     curr_interpret_chinese.append("ExAC 最小等位基因频率(MAF): %s (<a href='http://exac.broadinstitute.org/variant/%s'> %s </a>)"  % (maf_exac_0, hgvs_id, hgvs_id)) 
                 else:
                     curr_interpret.append('ExAC MAF: %s.' % maf_exac_0) 
                     curr_interpret_chinese.append('ExAC 最小等位基因频率(MAF): %s.' % maf_exac_0) 
                 exac_details = variant_['exac_details']
-                curr_interpret.append('ExAC MAF: Total Allele Count (%s), Total Allele Number (%s), Allele Frequency for all races (%s), African Allele Count (%s), African Allele Number (%s), African Allele Frequency (%s), Latino Allele Count (%s), Latino  Allele Number (%s), Latino Allele Frequency (%s), East Asian Allele Count (%s), East Asian Allele Number (%s), East Asian Allele Frequency (%s), European (Finnish) Allele Count (%s), European (Finnish) Allele Number (%s), European (Finnish) Allele Frequency (%s), European (Non-Finnish) Allele Count (%s), European (Non-Finnish) Allele Number (%s), European (Non-Finnish) Allele Frequency (%s), Other Allele Count (%s), Other Allele Number (%s), Other Allele Frequency (%s), South Asian Allele Count (%s), South Asian Allele Number (%s), South Asian Allele Frequency (%s), Number of homozygotes (%s), Homozygotes percentage (%s)' % (exac_details[0], exac_details[1], exac_details[2], exac_details[3], exac_details[4], exac_details[5], exac_details[6], exac_details[7], exac_details[8], exac_details[9], exac_details[10], exac_details[11], exac_details[12], exac_details[13], exac_details[14], exac_details[15], exac_details[16], exac_details[17], exac_details[18], exac_details[19], exac_details[20], exac_details[21], exac_details[22], exac_details[23], exac_details[24], exac_details[25]))
+                curr_interpret.append('ExAC MAF: Total Allele Count (%s), Total Allele Number (%s), Allele Frequency for all races (%s), Number of Homozygotes (%s), Homozygotes Percentage (%s), African Allele Count (%s), African Allele Number (%s), African Allele Frequency (%s), Latino Allele Count (%s), Latino  Allele Number (%s), Latino Allele Frequency (%s), East Asian Allele Count (%s), East Asian Allele Number (%s), East Asian Allele Frequency (%s), European (Finnish) Allele Count (%s), European (Finnish) Allele Number (%s), European (Finnish) Allele Frequency (%s), European (Non-Finnish) Allele Count (%s), European (Non-Finnish) Allele Number (%s), European (Non-Finnish) Allele Frequency (%s), Other Allele Count (%s), Other Allele Number (%s), Other Allele Frequency (%s), South Asian Allele Count (%s), South Asian Allele Number (%s), South Asian Allele Frequency (%s)' % (exac_details[0], exac_details[1], exac_details[2], exac_details[24], exac_details[25], exac_details[3], exac_details[4], exac_details[5], exac_details[6], exac_details[7], exac_details[8], exac_details[9], exac_details[10], exac_details[11], exac_details[12], exac_details[13], exac_details[14], exac_details[15], exac_details[16], exac_details[17], exac_details[18], exac_details[19], exac_details[20], exac_details[21], exac_details[22], exac_details[23]))
 
-                curr_interpret_chinese.append('ExAC 最小等位基因频率(MAF)详细数据: Total Allele Count (%s), Total Allele Number (%s), Allele Frequency for all races (%s), African Allele Count (%s), African Allele Number (%s), African Allele Frequency (%s), Latino Allele Count (%s), Latino  Allele Number (%s), Latino Allele Frequency (%s), East Asian Allele Count (%s), East Asian Allele Number (%s), East Asian Allele Frequency (%s), European (Finnish) Allele Count (%s), European (Finnish) Allele Number (%s), European (Finnish) Allele Frequency (%s), European (Non-Finnish) Allele Count (%s), European (Non-Finnish) Allele Number (%s), European (Non-Finnish) Allele Frequency (%s), Other Allele Count (%s), Other Allele Number (%s), Other Allele Frequency (%s), South Asian Allele Count (%s), South Asian Allele Number (%s), South Asian Allele Frequency (%s), Number of homozygotes (%s), Homozygotes percentage (%s)' % (exac_details[0], exac_details[1], exac_details[2], exac_details[3], exac_details[4], exac_details[5], exac_details[6], exac_details[7], exac_details[8], exac_details[9], exac_details[10], exac_details[11], exac_details[12], exac_details[13], exac_details[14], exac_details[15], exac_details[16], exac_details[17], exac_details[18], exac_details[19], exac_details[20], exac_details[21], exac_details[22], exac_details[23], exac_details[24], exac_details[25]))
+                curr_interpret_chinese.append('ExAC 最小等位基因频率(MAF)详细数据: Total Allele Count (%s), Total Allele Number (%s), Allele Frequency for all races (%s), Number of Homozygotes (%s), Homozygotes Percentage (%s), African Allele Count (%s), African Allele Number (%s), African Allele Frequency (%s), Latino Allele Count (%s), Latino  Allele Number (%s), Latino Allele Frequency (%s), East Asian Allele Count (%s), East Asian Allele Number (%s), East Asian Allele Frequency (%s), European (Finnish) Allele Count (%s), European (Finnish) Allele Number (%s), European (Finnish) Allele Frequency (%s), European (Non-Finnish) Allele Count (%s), European (Non-Finnish) Allele Number (%s), European (Non-Finnish) Allele Frequency (%s), Other Allele Count (%s), Other Allele Number (%s), Other Allele Frequency (%s), South Asian Allele Count (%s), South Asian Allele Number (%s), South Asian Allele Frequency (%s)' % (exac_details[0], exac_details[1], exac_details[2], exac_details[24], exac_details[25], exac_details[3], exac_details[4], exac_details[5], exac_details[6], exac_details[7], exac_details[8], exac_details[9], exac_details[10], exac_details[11], exac_details[12], exac_details[13], exac_details[14], exac_details[15], exac_details[16], exac_details[17], exac_details[18], exac_details[19], exac_details[20], exac_details[21], exac_details[22], exac_details[23]))
 
     	if maf_1000g_0: 
                 curr_interpret.append('1000Genomes MAF: %s.' % maf_1000g_0) 
@@ -1647,7 +1653,7 @@ def Get_ACMG_result(df_hpo_ranking_genes, variants, df_pubmed, parent_ngs, paren
     	variant_ACMG_interpret[key] = interpret 
     	variant_ACMG_interpret_chinese[key] = interpret_chinese 
 
-    variant_ACMG_score, variant_ACMG_result, variant_ACMG_weighted_score, variant_ACMG_hit_criteria = adjustPM3andBP2(variants, variant_ACMG_result, variant_ACMG_weighted_score, variant_ACMG_hit_criteria, variant_ACMG_score)
+    variant_ACMG_score, variant_ACMG_result, variant_ACMG_weighted_score, variant_ACMG_hit_criteria, variant_ACMG_interpret, variant_ACMG_interpret_chinese = adjustPM3andBP2(variants, variant_ACMG_result, variant_ACMG_weighted_score, variant_ACMG_hit_criteria, variant_ACMG_score, variant_ACMG_interpret, variant_ACMG_interpret_chinese)
 
     final_result = []
     for key in variant_ACMG_weighted_score:

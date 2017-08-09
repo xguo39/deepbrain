@@ -845,12 +845,12 @@ def get_variants(candidate_vars):
     if key in clinvar_diseases:
       variants[key]['clinvar_associated_diseases'] = clinvar_diseases[key]
 
-  print variants
+  #print variants
   # pickle.dump(variants, open('result/variants.p', 'wb'))
 
   final_res = []
   for key in variants:
-    print key
+    #print key
     v = variants[key]
     # final_res.append([v['gene'], v['variant'], v['protein'], v['id'], v['rsid'], v['transcript'], v['effect'], v['exon'], v['interpro_domain'], v['ref'], v['alt'], v['maf_exac'], v['maf_1000g'], v['maf_esp6500'], v['dann'], v['fathmm'], v['metasvm'], v['gerp++'], v['dbscSNV_rf_score'], v['dbscSNV_ada_score'], v['clinvar_pathogenicity']])
     final_res.append((v['gene'], v['variant'], v['protein']))
