@@ -359,7 +359,6 @@ def getIncidentalFindings(df_final_res):
     return incidental_findings_genes, incidental_findings_gene_phenos
 
 def master_function(raw_input_id):
-<<<<<<< HEAD
     status_step = "generating candidate variants ..." 
     raw_input = Raw_input_table.objects.get(id=raw_input_id)
     input_gene = raw_input.raw_input_gene
@@ -480,7 +479,6 @@ def master_function(raw_input_id):
             if incidental_finding_report:
                 incidental_findings_genes, incidental_finding_gene_phenos = getIncidentalFindings(ACMG_result)
             return ACMG_result, df_genes, phenos, field_names, df_variant_ACMG_interpret, df_variant_ACMG_interpret_chinese, df_ranking_genes
-=======
 	status_step = "generating candidate variants ..." 
 	raw_input = Raw_input_table.objects.get(id=raw_input_id)
 	input_gene = raw_input.raw_input_gene
@@ -592,5 +590,4 @@ def master_function(raw_input_id):
 			ACMG_result = pd.merge(ACMG_result, df_ranking_genes, how='left', left_on=['gene','variant'], right_on=['gene','variant'])
 			# print 'ACMG_result_merge', ACMG_result.shape
 			return ACMG_result, df_genes, phenos, field_names, df_variant_ACMG_interpret, df_variant_ACMG_interpret_chinese, df_ranking_genes
->>>>>>> d8de006d0893ed1441e3845dd5c7e209a2ba2313
 
