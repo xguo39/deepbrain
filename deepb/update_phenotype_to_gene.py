@@ -71,7 +71,7 @@ def rankGenePhenoByInheritancePattern(ranking_genes, gene_zygosity, candidate_va
     gene2variants = dict()
     variantid2genevariant = dict()
     for var in candidate_vars:
-        gene, variant, transcript, variant_id = var
+        gene, variant, transcript, variant_id, zygosity = var
         if gene not in gene2variants:
             gene2variants[gene] = [variant]
         else:
@@ -97,8 +97,7 @@ def rankGenePhenoByInheritancePattern(ranking_genes, gene_zygosity, candidate_va
 	    if gene_is_dominant and not gene_is_recessive:
 		if re.match(r'de ', zygosity, re.I): inheritance_pattern_score = 0.5 
 		if re.match(r'hem', zygosity, re.I): inheritance_pattern_score = 0.25 
-		if re.match(r'hom|comp', zygosity, re.I): inheritance_pattern_score = 0.1 
-		if re.match(r'het', zygosity, re.I): inheritance_pattern_score = 0.0
+		if re.match(r'hom|comp|het', zygosity, re.I): inheritance_pattern_score = 0.0
 	    elif not gene_is_dominant and gene_is_recessive:
 		if re.match(r'hom|comp', zygosity, re.I): inheritance_pattern_score = 0.5 
 		if re.match(r'de |hem', zygosity, re.I): inheritance_pattern_score = 0.25 

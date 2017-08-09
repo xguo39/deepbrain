@@ -22,9 +22,9 @@ def getTopVariantsFromACMGRankings(ACMG_result):
     variantsdata= dict()
     top_variants = []
     for index, row in ACMG_result.iterrows():
-        gene, variant, id, final_score, pathogenicity_score, pathogenicity, hit_criteria, hpo_hit_score = row['gene'], row['variant'], row['id'], row['final_score'], row['pathogenicity_score'], row['pathogenicity'], row['hit_criteria'], row['hpo_hit_score']
+        gene, transcript, variant, id, final_score, pathogenicity_score, pathogenicity, hit_criteria, hpo_hit_score = row['gene'], row['transcript'], row['variant'], row['id'], row['final_score'], row['pathogenicity_score'], row['pathogenicity'], row['hit_criteria'], row['hpo_hit_score']
         top_variants.append((gene, variant))
-        variantsdata[(gene, variant)] = [id, final_score, pathogenicity_score, pathogenicity, hit_criteria, hpo_hit_score]
+        variantsdata[(gene, variant)] = [transcript, id, final_score, pathogenicity_score, pathogenicity, hit_criteria, hpo_hit_score]
 
     return top_variants, variantsdata
 
@@ -513,11 +513,11 @@ def generateOutput(variants, ACMG_result, patient_phenotypes, variant_ACMG_inter
     final_res = []
     for key in variantsdata:
         gene, variant, protein = key
-        id, final_score, pathogenicity_score, pathogenicity, hit_criteria, hpo_hit_score = variantsdata[key]
+        transcript, id, final_score, pathogenicity_score, pathogenicity, hit_criteria, hpo_hit_score = variantsdata[key]
         pheno_match_score = scores[key] if key in scores else 1.0
         final_score = float(final_score) * pheno_match_score
-        final_res.append([gene, variant, protein, id, final_score, pathogenicity, hit_criteria, pathogenicity_score, hpo_hit_score, pheno_match_score])	
-    df_final_res = pd.DataFrame(final_res, columns = ['gene', 'variant', 'protein', 'id', 'final_score', 'pathogenicity', 'hit_criteria', 'pathogenicity_score', 'hpo_hit_score', 'pheno_match_score'])
+        final_res.append([gene, transcript, variant, protein, id, final_score, pathogenicity, hit_criteria, pathogenicity_score, hpo_hit_score, pheno_match_score])	
+    df_final_res = pd.DataFrame(final_res, columns = ['gene', 'transcript', 'variant', 'protein', 'id', 'final_score', 'pathogenicity', 'hit_criteria', 'pathogenicity_score', 'hpo_hit_score', 'pheno_match_score'])
     df_final_res['pheno_match_score'] = df_final_res['pheno_match_score']*df_final_res['hpo_hit_score']
     # df_final_res['pheno_match_score'] = df_final_res['hpo_hit_score']
     df_final_res['final_score'] = df_final_res['final_score'].apply(lambda x: round(x,2))
