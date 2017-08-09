@@ -860,7 +860,7 @@ def get_variants(candidate_vars):
   return final_res, variants
 
 
-def get_variants_from_vcf(candidate_vars):
+def get_variants_from_vcf(candidate_vars, variantid_zygosity):
   # if the input file is VCF, then candidate_vars do not contain gene symbol information; they only have variant ids; need to query gene, variant, transcript information from myvariant
   mv = myvariant.MyVariantInfo()
 
@@ -869,7 +869,6 @@ def get_variants_from_vcf(candidate_vars):
 
   # The dbscsnv (splicing effect prediction) can not be obtained from myvariant; instead, we have local flat dbscsnv files
   dbscsnv_chromosomes, dbscsnv_variants = [], {}
-
   tmp_candidate_vars = []
   for var in candidate_vars:
     variant_ids.append(var[3])
@@ -912,7 +911,7 @@ def get_variants_from_vcf(candidate_vars):
     except KeyError:
       continue
     gene, variant, protein, transcript, effect = collectSnpeffWithGeneVariantInfo()
-    zygosity = variantid_zygosit[variant_id]
+    zygosity = variantid_zygosity[variant_id]
     if not gene:
       continue
     key = (gene, variant)

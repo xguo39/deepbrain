@@ -1040,12 +1040,13 @@ def check_PP4(variant_, gene_associated_phenos):
     '''
     curr_interpret, curr_interpret_chinese = [], []
     gene = variant_['gene']
-    matched_phenos = gene_associated_phenos[gene]
     PP4 = 0
     if not gene_associated_phenos:
         interpret.append(('PP4', 'No phenotypes are provided. PP4 is not met.'))
         interpret_chinese.append(('PP4', '未提供表型信息. 不满足PP4标准.'))
-    elif not matched_phenos:
+        return PP4
+    matched_phenos = gene_associated_phenos[gene]
+    if not matched_phenos:
         interpret.append(('PP4', 'No phenotypes are associated. PP4 is not met.'))
         interpret_chinese.append(('PP4', '病人无与此基因相关的表型. 不满足PP4标准.'))
     else:
