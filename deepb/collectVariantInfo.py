@@ -709,14 +709,17 @@ def get_variants(candidate_vars):
         variant_id = collectAll(gene, variant, transcript)
     variantid_zygosity[variant_id] = zygosity
     variants[key]['gene'], variants[key]['variant'], variants[key]['transcript'], variants[key]['id'], variants[key]['zygosity'] = gene, variant, transcript, variant_id, zygosity
-  
+    variants[key]['protein'] = '' 
+    variants[key]['exac_details'] = [] 
+
+    variants[key]['maf_exac'] = variants[key]['maf_1000g'] = variants[key]['maf_esp6500'] = variants[key]['dann'] = variants[key]['fathmm'] = variants[key]['metasvm'] = variants[key]['gerp++'] = variants[key]['exon'] = variants[key]['ref'] = variants[key]['alt'] = variants[key]['rsid'] = ''
+    variants[key]['interpro_domain'] = []
+    variants[key]['clinvar_pathogenicity'], variants[key]['clinvar_pmids'], variants[key]['clinvar_variation_ids'], variants[key]['clinvar_review_status'] = [], [], '', ''
+    variants[key]['clinvar_associated_diseases'] = ''
+    variants[key]['effect'], variants[key]['protein']  = '', ''
+
     # Only 'interpro_domain' is a list; all the other fields are strings 
     if not variant_id:
-      variants[key]['maf_exac'] = variants[key]['maf_1000g'] = variants[key]['maf_esp6500'] = variants[key]['dann'] = variants[key]['fathmm'] = variants[key]['metasvm'] = variants[key]['gerp++'] = variants[key]['exon'] = variants[key]['ref'] = variants[key]['alt'] = variants[key]['rsid'] = ''
-      variants[key]['interpro_domain'] = []
-      variants[key]['clinvar_pathogenicity'], variants[key]['clinvar_pmids'], variants[key]['clinvar_variation_ids'], variants[key]['clinvar_review_status'] = [], [], '', ''
-      variants[key]['clinvar_associated_diseases'] = ''
-      variants[key]['effect'], variants[key]['protein']  = '', ''
       continue
     variant_ids.append(variant_id)
     if variant_id in variant_id2key:
@@ -759,6 +762,7 @@ def get_variants(candidate_vars):
 
   for data in non_snpeff_var_data:
     non_snpeff = data
+    #print non_snpeff
     if "_id" not in non_snpeff:
       continue
     variant_id = non_snpeff['_id'] 
@@ -852,6 +856,7 @@ def get_variants(candidate_vars):
   for key in variants:
     #print key
     v = variants[key]
+    #print v
     # final_res.append([v['gene'], v['variant'], v['protein'], v['id'], v['rsid'], v['transcript'], v['effect'], v['exon'], v['interpro_domain'], v['ref'], v['alt'], v['maf_exac'], v['maf_1000g'], v['maf_esp6500'], v['dann'], v['fathmm'], v['metasvm'], v['gerp++'], v['dbscSNV_rf_score'], v['dbscSNV_ada_score'], v['clinvar_pathogenicity']])
     final_res.append((v['gene'], v['variant'], v['protein']))
   # df_final_res = pd.DataFrame(final_res, columns = ['gene', 'variant', 'protein', 'id', 'rsid', 'transcript', 'effect', 'exon', 'interpro_domain', 'ref', 'alt', 'maf_exac', 'maf_1000g', 'maf_esp6500', 'dann', 'fathmm', 'metasvm', 'gerp++', 'dbscSNV_rf_score', 'dbscSNV_ada_score', 'clinvar_pathogenicity']) 
