@@ -233,7 +233,14 @@ def read_input_gene_file(input_gene, parent_ngs, father_vcf, mother_vcf):
                 if not gene and not variant and not transcript and not variant_id:
                     continue
                 if mother_idx is not None and father_idx is not None:
-                    mother, father = parts[mother_idx], parts[father_idx]                   
+                    try:
+                        mother = parts[mother_idx]
+                    except IndexError:
+                        mother = ''
+                    try:
+                        father = parts[father_idx]
+                    except IndexError:
+                        father = ''
                     candidate_vars_zygosity.append((gene, variant, transcript, variant_id, ref, alt, mother, father))
                 candidate_vars.append((gene, variant, transcript, variant_id, zygosity))
         else:
@@ -278,6 +285,8 @@ def read_input_gene_file(input_gene, parent_ngs, father_vcf, mother_vcf):
                 gene, variant, transcript, variant_id, ref, alt, mother, father = item
                 if gene in comp_het_genes:
                     zygosity = 'comp het'
+                elif not mother and not father:
+                    zygosity = 'de novo'
                 elif not mother or not father:
                     zygosity = 'hem'
                 else:
@@ -449,13 +458,13 @@ def master_function(raw_input_id):
         # pubmed
         raw_input.status = "Searching biomedical literatures"
         raw_input.save()
-        df_pubmed = pubmed.queryPubmedDB(final_res)
+        df_pubmed, df_pubmed_genes_novariant = pubmed.queryPubmedDB(final_res)
 
         # ACMG
         raw_input.status = "Checking ACMG standard"
         raw_input.save()
 
-        ACMG_result, variant_ACMG_interpretation, variant_ACMG_interpret_chinese, df_variant_ACMG_interpret, df_variant_ACMG_interpret_chinese = ACMG.Get_ACMG_result(df_hpo_ranking_genes, variants, df_pubmed, parent_ngs, parent_affects, gene_associated_phenos)
+        ACMG_result, variant_ACMG_interpretation, variant_ACMG_interpret_chinese, df_variant_ACMG_interpret, df_variant_ACMG_interpret_chinese = ACMG.Get_ACMG_result(df_hpo_ranking_genes, variants, df_pubmed, parent_ngs, parent_affects, gene_associated_phenos, df_pubmed_genes_novariant)
         #print ACMG_result, variant_ACMG_interpretation, variant_ACMG_interpret_chinese, df_variant_ACMG_interpret, df_variant_ACMG_interpret_chinese
 
         # filter variant on phenotype
