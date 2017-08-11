@@ -1146,9 +1146,9 @@ def check_PP5_BP6(variant_):
     elif clinvar_pathogenicity_:
         curr_interpret.append('Clinvar (clinical testing records)  does NOT have a conclusion on this variant (Clinvar: %s).' % clinvar_variation_ids)
         curr_interpret_chinese.append('Clinvar数据库 (临床试验(clinical testing)记录) 中关于此基因变异的致病性没有确定的结论(Clinvar IDs: %s).' % clinvar_variation_ids)
-        #if clinvar_comments:
-        #    curr_interpret.append('Summary evidence: %s.' % clinvar_comments)
-        #    curr_interpret_chinese.append('简要证据: %s.' % clinvar_comments)
+        if clinvar_comments:
+            curr_interpret.append('Summary evidence: %s.' % clinvar_comments)
+            curr_interpret_chinese.append('简要证据: %s.' % clinvar_comments)
     else:
         curr_interpret.append('Clinvar (clinical testing records)  does NOT have records on this variant.')
         curr_interpret_chinese.append('未在Clinvar数据库 (临床试验(clinical testing)记录) 中发现关于此基因变异致病性的报道.')
