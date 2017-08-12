@@ -74,7 +74,8 @@ def check_PVS1(variant_):
     effect_in_null_variant_types = re.search('|'.join(null_variant_types), variant_effect, re.I)
     in_LOF_genes = True if gene in LOF_genes else False
     #not_affect_splicing = False if ((dbscSNV_rf_score and float(dbscSNV_rf_score) > dbscSNV_cutoff) or (dbscSNV_ada_score and float(dbscSNV_ada_score) > dbscSNV_cutoff)) else True 
-    not_benign_splicing = True if ((not dbscSNV_rf_score and not dbscSNV_ada_score) or (dbscSNV_rf_score and float(dbscSNV_rf_score) > dbscSNV_cutoff) or (dbscSNV_ada_score and float(dbscSNV_ada_score) > dbscSNV_cutoff)) else False 
+    #not_benign_splicing = True if ((not dbscSNV_rf_score and not dbscSNV_ada_score) or (dbscSNV_rf_score and float(dbscSNV_rf_score) > dbscSNV_cutoff) or (dbscSNV_ada_score and float(dbscSNV_ada_score) > dbscSNV_cutoff)) else False 
+    not_benign_splicing = True if ((dbscSNV_rf_score and float(dbscSNV_rf_score) > dbscSNV_cutoff) or (dbscSNV_ada_score and float(dbscSNV_ada_score) > dbscSNV_cutoff)) else False 
     curr_interpret.append('It is null variant.') if effect_in_null_variant_types else curr_interpret.append('It is NOT null variant.') 
     curr_interpret_chinese.append('基因变异类型是无效变异(null variant).') if effect_in_null_variant_types else curr_interpret_chinese.append('基因变异类型不是无效变异(null variant).') 
     ## 如果coding effect是null variant，查看这个variant downstream（同一gene 同一transcript）有没有null variation 且 pathogenic
@@ -119,8 +120,8 @@ def check_PVS1(variant_):
     #     curr_interpret.append('Variant NOT in null variant type.')
     #     curr_interpret_chinese.append('基因变异类型不是无效变异(null variant).')
     if effect_in_null_variant_types: 
-        curr_interpret.append('The variant does NOT have damaging splicing effect.') if not_benign_splicing else curr_interpret.append('The variant has damaging splicing effect.') 
-        curr_interpret_chinese.append('此变异不具有害的剪接效应(splicing effect).') if not_benign_splicing else curr_interpret_chinese.append('此变异具有有害的剪接效应(splicing effect).') 
+        curr_interpret.append('The variant has damaging splicing effect.') if not_benign_splicing else curr_interpret.append('The variant does NOT have damaging splicing effect.') 
+        curr_interpret_chinese.append('此变异具有有害的剪接效应(splicing effect).') if not_benign_splicing else curr_interpret_chinese.append('此变异不具有有害的剪接效应(splicing effect).') 
 
     #if effect_in_null_variant_types and in_LOF_genes and not_affect_splicing: PVS1 = 1
     if effect_in_null_variant_types and in_LOF_genes and not_benign_splicing: PVS1 = 1
@@ -1144,16 +1145,16 @@ def check_PP5_BP6(variant_):
             curr_interpret_chinese.append('简要证据: %s.' % clinvar_comments)
     elif clinvar_pathogenicity_:
         curr_interpret.append('Clinvar (clinical testing records)  does NOT have a conclusion on this variant (Clinvar: %s).' % clinvar_variation_ids)
-        curr_interpret_chinese.append('未在Clinvar数据库 (临床试验(clinical testing)记录) 中发现关于此基因变异致病性的一致性结论(Clinvar IDs: %s).' % clinvar_variation_ids)
+        curr_interpret_chinese.append('Clinvar数据库 (临床试验(clinical testing)记录) 中关于此基因变异的致病性没有确定的结论(Clinvar IDs: %s).' % clinvar_variation_ids)
         if clinvar_comments:
             curr_interpret.append('Summary evidence: %s.' % clinvar_comments)
             curr_interpret_chinese.append('简要证据: %s.' % clinvar_comments)
     else:
         curr_interpret.append('Clinvar (clinical testing records)  does NOT have records on this variant.')
         curr_interpret_chinese.append('未在Clinvar数据库 (临床试验(clinical testing)记录) 中发现关于此基因变异致病性的报道.')
-        if clinvar_comments:
-            curr_interpret.append('Summary evidence: %s.' % clinvar_comments)
-            curr_interpret_chinese.append('简要证据: %s.' % clinvar_comments)
+        #if clinvar_comments:
+        #    curr_interpret.append('Summary evidence: %s.' % clinvar_comments)
+        #    curr_interpret_chinese.append('简要证据: %s.' % clinvar_comments)
 
     curr_interpret.append('PP5 is met.') if PP5 != 0 else curr_interpret.append('PP5 is NOT met.')
     curr_interpret_chinese.append('符合PP5标准.') if PP5 != 0 else curr_interpret_chinese.append('不符合PP5标准.')
@@ -1449,8 +1450,13 @@ def adjustPM3andBP2(variants, variant_ACMG_result, variant_ACMG_weighted_score, 
     	variant_ACMG_interpret_chinese[key].append(('PM3 and BP2', curr_interpret_chinese))
     return variant_ACMG_score, variant_ACMG_result, variant_ACMG_weighted_score, variant_ACMG_hit_criteria, variant_ACMG_interpret, variant_ACMG_interpret_chinese
 
+def getGene2OMIM():
+    global gene2omim
+    df_gene2mim = pd.read_csv(os.path.join(BASE, 'data/ACMG/mim2gene.txt'), sep = '\t', skiprows = 5, usecols = [0, 1, 3], names = ['mim', 'type', 'gene'])
+    df_gene2mim = df_gene2mim.loc[df_gene2mim['type'] == 'gene', ['mim', 'gene']]
+    gene2omim = df_gene2mim.set_index('gene')['mim'].to_dict()
 
-def Get_ACMG_result(df_hpo_ranking_genes, variants, df_pubmed, parent_ngs, parent_affects, gene_associated_phenos):
+def Get_ACMG_result(df_hpo_ranking_genes, variants, df_pubmed, parent_ngs, parent_affects, gene_associated_phenos, df_pubmed_genes_novariant):
     global interpret, curr_interpret, interpret_chinese, curr_interpret_chinese, pubmed_articles
 
     map_clinvar_pathogenicity = {'Uncertain significance':'意义不明确', 'Likely benign':'可能良性', 'Pathogenic':'致病', 'Benign':'良性', 'Likely pathogenic':'可能致病', 'pathologic': '致病', 'not provided':'未提供结论', 'Conflicting interpretations of pathogenicity':'致病性结论不一致', 'other':'其它', 'risk factor':'风险因子', 'drug response':'药物反应', 'Conflicting interpretations of pathogenicity, not provided':'致病性结论不一致', 'Benign/Likely benign':'良性/可能良性', 'association':'有关联', 'conflicting data from submitters':'致病性结论不一致', 'protective':'保护作用', 'Pathogenic, risk factor':'致病，风险因子', 'Pathogenic/Likely pathogenic':'致病、可能致病', 'Likely pathogenic, risk factor':'可能致病，风险因子', 'Pathogenic, other':'致病', 'Likely benign, protective':'可能良性，保护作用', 'Conflicting interpretations of pathogenicity, risk factor':'致病性结论不一致', 'Benign, other':'良性', 'Uncertain significance, risk factor':'意义不明确，风险因子', 'Pathogenic, association':'致病', 'Likely benign, risk factor':'可能良性，风险因子', 'Benign, risk factor':'良性，风险因子', 'Uncertain significance, other':'意义不明确', 'Uncertain significance, Affects':'意义不明确', 'Pathogenic, Affects':'致病', 'Conflicting interpretations of pathogenicity, other':'致病性结论不一致', 'Conflicting interpretations of pathogenicity, Affects':'致病性结论不一致', 'confers sensitivity':'提高灵敏度'}
@@ -1480,6 +1486,7 @@ def Get_ACMG_result(df_hpo_ranking_genes, variants, df_pubmed, parent_ngs, paren
     getDisease2OMIMID()
     getOMIM2GeneReviewsName()
     getDiseasePenetrance()
+    getGene2OMIM()
 
     variant_ACMG_score = dict()
     variant_ACMG_result = dict()
@@ -1488,7 +1495,7 @@ def Get_ACMG_result(df_hpo_ranking_genes, variants, df_pubmed, parent_ngs, paren
     variant_ACMG_interpret = dict()
     variant_ACMG_interpret_chinese = dict()
     
-    # Get pubmed articles that mention studied genes
+    # Get pubmed articles that mention studied gene_variants
     pubmed_articles = dict()
     if not df_pubmed.empty:
         for index, row in df_pubmed.iterrows():
@@ -1497,6 +1504,16 @@ def Get_ACMG_result(df_hpo_ranking_genes, variants, df_pubmed, parent_ngs, paren
                 pubmed_articles[(gene, variant)].append((pmid, title, journal, year, impact_factor))
             else:
                 pubmed_articles[(gene, variant)] = [(pmid, title, journal, year, impact_factor)]
+
+    # Get pubmed articles that mention studied genes
+    pubmed_articles_genes_novariant = dict()
+    if not df_pubmed_genes_novariant.empty:
+        for index, row in df_pubmed_genes_novariant.iterrows():
+            gene, title, journal, year, impact_factor, pmid = row['Gene'], row['Title'], row['Journal'], row['Year'], row['Impact_Factor'], row['PMID']
+            if gene in pubmed_articles_genes_novariant:
+                pubmed_articles_genes_novariant[gene].append((pmid, title, journal, year, impact_factor))
+            else:
+                pubmed_articles_genes_novariant[gene] = [(pmid, title, journal, year, impact_factor)]
 
     # Get pmids from variants clinvar records
     pmids_from_clinvar = []
@@ -1533,6 +1550,25 @@ def Get_ACMG_result(df_hpo_ranking_genes, variants, df_pubmed, parent_ngs, paren
     	if exon_0: 
                 curr_interpret.append('exon: %s.' % exon_0) 
                 curr_interpret_chinese.append('外显子: %s.' % exon_0) 
+        if gene_0:
+                # Add genecards link
+                curr_interpret.append("GeneCards: <a href='http://www.genecards.org/cgi-bin/carddisp.pl?gene=%s'> %s </a>"  % (gene_0, gene_0))
+                curr_interpret_chinese.append("GeneCards: <a href='http://www.genecards.org/cgi-bin/carddisp.pl?gene=%s'> %s </a>"  % (gene_0, gene_0))
+                # Add OMIM link
+                if gene_0 in gene2omim: 
+                    omim_id = gene2omim[gene_0]
+                    curr_interpret.append("OMIM: <a href='https://www.omim.org/entry/%s'> %s </a>"  % (omim_id, omim_id))
+                    curr_interpret_chinese.append("OMIM: <a href='https://www.omim.org/entry/%s'> %s </a>"  % (omim_id, omim_id))
+                # Add Decipher link
+                curr_interpret.append("Decipher: <a href='https://decipher.sanger.ac.uk/search?q=%s#consented-patients/results'> %s </a>"  % (gene_0, gene_0))
+                curr_interpret_chinese.append("Decipher: <a href='https://decipher.sanger.ac.uk/search?q=%s#consented-patients/results'> %s </a>"  % (gene_0, gene_0))
+                # Add Genetics Home Reference link
+                curr_interpret.append("Genetics Home Reference: <a href='https://ghr.nlm.nih.gov/gene/%s'> %s </a>"  % (gene_0, gene_0))
+                curr_interpret_chinese.append("Genetics Home Reference: <a href='https://ghr.nlm.nih.gov/gene/%s'> %s </a>"  % (gene_0, gene_0))
+                # Add GeneReviews link
+                curr_interpret.append("GeneReviews: <a href='https://www.ncbi.nlm.nih.gov/books/NBK1116/?term=%s'> %s </a>"  % (gene_0, gene_0))
+                curr_interpret_chinese.append("GeneReviews: <a href='https://www.ncbi.nlm.nih.gov/books/NBK1116/?term=%s'> %s </a>"  % (gene_0, gene_0))
+
     	if maf_exac_0:
                 if id_0:
                     hgvs_id = id_0.replace('chr', '') 
@@ -1612,6 +1648,10 @@ def Get_ACMG_result(df_hpo_ranking_genes, variants, df_pubmed, parent_ngs, paren
                 curr_interpret_chinese.append('Clinvar数据库记录的与此变异相关的疾病: %s.' % clinvar_diseases_0)
         if (gene_0, variant_0) in pubmed_articles.keys():
                 pubmed_articles_0 = ["<a href='https://www.ncbi.nlm.nih.gov/pubmed/%s'> %s </a>: title: %s, journal: %s, year: %s, impact_factor: %s" %(i[0],i[0], i[1], i[2], i[3], i[4]) for i in pubmed_articles[(gene_0, variant_0)]]
+                curr_interpret.append('Pubmed references: %s.' % "; ".join(pubmed_articles_0))
+                curr_interpret_chinese.append('Pubmed相关生物医学文献: %s.' % "; ".join(pubmed_articles_0))
+        elif not clinvar_pmids_0 and gene_0 in pubmed_articles_genes_novariant:
+                pubmed_articles_0 = ["<a href='https://www.ncbi.nlm.nih.gov/pubmed/%s'> %s </a>: title: %s, journal: %s, year: %s, impact_factor: %s" %(i[0],i[0], i[1], i[2], i[3], i[4]) for i in pubmed_articles_genes_novariant[gene_0]]
                 curr_interpret.append('Pubmed references: %s.' % "; ".join(pubmed_articles_0))
                 curr_interpret_chinese.append('Pubmed相关生物医学文献: %s.' % "; ".join(pubmed_articles_0))
 

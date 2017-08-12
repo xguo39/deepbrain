@@ -297,16 +297,21 @@ def collectExACDetails_bak():
 
   return exac_details
 
+def convertToNDecimals(f):
+  return '%0.4f' % f
+
 def collectExACDetails():
   try:
     exac_tot_ac, exac_tot_an = int(non_snpeff['exac']['ac']['ac_adj']), int(non_snpeff['exac']['an']['an_adj'])
     maf_exac_tot = float(exac_tot_ac) / exac_tot_an
+    maf_exac_tot = convertToNDecimals(maf_exac_tot)
   except KeyError:
     exac_tot_ac, exac_tot_an, maf_exac_tot = '', '', ''
   except TypeError:
     try:
       exac_tot_ac, exac_tot_an = int(max(non_snpeff['exac']['ac']['ac_adj'])), int(non_snpeff['exac']['an']['an_adj'])
       maf_exac_tot = float(exac_tot_ac) / exac_tot_an
+      maf_exac_tot = convertToNDecimals(maf_exac_tot)
     except ZeroDivisionError:
       exac_tot_ac, exac_tot_an, maf_exac_tot = '', '', ''
   except ZeroDivisionError:
@@ -314,12 +319,14 @@ def collectExACDetails():
   try:
     exac_afr_ac, exac_afr_an = int(non_snpeff['exac']['ac']['ac_afr']), int(non_snpeff['exac']['an']['an_afr'])
     maf_exac_afr = float(exac_afr_ac) / exac_afr_an
+    maf_exac_afr = convertToNDecimals(maf_exac_afr)
   except KeyError:
     exac_afr_ac, exac_afr_an, maf_exac_afr = '', '', ''
   except TypeError:
     try:
       exac_afr_ac, exac_afr_an = int(max(non_snpeff['exac']['ac']['ac_afr'])), int(non_snpeff['exac']['an']['an_afr'])
       maf_exac_afr = float(exac_afr_ac) / exac_afr_an
+      maf_exac_afr = convertToNDecimals(maf_exac_afr)
     except ZeroDivisionError:
       exac_afr_ac, exac_afr_an, maf_exac_afr = '', '', ''
   except ZeroDivisionError:
@@ -327,12 +334,14 @@ def collectExACDetails():
   try:
     exac_amr_ac, exac_amr_an = int(non_snpeff['exac']['ac']['ac_amr']), int(non_snpeff['exac']['an']['an_amr'])
     maf_exac_amr = float(exac_amr_ac) / exac_amr_an
+    maf_exac_amr = convertToNDecimals(maf_exac_amr)
   except KeyError:
     exac_amr_ac, exac_amr_an, maf_exac_amr = '', '', ''
   except TypeError:
     try:
       exac_amr_ac, exac_amr_an = int(max(non_snpeff['exac']['ac']['ac_amr'])), int(non_snpeff['exac']['an']['an_amr'])
       maf_exac_amr = float(exac_amr_ac) / exac_amr_an
+      maf_exac_amr = convertToNDecimals(maf_exac_amr)
     except ZeroDivisionError:
       exac_amr_ac, exac_amr_an, maf_exac_amr = '', '', ''
   except ZeroDivisionError:
@@ -340,12 +349,14 @@ def collectExACDetails():
   try:
     exac_eas_ac, exac_eas_an = int(non_snpeff['exac']['ac']['ac_eas']), int(non_snpeff['exac']['an']['an_eas'])
     maf_exac_eas = float(exac_eas_ac) / exac_eas_an
+    maf_exac_eas = convertToNDecimals(maf_exac_eas)
   except KeyError:
     exac_eas_ac, exac_eas_an, maf_exac_eas = '', '', ''
   except TypeError:
     try:
       exac_eas_ac, exac_eas_an = int(max(non_snpeff['exac']['ac']['ac_eas'])), int(non_snpeff['exac']['an']['an_eas'])
       maf_exac_eas = float(exac_eas_ac) / exac_eas_an
+      maf_exac_eas = convertToNDecimals(maf_exac_eas)
     except ZeroDivisionError:
       exac_eas_ac, exac_eas_an, maf_exac_eas = '', '', ''
   except ZeroDivisionError:
@@ -353,12 +364,14 @@ def collectExACDetails():
   try:
     exac_fin_ac, exac_fin_an = int(non_snpeff['exac']['ac']['ac_fin']), int(non_snpeff['exac']['an']['an_fin'])
     maf_exac_fin = float(exac_fin_ac) / exac_fin_an
+    maf_exac_fin = convertToNDecimals(maf_exac_fin)
   except KeyError:
     exac_fin_ac, exac_fin_an, maf_exac_fin = '', '', ''
   except TypeError:
     try:
       exac_fin_ac, exac_fin_an = int(max(non_snpeff['exac']['ac']['ac_fin'])), int(non_snpeff['exac']['an']['an_fin'])
       maf_exac_fin = float(exac_fin_ac) / exac_fin_an
+      maf_exac_fin = convertToNDecimals(maf_exac_fin)
     except ZeroDivisionError:
       exac_fin_ac, exac_fin_an, maf_exac_fin = '', '', ''
   except ZeroDivisionError:
@@ -366,12 +379,14 @@ def collectExACDetails():
   try:
     exac_nfe_ac, exac_nfe_an = int(non_snpeff['exac']['ac']['ac_nfe']), int(non_snpeff['exac']['an']['an_nfe'])
     maf_exac_nfe = float(exac_nfe_ac) / exac_nfe_an
+    maf_exac_nfe = convertToNDecimals(maf_exac_nfe)
   except KeyError:
     exac_nfe_ac, exac_nfe_an, maf_exac_nfe = '', '', ''
   except TypeError:
     try:
       exac_nfe_ac, exac_nfe_an = int(max(non_snpeff['exac']['ac']['ac_nfe'])), int(non_snpeff['exac']['an']['an_nfe'])
       maf_exac_nfe = float(exac_nfe_ac) / exac_nfe_an
+      maf_exac_nfe = convertToNDecimals(maf_exac_nfe)
     except ZeroDivisionError:
       exac_nfe_ac, exac_nfe_an, maf_exac_nfe = '', '', ''
   except ZeroDivisionError:
@@ -379,12 +394,14 @@ def collectExACDetails():
   try:
     exac_oth_ac, exac_oth_an = int(non_snpeff['exac']['ac']['ac_oth']), int(non_snpeff['exac']['an']['an_oth'])
     maf_exac_oth = float(exac_oth_ac) / exac_oth_an
+    maf_exac_oth = convertToNDecimals(maf_exac_oth)
   except KeyError:
     exac_oth_ac, exac_oth_an, maf_exac_oth = '', '', ''
   except TypeError:
     try:
       exac_oth_ac, exac_oth_an = int(max(non_snpeff['exac']['ac']['ac_oth'])), int(non_snpeff['exac']['an']['an_oth'])
       maf_exac_oth = float(exac_oth_ac) / exac_oth_an
+      maf_exac_oth = convertToNDecimals(maf_exac_oth)
     except ZeroDivisionError:
       exac_oth_ac, exac_oth_an, maf_exac_oth = '', '', ''
   except ZeroDivisionError:
@@ -392,55 +409,44 @@ def collectExACDetails():
   try:
     exac_sas_ac, exac_sas_an = int(non_snpeff['exac']['ac']['ac_sas']), int(non_snpeff['exac']['an']['an_sas'])
     maf_exac_sas = float(exac_sas_ac) / exac_sas_an
+    maf_exac_sas = convertToNDecimals(maf_exac_sas)
   except KeyError:
     exac_sas_ac, exac_sas_an, maf_exac_sas = '', '', ''
   except TypeError:
     try:
       exac_sas_ac, exac_sas_an = int(max(non_snpeff['exac']['ac']['ac_sas'])), int(non_snpeff['exac']['an']['an_sas'])
       maf_exac_sas = float(exac_sas_ac) / exac_sas_an
+      maf_exac_sas = convertToNDecimals(maf_exac_sas)
     except ZeroDivisionError:
       exac_sas_ac, exac_sas_an, maf_exac_sas = '', '', ''
   except ZeroDivisionError:
     exac_sas_ac, exac_sas_an, maf_exac_sas = '', '', ''
-
-  '''   
-  try:
-    exac_het_ac, exac_het_an = float(non_snpeff['exac']['ac']['ac_het']), float(non_snpeff['exac']['an']['an_het'])
-    maf_exac_het = exac_het_ac / exac_het_an
-  except KeyError:
-    exac_het_ac, exac_het_an, maf_exac_het = '', '', ''
-  except TypeError:
-    try:
-      exac_het_ac, exac_het_an = float(max(non_snpeff['exac']['ac']['ac_het'])), float(non_snpeff['exac']['an']['an_het'])
-      maf_exac_het = exac_het_ac / exac_het_an
-    except ZeroDivisionError:
-      exac_het_ac, exac_het_an, maf_exac_het = '', '', ''
-  except ZeroDivisionError:
-    exac_het_ac, exac_het_an, maf_exac_het = '', '', ''
-  '''   
+  
   try:
     exac_hom_ac, exac_hom_an = int(non_snpeff['exac']['ac']['ac_hom']), int(non_snpeff['exac']['an']['an_adj'])
     maf_exac_hom = float(exac_hom_ac) / exac_hom_an
+    maf_exac_hom = convertToNDecimals(maf_exac_hom)
   except KeyError:
     exac_hom_ac, exac_hom_an, maf_exac_hom = '', '', ''
   except TypeError:
     try:
       exac_hom_ac, exac_hom_an = int(max(non_snpeff['exac']['ac']['ac_hom'])), int(non_snpeff['exac']['an']['an_adj'])
       maf_exac_hom = float(exac_hom_ac) / exac_hom_an
+      maf_exac_hom = convertToNDecimals(maf_exac_hom)
     except ZeroDivisionError:
       exac_hom_ac, exac_hom_an, maf_exac_hom = '', '', ''
   except ZeroDivisionError:
     exac_hom_ac, exac_hom_an, maf_exac_hom = '', '', '' 
 
-  exac_details = ([str(exac_tot_ac), str(exac_tot_an), str(maf_exac_tot),
-                   str(exac_afr_ac), str(exac_afr_an), str(maf_exac_afr),
-                   str(exac_amr_ac), str(exac_amr_an), str(maf_exac_amr), 
-                   str(exac_eas_ac), str(exac_eas_an), str(maf_exac_eas), 
-                   str(exac_fin_ac), str(exac_fin_an), str(maf_exac_fin), 
-                   str(exac_nfe_ac), str(exac_nfe_an), str(maf_exac_nfe), 
-                   str(exac_oth_ac), str(exac_oth_an), str(maf_exac_oth), 
-                   str(exac_sas_ac), str(exac_sas_an), str(maf_exac_sas), 
-                   str(exac_hom_ac), str(maf_exac_hom)])
+  exac_details = ([str(exac_tot_ac), str(exac_tot_an), maf_exac_tot,
+                   str(exac_afr_ac), str(exac_afr_an), maf_exac_afr,
+                   str(exac_amr_ac), str(exac_amr_an), maf_exac_amr, 
+                   str(exac_eas_ac), str(exac_eas_an), maf_exac_eas, 
+                   str(exac_fin_ac), str(exac_fin_an), maf_exac_fin, 
+                   str(exac_nfe_ac), str(exac_nfe_an), maf_exac_nfe, 
+                   str(exac_oth_ac), str(exac_oth_an), maf_exac_oth, 
+                   str(exac_sas_ac), str(exac_sas_an), maf_exac_sas, 
+                   str(exac_hom_ac), maf_exac_hom])
 
   return exac_details
 
@@ -610,7 +616,7 @@ def getClinvarData(genes, gene_variants):
       clinvar_review_status[key] = values
     for key in clinvar_diseases:
       values = list(set(clinvar_diseases[key]))
-      values = [value for value in values if not re.match(r'not provided', value, re.I)] 
+      values = [value for value in values if not re.match(r'not provided|not specified', value, re.I)] 
       values = '|'.join(values)
       clinvar_diseases[key] = values
     #print set(pathos)
@@ -864,17 +870,11 @@ def get_variants(candidate_vars):
   # df_final_res.to_csv('result/variants.txt', sep = '\t', index = False)
   return final_res, variants
 
-
-def get_variants_from_vcf(candidate_vars, variantid_zygosity):
-  # if the input file is VCF, then candidate_vars do not contain gene symbol information; they only have variant ids; need to query gene, variant, transcript information from myvariant
+def getVariantInfoFromMyVariant(candidate_vars):
   mv = myvariant.MyVariantInfo()
+  variant_id_to_gene = dict()
 
   variant_ids = []
-  variants = defaultdict(dict)
-
-  # The dbscsnv (splicing effect prediction) can not be obtained from myvariant; instead, we have local flat dbscsnv files
-  dbscsnv_chromosomes, dbscsnv_variants = [], {}
-  tmp_candidate_vars = []
   for var in candidate_vars:
     variant_ids.append(var[3])
 
@@ -905,6 +905,31 @@ def get_variants_from_vcf(candidate_vars, variantid_zygosity):
     non_snpeff_var_data += tmp
     if end >= num_variant_ids:
       break
+
+  global non_snpeff, robj_amino_acid
+  robj_amino_acid = re.compile('|'.join(amino_acid_mapping.mapl2u.keys()))
+ 
+  for data in non_snpeff_var_data:
+    non_snpeff = data
+    try:
+      variant_id = non_snpeff['_id'] 
+    except KeyError:
+      continue
+    gene, variant, protein, transcript, effect = collectSnpeffWithGeneVariantInfo()
+    if not gene:
+      continue
+    variant_id_to_gene[variant_id] = gene
+  return non_snpeff_var_data, variant_id_to_gene 
+
+def get_variants_from_vcf(candidate_vars, variantid_zygosity, non_snpeff_var_data):
+  # if the input file is VCF, then candidate_vars do not contain gene symbol information; they only have variant ids; need to query gene, variant, transcript information from myvariant
+  mv = myvariant.MyVariantInfo()
+
+  variants = defaultdict(dict)
+
+  # The dbscsnv (splicing effect prediction) can not be obtained from myvariant; instead, we have local flat dbscsnv files
+  dbscsnv_chromosomes, dbscsnv_variants = [], {}
+  tmp_candidate_vars = []
 
   global non_snpeff, robj_amino_acid
   robj_amino_acid = re.compile('|'.join(amino_acid_mapping.mapl2u.keys()))
