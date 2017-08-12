@@ -203,10 +203,10 @@ def getAlts(ref, allele1, allele2, mother1, mother2, father1, father2):
     proband_alts, mother_alts, father_alts = [], [], []
     if allele1 != ref: proband_alts.append(allele1)
     if allele2 != ref: proband_alts.append(allele2)
-    if mother1 != ref: mother_alts.append(allele1)
-    if mother2 != ref: mother_alts.append(allele2)
-    if father1 != ref: father_alts.append(allele1)
-    if father2 != ref: father_alts.append(allele2)
+    if mother1 != ref: mother_alts.append(mother1)
+    if mother2 != ref: mother_alts.append(mother2)
+    if father1 != ref: father_alts.append(father1)
+    if father2 != ref: father_alts.append(father2)
     return proband_alts, mother_alts, father_alts
 
 def parentAltInProbandAlts(parent_alts, proband_alts):
@@ -255,6 +255,7 @@ def getZygosity(parent_ngs, candidate_vars_zygosity, proband_gender, variant_id_
             gene, variant, transcript, variant_id, chrom, ref, allele1, allele2, mother1, mother2, father1, father2 = item
             if variant_id in variant_id_to_gene: gene = variant_id_to_gene[variant_id]
             proband_alts, mother_alts, father_alts = getAlts(ref, allele1, allele2, mother1, mother2, father1, father2) 
+            #print 'p: ', proband_alts, mother_alts, father_alts
             if parent_ngs in [1, 2] and parentAltInProbandAlts(mother_alts, proband_alts) or parentAltInProbandAlts(father_alts, proband_alts):
                 zygosity = 'het'
             else:
@@ -314,7 +315,7 @@ def read_input_gene_file(input_gene, parent_ngs, father_vcf, mother_vcf, proband
         field_names = df_vcf.columns.values.tolist()
         input_gene = df_vcf.values.tolist()       
         input_gene = ['dummy line'] + input_gene 
-	
+        #print df_vcf
     chrom_idx, pos_idx, ref_idx, allele1_idx, allele2_idx, gene_idx, zygosity_idx = None, None, None, None, None, None, None
     mother_allele1_idx, mother_allele2_idx, father_allele1_idx, father_allele2_idx = None, None, None, None
 
@@ -364,7 +365,6 @@ def read_input_gene_file(input_gene, parent_ngs, father_vcf, mother_vcf, proband
                 variant_id = part
             if re.match(r'het|hom|hem|de |comp', part, re.I):	
                 zygosity = part
-            #print 'd: ', variant_id, zygosity, chrom_idx, pos_idx, ref_idx, allele1_idx, allele2_idx
         if (not variant_id or not zygosity) and (chrom_idx is not None and pos_idx is not None and ref_idx is not None and allele1_idx is not None and allele2_idx is not None):
             chrome, pos, ref, allele1, allele2 = parts[chrom_idx], parts[pos_idx], parts[ref_idx], parts[allele1_idx], parts[allele2_idx]
             alts = []
