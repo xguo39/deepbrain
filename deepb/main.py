@@ -189,13 +189,13 @@ def convertFile2DF(inputfile, delimiter, proband_parent):
         genotypes = re.split(r'/|\|', genotypes)
         genotype_alleles = [alleles[int(gt)] for gt in genotypes]
         #print 'c: ', chrom, pos, ref, alts, samples, alleles, genotypes, genotype_alleles
-        vcf_data.append([chrom, pos] + genotype_alleles)
+        vcf_data.append([chrom, pos, ref] + genotype_alleles)
     if proband_parent == 'proband': 
-        selected_columns = ['CHROM', 'POS', 'ALLELE 1', 'ALLELE 2']
+        selected_columns = ['CHROM', 'POS', 'REF', 'ALLELE 1', 'ALLELE 2']
     elif proband_parent == 'mother': 
-        selected_columns = ['CHROM', 'POS', 'MOTHER ALLELE 1', 'MOTHER ALLELE 2']
+        selected_columns = ['CHROM', 'POS', 'REF', 'MOTHER ALLELE 1', 'MOTHER ALLELE 2']
     elif proband_parent == 'father': 
-        selected_columns = ['CHROM', 'POS', 'FATHER ALLELE 1', 'FATHER ALLELE 2']
+        selected_columns = ['CHROM', 'POS', 'REF', 'FATHER ALLELE 1', 'FATHER ALLELE 2']
     df_vcf_data = pd.DataFrame(vcf_data, columns = selected_columns)
     return df_vcf_data
 
@@ -294,9 +294,11 @@ def read_input_gene_file(input_gene, parent_ngs, father_vcf, mother_vcf, proband
         if father_vcf:
             delimiter_f, field_names_f = getFileDelimiter(father_vcf)
             df_vcf_father = convertFile2DF(father_vcf, delimiter_f, 'father')
+            df_vcf_father.drop('REF', axis = 1, inplace = True)
         if mother_vcf:
             delimiter_m, field_names_m = getFileDelimiter(mother_vcf)
             df_vcf_mother = convertFile2DF(mother_vcf, delimiter_m, 'mother')
+            df_vcf_mother.drop('REF', axis = 1, inplace = True)
 
         if father_vcf:
             df_vcf = df_vcf.merge(df_vcf_father, how = 'left', on = ['CHROM', 'POS'])
@@ -308,7 +310,6 @@ def read_input_gene_file(input_gene, parent_ngs, father_vcf, mother_vcf, proband
         else:   
             df_vcf['MOTHER ALLELE 1'] = ''
             df_vcf['MOTHER ALLELE 2'] = ''
-        #print df_vcf
         #df_vcf.columns = df_vcf.columns.values.tolist()[0:-2] + ['FATHER ALLELE 1', 'FATHER ALLELE 2', 'MOTHER ALLELE 1', 'MOTHER ALLELE 2'] 
         field_names = df_vcf.columns.values.tolist()
         input_gene = df_vcf.values.tolist()       
@@ -344,7 +345,7 @@ def read_input_gene_file(input_gene, parent_ngs, father_vcf, mother_vcf, proband
             parts = re.split(r'%s' % delimiter, line)
         else:
             parts = line
-        input_gene_list.append(line)
+        input_gene_list.append(parts)
         gene, transcript, variant, variant_id, zygosity = '', '', '', '', ''
         if gene_idx is not None:
             gene = parts[gene_idx]
@@ -363,7 +364,7 @@ def read_input_gene_file(input_gene, parent_ngs, father_vcf, mother_vcf, proband
                 variant_id = part
             if re.match(r'het|hom|hem|de |comp', part, re.I):	
                 zygosity = part
-
+            #print 'd: ', variant_id, zygosity, chrom_idx, pos_idx, ref_idx, allele1_idx, allele2_idx
         if (not variant_id or not zygosity) and (chrom_idx is not None and pos_idx is not None and ref_idx is not None and allele1_idx is not None and allele2_idx is not None):
             chrome, pos, ref, allele1, allele2 = parts[chrom_idx], parts[pos_idx], parts[ref_idx], parts[allele1_idx], parts[allele2_idx]
             alts = []
@@ -425,7 +426,6 @@ def read_input_gene_file(input_gene, parent_ngs, father_vcf, mother_vcf, proband
         if len(line) == correct_field_num:
             correct_input_gene_list.append(line)
     df_genes = pd.DataFrame(correct_input_gene_list, columns = field_names)
-    #print 'df_genes', df_genes
     return candidate_vars, CANDIDATE_GENES, df_genes, field_names, gene_zygosity, non_snpeff_var_data # non_snpeff_var_data from MyVariant 
 
 def map_phenotype2gene(CANDIDATE_GENES, phenos, corner_cases, candidate_vars, original_phenos):
