@@ -63,12 +63,12 @@ def queryPubmedDBGenes(candidate_vars, df_genes, db):
   for gene in gene_pubmed_count.keys():
     if gene_pubmed_count[gene] <= 10:
       genes_to_be_kept.append(gene)
-  print len(genes_to_be_kept)
+  #print len(genes_to_be_kept)
   for line in data: 
     gene, pmid, title, journal, year, impact_factor = line
     if gene in genes_to_be_kept:
       res.append([gene, pmid, title, journal, year, impact_factor])
-  print len(res)
+  #print len(res)
   df = pd.DataFrame(res, columns = ['Gene', 'PMID', 'Title', 'Journal', 'Year', 'Impact_Factor'])
   df = df[['Gene', 'Title', 'Journal', 'Year', 'Impact_Factor', 'PMID']]
   df.drop_duplicates(inplace = True)

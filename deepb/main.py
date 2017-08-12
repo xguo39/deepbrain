@@ -184,9 +184,11 @@ def convertFile2DF(inputfile, delimiter, proband_parent):
                 break
         chrom, pos, ref, alts, samples = parts[chrom_idx], parts[pos_idx], parts[ref_idx], parts[alt_idx], parts[sample_idx] 
         alleles = [ref] + alts.split(',')   # ref: A    alts: [C, AA] 
+        samples = samples.split(':')
         genotypes = samples[GT_idx]   # 0/1
         genotypes = re.split(r'/|\|', genotypes)
-        genotype_alleles = [alleles[gt] for gt in genotypes]
+        genotype_alleles = [alleles[int(gt)] for gt in genotypes]
+        #print 'c: ', chrom, pos, ref, alts, samples, alleles, genotypes, genotype_alleles
         vcf_data.append([chrom, pos] + genotype_alleles)
     if proband_parent == 'proband': 
         selected_columns = ['CHROM', 'POS', 'ALLELE 1', 'ALLELE 2']
@@ -240,7 +242,7 @@ def getCompHetGenes(candidate_vars_zygosity, variant_id_to_gene):
                     var_from_father = True
             if var_from_mother and var_from_father:
                 comp_het_genes.append(gene)
-    print 'variant_id_to_gene, gene_zygosity, comp_het_genes', variant_id_to_gene, gene_zygosity, comp_het_genes
+    #print 'variant_id_to_gene, gene_zygosity, comp_het_genes', variant_id_to_gene, gene_zygosity, comp_het_genes
     return comp_het_genes	
 
 def getZygosity(parent_ngs, candidate_vars_zygosity, proband_gender, variant_id_to_gene):
@@ -285,7 +287,8 @@ def read_input_gene_file(input_gene, parent_ngs, father_vcf, mother_vcf, proband
     input_gene = input_gene.split('\n')
 
     delimiter, field_names = getFileDelimiter(input_gene)
-    if father_vcf or mother_vcf:
+    #print field_names
+    if '#CHROM' in field_names and 'POS' in field_names and 'REF' in field_names and 'ALT' in field_names: 
         df_vcf = convertFile2DF(input_gene, delimiter, 'proband')
         df_vcf_father, df_vcf_mother = pd.DataFrame(), pd.DataFrame()
         if father_vcf:
@@ -305,7 +308,8 @@ def read_input_gene_file(input_gene, parent_ngs, father_vcf, mother_vcf, proband
         else:   
             df_vcf['MOTHER ALLELE 1'] = ''
             df_vcf['MOTHER ALLELE 2'] = ''
-        df_vcf.columns = df_vcf.columns.values.tolist()[0:-2] + ['FATHER ALLELE 1', 'FATHER ALLELE 2', 'MOTHER ALLELE 1', 'MOTHER ALLELE 2'] 
+        #print df_vcf
+        #df_vcf.columns = df_vcf.columns.values.tolist()[0:-2] + ['FATHER ALLELE 1', 'FATHER ALLELE 2', 'MOTHER ALLELE 1', 'MOTHER ALLELE 2'] 
         field_names = df_vcf.columns.values.tolist()
         input_gene = df_vcf.values.tolist()       
         input_gene = ['dummy line'] + input_gene 
@@ -333,12 +337,14 @@ def read_input_gene_file(input_gene, parent_ngs, father_vcf, mother_vcf, proband
     for line in input_gene[1:]:
         if not line:
             continue	
-        if line.startswith("#"):
+        if type(line) != list and line.startswith("#"):
             continue
-        line = line.rstrip('\n').rstrip('\r')
-        print line
-        parts = re.split(r'%s' % delimiter, line)
-        input_gene_list.append(parts)
+        if type(line) != list:
+            line = line.rstrip('\n').rstrip('\r')
+            parts = re.split(r'%s' % delimiter, line)
+        else:
+            parts = line
+        input_gene_list.append(line)
         gene, transcript, variant, variant_id, zygosity = '', '', '', '', ''
         if gene_idx is not None:
             gene = parts[gene_idx]
@@ -419,7 +425,7 @@ def read_input_gene_file(input_gene, parent_ngs, father_vcf, mother_vcf, proband
         if len(line) == correct_field_num:
             correct_input_gene_list.append(line)
     df_genes = pd.DataFrame(correct_input_gene_list, columns = field_names)
-    print 'df_genes', df_genes
+    #print 'df_genes', df_genes
     return candidate_vars, CANDIDATE_GENES, df_genes, field_names, gene_zygosity, non_snpeff_var_data # non_snpeff_var_data from MyVariant 
 
 def map_phenotype2gene(CANDIDATE_GENES, phenos, corner_cases, candidate_vars, original_phenos):
@@ -488,9 +494,9 @@ def master_function(raw_input_id):
     # Read input gene file and generate candidate_vars. candidate_vars are
     # (gene, variant, transcript, variant_id, zygosity); CANDIDATE_GENES is a list of gene symbols; df_genes is a dataframe that keeps all the data that user uploaded; field_names are header of the input gene file 
     candidate_vars, CANDIDATE_GENES, df_genes, field_names, gene_zygosity, non_snpeff_var_data = read_input_gene_file(input_gene, parent_ngs, father_vcf, mother_vcf, proband_gender)
-    print 'candidate_vars is: ', candidate_vars
-    print 'CANDIDATE_GENES is: ', CANDIDATE_GENES
-    print 'gene_zygosity is: ', gene_zygosity 
+    #print 'candidate_vars is: ', candidate_vars
+    #print 'CANDIDATE_GENES is: ', CANDIDATE_GENES
+    #print 'gene_zygosity is: ', gene_zygosity 
     # gene associated phenos just in case no input phenotypes
     gene_associated_phenos = dict()
     # if the input file is vcf
@@ -535,7 +541,7 @@ def master_function(raw_input_id):
         raw_input.save()
         final_res, variants = collectVariantInfo.get_variants(candidate_vars)
 
-    print 'final_res is: ', final_res
+    #print 'final_res is: ', final_res
     #print 'variants is: ', variants
 
     if final_res == [] and variants == defaultdict(dict):
