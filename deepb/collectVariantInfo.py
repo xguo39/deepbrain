@@ -870,17 +870,11 @@ def get_variants(candidate_vars):
   # df_final_res.to_csv('result/variants.txt', sep = '\t', index = False)
   return final_res, variants
 
-
-def get_variants_from_vcf(candidate_vars, variantid_zygosity):
-  # if the input file is VCF, then candidate_vars do not contain gene symbol information; they only have variant ids; need to query gene, variant, transcript information from myvariant
+def getVariantInfoFromMyVariant(candidate_vars):
   mv = myvariant.MyVariantInfo()
+  variant_id_to_gene = dict()
 
   variant_ids = []
-  variants = defaultdict(dict)
-
-  # The dbscsnv (splicing effect prediction) can not be obtained from myvariant; instead, we have local flat dbscsnv files
-  dbscsnv_chromosomes, dbscsnv_variants = [], {}
-  tmp_candidate_vars = []
   for var in candidate_vars:
     variant_ids.append(var[3])
 
@@ -911,6 +905,31 @@ def get_variants_from_vcf(candidate_vars, variantid_zygosity):
     non_snpeff_var_data += tmp
     if end >= num_variant_ids:
       break
+
+  global non_snpeff, robj_amino_acid
+  robj_amino_acid = re.compile('|'.join(amino_acid_mapping.mapl2u.keys()))
+ 
+  for data in non_snpeff_var_data:
+    non_snpeff = data
+    try:
+      variant_id = non_snpeff['_id'] 
+    except KeyError:
+      continue
+    gene, variant, protein, transcript, effect = collectSnpeffWithGeneVariantInfo()
+    if not gene:
+      continue
+    variant_id_to_gene[variant_id] = gene
+  return non_snpeff_var_data, variant_id_to_gene 
+
+def get_variants_from_vcf(candidate_vars, variantid_zygosity, non_snpeff_var_data):
+  # if the input file is VCF, then candidate_vars do not contain gene symbol information; they only have variant ids; need to query gene, variant, transcript information from myvariant
+  mv = myvariant.MyVariantInfo()
+
+  variants = defaultdict(dict)
+
+  # The dbscsnv (splicing effect prediction) can not be obtained from myvariant; instead, we have local flat dbscsnv files
+  dbscsnv_chromosomes, dbscsnv_variants = [], {}
+  tmp_candidate_vars = []
 
   global non_snpeff, robj_amino_acid
   robj_amino_acid = re.compile('|'.join(amino_acid_mapping.mapl2u.keys()))
