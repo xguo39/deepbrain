@@ -162,19 +162,30 @@ main{
   position: relative;
   width: 100%;
   padding:15px 20px;
-  font-size: 12px;
-  // max-height:80px;
+  font-size: 13px;
+  font-weight: 400;
   p{
-    margin-bottom: 5px;
+    margin-bottom: 6px;
   }
   .progress{
-    margin-bottom: 5px;
+    margin-bottom: 6px;
     height:8px;
+    .progress-bar-info{
+      background-color: #53BAEC;
+    }
   }
-  .completed_text{
+  .completed_task{
     padding: 15px 0px;
-  }
+    cursor: pointer;
+    transition: .1s;
+    span{
+      pointer-events: none;
+    }
+    &:hover{
+      font-size: 14px;
+    }
 
+  }
 }
 
 .tr-stripe{

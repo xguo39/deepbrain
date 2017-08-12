@@ -13,6 +13,8 @@ APIs
   - [Upload_task](#upload_task)
   - [Progress_task_list](#progress_task_list)
   - [All_task_list](#all_task_list)
+  - [Fetch_case_result](#fetch_case_result)
+  - [Fetch_Annotation](#fetch_annotation)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 ---------------------------
@@ -45,7 +47,7 @@ Tasks
 ---
 ### Upload_task
 * Description: For uploading the new task form
-* URL: `/api/tasks/new_task`
+* URL: `/api/task/new_task`
 * Method: `POST`
 * Request Example:
 ```javascript
@@ -57,12 +59,19 @@ Tasks
 ```
 http/1.1 200 OK
 ```
-```
+```javascript
 {
  success:true,
- data:{
-  task_id:’1111…’
- }
+ progress_task_list:[
+  {
+    task_name: 'xiaonan',
+    completed_missons: 5,
+    total_missions: 10,
+    current_misson:'正在处理xxx基因'，
+    estimated_time:'5分钟'，
+    checked: false
+   },...
+  ]
 }
 ```
 * Response Example on `failure`:
@@ -91,19 +100,19 @@ http/1.1 200 OK
  success:true,
  list:[
   {
-    task_name: xiaonan,
+    task_name: 'xiaonan',
     completed_missons: 5,
     total_missions: 10,
-    current_misson:“正在处理xxx基因”，
-    estimated_time:”5分钟“，
+    current_misson:'正在处理xxx基因'，
+    estimated_time:'5分钟'，
     checked: false
    },
    {
-     task_name:tianqi,
+     task_name:'tianqi',
      completed_missions:10,
      total_missions:10,
-     current_mission:””,
-     estimated_time:”4分钟”，
+     current_mission:'',
+     estimated_time:'4分钟'，
      checked:false
    }, …  
  ]
@@ -115,9 +124,9 @@ http/1.1 200 OK
 ```
 ```javascript
 {
- success:failure,
+ success:false,
  errorCode: BACKEND_MAINTAINANCE
-} 
+}
 ```
 
 ### All_task_list
@@ -183,12 +192,13 @@ http/1.1 200 OK
       cDNA:'GCGTG',
       protein:'danbaizhi',
       zygosity:'peixing',
+      phenotype_matched:'biaoxingpipei',
       pheno_matched_score:39,
       ACMG_criteria_matched:"PM2|BP4",
       clinical_significance:'Uncertain Significance',
       clinical_significance_score:55,
       classification_score:0.88,
-      total_score:1.8	
+      total_score:1.8
     },…
   ],
   incidental_table_data:[
@@ -215,7 +225,7 @@ http/1.1 200 OK
   ],
   input_gene_data:[
     {
-      
+
      }
   ]
  }
@@ -232,12 +242,36 @@ http/1.1 200 OK
 ```
 
 
-
-
-
-
-
-
-
-
-
+### Fetch_Annotation
+* Description: For fetching the current gene's annotation
+* URL: `/api/result/:task_id/:gene_name`
+* Method: `Get`
+* Request Example:
+```javascript
+{ }
+```
+* Response Example on `success`:
+```
+http/1.1 200 OK
+```
+```
+{
+ success:true,
+ annotation_list:[
+   {
+     standard:'variant_annotation',
+     analyze:'dkfslkdfjsldfjlksfjlksdjflksdjflksdj'
+   },...
+ ]
+}
+```
+* Response Example on `failure`:
+```
+http/1.1 200 OK
+```
+```javascript
+{
+ success:false,
+ errCode:INFOMATION_UNCOMPLETED
+}
+```

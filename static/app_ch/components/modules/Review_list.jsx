@@ -58,7 +58,7 @@ class Review_list extends React.Component{
     let className = 'clickable';
     return {
       onClick:()=>{
-        this.props.toResult(row.id);
+        this.props.toResult(row.id, row.name);
       },
       className:className,
     }

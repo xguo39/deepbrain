@@ -1,6 +1,6 @@
 import React from 'react';
-import New_task_upload from 'components/fragments/New_task_upload.jsx';
-import New_task_progress from 'components/fragments/New_task_progress.jsx';
+import New_task_upload from 'containers/fragments/New_task_upload_container';
+import New_task_progress from 'containers/fragments/New_task_progress_container';
 
 
 class New_task extends React.Component {

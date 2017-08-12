@@ -1,6 +1,6 @@
 import {connect} from 'react-redux';
 import root_actions from 'actions/root_actions';
-import Review_list from 'components/modules/Review_list.jsx';
+import New_task_upload from 'components/fragments/New_task_upload';
 import {push} from 'react-router-redux';
 
 const mapStateToProps = (state)=>{
@@ -11,8 +11,8 @@ const mapStateToProps = (state)=>{
 
 const mapDispatchToProps = (dispatch)=>{
   return{
-    toResult:(task_id, task_name)=>{
-      dispatch(push(`/home/ch/result/${task_id}/${task_name}`));
+    submit_task:(task_data)=>{
+      dispatch(root_actions.uploadTask(task_data));
     }
   }
 }
@@ -20,4 +20,4 @@ const mapDispatchToProps = (dispatch)=>{
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(Review_list);
+)(New_task_upload);

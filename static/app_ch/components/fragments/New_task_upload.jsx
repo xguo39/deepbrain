@@ -19,8 +19,23 @@ class New_task_upload extends React.Component {
   }
 
   _handleSubmit(evt){
-    let formData = new FormData(evt.target);
-    // alert('hahah submit yo!');
+    evt.preventDefault();
+    let myForm = evt.target;
+    let taskData = new FormData(myForm);
+    // For extracting the input checkbox element when no selected
+    var inputs = document.getElementsByTagName("input");
+    for(var i = 0; i < inputs.length; i++) {
+        if(inputs[i].type == "checkbox" && inputs[i].checked===false) {
+            // inputs[i].checked = true;
+            taskData.append(inputs[i].name, false);
+        }
+    }
+    for (var [key, value] of taskData.entries()) {
+      console.log(key, value);
+    }
+
+    // Why can't extract the form data
+    this.props.submit_task(taskData);
   }
 
   _handleChange(evt){
@@ -114,7 +129,7 @@ class New_task_upload extends React.Component {
                     <input
                       id='input_phen'
                       type="file"
-                      name="symptom_file"
+                      name="input_phen"
                       accept=".txt"
                       onChange={(evt)=>this._handleChange(evt)}/>
                     <span className='prompt'>{this.state.input_phen}</span>
@@ -138,7 +153,7 @@ class New_task_upload extends React.Component {
                     <a data-toggle='collapse' className='switch' href='#father_detail' onClick={(evt)=>this._handleClick(evt)}>
                         <input type='checkbox'
                           id='check_father'
-                          name='father_check'
+                          name='check_father'
                           checked={this.state.father_check}
                           onChange={(evt)=>{this._handleChange(evt)}}/>
                           <label htmlFor='check_father' className='check slider round'></label>
@@ -154,8 +169,9 @@ class New_task_upload extends React.Component {
                   <a className='switch' onClick={(evt)=>this._handleClick(evt)}>
                       <input type='checkbox'
                         id='check_father_pheno'
-                        name='father_check_pheno'
+                        name='check_father_pheno'
                         checked={this.state.father_check_pheno}
+                        value='1'
                         onChange={(evt)=>{this._handleChange(evt)}}/>
                         <label htmlFor='check_father_pheno' className='check slider round'></label>
                   </a>
@@ -186,7 +202,7 @@ class New_task_upload extends React.Component {
                   <a data-toggle='collapse' className='switch' href='#mother_detail' onClick={(evt)=>this._handleClick(evt)}>
                       <input type='checkbox'
                         id='check_mother'
-                        name='mother_check'
+                        name='check_mother'
                         checked={this.state.mother_check}
                         onChange={(evt)=>{this._handleChange(evt)}}/>
                         <label htmlFor='check_mother' className='check slider round'></label>
@@ -202,7 +218,7 @@ class New_task_upload extends React.Component {
                   <a className='switch' onClick={(evt)=>this._handleClick(evt)}>
                       <input type='checkbox'
                         id='check_mother_pheno'
-                        name='mother_check_pheno'
+                        name='check_mother_pheno'
                         checked={this.state.mother_check_pheno}
                         onChange={(evt)=>{this._handleChange(evt)}}/>
                         <label htmlFor='check_mother_pheno' className='check slider round'></label>
@@ -237,7 +253,7 @@ class New_task_upload extends React.Component {
                   <a className='switch' onClick={(evt)=>this._handleClick(evt)}>
                       <input type='checkbox'
                         id='check_incidental_findings'
-                        name='incidental_findings_check'
+                        name='check_incidental_findings'
                         checked={this.state.incidental_findings_check}
                         onChange={(evt)=>{this._handleChange(evt)}}/>
                         <label htmlFor='check_incidental_findings' className='check slider round'></label>
@@ -252,7 +268,7 @@ class New_task_upload extends React.Component {
                   <a className='switch' onClick={(evt)=>this._handleClick(evt)}>
                       <input type='checkbox'
                         id='check_candidate_genes'
-                        name='candidate_genes_check'
+                        name='check_candidate_genes'
                         checked={this.state.candidate_genes_check}
                         onChange={(evt)=>{this._handleChange(evt)}}/>
                         <label htmlFor='check_candidate_genes' className='check slider round'></label>
@@ -273,11 +289,11 @@ class New_task_upload extends React.Component {
 }
 
 New_task_upload.propTypes={
-
+  submit_task:React.PropTypes.func,
 }
 
 New_task_upload.defaultProps={
-
+  submit_task:()=>{}
 }
 
 export default New_task_upload;

@@ -6,19 +6,20 @@ class Processing_task extends React.Component{
   }
 
   render(){
+    const current_percent = `${this.props.task_info.completed_missons*10}%`;
     let barStyle={
-      "width":"50%",
+      "width":current_percent,
     }
     return (
       <div>
-        <p className='task-title'>任务名称1：80%</p>
+        <p className='task-title'>{`${this.props.task_info.task_name}：${current_percent}`}</p>
         <div className="progress">
           <div className="progress-bar progress-bar-info" role="progressbar" aria-valuenow="50"
-          aria-valuemin="0" aria-valuemax="100" style={{"width":"50%"}}>
+          aria-valuemin="0" aria-valuemax="100" style={barStyle}>
             <span className="sr-only">50% Complete</span>
           </div>
         </div>
-        <p className='processing-info'> 正在处理某个基因 </p>
+        <p className='processing-info'> {this.props.task_info.current_misson} </p>
       </div>
     )
   }
@@ -31,8 +32,8 @@ class Completed_task extends React.Component{
 
   render(){
     return (
-      <div className='completed_text'>
-        <span>任务名称</span><span>  完成</span>
+      <div className='completed_task' alt={`${this.props.task_info.task_id},${this.props.task_info.task_name}`}>
+        <span>{this.props.task_info.task_name}</span><span>  完成</span>
       </div>
     )
   }

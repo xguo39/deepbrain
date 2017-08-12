@@ -50,20 +50,21 @@
       border-right: 1px solid #58BCEB;
       text-align: center;
       cursor: pointer;
-      &:hover{
-        background-color: #4A90E2;
-        span{
-          color:white;
-        }
-      }
       span{
         vertical-align: middle;
         color: #406A8C;
         text-decoration: none;
         background-color: transparent;
         border: 0px;
+        pointer-events: none;
       }
       &.active{
+        background-color: #4A90E2;
+        span{
+          color:white;
+        }
+      }
+      &:hover{
         background-color: #4A90E2;
         span{
           color:white;
@@ -138,6 +139,7 @@
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
+  overflow: auto;
 }
 
 .result_table{
@@ -151,10 +153,13 @@
   thead{
     th{
       text-align: center;
-      max-width: 100px;
       border: 1px solid #e6e6e6;
       padding: 20px 0px;
-      font-weight: normal;
+      font-weight: bold;
+    }
+    .sort{
+      cursor: pointer;
+      padding: 0px 0px;
     }
   }
   tbody{
@@ -171,17 +176,104 @@
       word-wrap: break-word;
     }
   }
+  .pagify-pagination{
+    position: fixed;
+    left: 19%;
+    top:95%;
+    font-size: 14px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    span{
+      margin: 0px 5px;
+      cursor: pointer;
+    }
+  }
 }
 
 
-
-
-
-
-
-
-
-
+// Define the annotation page style
+.annotation_page{
+  background: rgba(55,70,95,0.8);
+  position: fixed;
+  width: 100%;
+  height:100%;
+  left:0%;
+  top:0%;
+  z-index: 50;
+  .annotation_area{
+    position: relative;
+    top:8%;
+    height:85%;
+  }
+  .annotation_header{
+    background-color: white;
+    position: relative;
+    width: 70%;
+    margin: 0px auto;
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    p{
+      color:#406A8C;
+      vertical-align: middle;
+      margin:0px 7%;
+      letter-spacing: 10px;
+      font-size: 16px;
+      padding: 11px 0px;
+      span{
+        color:#4A90E2;
+        letter-spacing: 3px;
+      }
+    }
+  }
+  img{
+    position: absolute;
+    width: 45px;
+    top:0%;
+    left:85%;
+    padding: 0px 0px;
+    cursor: pointer;
+  }
+  .annotation_table{
+    background-color: white;
+    position: relative;
+    width: 70%;
+    max-height: 90%;
+    margin: 10px auto;
+    overflow: auto;
+    table{
+      position: relative;
+      width: 100%;
+      color:#406A8C;
+      .col1{
+        width: 20%;
+        border-right: 1px solid #f2f2f2;
+      }
+      .col2{
+        width: 80%;
+      }
+    }
+    th{
+      text-align: center;
+      font-size: 16px;
+      font-weight: normal;
+      letter-spacing: 10px;
+      padding: 10px 0px;
+      border-bottom: 1px solid #f2f2f2;
+    }
+    td{
+      padding: 6px 0px;
+      &.col1{
+        text-align: center;
+      }
+      &.col2{
+        text-align: left;
+        text-indent: 20px;
+      }
+    }
+  }
+}
 
 
 // Define the review list page style

@@ -15,6 +15,7 @@ module.exports = {
       path.resolve('./'),
       path.resolve('./node_modules')
     ],
+    extensions: ['.js', '.jsx'],
     alias: {
       "jquery": path.join(__dirname, "./libs/jquery-stub.js")
     }

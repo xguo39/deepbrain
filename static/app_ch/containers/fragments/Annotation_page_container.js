@@ -1,7 +1,7 @@
 import {connect} from 'react-redux';
 import root_actions from 'actions/root_actions';
-import Review_list from 'components/modules/Review_list.jsx';
-import {push} from 'react-router-redux';
+import Annotation_page from 'components/fragments/Annotation_page';
+import {push,go} from 'react-router-redux';
 
 const mapStateToProps = (state)=>{
   return {
@@ -11,8 +11,8 @@ const mapStateToProps = (state)=>{
 
 const mapDispatchToProps = (dispatch)=>{
   return{
-    toResult:(task_id, task_name)=>{
-      dispatch(push(`/home/ch/result/${task_id}/${task_name}`));
+    goBack:()=>{
+      dispatch(go(-1));
     }
   }
 }
@@ -20,4 +20,4 @@ const mapDispatchToProps = (dispatch)=>{
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(Review_list);
+)(Annotation_page);

@@ -14,6 +14,9 @@ const mapDispatchToProps = (dispatch)=>{
      goBack:()=>{
        dispatch(go(-1));
      },
+     showAnnotation:(current_path, gene, transicript)=>{
+      dispatch(push(`${current_path}/${gene}`));
+     }
   }
 }
 

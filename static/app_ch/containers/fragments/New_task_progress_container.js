@@ -1,11 +1,11 @@
 import {connect} from 'react-redux';
 import root_actions from 'actions/root_actions';
-import Review_list from 'components/modules/Review_list.jsx';
+import New_task_progress from 'components/fragments/New_task_progress';
 import {push} from 'react-router-redux';
 
 const mapStateToProps = (state)=>{
   return {
-
+     progress_task_list:state.tasks.progress_task_list
   }
 }
 
@@ -20,4 +20,4 @@ const mapDispatchToProps = (dispatch)=>{
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(Review_list);
+)(New_task_progress);
