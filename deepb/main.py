@@ -250,12 +250,12 @@ def getZygosity(parent_ngs, candidate_vars_zygosity, proband_gender, variant_id_
     # If the input file does not have gene, variant, transcript information, then those fields are ''
     candidate_vars = []
     # if only one parent ngs data are available
-    if parent_ngs in [1, 2]:
+    if parent_ngs in [0, 1, 2]:
         for item in candidate_vars_zygosity:
             gene, variant, transcript, variant_id, chrom, ref, allele1, allele2, mother1, mother2, father1, father2 = item
             if variant_id in variant_id_to_gene: gene = variant_id_to_gene[variant_id]
             proband_alts, mother_alts, father_alts = getAlts(ref, allele1, allele2, mother1, mother2, father1, father2) 
-            if parentAltInProbandAlts(mother_alts, proband_alts) or parentAltInProbandAlts(father_alts, proband_alts):
+            if parent_ngs in [1, 2] and parentAltInProbandAlts(mother_alts, proband_alts) or parentAltInProbandAlts(father_alts, proband_alts):
                 zygosity = 'het'
             else:
                 zygosity = ''
