@@ -256,8 +256,15 @@ def getZygosity(parent_ngs, candidate_vars_zygosity, proband_gender, variant_id_
             if variant_id in variant_id_to_gene: gene = variant_id_to_gene[variant_id]
             proband_alts, mother_alts, father_alts = getAlts(ref, allele1, allele2, mother1, mother2, father1, father2) 
             #print 'p: ', proband_alts, mother_alts, father_alts
-            if parent_ngs in [1, 2] and parentAltInProbandAlts(mother_alts, proband_alts) or parentAltInProbandAlts(father_alts, proband_alts):
+            if parent_ngs == 0:
+                zygosity = ''
+            elif parentAltInProbandAlts(mother_alts, proband_alts) or parentAltInProbandAlts(father_alts, proband_alts):
                 zygosity = 'het'
+            elif allele1 == allele2:
+                zygosity = 'hom'
+            elif proband_gender == 0 and re.search(r'x', chrom, re.I):
+                if parentAltInProbandAlts(mother_alts, proband_alts):
+                    zygosity = 'hem'
             else:
                 zygosity = ''
             candidate_vars.append((gene, variant, transcript, variant_id, zygosity))
@@ -289,7 +296,10 @@ def read_input_gene_file(input_gene, parent_ngs, father_vcf, mother_vcf, proband
 
     delimiter, field_names = getFileDelimiter(input_gene)
     #print field_names
+    # if input is vcf file
+    input_is_vcf = False
     if '#CHROM' in field_names and 'POS' in field_names and 'REF' in field_names and 'ALT' in field_names: 
+        input_is_vcf = True 
         df_vcf = convertFile2DF(input_gene, delimiter, 'proband')
         df_vcf_father, df_vcf_mother = pd.DataFrame(), pd.DataFrame()
         if father_vcf:
@@ -316,7 +326,7 @@ def read_input_gene_file(input_gene, parent_ngs, father_vcf, mother_vcf, proband
         input_gene = df_vcf.values.tolist()       
         input_gene = ['dummy line'] + input_gene 
         #print df_vcf
-    chrom_idx, pos_idx, ref_idx, allele1_idx, allele2_idx, gene_idx, zygosity_idx = None, None, None, None, None, None, None
+    chrom_idx, pos_idx, ref_idx, alt_idx, allele1_idx, allele2_idx, gene_idx, zygosity_idx = None, None, None, None, None, None, None, None
     mother_allele1_idx, mother_allele2_idx, father_allele1_idx, father_allele2_idx = None, None, None, None
 
     for idx in xrange(len(field_names)):
@@ -324,14 +334,15 @@ def read_input_gene_file(input_gene, parent_ngs, father_vcf, mother_vcf, proband
         if re.match(r'chrom|#chrom', field, re.I): chrom_idx = idx
         if re.match(r'pos|start', field, re.I): pos_idx = idx
         if re.match(r'ref', field, re.I): ref_idx = idx
+        if re.match(r'alt|allele.*scope', field, re.I): alt_idx = idx
         if re.match(r'allele.*1', field, re.I): allele1_idx = idx
         if re.match(r'allele.*2', field, re.I): allele2_idx = idx
         if re.match(r'gene \(gene\)|gene$', field, re.I): gene_idx = idx
         if re.match(r'zygo', field, re.I): zygosity_idx = idx
         if re.match(r'mot.*1', field, re.I): mother_allele1_idx = idx
         if re.match(r'mot.*2', field, re.I): mother_allele2_idx = idx
-        if re.match(r'fat.*1', field, re.I): father_allele1_idx = idx
-        if re.match(r'fat.*2', field, re.I): father_allele2_idx = idx
+        if re.match(r'fat.*all.{0,6}1', field, re.I): father_allele1_idx = idx
+        if re.match(r'fat.*all.{0,6}2', field, re.I): father_allele2_idx = idx
 
     input_gene_list = []
     CANDIDATE_GENES = []
@@ -364,9 +375,26 @@ def read_input_gene_file(input_gene, parent_ngs, father_vcf, mother_vcf, proband
             if re.search(r'chr.*:g\.', part, re.I):
                 variant_id = part
             if re.match(r'het|hom|hem|de |comp', part, re.I):	
-                zygosity = part
-        if (not variant_id or not zygosity) and (chrom_idx is not None and pos_idx is not None and ref_idx is not None and allele1_idx is not None and allele2_idx is not None):
-            chrome, pos, ref, allele1, allele2 = parts[chrom_idx], parts[pos_idx], parts[ref_idx], parts[allele1_idx], parts[allele2_idx]
+                if re.match(r'het', part, re.I):
+                    zygosity = 'het'
+                elif re.match(r'hom', part, re.I):
+                    zygosity = 'hom'
+                elif re.match(r'hem', part, re.I):
+                    zygosity = 'hem'
+                elif re.match(r'de ', part, re.I):
+                    zygosity = 'de novo'
+                elif re.match(r'comp', part, re.I):
+                    zygosity = 'comp het'
+        if (not variant_id or not zygosity) and ((chrom_idx is not None and pos_idx is not None and ref_idx is not None and allele1_idx is not None and allele2_idx is not None) or (chrom_idx is not None and pos_idx is not None and ref_idx is not None and alt_idx is not None and (allele1_idx is None or allele2_idx is None))):
+            if allele1_idx is not None and allele2_idx is not None:
+                chrome, pos, ref, allele1, allele2 = parts[chrom_idx], parts[pos_idx], parts[ref_idx], parts[allele1_idx], parts[allele2_idx]
+            else:
+                chrome, pos, ref, alt = parts[chrom_idx], parts[pos_idx], parts[ref_idx], parts[alt_idx]
+                alts = alt.split(',')
+                if len(alts) > 1: 
+                    allele1, allele2 = alts[0], alts[1]
+                else:
+                    allele1, allele2 = ref, alts[0]
             alts = []
             if allele1 != ref: alts.append(allele1) 
             if allele2 != ref: alts.append(allele2) 
@@ -377,31 +405,48 @@ def read_input_gene_file(input_gene, parent_ngs, father_vcf, mother_vcf, proband
                     pass
                 if not gene and not variant and not transcript and not variant_id:
                     continue
-                if mother_allele1_idx is not None and mother_allele2_idx is not None and father_allele1_idx is not None and father_allele2_idx is not None:
+                if mother_allele1_idx is not None:
                     try:
                         mother1 = parts[mother_allele1_idx]
                     except IndexError:
                         mother1 = ''
+                if mother_allele2_idx is not None:
                     try:
                         mother2 = parts[mother_allele2_idx]
                     except IndexError:
                         mother2 = ''
+                if father_allele1_idx is not None: 
                     try:
                         father1 = parts[father_allele1_idx]
                     except IndexError:
                         father1 = ''
+                if father_allele2_idx is not None:
                     try:
                         father2 = parts[father_allele2_idx]
                     except IndexError:
                         father2 = ''
+                    #print 'idx: ', mother_allele1_idx, mother_allele2_idx, father_allele1_idx, father_allele2_idx
+                    #print 'c: ', chrome, pos, ref, allele1, allele2,  mother1, mother2, father1, father2
+                if not zygosity and ( (mother_allele1_idx is not None and mother_allele2_idx is not None) or (father_allele1_idx is not None and father_allele2_idx is not None) ):
                     candidate_vars_zygosity.append((gene, variant, transcript, variant_id, chrome, ref, allele1, allele2, mother1, mother2, father1, father2))
+                    # can be removed after front-end is done
+                    if ((mother_allele1_idx is None and mother_allele2_idx is None) and (father_allele1_idx is not None and father_allele2_idx is not None)) or (input_is_vcf and not mother_vcf and father_vcf):
+                        parent_ngs = 1
+                    elif ((mother_allele1_idx is not None and mother_allele2_idx is not None) and (father_allele1_idx is None and father_allele2_idx is None)) or (input_is_vcf and mother_vcf and not father_vcf):
+                        parent_ngs = 2 
+                    elif (mother_allele1_idx is None and mother_allele2_idx is None and father_allele1_idx is None and father_allele2_idx is None) or (input_is_vcf and not mother_vcf and not father_vcf):
+                        parent_ngs = 0 
+                    else:
+                        parent_ngs = 3
                 candidate_vars.append((gene, variant, transcript, variant_id, zygosity))
         else:
             candidate_vars.append((gene, variant, transcript, variant_id, zygosity))
 
-    non_snpeff_var_data = [] 
-    if candidate_vars_zygosity: # this means we need to derive zygosity information from input files
-        non_snpeff_var_data, variant_id_to_gene = collectVariantInfo.getVariantInfoFromMyVariant(candidate_vars) # because comp het requires gene info, we have to get gene info from variant id for cases where input files do not have gene info
+    non_snpeff_var_data = []
+    non_snpeff_var_data, variant_id_to_gene = collectVariantInfo.getVariantInfoFromMyVariant(candidate_vars) # because comp het requires gene info, we have to get gene info from variant id for cases where input files do not have gene info
+    #print candidate_vars_zygosity
+    #print candidate_vars 
+    if candidate_vars_zygosity: # this means we need to derive zygosity information from input files; at least one of parents' allele info is available
         candidate_vars = getZygosity(parent_ngs, candidate_vars_zygosity, proband_gender, variant_id_to_gene)  # 'zygosity' in the candidate_vars is updated
 
     #tmp_candidate_vars = []
@@ -481,7 +526,7 @@ def master_function(raw_input_id):
     proband_gender = 0 # 0 -- male; 1 -- female; 2 -- other
     proband_age = 3 
     # parent_ngs [0, 1, 2, 3]. 0 -- no parents NGS data; 1 -- only father's data; 2 -- only mother's data; 3 -- both parents' data
-    parent_ngs = 0
+    parent_ngs = 3 
     parent_affects = 0
     father_vcf = ''
     mother_vcf = ''
