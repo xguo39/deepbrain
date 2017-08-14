@@ -29,6 +29,7 @@ from deepb.serializers import New_task_Serializer
 from deepb.serializers import Progress_task_Serializer
 from deepb.serializers import All_task_Serializer
 from deepb.serializers import Case_result_Serializer
+import json
 
 
 
@@ -317,6 +318,12 @@ def lof(request):
         'lof_result': lof_result,
         })
 
+
+@login_required(login_url='/login/')
+def home_new_View_ch(request):
+    print request.user.username
+    return render(request, 'home_ch_new.html', {'user_name': request.user.username})
+
 class new_task(APIView):
 
     @permission_classes((IsAdminUser,))
@@ -335,13 +342,19 @@ class progress_task_list(APIView):
         serializer = Progress_task_Serializer(post, many=True)
         return Response(serializer.data)
 
+
 class all_task_list(APIView):
 
-    def get(self, request, format=None):
-        post = Raw_input_table.objects.filter(user_name=request.user.username)
+    def get(self, request, user_name, format=None):
+        print 'user:', user_name
+        post = Raw_input_table.objects.filter(user_name=user_name)[::-1]
         serializer = All_task_Serializer(post, many=True)
-        return Response(serializer.data)
+        # print post
+        # print serializer.data
+        json_result = {'success':True, 'list':serializer.data}
+        return Response(json_result)
 
 class case_result(generics.RetrieveUpdateDestroyAPIView):
     queryset = Main_table.objects.all()
     serializer_class = Case_result_Serializer
+
