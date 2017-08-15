@@ -182,7 +182,7 @@ class General_data_table extends React.Component{
 
               <Table.Body
                 rows={paginated.rows}
-                rowKey='gene'
+                rowKey={({ rowData, rowIndex }) => rowIndex}
                 onRow={(row, { rowIndex, rowKey })=>this._handleBodyRow(row, { rowIndex, rowKey })}/>
 
             </Table.Provider>
