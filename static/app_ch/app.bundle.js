@@ -16856,7 +16856,7 @@ var initialState = {
     }, {
       id: 2,
       task_name: 'tianqi',
-      status: 'success',
+      status: 'succeed',
       processed_time: '4分钟',
       checked: false
     }],
@@ -16864,7 +16864,7 @@ var initialState = {
       id: 1,
       task_name: "xiaonan",
       pub_date: '2017-06-18, 12:03pm',
-      status: 'success',
+      status: 'succeed',
       processed_time: '0',
       checked: false
     }, {
@@ -17205,7 +17205,7 @@ var New_task_progress = function (_React$Component) {
     value: function _loadProgressList(progress_list) {
       return progress_list.map(function (task, index) {
         var status = task.status;
-        if (status !== 'success') {
+        if (status !== 'succeed') {
           return _react2.default.createElement(
             'div',
             { key: index, className: 'td3 td-stripe' },
@@ -20052,6 +20052,8 @@ var Result_page = function (_React$Component) {
     key: 'componentWillMount',
     value: function componentWillMount() {
       console.log(this.props.match.params);
+      var task_id = this.props.match.params.task_id;
+      var task_name = this.props.fetchResultData();
     }
   }, {
     key: '_handleClick',
@@ -20365,6 +20367,8 @@ var Result_page = function (_React$Component) {
 Result_page.propTypes = {
   goBack: _react2.default.PropTypes.func.isRequired,
   showAnnotation: _react2.default.PropTypes.func,
+  fetchResultData: _react2.default.PropTypes.func,
+
   summary_table_data: _react2.default.PropTypes.array,
   incidental_table_data: _react2.default.PropTypes.array,
   candidate_table_data: _react2.default.PropTypes.array,
@@ -20894,7 +20898,7 @@ var Task_list = function (_React$Component) {
         },
         cell: {
           formatters: [function (status) {
-            return status === 'success' ? '成功' : '失败';
+            return status === 'succeed' ? '成功' : '失败';
           }]
         },
         props: {
@@ -21205,6 +21209,7 @@ var _reactRouterRedux = __webpack_require__(12);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var mapStateToProps = function mapStateToProps(state) {
+
   return {};
 };
 
@@ -21213,6 +21218,7 @@ var mapDispatchToProps = function mapDispatchToProps(dispatch) {
     goBack: function goBack() {
       dispatch((0, _reactRouterRedux.go)(-1));
     },
+
     showAnnotation: function showAnnotation(current_path, gene, transicript) {
       dispatch((0, _reactRouterRedux.push)(current_path + '/' + gene));
     }

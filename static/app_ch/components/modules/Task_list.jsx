@@ -36,7 +36,7 @@ class Task_list extends React.Component{
           },
           cell:{
             formatters:[
-              status => status==='success'?'成功':'失败'
+              status => status==='succeed'?'成功':'失败'
             ]
           },
           props:{

@@ -22,7 +22,7 @@ const initialState = {
      {
        id:2,
        task_name:'tianqi',
-       status:'success',
+       status:'succeed',
        processed_time:'4分钟',
        checked:false
      },
@@ -32,7 +32,7 @@ const initialState = {
        id:1,
        task_name:"xiaonan",
        pub_date: '2017-06-18, 12:03pm',
-       status:'success',
+       status:'succeed',
        processed_time:'0',
        checked:false
       },

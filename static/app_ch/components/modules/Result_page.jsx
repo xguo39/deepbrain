@@ -12,9 +12,12 @@ class Result_page extends React.Component{
       current_data:this.props.summary_table_data
     }
   }
-
+  
   componentWillMount(){
     console.log(this.props.match.params);
+    const task_id = this.props.match.params.task_id;
+    const task_name =
+    this.props.fetchResultData()
   }
 
   _handleClick(evt){
@@ -184,6 +187,8 @@ class Result_page extends React.Component{
 Result_page.propTypes={
   goBack:React.PropTypes.func.isRequired,
   showAnnotation:React.PropTypes.func,
+  fetchResultData:React.PropTypes.func,
+
   summary_table_data:React.PropTypes.array,
   incidental_table_data:React.PropTypes.array,
   candidate_table_data:React.PropTypes.array,
