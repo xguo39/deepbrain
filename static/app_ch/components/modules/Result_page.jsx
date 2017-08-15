@@ -93,7 +93,6 @@ class Result_page extends React.Component{
       let current_path = this.props.match.url;
       this.props.showAnnotation(current_path, gene, transcript);
     }
-
     //
   }
 

@@ -20288,7 +20288,6 @@ var Result_page = function (_React$Component) {
         var current_path = this.props.match.url;
         this.props.showAnnotation(current_path, gene, transcript);
       }
-
       //
     }
   }, {
