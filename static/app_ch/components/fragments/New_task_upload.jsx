@@ -26,14 +26,15 @@ class New_task_upload extends React.Component {
     var inputs = document.getElementsByTagName("input");
     for(var i = 0; i < inputs.length; i++) {
         if(inputs[i].type == "checkbox" && inputs[i].checked===false) {
-            // inputs[i].checked = true;
             taskData.append(inputs[i].name, false);
+        }
+        else if(inputs[i].type == "checkbox" && inputs[i].checked){
+            taskData.set(inputs[i].name, true);
         }
     }
     for (var [key, value] of taskData.entries()) {
       console.log(key, value);
     }
-
     // Why can't extract the form data
     this.props.submit_task(taskData);
   }

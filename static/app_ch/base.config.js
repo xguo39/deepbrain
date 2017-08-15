@@ -9,7 +9,7 @@ const apis={
   upload_task:'/api/task/new_task',
   progress_task_list:'/api/task/progress_task_list/',
   // all_task_list:'/api/task/all_task_list/',
-  all_task_list:'/api/task/all_task_list/test',
+  all_task_list:'/api/task/all_task_list/alexxu1992',
   fetch_case_result:'/api/result/:case_id/',
   fetch_annotation:'/api/result/:task_id/:gene_name'
 }

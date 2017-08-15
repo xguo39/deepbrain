@@ -6,6 +6,11 @@ class New_task_progress extends React.Component {
     super(props);
   }
 
+  componentWillMount(){
+    // console.log(document.getElementById('user_name'));
+    this.props.fetchProgressTask();
+  }
+
   _handleClick(evt){
     let target = evt.target;
     if(target.className.indexOf('completed_task')!==-1){
@@ -18,13 +23,13 @@ class New_task_progress extends React.Component {
 
   _loadProgressList(progress_list){
     return progress_list.map((task, index)=>{
-      let progress_percent = task.completed_missons/10;
-      if(progress_percent!==1){
+      let status = task.status;
+      if(status!=='success'){
         return <div key={index} className='td3 td-stripe'>
           <Processing_task task_info={task}/>
         </div>
       }else{
-        return <div key={index} className='td3 '>
+        return <div key={index} className='td3'>
           <Completed_task task_info={task}/>
         </div>
       }
@@ -43,11 +48,13 @@ class New_task_progress extends React.Component {
 
 New_task_progress.propTypes={
   progress_task_list:React.PropTypes.array,
+  fetchProgressTask:React.PropTypes.func,
   toResult:React.PropTypes.func,
 }
 
 New_task_progress.defaultProps={
   progress_task_list:[],
+  fetchProgressTask:()=>{},
   toResult:()=>{}
 }
 

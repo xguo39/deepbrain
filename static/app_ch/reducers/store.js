@@ -13,21 +13,17 @@ const initialState = {
     isFetching:false,
     progress_task_list:[
      {
-        task_id:1,
+        id:1,
         task_name: 'xiaonan',
-        completed_missons: 8,
-        total_missions: 10,
-        current_misson:'正在处理xxx基因',
-        estimated_time:'5分钟',
+        status:'正在处理xxx基因',
+        processed_time:'5分钟',
         checked: false
      },
      {
-       task_id:2,
+       id:2,
        task_name:'tianqi',
-       completed_missons:10,
-       total_missions:10,
-       current_mission:'',
-       estimated_time:'4分钟',
+       status:'success',
+       processed_time:'4分钟',
        checked:false
      },
     ],

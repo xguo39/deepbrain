@@ -19,6 +19,9 @@ class Main_area extends React.Component{
     super(props);
   }
 
+  componentWillMount(){
+  }
+
   render(){
     return(
        <div className='main_area container-fluid'>

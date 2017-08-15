@@ -4,8 +4,6 @@ import Task_list from 'components/modules/Task_list.jsx';
 import {push} from 'react-router-redux';
 
 const mapStateToProps = (state)=>{
-  console.log('hahahha');  
-  console.log(state.tasks.all_task_list);
   return {
     task_list:state.tasks.all_task_list
   }
@@ -14,7 +12,7 @@ const mapStateToProps = (state)=>{
 const mapDispatchToProps = (dispatch)=>{
   return{
     toResult:(task_id,task_name)=>{
-      dispatch(push(`/home/ch/result/${task_id}/${task_name}`));
+      dispatch(push(`/home/ch/new/result/${task_id}/${task_name}`));
     },
     fetchTaskList:()=>{
       dispatch(root_actions.fetchTaskList());

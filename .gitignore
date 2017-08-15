@@ -6,4 +6,5 @@ deepb/data/
 deepb/migrations/
 .gitignore
 dump.rdb
+node_modules/
 local_data/

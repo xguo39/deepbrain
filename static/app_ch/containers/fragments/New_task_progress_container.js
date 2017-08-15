@@ -11,8 +11,11 @@ const mapStateToProps = (state)=>{
 
 const mapDispatchToProps = (dispatch)=>{
   return{
+    fetchProgressTask:()=>{
+      // dispatch(root_actions.requestProgressTask());
+    },
     toResult:(task_id, task_name)=>{
-      dispatch(push(`/home/ch/result/${task_id}/${task_name}`));
+      dispatch(push(`/home/ch/new/result/${task_id}/${task_name}`));
     }
   }
 }

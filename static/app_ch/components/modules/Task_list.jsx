@@ -55,7 +55,7 @@ class Task_list extends React.Component{
     let className = 'clickable';
     return {
       onClick:()=>{
-        this.props.toResult(row.id, row.name);
+        this.props.toResult(row.id, row.task_name);
       },
       className:className,
     }
@@ -100,7 +100,7 @@ class Task_list extends React.Component{
 
                 <Table.Body
                   rows={searchedRows}
-                  rowKey='name'
+                  rowKey='task_name'
                   onRow={(row, { rowIndex, rowKey })=>this._handleBodyRow(row, { rowIndex, rowKey })}/>
 
               </Table.Provider>

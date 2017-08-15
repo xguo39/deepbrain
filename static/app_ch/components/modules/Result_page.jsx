@@ -30,6 +30,7 @@ class Result_page extends React.Component{
       target.classList.add('active');
       switch (target.getAttribute('alt')) {
         case 'summary_table':
+          // Waited: Here we cut off the correlated_phenotypes:'biaoxingpipei',
           this.setState({
             ...this.state,
             current_data:this.props.summary_table_data,
@@ -37,9 +38,10 @@ class Result_page extends React.Component{
           break;
 
         case 'phenotype_match_table':
+          // Waited: Here we cut off the summary_table_data to phenotype_match_table
           this.setState({
             ...this.state,
-            current_data:this.props.summary_table_data,
+            current_data:this.props.phenotype_match_table,
           })
           break;
 
@@ -191,50 +193,70 @@ Result_page.defaultProps={
      {
        gene:'WWOX',
        transcript:'chr16:g.78466583C>G',
-       cDNA:'GCGTG',
+       variant:'GCGTG',
        protein:'danbaizhi',
        zygosity:'peixing',
-       phenotype_matched:'biaoxingpipei',
-       pheno_matched_score:39,
-       ACMG_criteria_matched:"PM2|BP4",
-       clinical_significance:'Uncertain Significance',
-       classification_score:0.88,
-       total_score:1.8
+       correlated_phenotypes:'biaoxingpipei',
+       pheno_match_score:39,
+       hit_criteria:"PM2|BP4",
+       pathogenicity:'Uncertain Significance',
+       pathogenicity_score:0.88,
+       final_score:1.8
      },
      {
        gene:'WNT7A',
        transcript:'chr3:g.13896304C>T',
-       cDNA:'GCGTG',
+       variant:'GCGTG',
        protein:'danbaizhi',
        zygosity:'peixing',
-       phenotype_matched:'biaoxingpipei',
-       pheno_matched_score:45,
-       ACMG_criteria_matched:"PM2|BP4",
-       clinical_significance:'Uncertain Significance',
-       classification_score:1.28,
-       total_score:1.1
+       correlated_phenotypes:'biaoxingpipei',
+       pheno_match_score:45,
+       hit_criteria:"PM2|BP4",
+       pathogenicity:'Uncertain Significance',
+       pathogenicity_score:1.28,
+       final_score:1.1
      }
+  ],
+  phenotype_match_table:[
+    {
+      gene:'WWOX',
+      transcript:'chr16:g.78466583C>G',
+      variant:'GCGTG',
+      protein:'danbaizhi',
+      zygosity:'peixing',
+      correlated_phenotypes:'biaoxingpipei',
+      pheno_match_score:39,
+    },
+    {
+      gene:'WNT7A',
+      transcript:'chr3:g.13896304C>T',
+      variant:'GCGTG',
+      protein:'danbaizhi',
+      zygosity:'peixing',
+      correlated_phenotypes:'biaoxingpipei',
+      pheno_match_score:45,
+    }
   ],
   incidental_table_data:[
     {
       gene:'WWOX',
       transcript:'chr16:g.78466583C>G',
-      cDNA:'GCGTG',
+      variant:'GCGTG',
       protein:'danbaizhi',
       zygosity:'peixing',
-      pheno_matched_score:39,
-      ACMG_criteria_matched:"PM2|BP4",
-      clinical_significance:'Uncertain Significance',
+      pheno_match_score:39,
+      hit_criteria:"PM2|BP4",
+      pathogenicity:'Uncertain Significance',
     },
     {
       gene:'Shio OM4',
       transcript:'chr16:g.78466583C>G',
-      cDNA:'GCGTG',
+      variant:'GCGTG',
       protein:'danbaizhi',
       zygosity:'peixing',
-      pheno_matched_score:88,
-      ACMG_criteria_matched:"PM2|BP4",
-      clinical_significance:'Uncertain Significance',
+      pheno_match_score:88,
+      hit_criteria:"PM2|BP4",
+      pathogenicity:'Uncertain Significance',
     }
   ],
   candidate_table_data:[
@@ -244,7 +266,7 @@ Result_page.defaultProps={
       cDNA:'GCGTG',
       protein:'danbaizhi',
       zygosity:'peixing',
-      phenotype_matched:'from paper'
+      correlated_phenotypes:'from paper'
     },
     {
       gene:'Shio OM4',
@@ -252,7 +274,7 @@ Result_page.defaultProps={
       cDNA:'GCGTG',
       protein:'danbaizhi',
       zygosity:'peixing',
-      phenotype_matched:'from paper'
+      correlated_phenotypes:'from paper'
     }
   ],
   input_table_data:[

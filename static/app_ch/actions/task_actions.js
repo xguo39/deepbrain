@@ -36,7 +36,6 @@ const upload_task_actions = {
       return fetch(server_domain + apis.upload_task, option)
       .then(res=>res.json())
       .then(data=>{
-        console.log(data);
         if(data.success){
           dispatch(task_actions.uploadTaskSuccess(data.progress_task_list));
         }else{
@@ -47,7 +46,6 @@ const upload_task_actions = {
   }
 
 }
-
 
 const progress_task_actions = {
   REQUEST_PROGRESS_TASK:'REQUEST_PROGRESS_TASK',

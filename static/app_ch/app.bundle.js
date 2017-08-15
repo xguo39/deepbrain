@@ -3828,7 +3828,7 @@ var apis = {
   upload_task: '/api/task/new_task',
   progress_task_list: '/api/task/progress_task_list/',
   // all_task_list:'/api/task/all_task_list/',
-  all_task_list: '/api/task/all_task_list/test',
+  all_task_list: '/api/task/all_task_list/alexxu1992',
   fetch_case_result: '/api/result/:case_id/',
   fetch_annotation: '/api/result/:task_id/:gene_name'
 };
@@ -14596,7 +14596,7 @@ selectorFactory) {
       Connect.prototype.notifyNestedSubsOnComponentDidUpdate = function notifyNestedSubsOnComponentDidUpdate() {
         // `componentDidUpdate` is conditionally implemented when `onStateChange` determines it
         // needs to notify nested subs. Once called, it unimplements itself until further state
-        // changes occur. Doing it this way vs having a permanent `componentDidMount` that does
+        // changes occur. Doing it this way vs having a permanent `componentDidUpdate` that does
         // a boolean check every time avoids an extra method call most of the time, resulting
         // in some perf boost.
         this.componentDidUpdate = undefined;
@@ -14642,14 +14642,31 @@ selectorFactory) {
 
     if (process.env.NODE_ENV !== 'production') {
       Connect.prototype.componentWillUpdate = function componentWillUpdate() {
+        var _this2 = this;
+
         // We are hot reloading!
         if (this.version !== version) {
           this.version = version;
           this.initSelector();
 
-          if (this.subscription) this.subscription.tryUnsubscribe();
+          // If any connected descendants don't hot reload (and resubscribe in the process), their
+          // listeners will be lost when we unsubscribe. Unfortunately, by copying over all
+          // listeners, this does mean that the old versions of connected descendants will still be
+          // notified of state changes; however, their onStateChange function is a no-op so this
+          // isn't a huge deal.
+          var oldListeners = [];
+
+          if (this.subscription) {
+            oldListeners = this.subscription.listeners.get();
+            this.subscription.tryUnsubscribe();
+          }
           this.initSubscription();
-          if (shouldHandleStateChanges) this.subscription.trySubscribe();
+          if (shouldHandleStateChanges) {
+            this.subscription.trySubscribe();
+            oldListeners.forEach(function (listener) {
+              return _this2.subscription.listeners.subscribe(listener);
+            });
+          }
         }
       };
     }
@@ -16831,20 +16848,16 @@ var initialState = {
   tasks: {
     isFetching: false,
     progress_task_list: [{
-      task_id: 1,
+      id: 1,
       task_name: 'xiaonan',
-      completed_missons: 8,
-      total_missions: 10,
-      current_misson: '正在处理xxx基因',
-      estimated_time: '5分钟',
+      status: '正在处理xxx基因',
+      processed_time: '5分钟',
       checked: false
     }, {
-      task_id: 2,
+      id: 2,
       task_name: 'tianqi',
-      completed_missons: 10,
-      total_missions: 10,
-      current_mission: '',
-      estimated_time: '4分钟',
+      status: 'success',
+      processed_time: '4分钟',
       checked: false
     }],
     all_task_list: []
@@ -16954,7 +16967,6 @@ var upload_task_actions = {
       return fetch(_base.server_domain + _base.apis.upload_task, option).then(function (res) {
         return res.json();
       }).then(function (data) {
-        console.log(data);
         if (data.success) {
           dispatch(task_actions.uploadTaskSuccess(data.progress_task_list));
         } else {
@@ -17114,6 +17126,12 @@ var New_task_progress = function (_React$Component) {
   }
 
   _createClass(New_task_progress, [{
+    key: 'componentWillMount',
+    value: function componentWillMount() {
+      // console.log(document.getElementById('user_name'));
+      this.props.fetchProgressTask();
+    }
+  }, {
     key: '_handleClick',
     value: function _handleClick(evt) {
       var target = evt.target;
@@ -17128,8 +17146,8 @@ var New_task_progress = function (_React$Component) {
     key: '_loadProgressList',
     value: function _loadProgressList(progress_list) {
       return progress_list.map(function (task, index) {
-        var progress_percent = task.completed_missons / 10;
-        if (progress_percent !== 1) {
+        var status = task.status;
+        if (status !== 'success') {
           return _react2.default.createElement(
             'div',
             { key: index, className: 'td3 td-stripe' },
@@ -17138,7 +17156,7 @@ var New_task_progress = function (_React$Component) {
         } else {
           return _react2.default.createElement(
             'div',
-            { key: index, className: 'td3 ' },
+            { key: index, className: 'td3' },
             _react2.default.createElement(_Progress_task.Completed_task, { task_info: task })
           );
         }
@@ -17169,11 +17187,13 @@ var New_task_progress = function (_React$Component) {
 
 New_task_progress.propTypes = {
   progress_task_list: _react2.default.PropTypes.array,
+  fetchProgressTask: _react2.default.PropTypes.func,
   toResult: _react2.default.PropTypes.func
 };
 
 New_task_progress.defaultProps = {
   progress_task_list: [],
+  fetchProgressTask: function fetchProgressTask() {},
   toResult: function toResult() {}
 };
 
@@ -17241,8 +17261,9 @@ var New_task_upload = function (_React$Component) {
       var inputs = document.getElementsByTagName("input");
       for (var i = 0; i < inputs.length; i++) {
         if (inputs[i].type == "checkbox" && inputs[i].checked === false) {
-          // inputs[i].checked = true;
           taskData.append(inputs[i].name, false);
+        } else if (inputs[i].type == "checkbox" && inputs[i].checked) {
+          taskData.set(inputs[i].name, true);
         }
       }
       var _iteratorNormalCompletion = true;
@@ -17257,7 +17278,6 @@ var New_task_upload = function (_React$Component) {
 
           console.log(key, value);
         }
-
         // Why can't extract the form data
       } catch (err) {
         _didIteratorError = true;
@@ -18192,9 +18212,9 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var mappingDict = {
-  gene: '基因', transcript: '转录本', cDNA: 'cDNA', protein: '蛋白质', zygosity: '配型', phenotype_matched: '表型匹配',
-  pheno_matched_score: '表型匹配得分', ACMG_criteria_matched: 'ACMG评判标准', clinical_significance: '致病性',
-  classification_score: '致病性得分', total_score: '总分'
+  gene: '基因', transcript: '转录本', variant: 'c.DNA', protein: '蛋白质', zygosity: '配型', correlated_phenotypes: '表型匹配',
+  pheno_match_score: '表型匹配得分', hit_criteria: 'ACMG评判标准', pathogenicity: '致病性',
+  pathogenicity_score: '致病性得分', final_score: '总分'
 };
 
 var General_data_table = function (_React$Component) {
@@ -18241,7 +18261,7 @@ var General_data_table = function (_React$Component) {
         columns.push({
           property: '' + column_key,
           header: {
-            label: '' + mappingDict[column_key],
+            label: '' + (mappingDict[column_key] ? mappingDict[column_key] : column_key),
             transforms: [sortable],
             formatters: [sort.header({
               getSortingColumns: getSortingColumns
@@ -18252,7 +18272,7 @@ var General_data_table = function (_React$Component) {
         columns.push({
           property: '' + column_key,
           header: {
-            label: '' + mappingDict[column_key]
+            label: '' + (mappingDict[column_key] ? mappingDict[column_key] : column_key)
           }
         });
       }
@@ -18311,7 +18331,7 @@ var General_data_table = function (_React$Component) {
           columns.push({
             property: '' + column_key,
             header: {
-              label: '' + mappingDict[column_key],
+              label: '' + (mappingDict[column_key] ? mappingDict[column_key] : column_key),
               transforms: [sortable],
               formatters: [sort.header({
                 getSortingColumns: getSortingColumns
@@ -18322,7 +18342,7 @@ var General_data_table = function (_React$Component) {
           columns.push({
             property: '' + column_key,
             header: {
-              label: '' + mappingDict[column_key]
+              label: '' + (mappingDict[column_key] ? mappingDict[column_key] : column_key)
             }
           });
         }
@@ -19610,6 +19630,9 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
+// Mapping the status to a percentage
+var mappingDict = {};
+
 var Processing_task = function (_React$Component) {
   _inherits(Processing_task, _React$Component);
 
@@ -19622,7 +19645,8 @@ var Processing_task = function (_React$Component) {
   _createClass(Processing_task, [{
     key: 'render',
     value: function render() {
-      var current_percent = this.props.task_info.completed_missons * 10 + '%';
+      // const current_percent = mappingDict[this.props.task_info.status];
+      var current_percent = '50%';
       var barStyle = {
         "width": current_percent
       };
@@ -19652,7 +19676,7 @@ var Processing_task = function (_React$Component) {
           'p',
           { className: 'processing-info' },
           ' ',
-          this.props.task_info.current_misson,
+          this.props.task_info.status,
           ' '
         )
       );
@@ -19676,7 +19700,7 @@ var Completed_task = function (_React$Component2) {
     value: function render() {
       return _react2.default.createElement(
         'div',
-        { className: 'completed_task', alt: this.props.task_info.task_id + ',' + this.props.task_info.task_name },
+        { className: 'completed_task', alt: this.props.task_info.id + ',' + this.props.task_info.task_name },
         _react2.default.createElement(
           'span',
           null,
@@ -19762,6 +19786,9 @@ var Main_area = function (_React$Component) {
   }
 
   _createClass(Main_area, [{
+    key: 'componentWillMount',
+    value: function componentWillMount() {}
+  }, {
     key: 'render',
     value: function render() {
       return _react2.default.createElement(
@@ -19958,14 +19985,16 @@ var Result_page = function (_React$Component) {
         target.classList.add('active');
         switch (target.getAttribute('alt')) {
           case 'summary_table':
+            // Waited: Here we cut off the correlated_phenotypes:'biaoxingpipei',
             this.setState(_extends({}, this.state, {
               current_data: this.props.summary_table_data
             }));
             break;
 
           case 'phenotype_match_table':
+            // Waited: Here we cut off the summary_table_data to phenotype_match_table
             this.setState(_extends({}, this.state, {
-              current_data: this.props.summary_table_data
+              current_data: this.props.phenotype_match_table
             }));
             break;
 
@@ -20239,46 +20268,63 @@ Result_page.defaultProps = {
   summary_table_data: [{
     gene: 'WWOX',
     transcript: 'chr16:g.78466583C>G',
-    cDNA: 'GCGTG',
+    variant: 'GCGTG',
     protein: 'danbaizhi',
     zygosity: 'peixing',
-    phenotype_matched: 'biaoxingpipei',
-    pheno_matched_score: 39,
-    ACMG_criteria_matched: "PM2|BP4",
-    clinical_significance: 'Uncertain Significance',
-    classification_score: 0.88,
-    total_score: 1.8
+    correlated_phenotypes: 'biaoxingpipei',
+    pheno_match_score: 39,
+    hit_criteria: "PM2|BP4",
+    pathogenicity: 'Uncertain Significance',
+    pathogenicity_score: 0.88,
+    final_score: 1.8
   }, {
     gene: 'WNT7A',
     transcript: 'chr3:g.13896304C>T',
-    cDNA: 'GCGTG',
+    variant: 'GCGTG',
     protein: 'danbaizhi',
     zygosity: 'peixing',
-    phenotype_matched: 'biaoxingpipei',
-    pheno_matched_score: 45,
-    ACMG_criteria_matched: "PM2|BP4",
-    clinical_significance: 'Uncertain Significance',
-    classification_score: 1.28,
-    total_score: 1.1
+    correlated_phenotypes: 'biaoxingpipei',
+    pheno_match_score: 45,
+    hit_criteria: "PM2|BP4",
+    pathogenicity: 'Uncertain Significance',
+    pathogenicity_score: 1.28,
+    final_score: 1.1
+  }],
+  phenotype_match_table: [{
+    gene: 'WWOX',
+    transcript: 'chr16:g.78466583C>G',
+    variant: 'GCGTG',
+    protein: 'danbaizhi',
+    zygosity: 'peixing',
+    correlated_phenotypes: 'biaoxingpipei',
+    pheno_match_score: 39
+  }, {
+    gene: 'WNT7A',
+    transcript: 'chr3:g.13896304C>T',
+    variant: 'GCGTG',
+    protein: 'danbaizhi',
+    zygosity: 'peixing',
+    correlated_phenotypes: 'biaoxingpipei',
+    pheno_match_score: 45
   }],
   incidental_table_data: [{
     gene: 'WWOX',
     transcript: 'chr16:g.78466583C>G',
-    cDNA: 'GCGTG',
+    variant: 'GCGTG',
     protein: 'danbaizhi',
     zygosity: 'peixing',
-    pheno_matched_score: 39,
-    ACMG_criteria_matched: "PM2|BP4",
-    clinical_significance: 'Uncertain Significance'
+    pheno_match_score: 39,
+    hit_criteria: "PM2|BP4",
+    pathogenicity: 'Uncertain Significance'
   }, {
     gene: 'Shio OM4',
     transcript: 'chr16:g.78466583C>G',
-    cDNA: 'GCGTG',
+    variant: 'GCGTG',
     protein: 'danbaizhi',
     zygosity: 'peixing',
-    pheno_matched_score: 88,
-    ACMG_criteria_matched: "PM2|BP4",
-    clinical_significance: 'Uncertain Significance'
+    pheno_match_score: 88,
+    hit_criteria: "PM2|BP4",
+    pathogenicity: 'Uncertain Significance'
   }],
   candidate_table_data: [{
     gene: 'WWOX',
@@ -20286,14 +20332,14 @@ Result_page.defaultProps = {
     cDNA: 'GCGTG',
     protein: 'danbaizhi',
     zygosity: 'peixing',
-    phenotype_matched: 'from paper'
+    correlated_phenotypes: 'from paper'
   }, {
     gene: 'Shio OM4',
     transcript: 'chr16:g.78466583C>G',
     cDNA: 'GCGTG',
     protein: 'danbaizhi',
     zygosity: 'peixing',
-    phenotype_matched: 'from paper'
+    correlated_phenotypes: 'from paper'
   }],
   input_table_data: [{
     gene: 'WWOX',
@@ -20766,7 +20812,7 @@ var Task_list = function (_React$Component) {
       var className = 'clickable';
       return {
         onClick: function onClick() {
-          _this2.props.toResult(row.id, row.name);
+          _this2.props.toResult(row.id, row.task_name);
         },
         className: className
       };
@@ -20823,7 +20869,7 @@ var Task_list = function (_React$Component) {
             _react2.default.createElement(Table.Header, null),
             _react2.default.createElement(Table.Body, {
               rows: searchedRows,
-              rowKey: 'name',
+              rowKey: 'task_name',
               onRow: function onRow(row, _ref2) {
                 var rowIndex = _ref2.rowIndex,
                     rowKey = _ref2.rowKey;
@@ -20931,8 +20977,11 @@ var mapStateToProps = function mapStateToProps(state) {
 
 var mapDispatchToProps = function mapDispatchToProps(dispatch) {
   return {
+    fetchProgressTask: function fetchProgressTask() {
+      // dispatch(root_actions.requestProgressTask());
+    },
     toResult: function toResult(task_id, task_name) {
-      dispatch((0, _reactRouterRedux.push)('/home/ch/result/' + task_id + '/' + task_name));
+      dispatch((0, _reactRouterRedux.push)('/home/ch/new/result/' + task_id + '/' + task_name));
     }
   };
 };
@@ -21161,8 +21210,6 @@ var _reactRouterRedux = __webpack_require__(12);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var mapStateToProps = function mapStateToProps(state) {
-  console.log('hahahha');
-  console.log(state.tasks.all_task_list);
   return {
     task_list: state.tasks.all_task_list
   };
@@ -21171,7 +21218,7 @@ var mapStateToProps = function mapStateToProps(state) {
 var mapDispatchToProps = function mapDispatchToProps(dispatch) {
   return {
     toResult: function toResult(task_id, task_name) {
-      dispatch((0, _reactRouterRedux.push)('/home/ch/result/' + task_id + '/' + task_name));
+      dispatch((0, _reactRouterRedux.push)('/home/ch/new/result/' + task_id + '/' + task_name));
     },
     fetchTaskList: function fetchTaskList() {
       dispatch(_root_actions2.default.fetchTaskList());
@@ -21203,10 +21250,16 @@ var _task_reducer2 = _interopRequireDefault(_task_reducer);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var root_reducer = (0, _redux.combineReducers)({
+  user_name: getUserName,
   tasks: _task_reducer2.default,
   router: _reactRouterRedux.routerReducer
 });
 exports.default = root_reducer;
+
+
+function getUserName() {
+  return document.getElementById('user_name').innerHTML;
+}
 
 /***/ }),
 /* 247 */
@@ -40121,7 +40174,6 @@ function createProvider() {
     children: __WEBPACK_IMPORTED_MODULE_1_prop_types___default.a.element.isRequired
   };
   Provider.childContextTypes = (_Provider$childContex = {}, _Provider$childContex[storeKey] = __WEBPACK_IMPORTED_MODULE_2__utils_PropTypes__["a" /* storeShape */].isRequired, _Provider$childContex[subscriptionKey] = __WEBPACK_IMPORTED_MODULE_2__utils_PropTypes__["b" /* subscriptionShape */], _Provider$childContex);
-  Provider.displayName = 'Provider';
 
   return Provider;
 }
@@ -40526,6 +40578,9 @@ function createListenerCollection() {
       for (var i = 0; i < listeners.length; i++) {
         listeners[i]();
       }
+    },
+    get: function get() {
+      return next;
     },
     subscribe: function subscribe(listener) {
       var isSubscribed = true;

@@ -5,9 +5,9 @@ import orderBy from 'lodash/orderBy';
 import { compose } from 'redux';
 import {Paginator, paginate} from '../../helpers';
 const mappingDict={
-  gene:'基因',transcript:'转录本',cDNA:'cDNA',protein:'蛋白质',zygosity:'配型',phenotype_matched:'表型匹配',
-  pheno_matched_score:'表型匹配得分', ACMG_criteria_matched:'ACMG评判标准',clinical_significance:'致病性',
-  classification_score:'致病性得分', total_score:'总分'
+  gene:'基因',transcript:'转录本',variant:'c.DNA',protein:'蛋白质',zygosity:'配型',correlated_phenotypes:'表型匹配',
+  pheno_match_score:'表型匹配得分', hit_criteria:'ACMG评判标准', pathogenicity:'致病性',
+  pathogenicity_score:'致病性得分', final_score:'总分'
 }
 
 class General_data_table extends React.Component{
@@ -47,7 +47,7 @@ class General_data_table extends React.Component{
         columns.push({
           property:`${column_key}`,
           header:{
-            label:`${mappingDict[column_key]}`,
+            label:`${mappingDict[column_key]?mappingDict[column_key]:column_key}`,
             transforms:[sortable],
             formatters:[
               sort.header({
@@ -60,7 +60,7 @@ class General_data_table extends React.Component{
         columns.push({
           property:`${column_key}`,
           header:{
-            label:`${mappingDict[column_key]}`
+            label:`${mappingDict[column_key]?mappingDict[column_key]:column_key}`
           }
         })
       }
@@ -112,7 +112,7 @@ class General_data_table extends React.Component{
         columns.push({
           property:`${column_key}`,
           header:{
-            label:`${mappingDict[column_key]}`,
+            label:`${mappingDict[column_key]?mappingDict[column_key]:column_key}`,
             transforms:[sortable],
             formatters:[
               sort.header({
@@ -125,7 +125,7 @@ class General_data_table extends React.Component{
         columns.push({
           property:`${column_key}`,
           header:{
-            label:`${mappingDict[column_key]}`
+            label:`${mappingDict[column_key]?mappingDict[column_key]:column_key}`
           }
         })
       }
