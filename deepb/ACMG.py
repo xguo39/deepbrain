@@ -315,8 +315,9 @@ def check_PS2_PM6(variant_, parent_ngs, parent_affects):
     curr_interpret.append('PM6 is met.') if PM6 == 1 else curr_interpret.append('PM6 is NOT met.')
     curr_interpret_chinese.append('符合PM6标准.') if PM6 == 1 else curr_interpret.append('不符合PM6标准.')
     curr_interpret = ' '.join(curr_interpret)
+    curr_interpret_chinese = ' '.join(curr_interpret_chinese)
     interpret.append(('PS2 and PM6', curr_interpret))
-    interpret_chinese.append(('PS2和PM6', curr_interpret))
+    interpret_chinese.append(('PS2和PM6', curr_interpret_chinese))
     return PS2, PM6
 
 def checkFunctionalStudy(title, text, impactfactor):
