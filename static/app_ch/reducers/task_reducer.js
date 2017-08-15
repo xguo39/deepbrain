@@ -12,7 +12,6 @@ export default function tasks(state={}, action){
      return{
        ...state,
        isFetching:false,
-       progress_task_list:action.payload,
      }
 
     case root_actions.UPLOAD_TASK_FAILURE:
@@ -41,6 +40,27 @@ export default function tasks(state={}, action){
         isFetching:false,
         errCode:action.payload
       }
+
+    case root_actions.REQUEST_PROGRESS_TASK:
+      return{
+        ...state,
+        isFetching:true,
+      }
+
+    case root_actions.FETCH_PROGRESS_TASK_SUCCESS:
+      return{
+        ...state,
+        isFetching:false,
+        progress_task_list:action.payload
+      }
+
+    case root_actions.FETCH_PROGRESS_TASK_FAIL:
+      return{
+        ...state,
+        isFetching:false,
+        errCode:action.payload
+      }
+
 
     default:
      return state

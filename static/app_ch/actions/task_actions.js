@@ -12,10 +12,9 @@ const upload_task_actions = {
     }
   },
 
-  uploadTaskSuccess:(progress_task_list)=>{
+  uploadTaskSuccess:()=>{
     return {
       type: task_actions.UPLOAD_TASK_SUCCESS,
-      payload:progress_task_list
     }
   },
 
@@ -34,11 +33,13 @@ const upload_task_actions = {
         method:'POST',
         body:taskData
       }
-      return fetch(server_domain + apis.upload_task+`${user_name}`, option)
+      return fetch(server_domain + apis.upload_task+`${user_name}/`, option)
       .then(res=>res.json())
       .then(data=>{
         if(data.success){
-          dispatch(task_actions.uploadTaskSuccess(data.progress_task_list));
+          dispatch(task_actions.uploadTaskSuccess());
+          // Constanly fetch the progress task list after uploading
+          setInterval(()=>dispatch(task_actions.fetchProgressTask()), 5000);
         }else{
           dispatch(task_actions.uploadTaskFailure(errCode));
         }
@@ -50,6 +51,48 @@ const upload_task_actions = {
 
 const progress_task_actions = {
   REQUEST_PROGRESS_TASK:'REQUEST_PROGRESS_TASK',
+  FETCH_PROGRESS_TASK_SUCCESS:'FETCH_PROGRESS_TASK_SUCCESS',
+  FETCH_PROGRESS_TASK_FAIL:'FETCH_PROGRESS_TASK_FAIL',
+
+  requestProgressTask:()=>{
+    return {
+      type:task_actions.REQUEST_PROGRESS_TASK,
+    }
+  },
+
+  fetchProgressTaskSuccess:(progress_task_list)=>{
+    return {
+      type:task_actions.FETCH_PROGRESS_TASK_SUCCESS,
+      payload:progress_task_list
+    }
+  },
+
+  fetchProgressTaskFail:(errCode)=>{
+    return {
+      type:task_actions.FETCH_PROGRESS_TASK_FAIL,
+      payload:errCode
+    }
+  },
+
+  fetchProgressTask:()=>{
+    return (dispatch)=>{
+      dispatch(task_actions.requestProgressTask());
+      var option = {
+        method:'GET'
+      }
+      return fetch(server_domain + apis.progress_task_list + `${user_name}/`, option)
+      .then(res=>{
+        return res.json();
+      })
+      .then(data=>{
+        if(data.success){
+          dispatch(task_actions.fetchProgressTaskSuccess(data.list));
+        }else{
+          dispatch(task_actions.fetchProgressTaskFail(errcode));
+        }
+      })
+    }
+  }
 
 }
 
@@ -85,7 +128,7 @@ const all_task_actions = {
       var option = {
         method:'GET'
       }
-      return fetch(server_domain + apis.all_task_list+`${user_name}`, option)
+      return fetch(server_domain + apis.all_task_list+`${user_name}/`, option)
       .then(res=>{
         return res.json();
       })

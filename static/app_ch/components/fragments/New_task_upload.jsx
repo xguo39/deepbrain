@@ -37,6 +37,7 @@ class New_task_upload extends React.Component {
     }
     // Why can't extract the form data
     this.props.submit_task(taskData);
+    myForm.reset();
   }
 
   _handleChange(evt){

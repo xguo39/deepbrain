@@ -7,8 +7,7 @@ class New_task_progress extends React.Component {
   }
 
   componentWillMount(){
-    // console.log(document.getElementById('user_name'));
-    this.props.fetchProgressTask();
+    this.props.fetchTaskList();
   }
 
   _handleClick(evt){
@@ -47,15 +46,14 @@ class New_task_progress extends React.Component {
 }
 
 New_task_progress.propTypes={
-
   progress_task_list:React.PropTypes.array,
-  fetchProgressTask:React.PropTypes.func,
+  fetchTaskList:React.PropTypes.func,
   toResult:React.PropTypes.func,
 }
 
 New_task_progress.defaultProps={
   progress_task_list:[],
-  fetchProgressTask:()=>{},
+  fetchTaskList:()=>{},
   toResult:()=>{}
 }
 

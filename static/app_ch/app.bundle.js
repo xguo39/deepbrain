@@ -3828,6 +3828,7 @@ var apis = {
   upload_task: '/api/task/new_task/',
   progress_task_list: '/api/task/progress_task_list/',
   all_task_list: '/api/task/all_task_list/',
+  checked_change: '/api/task/task_check/',
   fetch_case_result: '/api/result/:case_id/',
   fetch_annotation: '/api/result/:task_id/:gene_name/'
 };
@@ -16943,10 +16944,9 @@ var upload_task_actions = {
     };
   },
 
-  uploadTaskSuccess: function uploadTaskSuccess(progress_task_list) {
+  uploadTaskSuccess: function uploadTaskSuccess() {
     return {
-      type: task_actions.UPLOAD_TASK_SUCCESS,
-      payload: progress_task_list
+      type: task_actions.UPLOAD_TASK_SUCCESS
     };
   },
 
@@ -16965,11 +16965,15 @@ var upload_task_actions = {
         method: 'POST',
         body: taskData
       };
-      return fetch(_base.server_domain + _base.apis.upload_task + ('' + user_name), option).then(function (res) {
+      return fetch(_base.server_domain + _base.apis.upload_task + (user_name + '/'), option).then(function (res) {
         return res.json();
       }).then(function (data) {
         if (data.success) {
-          dispatch(task_actions.uploadTaskSuccess(data.progress_task_list));
+          dispatch(task_actions.uploadTaskSuccess());
+          // Constanly fetch the progress task list after uploading
+          setInterval(function () {
+            return dispatch(task_actions.fetchProgressTask());
+          }, 5000);
         } else {
           dispatch(task_actions.uploadTaskFailure(errCode));
         }
@@ -16980,7 +16984,47 @@ var upload_task_actions = {
 };
 
 var progress_task_actions = {
-  REQUEST_PROGRESS_TASK: 'REQUEST_PROGRESS_TASK'
+  REQUEST_PROGRESS_TASK: 'REQUEST_PROGRESS_TASK',
+  FETCH_PROGRESS_TASK_SUCCESS: 'FETCH_PROGRESS_TASK_SUCCESS',
+  FETCH_PROGRESS_TASK_FAIL: 'FETCH_PROGRESS_TASK_FAIL',
+
+  requestProgressTask: function requestProgressTask() {
+    return {
+      type: task_actions.REQUEST_PROGRESS_TASK
+    };
+  },
+
+  fetchProgressTaskSuccess: function fetchProgressTaskSuccess(progress_task_list) {
+    return {
+      type: task_actions.FETCH_PROGRESS_TASK_SUCCESS,
+      payload: progress_task_list
+    };
+  },
+
+  fetchProgressTaskFail: function fetchProgressTaskFail(errCode) {
+    return {
+      type: task_actions.FETCH_PROGRESS_TASK_FAIL,
+      payload: errCode
+    };
+  },
+
+  fetchProgressTask: function fetchProgressTask() {
+    return function (dispatch) {
+      dispatch(task_actions.requestProgressTask());
+      var option = {
+        method: 'GET'
+      };
+      return fetch(_base.server_domain + _base.apis.progress_task_list + (user_name + '/'), option).then(function (res) {
+        return res.json();
+      }).then(function (data) {
+        if (data.success) {
+          dispatch(task_actions.fetchProgressTaskSuccess(data.list));
+        } else {
+          dispatch(task_actions.fetchProgressTaskFail(errcode));
+        }
+      });
+    };
+  }
 
 };
 
@@ -17016,7 +17060,7 @@ var all_task_actions = {
       var option = {
         method: 'GET'
       };
-      return fetch(_base.server_domain + _base.apis.all_task_list + ('' + user_name), option).then(function (res) {
+      return fetch(_base.server_domain + _base.apis.all_task_list + (user_name + '/'), option).then(function (res) {
         return res.json();
       }).then(function (data) {
         if (data.success) {
@@ -17129,8 +17173,7 @@ var New_task_progress = function (_React$Component) {
   _createClass(New_task_progress, [{
     key: 'componentWillMount',
     value: function componentWillMount() {
-      // console.log(document.getElementById('user_name'));
-      this.props.fetchProgressTask();
+      this.props.fetchTaskList();
     }
   }, {
     key: '_handleClick',
@@ -17187,15 +17230,14 @@ var New_task_progress = function (_React$Component) {
 }(_react2.default.Component);
 
 New_task_progress.propTypes = {
-
   progress_task_list: _react2.default.PropTypes.array,
-  fetchProgressTask: _react2.default.PropTypes.func,
+  fetchTaskList: _react2.default.PropTypes.func,
   toResult: _react2.default.PropTypes.func
 };
 
 New_task_progress.defaultProps = {
   progress_task_list: [],
-  fetchProgressTask: function fetchProgressTask() {},
+  fetchTaskList: function fetchTaskList() {},
   toResult: function toResult() {}
 };
 
@@ -17297,6 +17339,7 @@ var New_task_upload = function (_React$Component) {
       }
 
       this.props.submit_task(taskData);
+      myForm.reset();
     }
   }, {
     key: '_handleChange',
@@ -21024,8 +21067,8 @@ var mapStateToProps = function mapStateToProps(state) {
 
 var mapDispatchToProps = function mapDispatchToProps(dispatch) {
   return {
-    fetchProgressTask: function fetchProgressTask() {
-      // dispatch(root_actions.requestProgressTask());
+    fetchTaskList: function fetchTaskList() {
+      dispatch(_root_actions2.default.fetchProgressTask());
     },
     toResult: function toResult(task_id, task_name) {
       dispatch((0, _reactRouterRedux.push)('/home/ch/new/result/' + task_id + '/' + task_name));
@@ -21341,8 +21384,7 @@ function tasks() {
 
     case _root_actions2.default.UPLOAD_TASK_SUCCESS:
       return _extends({}, state, {
-        isFetching: false,
-        progress_task_list: action.payload
+        isFetching: false
       });
 
     case _root_actions2.default.UPLOAD_TASK_FAILURE:
@@ -21363,6 +21405,23 @@ function tasks() {
       });
 
     case _root_actions2.default.FETCH_ALL_TASK_FAILURE:
+      return _extends({}, state, {
+        isFetching: false,
+        errCode: action.payload
+      });
+
+    case _root_actions2.default.REQUEST_PROGRESS_TASK:
+      return _extends({}, state, {
+        isFetching: true
+      });
+
+    case _root_actions2.default.FETCH_PROGRESS_TASK_SUCCESS:
+      return _extends({}, state, {
+        isFetching: false,
+        progress_task_list: action.payload
+      });
+
+    case _root_actions2.default.FETCH_PROGRESS_TASK_FAIL:
       return _extends({}, state, {
         isFetching: false,
         errCode: action.payload
