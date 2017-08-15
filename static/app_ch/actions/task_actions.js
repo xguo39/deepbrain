@@ -93,12 +93,12 @@ const progress_task_actions = {
           // Constanly checked the progress list
           let inProgress = false;
           for(var task of data.list){
-            if(data.list.status !== 'succeed'){
+            if(task.status !== 'succeed'){
               inProgress = true;
             }
           }
           if(inProgress){
-            task_actions.timeout = setTimeout(()=>dispatch(task_actions.fetchProgressTask()), 5000);
+           task_actions.timeout = setTimeout(()=>dispatch(task_actions.fetchProgressTask()), 5000);
           }
         }else{
           dispatch(task_actions.fetchProgressTaskFail(errcode));

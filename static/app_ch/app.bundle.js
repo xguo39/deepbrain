@@ -17214,7 +17214,7 @@ var progress_task_actions = {
             for (var _iterator = data.list[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
               var task = _step.value;
 
-              if (data.list.status !== 'succeed') {
+              if (task.status !== 'succeed') {
                 inProgress = true;
               }
             }
@@ -20344,6 +20344,10 @@ var Result_page = function (_React$Component) {
             this.setState(_extends({}, this.state, {
               current_data: this.props.result_data.input_table_data
             }));
+            break;
+
+          case 'generate_result_table':
+            this.setState(_extends({}, this.state));
             break;
 
           default:
