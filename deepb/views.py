@@ -444,7 +444,7 @@ class case_result(APIView):
             'result_data':{
                 'summary_table_data': data.result,
                 'incidental_table_data': data.incidental_findings,
-                'candidate_table_data': data.candidate_table_data,
+                'candidate_table_data': data.candidate_genes,
                 'input_gene_data': data.input_gene,
                 # 'interpretation_data': data.interpretation_chinese,
             }
