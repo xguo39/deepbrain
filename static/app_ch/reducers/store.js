@@ -22,12 +22,29 @@ const initialState = {
      {
        id:2,
        task_name:'tianqi',
-       status:'success',
+       status:'succeed',
        processed_time:'4分钟',
        checked:false
      },
     ],
-    all_task_list:[]
+    all_task_list:[
+      {
+       id:1,
+       task_name:"xiaonan",
+       pub_date: '2017-06-18, 12:03pm',
+       status:'succeed',
+       processed_time:'0',
+       checked:false
+      },
+      {
+       id:2,
+       task_name:"tianqi",
+       pub_date: '2017-06-18, 12:03pm',
+       status:'xxxxxxxx fail',
+       processed_time:'0',
+       checked:true
+      }
+    ]
   }
 };
 

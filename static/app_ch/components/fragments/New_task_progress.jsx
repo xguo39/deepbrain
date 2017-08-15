@@ -23,7 +23,7 @@ class New_task_progress extends React.Component {
   _loadProgressList(progress_list){
     return progress_list.map((task, index)=>{
       let status = task.status;
-      if(status!=='success'){
+      if(status!=='succeed'){
         return <div key={index} className='td3 td-stripe'>
           <Processing_task task_info={task}/>
         </div>

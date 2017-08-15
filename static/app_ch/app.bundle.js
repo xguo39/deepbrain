@@ -16856,11 +16856,25 @@ var initialState = {
     }, {
       id: 2,
       task_name: 'tianqi',
-      status: 'success',
+      status: 'succeed',
       processed_time: '4分钟',
       checked: false
     }],
-    all_task_list: []
+    all_task_list: [{
+      id: 1,
+      task_name: "xiaonan",
+      pub_date: '2017-06-18, 12:03pm',
+      status: 'succeed',
+      processed_time: '0',
+      checked: false
+    }, {
+      id: 2,
+      task_name: "tianqi",
+      pub_date: '2017-06-18, 12:03pm',
+      status: 'xxxxxxxx fail',
+      processed_time: '0',
+      checked: true
+    }]
   }
 };
 
@@ -17191,7 +17205,7 @@ var New_task_progress = function (_React$Component) {
     value: function _loadProgressList(progress_list) {
       return progress_list.map(function (task, index) {
         var status = task.status;
-        if (status !== 'success') {
+        if (status !== 'succeed') {
           return _react2.default.createElement(
             'div',
             { key: index, className: 'td3 td-stripe' },
@@ -20035,6 +20049,13 @@ var Result_page = function (_React$Component) {
   }
 
   _createClass(Result_page, [{
+    key: 'componentWillMount',
+    value: function componentWillMount() {
+      console.log(this.props.match.params);
+      var task_id = this.props.match.params.task_id;
+      var task_name = this.props.fetchResultData();
+    }
+  }, {
     key: '_handleClick',
     value: function _handleClick(evt) {
       var target = evt.target;
@@ -20346,6 +20367,8 @@ var Result_page = function (_React$Component) {
 Result_page.propTypes = {
   goBack: _react2.default.PropTypes.func.isRequired,
   showAnnotation: _react2.default.PropTypes.func,
+  fetchResultData: _react2.default.PropTypes.func,
+
   summary_table_data: _react2.default.PropTypes.array,
   incidental_table_data: _react2.default.PropTypes.array,
   candidate_table_data: _react2.default.PropTypes.array,
@@ -20902,7 +20925,11 @@ var Task_list = function (_React$Component) {
       var className = 'clickable';
       return {
         onClick: function onClick() {
-          _this2.props.toResult(row.id, row.task_name);
+          if (row.status === 'success') {
+            _this2.props.toResult(row.id, row.task_name);
+          } else {
+            alert('请查看上传成功的案例');
+          }
         },
         className: className
       };
@@ -21182,6 +21209,7 @@ var _reactRouterRedux = __webpack_require__(12);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var mapStateToProps = function mapStateToProps(state) {
+
   return {};
 };
 
@@ -21190,6 +21218,7 @@ var mapDispatchToProps = function mapDispatchToProps(dispatch) {
     goBack: function goBack() {
       dispatch((0, _reactRouterRedux.go)(-1));
     },
+
     showAnnotation: function showAnnotation(current_path, gene, transicript) {
       dispatch((0, _reactRouterRedux.push)(current_path + '/' + gene));
     }

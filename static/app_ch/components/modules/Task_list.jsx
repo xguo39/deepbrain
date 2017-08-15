@@ -55,7 +55,11 @@ class Task_list extends React.Component{
     let className = 'clickable';
     return {
       onClick:()=>{
-        this.props.toResult(row.id, row.task_name);
+        if(row.status==='success'){
+          this.props.toResult(row.id, row.task_name);
+        }else{
+          alert('请查看上传成功的案例');
+        }
       },
       className:className,
     }
