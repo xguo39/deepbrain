@@ -326,12 +326,6 @@ def home_new_View_ch(request):
 class new_task(APIView):
 
     def post(self, request, user_name, format=None):
-        # user = request.user
-        # serializer = New_task_Serializer(data=request.data, context={'user':user})
-        # if serializer.is_valid():
-        #     serializer.save()
-        #     return Response(serializer.data, status=status.HTTP_201_CREATED)
-        # return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
         task_name = request.POST.get('task_name', None)
 
@@ -352,7 +346,7 @@ class new_task(APIView):
         else:
             raw_input_phenotype = phenotype_type
 
-        estimate_time = round((0.14*len(input_gene.split('\n')) + 1.69*len(raw_input_phenotype_file.split(','))+93.83)/60, 0)+1
+        estimate_time = round((0.14*len(raw_input_gene.split('\n')) + 1.69*len(raw_input_phenotype.split(','))+93.83)/60, 0)+1
 
         if request.POST.get('father_check', None) and request.POST.get('mother_check', None):
             parent_info = 3
@@ -438,8 +432,9 @@ class all_task_list(APIView):
 
     def get(self, request, user_name, format=None):
         print 'user:', user_name
-        post = Raw_input_table.objects.filter(user_name=user_name)[::-1]
+        post = Raw_input_table.objects.filter(user_name=user_name)[::-1][:2]
         serializer = All_task_Serializer(post, many=True)
+        print serializer
         json_result = {'success':True, 'list':serializer.data}
         return Response(json_result)
 
