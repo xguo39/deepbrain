@@ -7,3 +7,5 @@ deepb/migrations/
 .gitignore
 dump.rdb
 local_data/
+deepb/test.ipynb
+node_modules/
