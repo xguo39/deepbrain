@@ -47,6 +47,7 @@ class New_task_progress extends React.Component {
 }
 
 New_task_progress.propTypes={
+
   progress_task_list:React.PropTypes.array,
   fetchProgressTask:React.PropTypes.func,
   toResult:React.PropTypes.func,

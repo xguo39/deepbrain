@@ -108,6 +108,18 @@ class New_task_upload extends React.Component {
                 <div className='td2'><span>使用说明</span></div>
             </div>
             <div className='tr tr-stripe'>
+                <div className='td1'><label>性别:</label></div>
+                <div className='td2'>
+                  <label className="radio-inline"><input type="radio" name="patient_gender" value='1'/>男</label>
+                  <label className="radio-inline"><input type="radio" name="patient_gender" value='2'/>女</label>
+                  <label className="radio-inline"><input type="radio" name="patient_gender" value='0'/>不明</label>
+                </div>
+                <div className='td2'>
+                  <span>年龄:</span>
+                  <input id='patient_age' type="text" name="patient_age" placeholder="Age"/>
+                </div>
+            </div>
+            <div className='tr'>
                 <div className='td1'><label>基因信息:</label></div>
                 <div className='td2'>
                   <label htmlFor='input_gene_file' className='file_input'>
@@ -122,7 +134,7 @@ class New_task_upload extends React.Component {
                 </div>
                 <div className='td2'><span>选择 Vcf 文件／ .txt .xls .csv文件<br/>（文件需包含 gene 与 HGVS cDNA）</span></div>
             </div>
-            <div className='tr'>
+            <div className='tr tr-stripe'>
                 <div className='td1'><label>表型信息:<br/>（可选）</label></div>
                 <div className='td2'>
                   <label htmlFor='input_phen' className='file_input'>
