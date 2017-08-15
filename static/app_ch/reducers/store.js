@@ -154,6 +154,14 @@ const initialState = {
           zygosity:'peixing',
           pheno_matched_score:39,
         }
+      ],
+      interpretation_data:[
+        {
+          gene:'WWT7',
+          variant:'dsfsdfsf',
+          criteria:'dfsfsdfsdf',
+          interpretation:''
+        },
       ]
     }
   }

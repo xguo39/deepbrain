@@ -84,7 +84,7 @@ class Result_page extends React.Component{
         case 'generate_result_table':
           this.setState({
             ...this.state,
-
+            current_data:this.props.result_data.interpretation_data,
           })
           break;
 

@@ -16973,6 +16973,12 @@ var initialState = {
         protein: 'danbaizhi',
         zygosity: 'peixing',
         pheno_matched_score: 39
+      }],
+      interpretation_data: [{
+        gene: 'WWT7',
+        variant: 'dsfsdfsf',
+        criteria: 'dfsfsdfsdf',
+        interpretation: ''
       }]
     }
   }
@@ -20347,7 +20353,9 @@ var Result_page = function (_React$Component) {
             break;
 
           case 'generate_result_table':
-            this.setState(_extends({}, this.state));
+            this.setState(_extends({}, this.state, {
+              current_data: this.props.result_data.interpretation_data
+            }));
             break;
 
           default:
