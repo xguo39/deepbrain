@@ -27,7 +27,6 @@ from rest_framework.decorators import permission_classes
 from rest_framework import status, generics
 from deepb.serializers import Progress_task_Serializer
 from deepb.serializers import All_task_Serializer
-from deepb.serializers import Case_result_Serializer
 import json
 
 
@@ -447,7 +446,7 @@ class case_result(APIView):
                 'incidental_table_data': data.incidental_findings,
                 'candidate_table_data': data.candidate_table_data,
                 'input_gene_data': data.input_gene,
-                'interpretation_chinese': data.interpretation_chinese,
+                # 'interpretation_data': data.interpretation_chinese,
             }
         }
         return Response(json_result)
