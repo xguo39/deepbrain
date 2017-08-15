@@ -1417,9 +1417,13 @@ var _task_actions = __webpack_require__(217);
 
 var _task_actions2 = _interopRequireDefault(_task_actions);
 
+var _result_actions = __webpack_require__(540);
+
+var _result_actions2 = _interopRequireDefault(_result_actions);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var root_actions = _extends({}, _task_actions2.default);
+var root_actions = _extends({}, _task_actions2.default, _result_actions2.default);
 
 exports.default = root_actions;
 
@@ -16948,6 +16952,7 @@ var _base = __webpack_require__(41);
 var user_name = document.getElementById('user_name').innerHTML;
 
 var upload_task_actions = {
+
   REQUEST_UPLOAD_TASK: 'REQUEST_UPLOAD_TASK',
   UPLOAD_TASK_SUCCESS: 'UPLOAD_TASK_SUCCESS',
   UPLOAD_TASK_FAILURE: 'UPLOAD_TASK_FAILURE',
@@ -16985,9 +16990,7 @@ var upload_task_actions = {
         if (data.success) {
           dispatch(task_actions.uploadTaskSuccess());
           // Constanly fetch the progress task list after uploading
-          setInterval(function () {
-            return dispatch(task_actions.fetchProgressTask());
-          }, 5000);
+          dispatch(task_actions.fetchProgressTask());
         } else {
           dispatch(task_actions.uploadTaskFailure(errCode));
         }
@@ -17022,6 +17025,8 @@ var progress_task_actions = {
     };
   },
 
+  timeout: null,
+
   fetchProgressTask: function fetchProgressTask() {
     return function (dispatch) {
       dispatch(task_actions.requestProgressTask());
@@ -17033,6 +17038,40 @@ var progress_task_actions = {
       }).then(function (data) {
         if (data.success) {
           dispatch(task_actions.fetchProgressTaskSuccess(data.list));
+          // Constanly checked the progress list
+          var inProgress = false;
+          var _iteratorNormalCompletion = true;
+          var _didIteratorError = false;
+          var _iteratorError = undefined;
+
+          try {
+            for (var _iterator = data.list[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+              var task = _step.value;
+
+              if (data.list.status !== 'succeed') {
+                inProgress = true;
+              }
+            }
+          } catch (err) {
+            _didIteratorError = true;
+            _iteratorError = err;
+          } finally {
+            try {
+              if (!_iteratorNormalCompletion && _iterator.return) {
+                _iterator.return();
+              }
+            } finally {
+              if (_didIteratorError) {
+                throw _iteratorError;
+              }
+            }
+          }
+
+          if (inProgress) {
+            task_actions.timeout = setTimeout(function () {
+              return dispatch(task_actions.fetchProgressTask());
+            }, 5000);
+          }
         } else {
           dispatch(task_actions.fetchProgressTaskFail(errcode));
         }
@@ -20053,7 +20092,8 @@ var Result_page = function (_React$Component) {
     value: function componentWillMount() {
       console.log(this.props.match.params);
       var task_id = this.props.match.params.task_id;
-      var task_name = this.props.fetchResultData();
+      var task_name = this.props.match.params.task_name;
+      this.props.fetchResultData();
     }
   }, {
     key: '_handleClick',
@@ -20925,7 +20965,7 @@ var Task_list = function (_React$Component) {
       var className = 'clickable';
       return {
         onClick: function onClick() {
-          if (row.status === 'success') {
+          if (row.status === 'succeed') {
             _this2.props.toResult(row.id, row.task_name);
           } else {
             alert('请查看上传成功的案例');
@@ -44985,6 +45025,33 @@ var valueEqual = function valueEqual(a, b) {
 };
 
 exports.default = valueEqual;
+
+/***/ }),
+/* 540 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+var _base = __webpack_require__(41);
+
+var user_name = document.getElementById('user_name').innerHTML;
+
+var task_result_actions = {};
+
+var check_annotation_actions = {};
+
+var review_actions = {};
+
+var result_actions = _extends({}, task_result_actions, check_annotation_actions, review_actions);
+
+exports.default = result_actions;
 
 /***/ })
 /******/ ]);

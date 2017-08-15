@@ -2,6 +2,7 @@ import {server_domain, apis} from 'base.config';
 const user_name = document.getElementById('user_name').innerHTML;
 
 const upload_task_actions = {
+
   REQUEST_UPLOAD_TASK:'REQUEST_UPLOAD_TASK',
   UPLOAD_TASK_SUCCESS:'UPLOAD_TASK_SUCCESS',
   UPLOAD_TASK_FAILURE:'UPLOAD_TASK_FAILURE',
@@ -39,7 +40,7 @@ const upload_task_actions = {
         if(data.success){
           dispatch(task_actions.uploadTaskSuccess());
           // Constanly fetch the progress task list after uploading
-          setInterval(()=>dispatch(task_actions.fetchProgressTask()), 5000);
+          dispatch(task_actions.fetchProgressTask());
         }else{
           dispatch(task_actions.uploadTaskFailure(errCode));
         }
@@ -74,6 +75,8 @@ const progress_task_actions = {
     }
   },
 
+  timeout:null,
+
   fetchProgressTask:()=>{
     return (dispatch)=>{
       dispatch(task_actions.requestProgressTask());
@@ -87,6 +90,16 @@ const progress_task_actions = {
       .then(data=>{
         if(data.success){
           dispatch(task_actions.fetchProgressTaskSuccess(data.list));
+          // Constanly checked the progress list
+          let inProgress = false;
+          for(var task of data.list){
+            if(data.list.status !== 'succeed'){
+              inProgress = true;
+            }
+          }
+          if(inProgress){
+            task_actions.timeout = setTimeout(()=>dispatch(task_actions.fetchProgressTask()), 5000);
+          }
         }else{
           dispatch(task_actions.fetchProgressTaskFail(errcode));
         }

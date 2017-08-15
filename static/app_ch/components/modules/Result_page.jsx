@@ -12,11 +12,11 @@ class Result_page extends React.Component{
       current_data:this.props.summary_table_data
     }
   }
-  
+
   componentWillMount(){
     console.log(this.props.match.params);
     const task_id = this.props.match.params.task_id;
-    const task_name =
+    const task_name = this.props.match.params.task_name;
     this.props.fetchResultData()
   }
 
