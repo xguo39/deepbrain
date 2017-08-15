@@ -10,6 +10,8 @@ class Main_table(models.Model):
     input_gene = models.TextField()
     input_phenotype = models.TextField()
     result = models.TextField()
+    incidental_findings = models.TextField(default='')
+    candidate_genes = models.TextField(default='')
     interpretation = models.TextField(default='')
     interpretation_chinese = models.TextField(default='')
     pub_date = models.DateTimeField()

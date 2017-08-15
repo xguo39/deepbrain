@@ -20,7 +20,7 @@ def trigger_background_main_task(raw_input_id):
     raw_input = Raw_input_table.objects.get(id=raw_input_id)
     try:
         start_point = time.time()
-        ACMG_result, df_genes, phenos, field_names, variant_ACMG_interpretation, variant_ACMG_interpret_chinese, df_ranking_genes = master_function(raw_input_id)
+        ACMG_result, df_genes, phenos, field_names, variant_ACMG_interpretation, variant_ACMG_interpret_chinese, df_ranking_genes, df_jax_candidate_genes, df_incidental_findings_genes = master_function(raw_input_id)
         
         # print ACMG_result.shape
 
@@ -29,6 +29,8 @@ def trigger_background_main_task(raw_input_id):
         result_table = ACMG_result.to_json(orient='records')
         interpretation = variant_ACMG_interpretation.to_json(orient='records')
         interpretation_chinese = variant_ACMG_interpret_chinese.to_json(orient='records')
+        incidental_findings = df_incidental_findings_genes.to_json(orient='records') 
+        candidate_genes = df_jax_candidate_genes.to_json(orient='records')
 
         logger.info("Finish processing data, start writing data to DB in background main task")
 
@@ -37,6 +39,8 @@ def trigger_background_main_task(raw_input_id):
             input_gene=input_gene,
             input_phenotype=input_phenotype,
             result=result_table,
+            incidental_findings=incidental_findings,
+            candidate_genes=candidate_genes,
             interpretation=interpretation,
             interpretation_chinese=interpretation_chinese,
             pub_date=timezone.now(),
