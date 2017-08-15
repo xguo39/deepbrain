@@ -431,7 +431,7 @@ class progress_task_list(APIView):
 class all_task_list(APIView):
 
     def get(self, request, user_name, format=None):
-        post = Raw_input_table.objects.filter(user_name=user_name)[::-1][:2]
+        post = Raw_input_table.objects.filter(user_name=user_name)[::-1]
         serializer = All_task_Serializer(post, many=True)
         json_result = {'success':True, 'list':serializer.data}
         return Response(json_result)
