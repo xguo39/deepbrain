@@ -262,7 +262,7 @@ def getZygosity(parent_ngs, candidate_vars_zygosity, proband_gender, variant_id_
                 zygosity = 'het'
             elif allele1 == allele2:
                 zygosity = 'hom'
-            elif proband_gender == 0 and re.search(r'x', chrom, re.I):
+            elif proband_gender == 1 and re.search(r'x', chrom, re.I):
                 if parentAltInProbandAlts(mother_alts, proband_alts):
                     zygosity = 'hem'
             else:
@@ -278,7 +278,7 @@ def getZygosity(parent_ngs, candidate_vars_zygosity, proband_gender, variant_id_
                 zygosity = 'de novo'
             elif allele1 == allele2:
                 zygosity = 'hom' 
-            elif proband_gender == 0 and re.search(r'x', chrom, re.I):
+            elif proband_gender == 1 and re.search(r'x', chrom, re.I):
                 if parentAltInProbandAlts(mother_alts, proband_alts):
                     zygosity = 'hem'
                 else:
@@ -523,15 +523,15 @@ def master_function(raw_input_id):
     raw_input = Raw_input_table.objects.get(id=raw_input_id)
     input_gene = raw_input.raw_input_gene
     input_phenotype = raw_input.raw_input_phenotype
-    proband_gender = 0 # 0 -- male; 1 -- female; 2 -- other
-    proband_age = 3 
+    proband_gender = raw_input.patient_gender # 0 -- other; 1 -- male ; 2 -- female
+    proband_age = raw_input.patient_age
     # parent_ngs [0, 1, 2, 3]. 0 -- no parents NGS data; 1 -- only father's data; 2 -- only mother's data; 3 -- both parents' data
-    parent_ngs = 3 
-    parent_affects = 0
-    father_vcf = ''
-    mother_vcf = ''
-    incidental_finding_report = 0
-    candidate_gene_report = 0
+    parent_ngs = raw_input.parent_info
+    parent_affects = raw_input.if_same_pheno
+    father_vcf = raw_input.father_vcf
+    mother_vcf = raw_input.mother_vcf
+    incidental_finding_report = raw_input.incidental_findings
+    candidate_gene_report = raw_input.candidate_genes
 
     # Read input pheno file and generate phenos and corner_cases 
     phenos, corner_cases, original_phenos, phenotype_translate = read_input_pheno_file(input_phenotype)
