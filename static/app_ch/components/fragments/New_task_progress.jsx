@@ -24,10 +24,13 @@ class New_task_progress extends React.Component {
     return progress_list.map((task, index)=>{
       let status = task.status;
       if(status!=='succeed'){
-        return <div key={index} className='td3 td-stripe'>
-          <Processing_task task_info={task}/>
-        </div>
-      }else{
+        if(status.indexOf('failed') === -1){
+          return <div key={index} className='td3 td-stripe'>
+            <Processing_task task_info={task}/>
+          </div>
+        }
+      }
+      else{
         return <div key={index} className='td3'>
           <Completed_task task_info={task}/>
         </div>

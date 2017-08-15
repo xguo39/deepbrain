@@ -17419,11 +17419,13 @@ var New_task_progress = function (_React$Component) {
       return progress_list.map(function (task, index) {
         var status = task.status;
         if (status !== 'succeed') {
-          return _react2.default.createElement(
-            'div',
-            { key: index, className: 'td3 td-stripe' },
-            _react2.default.createElement(_Progress_task.Processing_task, { task_info: task })
-          );
+          if (status.indexOf('failed') === -1) {
+            return _react2.default.createElement(
+              'div',
+              { key: index, className: 'td3 td-stripe' },
+              _react2.default.createElement(_Progress_task.Processing_task, { task_info: task })
+            );
+          }
         } else {
           return _react2.default.createElement(
             'div',
