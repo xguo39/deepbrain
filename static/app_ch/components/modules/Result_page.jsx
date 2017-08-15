@@ -13,6 +13,10 @@ class Result_page extends React.Component{
     }
   }
 
+  componentWillMount(){
+    console.log(this.props.match.params);
+  }
+
   _handleClick(evt){
     let target = evt.target;
     let parentTarget = evt.currentTarget;

@@ -27,7 +27,24 @@ const initialState = {
        checked:false
      },
     ],
-    all_task_list:[]
+    all_task_list:[
+      {
+       id:1,
+       task_name:"xiaonan",
+       pub_date: '2017-06-18, 12:03pm',
+       status:'success',
+       processed_time:'0',
+       checked:false
+      },
+      {
+       id:2,
+       task_name:"tianqi",
+       pub_date: '2017-06-18, 12:03pm',
+       status:'xxxxxxxx fail',
+       processed_time:'0',
+       checked:true
+      }
+    ]
   }
 };
 

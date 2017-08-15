@@ -16860,7 +16860,21 @@ var initialState = {
       processed_time: '4分钟',
       checked: false
     }],
-    all_task_list: []
+    all_task_list: [{
+      id: 1,
+      task_name: "xiaonan",
+      pub_date: '2017-06-18, 12:03pm',
+      status: 'success',
+      processed_time: '0',
+      checked: false
+    }, {
+      id: 2,
+      task_name: "tianqi",
+      pub_date: '2017-06-18, 12:03pm',
+      status: 'xxxxxxxx fail',
+      processed_time: '0',
+      checked: true
+    }]
   }
 };
 
@@ -20035,6 +20049,11 @@ var Result_page = function (_React$Component) {
   }
 
   _createClass(Result_page, [{
+    key: 'componentWillMount',
+    value: function componentWillMount() {
+      console.log(this.props.match.params);
+    }
+  }, {
     key: '_handleClick',
     value: function _handleClick(evt) {
       var target = evt.target;
@@ -20875,7 +20894,7 @@ var Task_list = function (_React$Component) {
         },
         cell: {
           formatters: [function (status) {
-            return status === 'succeed' ? '成功' : '失败';
+            return status === 'success' ? '成功' : '失败';
           }]
         },
         props: {
@@ -20902,7 +20921,11 @@ var Task_list = function (_React$Component) {
       var className = 'clickable';
       return {
         onClick: function onClick() {
-          _this2.props.toResult(row.id, row.task_name);
+          if (row.status === 'success') {
+            _this2.props.toResult(row.id, row.task_name);
+          } else {
+            alert('请查看上传成功的案例');
+          }
         },
         className: className
       };
