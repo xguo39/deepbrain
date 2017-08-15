@@ -37,7 +37,7 @@ const upload_task_actions = {
       .then(res=>res.json())
       .then(data=>{
         console.log(data);
-        if(data.success == 'success'){
+        if(data.success){
           dispatch(task_actions.uploadTaskSuccess(data.progress_task_list));
         }else{
           dispatch(task_actions.uploadTaskFailure(errCode));
@@ -56,6 +56,48 @@ const progress_task_actions = {
 
 const all_task_actions = {
   REQUEST_ALL_TASK:'REQUEST_ALL_TASK',
+  FETCH_ALL_TASK_SUCCESS:'FETCH_ALL_TASK_SUCCESS',
+  FETCH_ALL_TASK_FAILURE:'FETCH_ALL_TASK_FAILURE',
+
+  requestAllTask:()=>{
+    return {
+      type:task_actions.REQUEST_ALL_TASK
+    }
+  },
+
+  fetchAllTaskSuccess:(task_list)=>{
+    return {
+      type:task_actions.FETCH_ALL_TASK_SUCCESS,
+      payload:task_list
+    }
+  },
+
+  fetchAllTaskFailure:(errCode)=>{
+    return {
+      type:task_actions.FETCH_ALL_TASK_FAILURE,
+      payload:errCode
+    }
+  },
+
+  // Fetch all task
+  fetchTaskList:()=>{
+    return (dispatch)=>{
+      dispatch(task_actions.requestAllTask());
+      var option = {
+        method:'GET'
+      }
+      return fetch(server_domain + apis.all_task_list, option)
+      .then(res=>res.json())
+      .then(data=>{
+        if(data.success){
+          dispatch(task_actions.fetchAllTaskSuccess(data.list));
+        }else{
+          dispatch(task_actions.fetchAllTaskFailure(errcode));
+        }
+      })
+    }
+  }
+
 }
 
 const task_actions = {

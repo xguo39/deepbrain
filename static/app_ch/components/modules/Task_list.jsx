@@ -12,7 +12,7 @@ class Task_list extends React.Component{
       query: {},
       columns:[
         {
-          property:'name',
+          property:'task_name',
           header:{
             label:'名称'
           },
@@ -21,7 +21,7 @@ class Task_list extends React.Component{
           }
         },
         {
-          property:'time',
+          property:'pub_date',
           header:{
             label:'提交时间'
           },
@@ -36,7 +36,7 @@ class Task_list extends React.Component{
           },
           cell:{
             formatters:[
-              status => status?'成功':'失败'
+              status => status==='succeed'?'成功':'失败'
             ]
           },
           props:{
@@ -44,23 +44,12 @@ class Task_list extends React.Component{
           },
         }
       ],
-      rows:[
-        {
-          id:1,
-          name:'xiaonan',
-          time:'July 18, 2017, 12:03 p.m.',
-          status:true,
-          checked:true,
-        },
-        {
-          id:2,
-          name:'tianqi',
-          time:'July 18, 2017, 11:03 p.m.',
-          status:false,
-          checked:false
-        }
-      ],
+      rows:this.props.task_list
     }
+  }
+
+  componentWillMount(){
+    this.props.fetchTaskList();
   }
 
   _handleBodyRow(row, { rowIndex, rowKey }){
@@ -74,7 +63,8 @@ class Task_list extends React.Component{
   }
 
   render(){
-    const { searchColumn, columns, rows, query } = this.state;
+    const rows = this.props.task_list;
+    const { searchColumn, columns, query } = this.state;
     const searchedRows = compose(
       search.multipleColumns({
        columns: columns,
@@ -116,7 +106,7 @@ class Task_list extends React.Component{
 
               </Table.Provider>
         </div>
-        <p>全部共 {this.state.rows.length} 项</p>
+        <p>全部共 {rows.length} 项</p>
       </div>
     )
   }
@@ -124,10 +114,14 @@ class Task_list extends React.Component{
 
 Task_list.propTypes={
   toResult:React.PropTypes.func.isRequired,
+  fetchTaskList:React.PropTypes.func.isRequired,
+  task_list:React.PropTypes.array,
 }
 
 Task_list.defaultProps={
-  toResult:()=>{}
+  toResult:()=>{},
+  fetchTaskList:()=>{},
+  task_list:[],
 }
 
 export default Task_list;

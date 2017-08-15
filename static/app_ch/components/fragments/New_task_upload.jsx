@@ -106,6 +106,10 @@ class New_task_upload extends React.Component {
                 <div className='td2'><input id='enter_task_name' type="text" name="task_name" placeholder="Active" required autoFocus={true}/></div>
                 <div className='td2'><span>使用说明</span></div>
             </div>
+            {/* <div className='tr'>
+                <div className='td1'><label htmlFor='enter_task_name'>性&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;别:</label></div>
+                <div className='td2'><input id='gender' type="text" name="gender" placeholder="gender" required/></div>
+            </div> */}
             <div className='tr tr-stripe'>
                 <div className='td1'><label>基因信息:</label></div>
                 <div className='td2'>

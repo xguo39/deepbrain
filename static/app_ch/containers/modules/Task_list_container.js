@@ -5,7 +5,7 @@ import {push} from 'react-router-redux';
 
 const mapStateToProps = (state)=>{
   return {
-
+    task_list:state.tasks.all_task_list
   }
 }
 
@@ -13,6 +13,9 @@ const mapDispatchToProps = (dispatch)=>{
   return{
     toResult:(task_id,task_name)=>{
       dispatch(push(`/home/ch/result/${task_id}/${task_name}`));
+    },
+    fetchTaskList:()=>{
+      dispatch(root_actions.fetchTaskList());
     }
   }
 }

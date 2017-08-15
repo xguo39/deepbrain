@@ -16830,23 +16830,31 @@ var initialState = {
   tasks: {
     isFetching: false,
     progress_task_list: [{
-      task_id: 1,
+      id: 1,
       task_name: 'xiaonan',
-      completed_missons: 8,
-      total_missions: 10,
-      current_misson: '正在处理xxx基因',
-      estimated_time: '5分钟',
-      checked: false
+      status: '正在处理xxx基因',
+      processed_time: '5分钟'
+      // checked: false
     }, {
-      task_id: 2,
+      id: 2,
       task_name: 'tianqi',
-      completed_missons: 10,
-      total_missions: 10,
-      current_mission: '',
-      estimated_time: '4分钟',
-      checked: false
+      status: 'success',
+      processed_time: '4分钟'
+      //  checked:false
     }],
-    all_task_list: []
+    all_task_list: [{
+      id: 1,
+      task_name: 'xiaonan',
+      pub_date: 'July 18, 2017, 12:03 p.m.',
+      status: 'success',
+      checked: true
+    }, {
+      id: 2,
+      task_name: 'tianqi',
+      pub_date: 'July 18, 2017, 11:03 p.m.',
+      status: 'xxxxxx fail',
+      checked: false
+    }]
   }
 };
 
@@ -16954,7 +16962,7 @@ var upload_task_actions = {
         return res.json();
       }).then(function (data) {
         console.log(data);
-        if (data.success == 'success') {
+        if (data.success) {
           dispatch(task_actions.uploadTaskSuccess(data.progress_task_list));
         } else {
           dispatch(task_actions.uploadTaskFailure(errCode));
@@ -16971,7 +16979,49 @@ var progress_task_actions = {
 };
 
 var all_task_actions = {
-  REQUEST_ALL_TASK: 'REQUEST_ALL_TASK'
+  REQUEST_ALL_TASK: 'REQUEST_ALL_TASK',
+  FETCH_ALL_TASK_SUCCESS: 'FETCH_ALL_TASK_SUCCESS',
+  FETCH_ALL_TASK_FAILURE: 'FETCH_ALL_TASK_FAILURE',
+
+  requestAllTask: function requestAllTask() {
+    return {
+      type: task_actions.REQUEST_ALL_TASK
+    };
+  },
+
+  fetchAllTaskSuccess: function fetchAllTaskSuccess(task_list) {
+    return {
+      type: task_actions.FETCH_ALL_TASK_SUCCESS,
+      payload: task_list
+    };
+  },
+
+  fetchAllTaskFailure: function fetchAllTaskFailure(errCode) {
+    return {
+      type: task_actions.FETCH_ALL_TASK_FAILURE,
+      payload: errCode
+    };
+  },
+
+  // Fetch all task
+  fetchTaskList: function fetchTaskList() {
+    return function (dispatch) {
+      dispatch(task_actions.requestAllTask());
+      var option = {
+        method: 'GET'
+      };
+      return fetch(_base.server_domain + _base.apis.all_task_list, option).then(function (res) {
+        return res.json();
+      }).then(function (data) {
+        if (data.success) {
+          dispatch(task_actions.fetchAllTaskSuccess(data.list));
+        } else {
+          dispatch(task_actions.fetchAllTaskFailure(errcode));
+        }
+      });
+    };
+  }
+
 };
 
 var task_actions = _extends({}, upload_task_actions, progress_task_actions, all_task_actions);
@@ -17085,8 +17135,8 @@ var New_task_progress = function (_React$Component) {
     key: '_loadProgressList',
     value: function _loadProgressList(progress_list) {
       return progress_list.map(function (task, index) {
-        var progress_percent = task.completed_missons / 10;
-        if (progress_percent !== 1) {
+        var status = task.status;
+        if (status !== 'success') {
           return _react2.default.createElement(
             'div',
             { key: index, className: 'td3 td-stripe' },
@@ -17095,7 +17145,7 @@ var New_task_progress = function (_React$Component) {
         } else {
           return _react2.default.createElement(
             'div',
-            { key: index, className: 'td3 ' },
+            { key: index, className: 'td3' },
             _react2.default.createElement(_Progress_task.Completed_task, { task_info: task })
           );
         }
@@ -19567,6 +19617,9 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
+// Mapping the status to a percentage
+var mappingDict = {};
+
 var Processing_task = function (_React$Component) {
   _inherits(Processing_task, _React$Component);
 
@@ -19579,7 +19632,8 @@ var Processing_task = function (_React$Component) {
   _createClass(Processing_task, [{
     key: 'render',
     value: function render() {
-      var current_percent = this.props.task_info.completed_missons * 10 + '%';
+      // const current_percent = mappingDict[this.props.task_info.status];
+      var current_percent = '50%';
       var barStyle = {
         "width": current_percent
       };
@@ -19609,7 +19663,7 @@ var Processing_task = function (_React$Component) {
           'p',
           { className: 'processing-info' },
           ' ',
-          this.props.task_info.current_misson,
+          this.props.task_info.status,
           ' '
         )
       );
@@ -19633,7 +19687,7 @@ var Completed_task = function (_React$Component2) {
     value: function render() {
       return _react2.default.createElement(
         'div',
-        { className: 'completed_task', alt: this.props.task_info.task_id + ',' + this.props.task_info.task_name },
+        { className: 'completed_task', alt: this.props.task_info.id + ',' + this.props.task_info.task_name },
         _react2.default.createElement(
           'span',
           null,
@@ -20674,7 +20728,7 @@ var Task_list = function (_React$Component) {
       searchColumn: 'all',
       query: {},
       columns: [{
-        property: 'name',
+        property: 'task_name',
         header: {
           label: '名称'
         },
@@ -20682,7 +20736,7 @@ var Task_list = function (_React$Component) {
           className: 'tc1'
         }
       }, {
-        property: 'time',
+        property: 'pub_date',
         header: {
           label: '提交时间'
         },
@@ -20696,31 +20750,24 @@ var Task_list = function (_React$Component) {
         },
         cell: {
           formatters: [function (status) {
-            return status ? '成功' : '失败';
+            return status === 'succeed' ? '成功' : '失败';
           }]
         },
         props: {
           className: 'tc1'
         }
       }],
-      rows: [{
-        id: 1,
-        name: 'xiaonan',
-        time: 'July 18, 2017, 12:03 p.m.',
-        status: true,
-        checked: true
-      }, {
-        id: 2,
-        name: 'tianqi',
-        time: 'July 18, 2017, 11:03 p.m.',
-        status: false,
-        checked: false
-      }]
+      rows: _this.props.task_list
     };
     return _this;
   }
 
   _createClass(Task_list, [{
+    key: 'componentWillMount',
+    value: function componentWillMount() {
+      this.props.fetchTaskList();
+    }
+  }, {
     key: '_handleBodyRow',
     value: function _handleBodyRow(row, _ref) {
       var _this2 = this;
@@ -20741,10 +20788,10 @@ var Task_list = function (_React$Component) {
     value: function render() {
       var _this3 = this;
 
+      var rows = this.props.task_list;
       var _state = this.state,
           searchColumn = _state.searchColumn,
           columns = _state.columns,
-          rows = _state.rows,
           query = _state.query;
 
       var searchedRows = (0, _redux.compose)(search.multipleColumns({
@@ -20800,7 +20847,7 @@ var Task_list = function (_React$Component) {
           'p',
           null,
           '\u5168\u90E8\u5171 ',
-          this.state.rows.length,
+          rows.length,
           ' \u9879'
         )
       );
@@ -20811,11 +20858,15 @@ var Task_list = function (_React$Component) {
 }(_react2.default.Component);
 
 Task_list.propTypes = {
-  toResult: _react2.default.PropTypes.func.isRequired
+  toResult: _react2.default.PropTypes.func.isRequired,
+  fetchTaskList: _react2.default.PropTypes.func.isRequired,
+  task_list: _react2.default.PropTypes.array
 };
 
 Task_list.defaultProps = {
-  toResult: function toResult() {}
+  toResult: function toResult() {},
+  fetchTaskList: function fetchTaskList() {},
+  task_list: []
 };
 
 exports.default = Task_list;
@@ -21122,13 +21173,18 @@ var _reactRouterRedux = __webpack_require__(12);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var mapStateToProps = function mapStateToProps(state) {
-  return {};
+  return {
+    task_list: state.tasks.all_task_list
+  };
 };
 
 var mapDispatchToProps = function mapDispatchToProps(dispatch) {
   return {
     toResult: function toResult(task_id, task_name) {
       dispatch((0, _reactRouterRedux.push)('/home/ch/result/' + task_id + '/' + task_name));
+    },
+    fetchTaskList: function fetchTaskList() {
+      dispatch(_root_actions2.default.fetchTaskList());
     }
   };
 };
@@ -21203,6 +21259,23 @@ function tasks() {
       return _extends({}, state, {
         isFetching: false,
         errorCode: action.payload
+      });
+
+    case _root_actions2.default.REQUEST_ALL_TASK:
+      return _extends({}, state, {
+        isFetching: true
+      });
+
+    case _root_actions2.default.FETCH_ALL_TASK_SUCCESS:
+      return _extends({}, state, {
+        isFetching: false,
+        all_task_list: action.payload
+      });
+
+    case _root_actions2.default.FETCH_ALL_TASK_FAILURE:
+      return _extends({}, state, {
+        isFetching: false,
+        errCode: action.payload
       });
 
     default:
@@ -24017,7 +24090,7 @@ exports = module.exports = __webpack_require__(252)(undefined);
 
 
 // module
-exports.push([module.i, ".new_task {\n  position: relative;\n  width: 100%;\n  height: 100%;\n  margin-left: 20px;\n  display: flex;\n  flex-flow: row nowrap;\n  justify-content: flex-start;\n  color: #406A8C; }\n  .new_task > label {\n    position: absolute;\n    top: 88%;\n    left: 77%;\n    padding-left: 30px;\n    padding-right: 30px;\n    background-color: #0275d8;\n    border: 0px; }\n    .new_task > label span {\n      padding: 25px 10px; }\n    .new_task > label:hover {\n      background-color: #025fb1; }\n\n.new_task_upload {\n  position: relative;\n  flex-grow: 0;\n  width: 70%;\n  height: 95%;\n  margin-right: 20px;\n  margin-top: 20px;\n  overflow: auto;\n  overflow-x: hidden; }\n  .new_task_upload label {\n    margin-bottom: 0px; }\n  .new_task_upload .file_input {\n    position: relative;\n    z-index: 5;\n    width: 80px;\n    height: 20px;\n    background: #FFFFFF;\n    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.5);\n    border-radius: 8px;\n    margin-bottom: 10px;\n    margin-top: 10px;\n    vertical-align: middle;\n    text-align: center;\n    cursor: pointer; }\n    .new_task_upload .file_input span {\n      position: relative;\n      display: inline-block;\n      font-size: 11px;\n      color: #53BAEC;\n      cursor: pointer; }\n      .new_task_upload .file_input span.prompt {\n        display: block;\n        margin-top: 5px;\n        color: #406A8C;\n        font-size: 10px;\n        cursor: default; }\n    .new_task_upload .file_input input {\n      position: relative;\n      visibility: hidden;\n      width: 0px;\n      height: 0px;\n      z-index: 0; }\n  .new_task_upload textarea {\n    border: 1px solid #e6e6e6; }\n  .new_task_upload #task_submit {\n    display: none; }\n\n.new_task_progress {\n  position: relative;\n  flex-grow: 0;\n  background: #FFFFFF;\n  box-shadow: -3px 2px 2px 0 rgba(119, 151, 178, 0.16);\n  margin-top: 20px;\n  width: 22%;\n  height: 82%;\n  overflow: auto; }\n  .new_task_progress .tb-title {\n    position: relative;\n    width: 100%;\n    padding-top: 0px;\n    padding: 20px; }\n\n.task_list {\n  position: relative;\n  margin: 20px 20px;\n  width: 65%;\n  height: 90%; }\n  .task_list .search_container {\n    position: relative;\n    width: 100%;\n    height: 7%;\n    margin-bottom: 10px; }\n    .task_list .search_container span {\n      position: absolute;\n      height: 50%;\n      font-size: 12px;\n      opacity: 0.4;\n      transform: translate(0, -50%); }\n    .task_list .search_container div {\n      position: relative;\n      width: 100%;\n      height: 100%; }\n      .task_list .search_container div select {\n        display: none; }\n      .task_list .search_container div input {\n        position: relative;\n        width: 100%;\n        height: 100%;\n        border: 0px;\n        /* Input: */\n        background: #FFFFFF;\n        border: 1px solid #58BCEB;\n        border-radius: 4px; }\n        .task_list .search_container div input::-webkit-input-placeholder {\n          text-indent: 40px;\n          background: url(" + __webpack_require__(538) + ") no-repeat;\n          background-position: 2% 0;\n          background-size: 3%; }\n  .task_list p {\n    margin-top: 10px;\n    padding-left: 40px;\n    font-size: 14px;\n    color: #4A90E2; }\n\n.task_list_table {\n  position: relative;\n  width: 100%;\n  background: #FFFFFF;\n  box-shadow: -3px 2px 2px 0 rgba(119, 151, 178, 0.16);\n  overflow: auto;\n  height: 92%; }\n  .task_list_table table {\n    width: 100%;\n    text-align: center;\n    color: #406A8C; }\n  .task_list_table th {\n    text-align: center;\n    background: #FFFFFF;\n    border: 0px;\n    padding: 15px 0px;\n    border-bottom: 1px solid #f2f2f2;\n    font-size: 18px; }\n  .task_list_table tr:hover {\n    background: #F5F6F7; }\n  .task_list_table td {\n    padding: 15px 0px;\n    font-size: 15px; }\n  .task_list_table .tc1 {\n    width: 25%; }\n  .task_list_table .tc2 {\n    width: 50%; }\n\n.clickable {\n  cursor: pointer; }\n\n.result_page {\n  position: relative;\n  width: 100%;\n  height: 100%;\n  color: #406A8C; }\n  .result_page .back-sign {\n    position: relative;\n    padding: 15px 15px; }\n    .result_page .back-sign img {\n      position: relative;\n      width: 3%;\n      cursor: pointer; }\n    .result_page .back-sign span {\n      font-size: 18px;\n      margin-left: 10px;\n      vertical-align: middle; }\n\n.result_table_nav {\n  position: relative;\n  display: flex;\n  flex-direction: row;\n  justify-content: space-between;\n  align-items: center; }\n  .result_table_nav ul {\n    position: relative;\n    list-style-type: none;\n    margin: 0px;\n    margin-left: 15px;\n    padding-left: 0px;\n    width: 80%;\n    display: flex;\n    justify-content: space-between;\n    border: 1px solid #58BCEB;\n    border-right: 0px;\n    border-radius: 4px;\n    overflow: hidden; }\n    .result_table_nav ul li {\n      background-color: white;\n      flex-basis: 100%;\n      width: auto;\n      padding: 5px 10px;\n      vertical-align: middle;\n      border: 0px;\n      border-right: 1px solid #58BCEB;\n      text-align: center;\n      cursor: pointer; }\n      .result_table_nav ul li span {\n        vertical-align: middle;\n        color: #406A8C;\n        text-decoration: none;\n        background-color: transparent;\n        border: 0px;\n        pointer-events: none; }\n      .result_table_nav ul li.active {\n        background-color: #4A90E2; }\n        .result_table_nav ul li.active span {\n          color: white; }\n      .result_table_nav ul li:hover {\n        background-color: #4A90E2; }\n        .result_table_nav ul li:hover span {\n          color: white; }\n  .result_table_nav #review_button {\n    margin-right: 20px;\n    background-color: #58BCEB;\n    vertical-align: middle;\n    border: 0px;\n    letter-spacing: 2px;\n    font-size: 14px;\n    padding: 0px 25px;\n    height: 30px;\n    box-shadow: 0 1px 3px 0 rgba(117, 146, 222, 0.85); }\n    .result_table_nav #review_button:hover, .result_table_nav #review_button:focus {\n      background-color: #32ade7; }\n\n.review_block {\n  position: relative;\n  margin-bottom: 15px;\n  width: 100%;\n  height: 170px;\n  background: #F5F6FA;\n  box-shadow: -3px 2px 2px 0 rgba(119, 151, 178, 0.16); }\n  .review_block .question_container {\n    width: 100%;\n    height: 100%;\n    display: flex;\n    flex-direction: row;\n    justify-content: flex-start; }\n  .review_block .review_question {\n    margin-top: 15px;\n    text-align: center;\n    flex-basis: 100%; }\n    .review_block .review_question label {\n      padding: 0px 10px;\n      text-indent: 10px; }\n      .review_block .review_question label span {\n        padding-left: 5px; }\n    .review_block .review_question textarea {\n      border: 1px solid #e6e6e6; }\n  .review_block #review_submit {\n    height: 30px;\n    margin-top: 25px;\n    padding-left: 25px;\n    padding-right: 25px;\n    font-size: 15px;\n    line-height: 0px;\n    letter-spacing: 5px; }\n\n.result_area {\n  position: relative;\n  padding: 15px 15px;\n  padding-bottom: 5px;\n  height: 84%;\n  display: flex;\n  flex-direction: column;\n  justify-content: flex-start;\n  overflow: auto; }\n\n.result_table {\n  flex-grow: 1;\n  width: 100%; }\n  .result_table table {\n    width: 100%;\n    background: #FFFFFF;\n    box-shadow: -3px 2px 2px 0 rgba(119, 151, 178, 0.16); }\n  .result_table thead th {\n    text-align: center;\n    border: 1px solid #e6e6e6;\n    padding: 20px 0px;\n    font-weight: bold; }\n  .result_table thead .sort {\n    cursor: pointer;\n    padding: 0px 0px; }\n  .result_table tbody tr:hover {\n    background-color: rgba(242, 242, 242, 0.6); }\n  .result_table tbody td {\n    text-align: center;\n    max-width: 100px;\n    border: 1px solid #e6e6e6;\n    padding: 5px 0px;\n    word-wrap: break-word; }\n  .result_table .pagify-pagination {\n    position: fixed;\n    left: 19%;\n    top: 95%;\n    font-size: 14px;\n    display: flex;\n    justify-content: flex-start;\n    align-items: center; }\n    .result_table .pagify-pagination span {\n      margin: 0px 5px;\n      cursor: pointer; }\n\n.annotation_page {\n  background: rgba(55, 70, 95, 0.8);\n  position: fixed;\n  width: 100%;\n  height: 100%;\n  left: 0%;\n  top: 0%;\n  z-index: 50; }\n  .annotation_page .annotation_area {\n    position: relative;\n    top: 8%;\n    height: 85%; }\n  .annotation_page .annotation_header {\n    background-color: white;\n    position: relative;\n    width: 70%;\n    margin: 0px auto;\n    color: white;\n    display: flex;\n    justify-content: space-between; }\n    .annotation_page .annotation_header p {\n      color: #406A8C;\n      vertical-align: middle;\n      margin: 0px 7%;\n      letter-spacing: 10px;\n      font-size: 16px;\n      padding: 11px 0px; }\n      .annotation_page .annotation_header p span {\n        color: #4A90E2;\n        letter-spacing: 3px; }\n  .annotation_page img {\n    position: absolute;\n    width: 45px;\n    top: 0%;\n    left: 85%;\n    padding: 0px 0px;\n    cursor: pointer; }\n  .annotation_page .annotation_table {\n    background-color: white;\n    position: relative;\n    width: 70%;\n    max-height: 90%;\n    margin: 10px auto;\n    overflow: auto; }\n    .annotation_page .annotation_table table {\n      position: relative;\n      width: 100%;\n      color: #406A8C; }\n      .annotation_page .annotation_table table .col1 {\n        width: 20%;\n        border-right: 1px solid #f2f2f2; }\n      .annotation_page .annotation_table table .col2 {\n        width: 80%; }\n    .annotation_page .annotation_table th {\n      text-align: center;\n      font-size: 16px;\n      font-weight: normal;\n      letter-spacing: 10px;\n      padding: 10px 0px;\n      border-bottom: 1px solid #f2f2f2; }\n    .annotation_page .annotation_table td {\n      padding: 6px 0px; }\n      .annotation_page .annotation_table td.col1 {\n        text-align: center; }\n      .annotation_page .annotation_table td.col2 {\n        text-align: left;\n        text-indent: 20px; }\n\n.review_list {\n  position: relative;\n  margin: 25px 25px;\n  width: 65%;\n  height: 90%; }\n  .review_list p {\n    margin-top: 10px;\n    padding-left: 40px;\n    font-size: 14px;\n    color: #4A90E2; }\n\n.review_list_table {\n  position: relative;\n  width: 100%;\n  overflow: auto;\n  background: #FFFFFF;\n  box-shadow: -3px 2px 2px 0 rgba(119, 151, 178, 0.16);\n  text-align: center; }\n  .review_list_table table {\n    width: 100%;\n    color: #406A8C; }\n  .review_list_table th {\n    text-align: center;\n    background: #FFFFFF;\n    border: 0px;\n    padding: 15px 0px;\n    border-bottom: 1px solid #f2f2f2;\n    font-size: 18px; }\n  .review_list_table tr:hover {\n    background: #F5F6F7; }\n  .review_list_table td {\n    padding: 15px 0px;\n    font-size: 15px; }\n  .review_list_table .tc1 {\n    width: 25%; }\n  .review_list_table .tc2 {\n    width: 50%; }\n\nbody {\n  overflow: hidden;\n  background-color: #F5F8FA; }\n\nhtml, body, #root, #root > div, .container-fluid, .row {\n  height: 100%; }\n\n.btn {\n  background-color: #4A90E2;\n  border-color: #4A90E2; }\n  .btn:hover, .btn:focus {\n    background-color: #2479db;\n    border-color: #2479db; }\n\n.navbar {\n  position: relative;\n  background: #00061D;\n  opacity: 0.85;\n  box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.5);\n  margin-bottom: 0;\n  border: 0px;\n  border-radius: 0px;\n  z-index: 10; }\n\n.main_area {\n  position: relative; }\n\n.sidebar {\n  position: relative;\n  z-index: 5;\n  height: 100%;\n  padding-left: 0px;\n  padding-right: 0px;\n  overflow: hidden; }\n  .sidebar .bg {\n    position: absolute;\n    left: 0;\n    top: 0;\n    width: 100%;\n    height: 100%;\n    z-index: 8; }\n  .sidebar .bg-filter {\n    position: absolute;\n    background: linear-gradient(#0b4774, #09385D);\n    left: 0;\n    top: 0;\n    width: 100%;\n    height: 100%;\n    opacity: 0.8;\n    z-index: 10; }\n  .sidebar ul {\n    position: relative;\n    margin-top: 10px;\n    padding-right: 10px;\n    z-index: 20; }\n  .sidebar .nav-item {\n    margin: 10px auto; }\n  .sidebar .nav-link {\n    position: relative;\n    z-index: 30;\n    background: rgba(255, 255, 255, 0); }\n    .sidebar .nav-link.active {\n      background: linear-gradient(90deg, rgba(68, 140, 203, 0.6) 0%, rgba(255, 255, 255, 0) 92%);\n      border-left: 5px #78DCFF solid; }\n    .sidebar .nav-link:focus {\n      background: linear-gradient(90deg, rgba(68, 140, 203, 0.6) 0%, rgba(255, 255, 255, 0) 92%);\n      border-left: 5px #78DCFF solid; }\n    .sidebar .nav-link img {\n      position: relative;\n      display: inline;\n      margin-right: 20px;\n      margin-left: 15%;\n      width: 10%;\n      z-index: 10;\n      pointer-events: none; }\n    .sidebar .nav-link span {\n      position: relative;\n      color: white;\n      font-size: 16px;\n      font-weight: lighter;\n      letter-spacing: 3px;\n      line-height: 150%;\n      vertical-align: middle;\n      z-index: 10;\n      pointer-events: none; }\n\nmain {\n  position: relative;\n  background-color: #F5F8FA;\n  height: 90%;\n  overflow: scroll; }\n  main::-webkit-scrollbar {\n    display: none; }\n\n.tb-section {\n  margin-bottom: 25px;\n  background-color: white;\n  box-shadow: -3px 2px 2px 0 rgba(119, 151, 178, 0.16); }\n\n.tr {\n  position: relative;\n  width: 100%;\n  display: flex; }\n\n.td1 {\n  position: relative;\n  display: inline;\n  width: 20%;\n  height: 100%;\n  text-align: center;\n  margin: auto 0px;\n  padding-top: 15px;\n  padding-bottom: 15px; }\n\n.td2 {\n  position: relative;\n  display: inline;\n  width: 40%;\n  height: 100%;\n  margin: auto 0px;\n  padding: 10px 0px;\n  font-size: 13px; }\n\n.td3 {\n  position: relative;\n  width: 100%;\n  padding: 15px 20px;\n  font-size: 13px;\n  font-weight: 400; }\n  .td3 p {\n    margin-bottom: 6px; }\n  .td3 .progress {\n    margin-bottom: 6px;\n    height: 8px; }\n    .td3 .progress .progress-bar-info {\n      background-color: #53BAEC; }\n  .td3 .completed_task {\n    padding: 15px 0px;\n    cursor: pointer;\n    transition: .1s; }\n    .td3 .completed_task span {\n      pointer-events: none; }\n    .td3 .completed_task:hover {\n      font-size: 14px; }\n\n.tr-stripe {\n  background-color: #F5F6F7;\n  padding-top: 15px;\n  padding-bottom: 30px; }\n\n.td-stripe {\n  background-color: #F5F6F7; }\n\n.switch {\n  position: relative;\n  display: inline-block;\n  width: 36px;\n  height: 20.4px;\n  margin-right: 5px; }\n  .switch input {\n    visibility: hidden; }\n  .switch .slider {\n    position: absolute;\n    cursor: pointer;\n    top: 0;\n    left: 0;\n    right: 0;\n    bottom: 0;\n    background-color: #ccc;\n    -webkit-transition: .4s;\n    transition: .4s; }\n  .switch .slider:before {\n    position: absolute;\n    content: \"\";\n    height: 15.6px;\n    width: 15.6px;\n    left: 2.4px;\n    bottom: 2.4px;\n    background-color: white;\n    -webkit-transition: .4s;\n    transition: .4s; }\n  .switch input:checked + .slider {\n    background-color: #2196F3; }\n  .switch input:focus + .slider {\n    box-shadow: 0 0 1px #2196F3; }\n  .switch input:checked + .slider:before {\n    -webkit-transform: translateX(15.6px);\n    -ms-transform: translateX(15.6px);\n    transform: translateX(15.6px); }\n  .switch .slider.round {\n    border-radius: 20.4px; }\n  .switch .slider.round:before {\n    border-radius: 50%; }\n", ""]);
+exports.push([module.i, ".new_task {\n  position: relative;\n  width: 100%;\n  height: 100%;\n  margin-left: 20px;\n  display: flex;\n  flex-flow: row nowrap;\n  justify-content: flex-start;\n  color: #406A8C; }\n  .new_task > label {\n    position: absolute;\n    top: 560px;\n    left: 77%;\n    padding-left: 30px;\n    padding-right: 30px;\n    background-color: #0275d8;\n    border: 0px; }\n    .new_task > label span {\n      padding: 25px 10px; }\n    .new_task > label:hover {\n      background-color: #025fb1; }\n\n.new_task_upload {\n  position: relative;\n  flex-grow: 0;\n  width: 70%;\n  height: 95%;\n  margin-right: 20px;\n  margin-top: 20px;\n  overflow: auto;\n  overflow-x: hidden; }\n  .new_task_upload label {\n    margin-bottom: 0px;\n    font-weight: normal; }\n  .new_task_upload .file_input {\n    position: relative;\n    z-index: 5;\n    width: 80px;\n    height: 20px;\n    background: #FFFFFF;\n    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.5);\n    border-radius: 8px;\n    margin-bottom: 10px;\n    margin-top: 10px;\n    vertical-align: middle;\n    text-align: center;\n    cursor: pointer; }\n    .new_task_upload .file_input span {\n      position: relative;\n      display: inline-block;\n      font-size: 11px;\n      color: #53BAEC;\n      cursor: pointer; }\n      .new_task_upload .file_input span.prompt {\n        display: block;\n        margin-top: 5px;\n        color: #406A8C;\n        font-size: 10px;\n        cursor: default; }\n    .new_task_upload .file_input input {\n      position: relative;\n      visibility: hidden;\n      width: 0px;\n      height: 0px;\n      z-index: 0; }\n  .new_task_upload textarea {\n    border: 1px solid #e6e6e6; }\n  .new_task_upload #task_submit {\n    display: none; }\n\n.new_task_progress {\n  position: relative;\n  flex-grow: 0;\n  background: #FFFFFF;\n  box-shadow: -3px 2px 2px 0 rgba(119, 151, 178, 0.16);\n  margin-top: 20px;\n  width: 22%;\n  height: 525px;\n  overflow: auto; }\n  .new_task_progress .tb-title {\n    position: relative;\n    width: 100%;\n    padding-top: 0px;\n    padding: 20px; }\n\n.task_list {\n  position: relative;\n  margin: 20px 20px;\n  width: 65%;\n  height: 90%; }\n  .task_list .search_container {\n    position: relative;\n    width: 100%;\n    height: 7%;\n    margin-bottom: 10px; }\n    .task_list .search_container span {\n      position: absolute;\n      height: 50%;\n      font-size: 12px;\n      opacity: 0.4;\n      transform: translate(0, -50%); }\n    .task_list .search_container div {\n      position: relative;\n      width: 100%;\n      height: 100%; }\n      .task_list .search_container div select {\n        display: none; }\n      .task_list .search_container div input {\n        position: relative;\n        width: 100%;\n        height: 100%;\n        border: 0px;\n        /* Input: */\n        background: #FFFFFF;\n        border: 1px solid #58BCEB;\n        border-radius: 4px; }\n        .task_list .search_container div input::-webkit-input-placeholder {\n          text-indent: 6%;\n          background: url(" + __webpack_require__(538) + ") no-repeat;\n          background-position: 2% 0;\n          background-size: 19px; }\n  .task_list p {\n    margin-top: 10px;\n    padding-left: 40px;\n    font-size: 14px;\n    color: #4A90E2; }\n\n.task_list_table {\n  position: relative;\n  width: 100%;\n  background: #FFFFFF;\n  box-shadow: -3px 2px 2px 0 rgba(119, 151, 178, 0.16);\n  overflow: auto;\n  height: 92%; }\n  .task_list_table table {\n    width: 100%;\n    text-align: center;\n    color: #406A8C; }\n  .task_list_table th {\n    text-align: center;\n    background: #FFFFFF;\n    border: 0px;\n    padding: 15px 0px;\n    border-bottom: 1px solid #f2f2f2;\n    font-size: 17px;\n    font-weight: normal; }\n  .task_list_table tr:hover {\n    background: #F5F6F7; }\n  .task_list_table td {\n    padding: 15px 0px;\n    font-size: 15px; }\n  .task_list_table .tc1 {\n    width: 25%; }\n  .task_list_table .tc2 {\n    width: 50%; }\n\n.clickable {\n  cursor: pointer; }\n\n.result_page {\n  position: relative;\n  width: 100%;\n  height: 100%;\n  color: #406A8C; }\n  .result_page .back-sign {\n    position: relative;\n    padding: 15px 15px; }\n    .result_page .back-sign img {\n      position: relative;\n      width: 3%;\n      cursor: pointer; }\n    .result_page .back-sign span {\n      font-size: 18px;\n      margin-left: 10px;\n      vertical-align: middle; }\n\n.result_table_nav {\n  position: relative;\n  display: flex;\n  flex-direction: row;\n  justify-content: space-between;\n  align-items: center; }\n  .result_table_nav ul {\n    position: relative;\n    list-style-type: none;\n    margin: 0px;\n    margin-left: 15px;\n    padding-left: 0px;\n    width: 80%;\n    display: flex;\n    justify-content: space-between;\n    border: 1px solid #58BCEB;\n    border-right: 0px;\n    border-radius: 4px;\n    overflow: hidden; }\n    .result_table_nav ul li {\n      background-color: white;\n      flex-basis: 100%;\n      width: auto;\n      padding: 5px 10px;\n      vertical-align: middle;\n      border: 0px;\n      border-right: 1px solid #58BCEB;\n      text-align: center;\n      cursor: pointer; }\n      .result_table_nav ul li span {\n        vertical-align: middle;\n        color: #406A8C;\n        text-decoration: none;\n        background-color: transparent;\n        border: 0px;\n        pointer-events: none; }\n      .result_table_nav ul li.active {\n        background-color: #4A90E2; }\n        .result_table_nav ul li.active span {\n          color: white; }\n      .result_table_nav ul li:hover {\n        background-color: #4A90E2; }\n        .result_table_nav ul li:hover span {\n          color: white; }\n  .result_table_nav #review_button {\n    margin-right: 20px;\n    background-color: #58BCEB;\n    vertical-align: middle;\n    border: 0px;\n    letter-spacing: 2px;\n    font-size: 14px;\n    padding: 0px 25px;\n    height: 30px;\n    box-shadow: 0 1px 3px 0 rgba(117, 146, 222, 0.85); }\n    .result_table_nav #review_button:hover, .result_table_nav #review_button:focus {\n      background-color: #32ade7; }\n\n.review_block {\n  position: relative;\n  margin-bottom: 15px;\n  width: 100%;\n  height: 170px;\n  background: #F5F6FA;\n  box-shadow: -3px 2px 2px 0 rgba(119, 151, 178, 0.16); }\n  .review_block .question_container {\n    width: 100%;\n    height: 100%;\n    display: flex;\n    flex-direction: row;\n    justify-content: flex-start; }\n  .review_block .review_question {\n    margin-top: 15px;\n    text-align: center;\n    flex-basis: 100%; }\n    .review_block .review_question label {\n      padding: 0px 10px;\n      text-indent: 10px; }\n      .review_block .review_question label span {\n        padding-left: 5px; }\n    .review_block .review_question textarea {\n      border: 1px solid #e6e6e6; }\n  .review_block #review_submit {\n    height: 30px;\n    margin-top: 25px;\n    padding-left: 25px;\n    padding-right: 25px;\n    font-size: 15px;\n    line-height: 0px;\n    letter-spacing: 5px; }\n\n.result_area {\n  position: relative;\n  padding: 15px 15px;\n  padding-bottom: 5px;\n  height: 84%;\n  display: flex;\n  flex-direction: column;\n  justify-content: flex-start;\n  overflow: auto; }\n\n.result_table {\n  flex-grow: 1;\n  width: 100%; }\n  .result_table table {\n    width: 100%;\n    background: #FFFFFF;\n    box-shadow: -3px 2px 2px 0 rgba(119, 151, 178, 0.16); }\n  .result_table thead th {\n    text-align: center;\n    border: 1px solid #e6e6e6;\n    padding: 20px 0px;\n    font-weight: bold; }\n  .result_table thead .sort {\n    cursor: pointer;\n    padding: 0px 0px; }\n  .result_table tbody tr:hover {\n    background-color: rgba(242, 242, 242, 0.6); }\n  .result_table tbody td {\n    text-align: center;\n    max-width: 100px;\n    border: 1px solid #e6e6e6;\n    padding: 5px 0px;\n    word-wrap: break-word; }\n  .result_table .pagify-pagination {\n    position: fixed;\n    left: 19%;\n    top: 95%;\n    font-size: 14px;\n    display: flex;\n    justify-content: flex-start;\n    align-items: center; }\n    .result_table .pagify-pagination span {\n      margin: 0px 5px;\n      cursor: pointer; }\n\n.annotation_page {\n  background: rgba(55, 70, 95, 0.8);\n  position: fixed;\n  width: 100%;\n  height: 100%;\n  left: 0%;\n  top: 0%;\n  z-index: 50; }\n  .annotation_page .annotation_area {\n    position: relative;\n    top: 8%;\n    height: 85%; }\n  .annotation_page .annotation_header {\n    background-color: white;\n    position: relative;\n    width: 70%;\n    margin: 0px auto;\n    color: white;\n    display: flex;\n    justify-content: space-between; }\n    .annotation_page .annotation_header p {\n      color: #406A8C;\n      vertical-align: middle;\n      margin: 0px 7%;\n      letter-spacing: 10px;\n      font-size: 16px;\n      padding: 11px 0px; }\n      .annotation_page .annotation_header p span {\n        color: #4A90E2;\n        letter-spacing: 3px; }\n  .annotation_page img {\n    position: absolute;\n    width: 45px;\n    top: 0%;\n    left: 85%;\n    padding: 0px 0px;\n    cursor: pointer; }\n  .annotation_page .annotation_table {\n    background-color: white;\n    position: relative;\n    width: 70%;\n    max-height: 90%;\n    margin: 10px auto;\n    overflow: auto; }\n    .annotation_page .annotation_table table {\n      position: relative;\n      width: 100%;\n      color: #406A8C; }\n      .annotation_page .annotation_table table .col1 {\n        width: 20%;\n        border-right: 1px solid #f2f2f2; }\n      .annotation_page .annotation_table table .col2 {\n        width: 80%; }\n    .annotation_page .annotation_table th {\n      text-align: center;\n      font-size: 16px;\n      font-weight: normal;\n      letter-spacing: 10px;\n      padding: 10px 0px;\n      border-bottom: 1px solid #f2f2f2; }\n    .annotation_page .annotation_table td {\n      padding: 6px 0px; }\n      .annotation_page .annotation_table td.col1 {\n        text-align: center; }\n      .annotation_page .annotation_table td.col2 {\n        text-align: left;\n        text-indent: 20px; }\n\n.review_list {\n  position: relative;\n  margin: 25px 25px;\n  width: 65%;\n  height: 90%; }\n  .review_list p {\n    margin-top: 10px;\n    padding-left: 40px;\n    font-size: 14px;\n    color: #4A90E2; }\n\n.review_list_table {\n  position: relative;\n  width: 100%;\n  overflow: auto;\n  background: #FFFFFF;\n  box-shadow: -3px 2px 2px 0 rgba(119, 151, 178, 0.16);\n  text-align: center; }\n  .review_list_table table {\n    width: 100%;\n    color: #406A8C; }\n  .review_list_table th {\n    text-align: center;\n    background: #FFFFFF;\n    border: 0px;\n    padding: 15px 0px;\n    border-bottom: 1px solid #f2f2f2;\n    font-size: 17px;\n    font-weight: normal; }\n  .review_list_table tr:hover {\n    background: #F5F6F7; }\n  .review_list_table td {\n    padding: 15px 0px;\n    font-size: 15px; }\n  .review_list_table .tc1 {\n    width: 25%; }\n  .review_list_table .tc2 {\n    width: 50%; }\n\nbody {\n  overflow: hidden;\n  background-color: #F5F8FA; }\n\nhtml, body, #root, #root > div, .main_area, .row {\n  height: 100%; }\n\n.btn {\n  background-color: #4A90E2;\n  border-color: #4A90E2; }\n  .btn:hover, .btn:focus {\n    background-color: #2479db;\n    border-color: #2479db; }\n\n*::-webkit-scrollbar {\n  width: 6px;\n  background-color: #E0E9EC; }\n\n*::-webkit-scrollbar-thumb {\n  background-color: #58BCEB;\n  border-radius: 6px; }\n\n.navbar {\n  position: relative;\n  background: #00061D;\n  opacity: 0.85;\n  box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.5);\n  margin-bottom: 0;\n  border: 0px;\n  border-radius: 0px;\n  z-index: 10; }\n\n.main_area {\n  position: relative; }\n\n.sidebar {\n  position: relative;\n  z-index: 5;\n  height: 100%;\n  padding-left: 0px;\n  padding-right: 0px;\n  overflow: hidden; }\n  .sidebar .bg {\n    position: absolute;\n    left: 0;\n    top: 0;\n    width: 100%;\n    height: 100%;\n    z-index: 8; }\n  .sidebar .bg-filter {\n    position: absolute;\n    background: linear-gradient(#0b4774, #09385D);\n    left: 0;\n    top: 0;\n    width: 100%;\n    height: 100%;\n    opacity: 0.8;\n    z-index: 10; }\n  .sidebar ul {\n    position: relative;\n    margin-top: 10px;\n    padding-right: 10px;\n    z-index: 20; }\n  .sidebar .nav-item {\n    margin: 10px auto; }\n  .sidebar .nav-link {\n    position: relative;\n    z-index: 30;\n    background: rgba(255, 255, 255, 0); }\n    .sidebar .nav-link.active {\n      background: linear-gradient(90deg, rgba(68, 140, 203, 0.6) 0%, rgba(255, 255, 255, 0) 92%);\n      border-left: 5px #78DCFF solid; }\n    .sidebar .nav-link:focus {\n      background: linear-gradient(90deg, rgba(68, 140, 203, 0.6) 0%, rgba(255, 255, 255, 0) 92%);\n      border-left: 5px #78DCFF solid; }\n    .sidebar .nav-link img {\n      position: relative;\n      display: inline;\n      margin-right: 20px;\n      margin-left: 15%;\n      width: 10%;\n      z-index: 10;\n      pointer-events: none; }\n    .sidebar .nav-link span {\n      position: relative;\n      color: white;\n      font-size: 16px;\n      font-weight: lighter;\n      letter-spacing: 3px;\n      line-height: 150%;\n      vertical-align: middle;\n      z-index: 10;\n      pointer-events: none; }\n\nmain {\n  position: relative;\n  background-color: #F5F8FA;\n  height: 90%;\n  overflow: scroll; }\n  main::-webkit-scrollbar {\n    display: none; }\n\n.tb-section {\n  margin-bottom: 25px;\n  background-color: white;\n  box-shadow: -3px 2px 2px 0 rgba(119, 151, 178, 0.16); }\n\n.tr {\n  position: relative;\n  width: 100%;\n  display: flex; }\n\n.td1 {\n  position: relative;\n  display: inline;\n  width: 20%;\n  height: 100%;\n  text-align: center;\n  margin: auto 0px;\n  padding-top: 15px;\n  padding-bottom: 15px; }\n\n.td2 {\n  position: relative;\n  display: inline;\n  width: 40%;\n  height: 100%;\n  margin: auto 0px;\n  padding: 10px 0px;\n  font-size: 13px; }\n\n.td3 {\n  position: relative;\n  width: 100%;\n  padding: 15px 20px;\n  font-size: 13px;\n  font-weight: 400; }\n  .td3 p {\n    margin-bottom: 6px; }\n  .td3 .progress {\n    margin-bottom: 6px;\n    height: 8px; }\n    .td3 .progress .progress-bar-info {\n      background-color: #53BAEC; }\n  .td3 .completed_task {\n    padding: 15px 0px;\n    cursor: pointer;\n    transition: .1s; }\n    .td3 .completed_task span {\n      pointer-events: none; }\n    .td3 .completed_task:hover {\n      font-size: 14px; }\n\n.tr-stripe {\n  background-color: #F5F6F7;\n  padding-top: 15px;\n  padding-bottom: 30px; }\n\n.td-stripe {\n  background-color: #F5F6F7; }\n\n.switch {\n  position: relative;\n  display: inline-block;\n  width: 36px;\n  height: 20.4px;\n  margin-right: 5px; }\n  .switch input {\n    visibility: hidden; }\n  .switch .slider {\n    position: absolute;\n    cursor: pointer;\n    top: 0;\n    left: 0;\n    right: 0;\n    bottom: 0;\n    background-color: #ccc;\n    -webkit-transition: .4s;\n    transition: .4s; }\n  .switch .slider:before {\n    position: absolute;\n    content: \"\";\n    height: 15.6px;\n    width: 15.6px;\n    left: 2.4px;\n    bottom: 2.4px;\n    background-color: white;\n    -webkit-transition: .4s;\n    transition: .4s; }\n  .switch input:checked + .slider {\n    background-color: #2196F3; }\n  .switch input:focus + .slider {\n    box-shadow: 0 0 1px #2196F3; }\n  .switch input:checked + .slider:before {\n    -webkit-transform: translateX(15.6px);\n    -ms-transform: translateX(15.6px);\n    transform: translateX(15.6px); }\n  .switch .slider.round {\n    border-radius: 20.4px; }\n  .switch .slider.round:before {\n    border-radius: 50%; }\n", ""]);
 
 // exports
 

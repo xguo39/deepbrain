@@ -6,7 +6,7 @@ body{
   background-color: #F5F8FA;
 }
 
-html, body, #root, #root>div,.container-fluid, .row{
+html, body, #root, #root>div,.main_area, .row{
     height: 100%;
 }
 
@@ -19,6 +19,19 @@ html, body, #root, #root>div,.container-fluid, .row{
     border-color:  #2479db;
   }
 }
+
+*::-webkit-scrollbar
+{
+	width: 6px;
+	background-color: #E0E9EC;
+}
+
+*::-webkit-scrollbar-thumb
+{
+	background-color: #58BCEB;
+  border-radius: 6px;
+}
+
 
 // Define the top nav bar and main display area styles
 .navbar{

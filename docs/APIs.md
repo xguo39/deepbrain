@@ -13,6 +13,7 @@ APIs
   - [Upload_task](#upload_task)
   - [Progress_task_list](#progress_task_list)
   - [All_task_list](#all_task_list)
+  - [Checked_change](#checked_change)
   - [Fetch_case_result](#fetch_case_result)
   - [Fetch_Annotation](#fetch_annotation)
 
@@ -47,7 +48,7 @@ Tasks
 ---
 ### Upload_task
 * Description: For uploading the new task form
-* URL: `/api/task/new_task`
+* URL: `/api/task/new_task/:user_name`
 * Method: `POST`
 * Request Example:
 ```javascript
@@ -61,17 +62,7 @@ http/1.1 200 OK
 ```
 ```javascript
 {
- success:true,
- progress_task_list:[
-  {
-    task_name: 'xiaonan',
-    completed_missons: 5,
-    total_missions: 10,
-    current_misson:'正在处理xxx基因'，
-    estimated_time:'5分钟'，
-    checked: false
-   },...
-  ]
+ success:true
 }
 ```
 * Response Example on `failure`:
@@ -87,7 +78,7 @@ http/1.1 200 OK
 
 ### Progress_task_list
 * Description: For fetching the processing task list
-* URL: `/api/task/progress_task_list/`
+* URL: `/api/task/progress_task_list/:user_name`
 * Method: `GET`
 * Request Example”
 `{}`
@@ -100,19 +91,19 @@ http/1.1 200 OK
  success:true,
  list:[
   {
+    id:1,
     task_name: 'xiaonan',
-    completed_missons: 5,
-    total_missions: 10,
-    current_misson:'正在处理xxx基因'，
-    estimated_time:'5分钟'，
+    status:'正在处理xxx基因',
+    pub_date: '2017-06-18, 12:03pm',
+    processed_time:'5分钟',
     checked: false
    },
    {
+     id:2,
      task_name:'tianqi',
-     completed_missions:10,
-     total_missions:10,
-     current_mission:'',
-     estimated_time:'4分钟'，
+     pub_date: '2017-06-18, 12:03pm',
+     status:'success',
+     estimated_time:'4分钟',
      checked:false
    }, …  
  ]
@@ -131,7 +122,7 @@ http/1.1 200 OK
 
 ### All_task_list
 * Description: For fetching all the task list
-* URL: `/api/task/all_task_list/`
+* URL: `/api/task/all_task_list/:user_name`
 * Method: `GET`
 * Request Example
 `{}`
@@ -145,16 +136,18 @@ http/1.1 200 OK
  list:[
   {
    id:1,
-   name:xiaonan,
-   time: '2017-06-18, 12:03pm',
-   status:true,
+   task_name:"xiaonan",
+   pub_date: '2017-06-18, 12:03pm',
+   status:'success',
+   processed_time:'0'
    checked:false
   },
   {
    id:2,
-   name:tianqi,
-   time: '2017-06-18, 12:03pm',
-   status:false,
+   task_name:"tianqi",
+   pub_date: '2017-06-18, 12:03pm',
+   status:'xxxxxxxx fail',
+   processed_time:'0'
    checked:true
   }…
  ]
@@ -171,9 +164,40 @@ http/1.1 200 OK
 }
 ```
 
+
+### Checked_change
+* Description: Changing the check status
+* URL: `/api/task/task_check/:user_name`
+* Method: `PUT`
+* Request Example
+`{
+  id:1
+  }`
+* Response Example on `success`:
+```
+http/1.1 200 OK
+```
+```javascript
+{
+  success:true
+}
+```
+* Response Example on `failure`:
+```
+http/1.1 200 OK
+```
+```javascript
+{
+ success:false,
+ errCode: BACKEND_MAINTANANCE
+}
+```
+
+
+
 ### Fetch_case_result
 * Description: For fetching the single case result
-* URL: `/api/result/:case_id/`
+* URL: `/api/result/:task_id/:user_name`
 * Method: `GET`
 * Request Example
 `{}`
@@ -188,39 +212,38 @@ http/1.1 200 OK
   summary_table_data:[
     {
       gene:'WWOX',
-      transcript:'chr16:g.78466583C>G',
-      cDNA:'GCGTG',
+      transcript:'NM_002834.4',
+      variant:'c.922A>G',
       protein:'danbaizhi',
       zygosity:'peixing',
-      phenotype_matched:'biaoxingpipei',
-      pheno_matched_score:39,
-      ACMG_criteria_matched:"PM2|BP4",
-      clinical_significance:'Uncertain Significance',
-      clinical_significance_score:55,
-      classification_score:0.88,
-      total_score:1.8
+      correlated_phenotypes:'biaoxingpipei',
+      pheno_match_score:3.59,
+      hit_criteria:"PM2|BP4",
+      pathogenicity:'Uncertain Significance',
+      pathogenicity_score:0.88,
+      final_score:1.8
     },…
   ],
   incidental_table_data:[
     {
       gene:'WWOX',
       transcript:'chr16:g.78466583C>G',
-      cDNA:'GCGTG',
+      variant:'GCGTG',
       protein:'danbaizhi',
       zygosity:'peixing',
-      pheno_matched_score:39,
-      ACMG_criteria_matched:"PM2|BP4",
-      clinical_significance:'Uncertain Significance',
+      pheno_match_score:39,
+      hit_criteria:"PM2|BP4",
+      pathogenicity:'Uncertain Significance',
      },…
   ],
   candidate_table_data:[
     {
       gene:'WWOX',
       transcript:'chr16:g.78466583C>G',
-      cDNA:'GCGTG',
+      variant:'GCGTG',
       protein:'danbaizhi',
       zygosity:'peixing',
-      phenotype_matched:’from paper’
+      correlated_phenotypes:’from paper’
      },…
   ],
   input_gene_data:[
@@ -244,11 +267,11 @@ http/1.1 200 OK
 
 ### Fetch_Annotation
 * Description: For fetching the current gene's annotation
-* URL: `/api/result/:task_id/:gene_name`
+* URL: `/api/result/:task_id/:gene_name/:cDNA/:user_name`
 * Method: `Get`
 * Request Example:
 ```javascript
-{ }
+`{}`
 ```
 * Response Example on `success`:
 ```

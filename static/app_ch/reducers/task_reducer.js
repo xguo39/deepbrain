@@ -22,6 +22,26 @@ export default function tasks(state={}, action){
        errorCode:action.payload
      }
 
+    case root_actions.REQUEST_ALL_TASK:
+      return{
+        ...state,
+        isFetching:true,
+      }
+
+    case root_actions.FETCH_ALL_TASK_SUCCESS:
+      return{
+        ...state,
+        isFetching:false,
+        all_task_list:action.payload
+      }
+
+    case root_actions.FETCH_ALL_TASK_FAILURE:
+      return{
+        ...state,
+        isFetching:false,
+        errCode:action.payload
+      }
+
     default:
      return state
   }
