@@ -18727,10 +18727,14 @@ var General_data_table = function (_React$Component) {
             _react2.default.createElement(Table.Header, null),
             _react2.default.createElement(Table.Body, {
               rows: paginated.rows,
-              rowKey: 'gene',
-              onRow: function onRow(row, _ref2) {
-                var rowIndex = _ref2.rowIndex,
-                    rowKey = _ref2.rowKey;
+              rowKey: function rowKey(_ref2) {
+                var rowData = _ref2.rowData,
+                    rowIndex = _ref2.rowIndex;
+                return rowIndex;
+              },
+              onRow: function onRow(row, _ref3) {
+                var rowIndex = _ref3.rowIndex,
+                    rowKey = _ref3.rowKey;
                 return _this3._handleBodyRow(row, { rowIndex: rowIndex, rowKey: rowKey });
               } })
           ),
