@@ -442,10 +442,10 @@ class case_result(APIView):
         json_result = {
             'success':True,
             'result_data':{
-                'summary_table_data': data.result,
-                'incidental_table_data': data.incidental_findings,
-                'candidate_table_data': data.candidate_genes,
-                'input_gene_data': data.input_gene,
+                'summary_table_data': mark_safe(data.result),
+                'incidental_table_data': mark_safe(data.incidental_findings),
+                'candidate_table_data': mark_safe(data.candidate_genes),
+                'input_gene_data': mark_safe(data.input_gene),
                 # 'interpretation_data': data.interpretation_chinese,
             }
         }
