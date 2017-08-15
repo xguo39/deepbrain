@@ -19,10 +19,12 @@ urlpatterns = [
     url(r'^(?P<pk>[0-9]+)/result/interpretation/ch$', views.interpretation_ch, name='interpretation_ch'),
     url(r'^hpo$', views.chpo, name='chpo'),
     url(r'^lof$', views.lof, name='lof'),
-    url(r'^api/task/new_task/$', views.new_task.as_view()),
-    url(r'^api/task/progress_task_list/$', views.progress_task_list.as_view()),
+    url(r'^api/task/new_task/(?P<user_name>[-\w]+)/$', views.new_task.as_view()),
+    url(r'^api/task/progress_task_list/(?P<user_name>[-\w]+)/$', views.progress_task_list.as_view()),
     url(r'^api/task/all_task_list/(?P<user_name>[-\w]+)/$', views.all_task_list.as_view()),
-    url(r'^api/task/(?P<pk>[0-9]+)/$', views.case_result.as_view()),
+    url(r'^api/task/task_check/(?P<user_name>[-\w]+)/$', views.case_result.as_view()),
+    url(r'^api/result/(?P<task_id>[0-9]+)/(?P<user_name>[-\w]+)/$', views.case_result.as_view()),
+    url(r'^api/result/(?P<task_id>[0-9]+)/(?P<gene_name>[-\w]+)/(?P<cDNA>[-\w]+)/(?P<user_name>[-\w]+)/$', views.case_result.as_view()),
 ]
 
 
