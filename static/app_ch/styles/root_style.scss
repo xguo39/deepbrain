@@ -169,6 +169,7 @@ main{
   input{
     // vertical-align: middle;
   }
+
 }
 
 .td3{
@@ -203,8 +204,16 @@ main{
 
 .tr-stripe{
   background-color: #F5F6F7;
+}
+
+.tr-widen{
   padding-top: 15px;
-  padding-bottom: 30px;
+  padding-bottom: 25px;
+}
+
+.td-left{
+  text-align: center;
+  text-indent: -14px;
 }
 
 .td-stripe{

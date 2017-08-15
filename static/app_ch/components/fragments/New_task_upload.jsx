@@ -108,18 +108,18 @@ class New_task_upload extends React.Component {
                 <div className='td2'><span>使用说明</span></div>
             </div>
             <div className='tr tr-stripe'>
-                <div className='td1'><label>性别:</label></div>
+                <div className='td1 td-left'><label>性别:</label></div>
                 <div className='td2'>
                   <label className="radio-inline"><input type="radio" name="patient_gender" value='1'/>男</label>
                   <label className="radio-inline"><input type="radio" name="patient_gender" value='2'/>女</label>
                   <label className="radio-inline"><input type="radio" name="patient_gender" value='0'/>不明</label>
                 </div>
                 <div className='td2'>
-                  <span>年龄:</span>
-                  <input id='patient_age' type="text" name="patient_age" placeholder="Age"/>
+                  <span style={{marginRight:'10px'}}>年龄:</span>
+                  <input id='patient_age' type="text" name="patient_age" placeholder="Age" style={{width:'40px'}}/>
                 </div>
             </div>
-            <div className='tr'>
+            <div className='tr tr-widen'>
                 <div className='td1'><label>基因信息:</label></div>
                 <div className='td2'>
                   <label htmlFor='input_gene_file' className='file_input'>

@@ -1,4 +1,5 @@
 import {server_domain, apis} from 'base.config';
+const user_name = document.getElementById('user_name').innerHTML;
 
 const upload_task_actions = {
   REQUEST_UPLOAD_TASK:'REQUEST_UPLOAD_TASK',
@@ -33,7 +34,7 @@ const upload_task_actions = {
         method:'POST',
         body:taskData
       }
-      return fetch(server_domain + apis.upload_task, option)
+      return fetch(server_domain + apis.upload_task+`${user_name}`, option)
       .then(res=>res.json())
       .then(data=>{
         if(data.success){
@@ -84,7 +85,7 @@ const all_task_actions = {
       var option = {
         method:'GET'
       }
-      return fetch(server_domain + apis.all_task_list, option)
+      return fetch(server_domain + apis.all_task_list+`${user_name}`, option)
       .then(res=>{
         return res.json();
       })
