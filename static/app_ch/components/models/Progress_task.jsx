@@ -1,4 +1,5 @@
 import React from 'react';
+import {static_image} from 'base.config';
 
 // Mapping the status to a percentage
 const mappingDict = {
@@ -40,6 +41,7 @@ class Completed_task extends React.Component{
     return (
       <div className='completed_task' alt={`${this.props.task_info.id},${this.props.task_info.task_name}`}>
         <span>{this.props.task_info.task_name}</span><span>  完成</span>
+        <img src={static_image+'finish_logo.png'} alt='finish_logo'/>
       </div>
     )
   }
