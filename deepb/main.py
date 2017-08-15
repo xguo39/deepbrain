@@ -590,7 +590,7 @@ def master_function(raw_input_id):
     #print 'variants is: ', variants
 
     if final_res == [] and variants == defaultdict(dict):
-        return pd.DataFrame(), df_genes, phenos, field_names, pd.DataFrame(), pd.DataFrame(), pd.DataFrame()
+        return pd.DataFrame(), df_genes, phenos, field_names, pd.DataFrame(), pd.DataFrame(), pd.DataFrame(), pd.DataFrame(), pd.DataFrame()
     else:
         if phenos:
             # update phenotype correlation using coding effect and zygosity 
@@ -633,15 +633,25 @@ def master_function(raw_input_id):
             # if phenos are provided, we return a df_ranking_genes dataframe, which contains 'gene', 'variant', 'score_sim', 'hits', 'score', 'zygosity', 'associated_phenotypes'
             if candidate_gene_report:
                 jax_candidate_genes, jax_gene_key_phenos = getJaxCandidateGenes(gene_associated_phenos, gene_associated_pheno_hpoids, variants)
+                df_jax_candidate_genes = df_final_res[df_final_res['gene'].isin(jax_candidate_genes), ['gene', 'transcript', 'variant', 'protein', 'id', 'zygosity','correlated_phenotypes']]
+                df_jax_gene_key_phenos = pd.DataFrame(jax_gene_key_phenos.items(), columns=['gene', 'Jax phenotypes matched']) 
+                df_jax_candidate_genes = df_jax_candidate_genes.merge(df_jax_gene_key_phenos, how = 'left', on = 'gene')
             if incidental_finding_report:
                 incidental_findings_genes, incidental_finding_gene_phenos = getIncidentalFindings(df_final_res)
-            return df_final_res, df_genes, phenos, field_names, variant_ACMG_interpretation, variant_ACMG_interpret_chinese, df_ranking_genes
+                df_incidental_findings_genes = df_final_res[df_final_res['gene'].isin(incidental_findings_genes), ['gene', 'transcript', 'variant', 'protein', 'id', 'zygosity']]
+                df_incidental_finding_gene_phenos = pd.DataFrame(incidental_finding_gene_phenos.items(), columns=['gene', 'associated_phenotypes']) 
+                df_incidental_findings_genes = df_incidental_findings_genes.merge(df_incidental_finding_gene_phenos, how = 'left', on = 'gene')
+            return df_final_res, df_genes, phenos, field_names, variant_ACMG_interpretation, variant_ACMG_interpret_chinese, df_ranking_genes, df_jax_candidate_genes, df_incidental_findings_genes
 
         else:
             df_ranking_genes = df_ranking_genes[['gene', 'variant', 'zygosity']]
             ACMG_result = ACMG_result.merge(df_ranking_genes, on = ['gene', 'variant'], how = 'left')
             if candidate_gene_report:
                 jax_candidate_genes, jax_gene_key_phenos = [], dict()
+                df_jax_candidate_genes = pd.DataFrame()
             if incidental_finding_report:
                 incidental_findings_genes, incidental_finding_gene_phenos = getIncidentalFindings(ACMG_result)
-            return ACMG_result, df_genes, phenos, field_names, df_variant_ACMG_interpret, df_variant_ACMG_interpret_chinese, df_ranking_genes
+                df_incidental_findings_genes = pd.DataFrame()
+            return ACMG_result, df_genes, phenos, field_names, df_variant_ACMG_interpret, df_variant_ACMG_interpret_chinese, df_ranking_genes, df_jax_candidate_genes,
+df_incidental_findings_genes
+
