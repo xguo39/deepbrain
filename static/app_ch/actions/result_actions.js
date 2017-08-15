@@ -37,6 +37,8 @@ const result_data_actions={
         return res.json();
       })
       .then(data=>{
+        console.log('this is result data');
+        console.log(data);
         if(data.success){
           dispatch(result_actions.fetchResultDataSuccess(data.result_data));
         }else{

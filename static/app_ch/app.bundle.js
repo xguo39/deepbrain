@@ -17087,6 +17087,8 @@ var result_data_actions = {
       return fetch(_base.server_domain + _base.apis.fetch_case_result + (task_id + '/' + user_name + '/'), option).then(function (res) {
         return res.json();
       }).then(function (data) {
+        console.log('this is result data');
+        console.log(data);
         if (data.success) {
           dispatch(result_actions.fetchResultDataSuccess(data.result_data));
         } else {
