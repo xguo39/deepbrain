@@ -25,10 +25,10 @@ from rest_framework.permissions import IsAdminUser
 from rest_framework.views import APIView
 from rest_framework.decorators import permission_classes
 from rest_framework import status, generics
-from deepb.serializers import New_task_Serializer
 from deepb.serializers import Progress_task_Serializer
 from deepb.serializers import All_task_Serializer
 from deepb.serializers import Case_result_Serializer
+import json
 
 
 
@@ -317,31 +317,133 @@ def lof(request):
         'lof_result': lof_result,
         })
 
+
+@login_required(login_url='/login/')
+def home_new_View_ch(request):
+    print request.user.username
+    return render(request, 'home_ch_new.html', {'user_name': request.user.username})
+
 class new_task(APIView):
 
-    @permission_classes((IsAdminUser,))
-    def post(self, request, format=None):
-        user = request.user
-        serializer = New_task_Serializer(data=request.data, context={'user':user})
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    def post(self, request, user_name, format=None):
+        # user = request.user
+        # serializer = New_task_Serializer(data=request.data, context={'user':user})
+        # if serializer.is_valid():
+        #     serializer.save()
+        #     return Response(serializer.data, status=status.HTTP_201_CREATED)
+        # return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        task_name = request.POST.get('task_name', None)
+
+        gene_file = request.FILES['gene_file']
+        if gene_file.name.endswith('.xls') or gene_file.name.endswith('.xlsx'):
+            raw_input_gene = pd.read_excel(gene_file).to_csv(index=False)
+        else:
+            raw_input_gene = gene_file.read()
+
+        try:
+            phenotype_file = request.FILES['input_phen']   
+        except:
+            phenotype_file = ''
+        phenotype_type = request.POST.get('input_text_phenotype', None)
+
+        if phenotype_file:
+            raw_input_phenotype = phenotype_file.read()
+        else:
+            raw_input_phenotype = phenotype_type
+
+        estimate_time = round((0.14*len(input_gene.split('\n')) + 1.69*len(raw_input_phenotype_file.split(','))+93.83)/60, 0)+1
+
+        if request.POST.get('father_check', None) and request.POST.get('mother_check', None):
+            parent_info = 3
+        elif request.POST.get('mother_check', None):
+            parent_info = 2
+        elif request.POST.get('father_check', None):
+            parent_info = 1
+        else:
+            parent_info = 0
+
+        if request.POST.get('father_check_pheno', None) and request.POST.get('mother_check_pheno', None):
+            if_same_pheno = 3
+        elif request.POST.get('mother_check_pheno', None):
+            if_same_pheno = 2
+        elif request.POST.get('father_check_pheno', None):
+            if_same_pheno = 1
+        else:
+            if_same_pheno = 0
+
+        try:
+            father_vcf = request.FILES['father_gene_file'].read()
+        except:
+            father_vcf = ''
+
+        try:
+            mother_vcf = request.FILES['mother_gene_file'].read()
+        except:
+            mother_vcf = ''
+
+        if request.POST.get('check_incidental_findings', None):
+            incidental_findings = 1
+        else:
+            incidental_findings = 0
+
+        if request.POST.get('check_candidate_genes', None):
+            candidate_genes = 1
+        else:
+            candidate_genes = 0        
+
+        if request.POST.get('patient_age', None):
+            patient_age = int(request.POST.get('patient_age', None))
+        if request.POST.get('patient_gender', None):
+            patient_gender = int(request.POST.get('patient_gender', None))
+
+        try:
+            raw_gene_input = Raw_input_table(
+                raw_input_gene = raw_input_gene,
+                raw_input_phenotype = raw_input_phenotype,
+                user_name = user_name,
+                task_name = task_name,
+                pub_date = timezone.now(),
+                status = "Preprocessing data for interpretation",
+                process_time = estimate_time,
+                parent_info = parent_info,
+                if_same_pheno = if_same_pheno,
+                father_vcf = father_vcf,
+                mother_vcf = mother_vcf,
+                incidental_findings = incidental_findings,
+                candidate_genes = candidate_genes,
+                patient_age = patient_age,
+                patient_gender = patient_gender,
+                checked = 1,
+                evaluated = 1,
+            )
+            raw_gene_input.save()
+
+            trigger_background_main_task.delay(raw_gene_input.id)
+        
+            return Response({'success':True})
+        except:
+            return Response({'success':False})
 
 class progress_task_list(APIView):
 
-    def get(self, request, format=None):
-        post = Raw_input_table.objects.filter(user_name=request.user.username)
+    def get(self, request, user_name, format=None):
+        post = Raw_input_table.objects.filter(user_name=user_name, checked=1)[::-1]
         serializer = Progress_task_Serializer(post, many=True)
-        return Response(serializer.data)
+        json_result = {'success':True, 'list':serializer.data}
+        return Response(json_result)
+
 
 class all_task_list(APIView):
 
-    def get(self, request, format=None):
-        post = Raw_input_table.objects.filter(user_name=request.user.username)
+    def get(self, request, user_name, format=None):
+        print 'user:', user_name
+        post = Raw_input_table.objects.filter(user_name=user_name)[::-1]
         serializer = All_task_Serializer(post, many=True)
-        return Response(serializer.data)
+        json_result = {'success':True, 'list':serializer.data}
+        return Response(json_result)
 
 class case_result(generics.RetrieveUpdateDestroyAPIView):
     queryset = Main_table.objects.all()
     serializer_class = Case_result_Serializer
+

@@ -51,3 +51,4 @@ Google-Search-API
 bs4==0.0.1
 html5lib
 jieba
+djangorestframework

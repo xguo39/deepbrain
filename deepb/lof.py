@@ -12,7 +12,7 @@ lof = 0
 def check_lof(input_gene):
     lof_result = []
     lof = 0
-    search_results = google.search(input_gene+' loss of function', 1)
+    search_results = google.search(input_gene.upper()+' loss of function', 1)
     for i in search_results:
         for j in i.description.split("..."):
             j = j.replace("\n", "")
