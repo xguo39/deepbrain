@@ -17242,9 +17242,7 @@ var progress_task_actions = {
           }
 
           if (inProgress) {
-            task_actions.timeout = setTimeout(function () {
-              return dispatch(task_actions.fetchProgressTask());
-            }, 5000);
+            //task_actions.timeout = setTimeout(()=>dispatch(task_actions.fetchProgressTask()), 5000);
           }
         } else {
           dispatch(task_actions.fetchProgressTaskFail(errcode));
