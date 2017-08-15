@@ -436,7 +436,19 @@ class all_task_list(APIView):
         json_result = {'success':True, 'list':serializer.data}
         return Response(json_result)
 
-class case_result(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Main_table.objects.all()
-    serializer_class = Case_result_Serializer
+class case_result(APIView):
+
+    def get(self, request, task_id, user_name, format=None):
+        data = Main_table.objects.get(user_name=user_name, task_id=task_id)
+        json_result = {
+            'success':True,
+            'result_data':{
+                'summary_table_data': data.result,
+                'incidental_table_data': data.incidental_findings,
+                'candidate_table_data': data.candidate_table_data,
+                'input_gene_data': data.input_gene,
+                'interpretation_chinese': data.interpretation_chinese,
+            }
+        }
+        return Response(json_result)
 
