@@ -629,7 +629,7 @@ def master_function(raw_input_id):
             # df_final_res = df_final_res.merge(df_gene_associated_phenos, on = 'gene', how = 'left')
             df_ranking_genes = df_ranking_genes[['gene', 'variant', 'zygosity', 'correlated_phenotypes']]
             df_final_res = df_final_res.merge(df_ranking_genes, on = ['gene', 'variant'], how = 'left')
-            df_final_res = df_final_res[['gene', 'transcript', 'variant', 'id', 'zygosity','correlated_phenotypes', 'pheno_match_score', 'hit_criteria', 'pathogenicity', 'pathogenicity_score', 'final_score']]
+            df_final_res = df_final_res[['gene', 'transcript', 'variant', 'protein', 'id', 'zygosity','correlated_phenotypes', 'pheno_match_score', 'hit_criteria', 'pathogenicity', 'pathogenicity_score', 'final_score']]
             # if phenos are provided, we return a df_ranking_genes dataframe, which contains 'gene', 'variant', 'score_sim', 'hits', 'score', 'zygosity', 'associated_phenotypes'
             if candidate_gene_report:
                 jax_candidate_genes, jax_gene_key_phenos = getJaxCandidateGenes(gene_associated_phenos, gene_associated_pheno_hpoids, variants)
