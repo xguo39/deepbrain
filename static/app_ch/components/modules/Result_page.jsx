@@ -7,17 +7,18 @@ import {
 class Result_page extends React.Component{
   constructor(props){
     super(props);
+    let summary_data = [...this.props.result_data.summary_table_data];
+    summary_data[0] = {...this.props.result_data.summary_table_data[0]};
+    delete summary_data[0]['correlated_phenotypes'];
+    // delete this.props.result_data.summary_table_data[0]['correlated_phenotypes'];
     this.state={
-      // current_table:<Summary_table table_data={this.props.summary_table_data}/>,
-      current_data:this.props.summary_table_data
+      current_data:summary_data
     }
   }
 
   componentWillMount(){
-    console.log(this.props.match.params);
     const task_id = this.props.match.params.task_id;
-    const task_name = this.props.match.params.task_name;
-    this.props.fetchResultData()
+    this.props.fetchResultData(task_id);
   }
 
   _handleClick(evt){
@@ -30,7 +31,6 @@ class Result_page extends React.Component{
     // Click to select diffrerent table_data
     if(parentTarget.id === 'result_table_nav_list'){
       let children = parentTarget.children;
-      //let liIndex = Array.prototype.indexOf.call(children, target);
       for(let li of children){
         li.classList.remove('active');
       }
@@ -38,38 +38,46 @@ class Result_page extends React.Component{
       switch (target.getAttribute('alt')) {
         case 'summary_table':
           // Waited: Here we cut off the correlated_phenotypes:'biaoxingpipei',
+          let summary_data = [...this.props.result_data.summary_table_data];
+          summary_data[0] = {...this.props.result_data.summary_table_data[0]};
+          delete summary_data[0]['correlated_phenotypes'];
+          // delete this.props.result_data.summary_table_data[0]['correlated_phenotypes'];
           this.setState({
             ...this.state,
-            current_data:this.props.summary_table_data,
+            current_data:summary_data,
           })
           break;
 
         case 'phenotype_match_table':
           // Waited: Here we cut off the summary_table_data to phenotype_match_table
+          let phenotype_match_data = [...this.props.result_data.summary_table_data];
+          phenotype_match_data[0] = {...this.props.result_data.summary_table_data[0]};
+          delete phenotype_match_data[0]['hit_criteria'];delete phenotype_match_data[0]['pathogenicity'];
+          delete phenotype_match_data[0]['pathogenicity_score'];delete phenotype_match_data[0]['final_score'];
           this.setState({
             ...this.state,
-            current_data:this.props.phenotype_match_table,
+            current_data:phenotype_match_data,
           })
           break;
 
         case 'incidental_finding_table':
           this.setState({
             ...this.state,
-            current_data:this.props.incidental_table_data,
+            current_data:this.props.result_data.incidental_table_data,
           })
           break;
 
         case 'candidate_gene_table':
           this.setState({
             ...this.state,
-            current_data:this.props.candidate_table_data,
+            current_data:this.props.result_data.candidate_table_data,
           })
           break;
 
         case 'input_gene_table':
           this.setState({
             ...this.state,
-            current_data:this.props.input_table_data,
+            current_data:this.props.result_data.input_table_data,
           })
           break;
 
@@ -81,9 +89,9 @@ class Result_page extends React.Component{
     // Click to check the detail annotation of a gene variant
     if(target.nodeName==='TD'){
       let gene = target.parentElement.children[0].innerHTML;
-      let transicript = target.parentElement.children[1].innerHTML;
+      let transcript = target.parentElement.children[1].innerHTML;
       let current_path = this.props.match.url;
-      this.props.showAnnotation(current_path, gene, transicript);
+      this.props.showAnnotation(current_path, gene, transcript);
     }
 
     //
@@ -175,7 +183,6 @@ class Result_page extends React.Component{
            </div>
            {/* Table Area */}
            <div className='result_table' onClick={(evt)=>this._handleClick(evt)}>
-             {/* {this.state.current_table} */}
              <General_data_table table_data={this.state.current_data}/>
            </div>
          </div>
@@ -188,122 +195,12 @@ Result_page.propTypes={
   goBack:React.PropTypes.func.isRequired,
   showAnnotation:React.PropTypes.func,
   fetchResultData:React.PropTypes.func,
-
-  summary_table_data:React.PropTypes.array,
-  incidental_table_data:React.PropTypes.array,
-  candidate_table_data:React.PropTypes.array,
-  input_table_data:React.PropTypes.array
+  result_data:React.PropTypes.object,
 }
 
 Result_page.defaultProps={
   goBack:()=>{},
   showAnnotation:()=>{},
-  summary_table_data:[
-     {
-       gene:'WWOX',
-       transcript:'chr16:g.78466583C>G',
-       variant:'GCGTG',
-       protein:'danbaizhi',
-       zygosity:'peixing',
-       correlated_phenotypes:'biaoxingpipei',
-       pheno_match_score:39,
-       hit_criteria:"PM2|BP4",
-       pathogenicity:'Uncertain Significance',
-       pathogenicity_score:0.88,
-       final_score:1.8
-     },
-     {
-       gene:'WNT7A',
-       transcript:'chr3:g.13896304C>T',
-       variant:'GCGTG',
-       protein:'danbaizhi',
-       zygosity:'peixing',
-       correlated_phenotypes:'biaoxingpipei',
-       pheno_match_score:45,
-       hit_criteria:"PM2|BP4",
-       pathogenicity:'Uncertain Significance',
-       pathogenicity_score:1.28,
-       final_score:1.1
-     }
-  ],
-  phenotype_match_table:[
-    {
-      gene:'WWOX',
-      transcript:'chr16:g.78466583C>G',
-      variant:'GCGTG',
-      protein:'danbaizhi',
-      zygosity:'peixing',
-      correlated_phenotypes:'biaoxingpipei',
-      pheno_match_score:39,
-    },
-    {
-      gene:'WNT7A',
-      transcript:'chr3:g.13896304C>T',
-      variant:'GCGTG',
-      protein:'danbaizhi',
-      zygosity:'peixing',
-      correlated_phenotypes:'biaoxingpipei',
-      pheno_match_score:45,
-    }
-  ],
-  incidental_table_data:[
-    {
-      gene:'WWOX',
-      transcript:'chr16:g.78466583C>G',
-      variant:'GCGTG',
-      protein:'danbaizhi',
-      zygosity:'peixing',
-      pheno_match_score:39,
-      hit_criteria:"PM2|BP4",
-      pathogenicity:'Uncertain Significance',
-    },
-    {
-      gene:'Shio OM4',
-      transcript:'chr16:g.78466583C>G',
-      variant:'GCGTG',
-      protein:'danbaizhi',
-      zygosity:'peixing',
-      pheno_match_score:88,
-      hit_criteria:"PM2|BP4",
-      pathogenicity:'Uncertain Significance',
-    }
-  ],
-  candidate_table_data:[
-    {
-      gene:'WWOX',
-      transcript:'chr16:g.78466583C>G',
-      cDNA:'GCGTG',
-      protein:'danbaizhi',
-      zygosity:'peixing',
-      correlated_phenotypes:'from paper'
-    },
-    {
-      gene:'Shio OM4',
-      transcript:'chr16:g.78466583C>G',
-      cDNA:'GCGTG',
-      protein:'danbaizhi',
-      zygosity:'peixing',
-      correlated_phenotypes:'from paper'
-    }
-  ],
-  input_table_data:[
-    {
-      gene:'WWOX',
-      transcript:'chr16:g.78466583C>G',
-      cDNA:'GCGTG',
-      protein:'danbaizhi',
-      zygosity:'peixing',
-      pheno_matched_score:25,
-    },
-    {
-      gene:'Shio OM4',
-      transcript:'chr16:g.78466583C>G',
-      cDNA:'GCGTG',
-      protein:'danbaizhi',
-      zygosity:'peixing',
-      pheno_matched_score:39,
-    }
-  ]
 }
 
 export default Result_page;

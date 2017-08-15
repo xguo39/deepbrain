@@ -61,7 +61,6 @@ export default function tasks(state={}, action){
         errCode:action.payload
       }
 
-
     default:
      return state
   }
