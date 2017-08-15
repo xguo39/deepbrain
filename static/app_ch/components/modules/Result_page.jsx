@@ -81,6 +81,13 @@ class Result_page extends React.Component{
           })
           break;
 
+        case 'generate_result_table':
+          this.setState({
+            ...this.state,
+
+          })
+          break;
+
         default:
           break;
       }
