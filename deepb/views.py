@@ -28,6 +28,8 @@ from rest_framework import status, generics
 from deepb.serializers import Progress_task_Serializer
 from deepb.serializers import All_task_Serializer
 import json
+from collections import OrderedDict
+
 
 
 
@@ -442,10 +444,10 @@ class case_result(APIView):
         json_result = {
             'success':True,
             'result_data':{
-                'summary_table_data': mark_safe(data.result),
-                'incidental_table_data': mark_safe(data.incidental_findings),
-                'candidate_table_data': mark_safe(data.candidate_genes),
-                'input_gene_data': mark_safe(data.input_gene),
+                'summary_table_data': json.loads(data.result, object_pairs_hook=OrderedDict),
+                'incidental_table_data': data.incidental_findings,
+                'candidate_table_data': data.candidate_genes,
+                'input_gene_data': json.loads(data.input_gene, object_pairs_hook=OrderedDict),
                 # 'interpretation_data': data.interpretation_chinese,
             }
         }
