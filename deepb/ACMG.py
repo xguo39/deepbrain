@@ -1704,14 +1704,15 @@ def Get_ACMG_result(df_hpo_ranking_genes, variants, df_pubmed, parent_ngs, paren
     	hit_criteria = variant_ACMG_hit_criteria[key]
     	variant_id = variants[key]['id']
         transcript = variants[key]['transcript']
-    	final_result.append([gene, transcript, variant, variant_id, pathogenicity_score, pathogenicity, hit_criteria])
+    	protein = variants[key]['protein']
+    	final_result.append([gene, transcript, variant, variant_id, protein, pathogenicity_score, pathogenicity, hit_criteria])
 
-    df_final_result = pd.DataFrame(final_result, columns = ['gene', 'transcript', 'variant', 'id', 'pathogenicity_score', 'pathogenicity', 'hit_criteria'])
+    df_final_result = pd.DataFrame(final_result, columns = ['gene', 'transcript', 'variant', 'id', 'protein', 'pathogenicity_score', 'pathogenicity', 'hit_criteria'])
     if df_hpo_ranking_genes.shape[1] == 3:
         df_final_result = df_final_result.merge(df_hpo_ranking_genes, how = 'left', on = ['gene', 'variant'])
     elif df_hpo_ranking_genes.shape[1] == 2:
         df_final_result = df_final_result.merge(df_hpo_ranking_genes, how = 'left', on = 'gene')
-    df_final_result.columns = ['gene', 'transcript', 'variant', 'id', 'pathogenicity_score', 'pathogenicity', 'hit_criteria', 'hpo_hit_score']
+    df_final_result.columns = ['gene', 'transcript', 'variant', 'id', 'protein', 'pathogenicity_score', 'pathogenicity', 'hit_criteria', 'hpo_hit_score']
     df_final_result['final_score'] = df_final_result['hpo_hit_score'] * df_final_result['pathogenicity_score']
     df_final_result = df_final_result[['gene', 'transcript', 'variant', 'protein', 'id', 'final_score', 'pathogenicity_score', 'pathogenicity', 'hit_criteria', 'hpo_hit_score']]
     df_final_result.sort_values(by=['final_score'], ascending = [0], inplace = True)
