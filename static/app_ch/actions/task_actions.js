@@ -190,6 +190,8 @@ const checked_change_actions={
         return res.json();
       })
       .then(data=>{
+        console.log('this is checked change');
+        console.log(data);
         if(data.success){
           dispatch(task_actions.fetchProgressTask())
         }else{
