@@ -17309,7 +17309,7 @@ var checked_change_actions = {
         method: 'PUT',
         body: { task_id: task_id }
       };
-      return fetch(_base.server_domain + _base.apis.all_task_list + (user_name + '/'), option).then(function (res) {
+      return fetch(_base.server_domain + _base.apis.checked_change + (user_name + '/'), option).then(function (res) {
         return res.json();
       }).then(function (data) {
         if (data.success) {
@@ -21740,7 +21740,7 @@ function tasks() {
         isFetching: false
       });
 
-    case _root_actions2.default.CHECKED_CHANGE_SUCCESS:
+    case _root_actions2.default.CHECKED_CHANGE_FAILURE:
       return _extends({}, state, {
         isFetching: false,
         errCode: action.payload

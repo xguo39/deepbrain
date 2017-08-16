@@ -73,7 +73,7 @@ export default function tasks(state={}, action){
         isFetching:false
       }
 
-    case root_actions.CHECKED_CHANGE_SUCCESS:
+    case root_actions.CHECKED_CHANGE_FAILURE:
       return{
         ...state,
         isFetching:false,
