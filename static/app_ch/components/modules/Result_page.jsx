@@ -107,6 +107,7 @@ class Result_page extends React.Component{
       if(this.state.current_table === 'summary_table' || this.state.current_table === 'phenotype_match_table'){
         let gene = target.parentElement.children[0].innerHTML;
         let cDNA = target.parentElement.children[2].innerHTML;
+        cDNA = cDNA.replace('&amp;','&').replace('&gt;','>');
         let current_path = this.props.match.url;
         this.props.showAnnotation(current_path, gene, cDNA);
       }

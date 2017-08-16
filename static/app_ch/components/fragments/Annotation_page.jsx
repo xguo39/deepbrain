@@ -29,7 +29,11 @@ class Annotation_page extends React.Component{
          <div className='annotation_area container-fluid'>
            <div className='annotation_header'>
               <p>基因：<span>{`${gene_name}`}</span></p>
-              <p>cDNA：<span>{`${cDNA}`}</span></p>
+              <p>cDNA：
+                <span>{`${cDNA.replace('&amp;','&')
+                              .replace('&gt;','>')}`}
+                </span>
+              </p>
            </div>
            <img src={static_image+'cancel_icon.png'} alt='back-sign'></img>
            <Annotation_table table_data={this.props.annotation_data}/>

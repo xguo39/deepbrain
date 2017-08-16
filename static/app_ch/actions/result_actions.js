@@ -72,10 +72,13 @@ const check_annotation_actions={
   checkAnnotation:(task_id, gene_name, cDNA)=>{
     return (dispatch)=>{
       dispatch(result_actions.requestCheckAnnotation());
+      let data = new FormData();
+      data.append('cDNA',cDNA);
       let option = {
-        method:'GET'
+        method:'POST',
+        body:data
       }
-      return fetch(server_domain + apis.check_annotation + `${task_id}/${gene_name}/${cDNA}/${user_name}/`, option)
+      return fetch(server_domain + apis.check_annotation + `${task_id}/${gene_name}/${user_name}/`, option)
       .then(res=>{
         return res.json()
       })

@@ -9542,7 +9542,7 @@ var Annotation_page = function (_React$Component) {
               _react2.default.createElement(
                 'span',
                 null,
-                '' + cDNA
+                '' + cDNA.replace('&amp;', '&').replace('&gt;', '>')
               )
             )
           ),
@@ -16882,7 +16882,7 @@ var initialState = {
       summary_table_data: [{
         gene: 'WWOX',
         transcript: 'chr16:g.78466583C>G',
-        variant: 'GCGTG',
+        variant: 'c.5354G&t>A',
         protein: 'danbaizhi',
         id: '2313fsfsf',
         zygosity: 'peixing',
@@ -16895,7 +16895,7 @@ var initialState = {
       }, {
         gene: 'WNT7A',
         transcript: 'chr3:g.13896304C>T',
-        variant: 'GCGTG',
+        variant: 'c.5224G&t>C',
         protein: 'danbaizhi',
         zygosity: 'peixing',
         correlated_phenotypes: 'biaoxingpipei',
@@ -17101,10 +17101,13 @@ var check_annotation_actions = {
   checkAnnotation: function checkAnnotation(task_id, gene_name, cDNA) {
     return function (dispatch) {
       dispatch(result_actions.requestCheckAnnotation());
+      var data = new FormData();
+      data.append('cDNA', cDNA);
       var option = {
-        method: 'GET'
+        method: 'POST',
+        body: data
       };
-      return fetch(_base.server_domain + _base.apis.check_annotation + (task_id + '/' + gene_name + '/' + cDNA + '/' + user_name + '/'), option).then(function (res) {
+      return fetch(_base.server_domain + _base.apis.check_annotation + (task_id + '/' + gene_name + '/' + user_name + '/'), option).then(function (res) {
         return res.json();
       }).then(function (data) {
         console.log('this is annotation data');
@@ -20521,6 +20524,7 @@ var Result_page = function (_React$Component) {
         if (this.state.current_table === 'summary_table' || this.state.current_table === 'phenotype_match_table') {
           var gene = target.parentElement.children[0].innerHTML;
           var cDNA = target.parentElement.children[2].innerHTML;
+          cDNA = cDNA.replace('&amp;', '&').replace('&gt;', '>');
           var current_path = this.props.match.url;
           this.props.showAnnotation(current_path, gene, cDNA);
         }
@@ -21520,6 +21524,10 @@ var mapDispatchToProps = function mapDispatchToProps(dispatch) {
     },
 
     showAnnotation: function showAnnotation(current_path, gene, cDNA) {
+      //  console.log(cDNA
+      //    .replace("&gt;",'>')
+      //    .replace("&amp;", '&' )
+      //     );
       dispatch((0, _reactRouterRedux.push)(current_path + '/' + gene + '/' + cDNA));
     }
   };

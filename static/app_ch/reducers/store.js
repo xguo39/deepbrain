@@ -60,7 +60,7 @@ const initialState = {
          {
            gene:'WWOX',
            transcript:'chr16:g.78466583C>G',
-           variant:'GCGTG',
+           variant:'c.5354G&t>A',
            protein:'danbaizhi',
            id:'2313fsfsf',
            zygosity:'peixing',
@@ -74,7 +74,7 @@ const initialState = {
          {
            gene:'WNT7A',
            transcript:'chr3:g.13896304C>T',
-           variant:'GCGTG',
+           variant:'c.5224G&t>C',
            protein:'danbaizhi',
            zygosity:'peixing',
            correlated_phenotypes:'biaoxingpipei',
