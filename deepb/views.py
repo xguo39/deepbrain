@@ -437,6 +437,18 @@ class all_task_list(APIView):
         json_result = {'success':True, 'list':serializer.data}
         return Response(json_result)
 
+class task_check(APIView):
+
+    def put(self, request, user_name, format=None):
+        try:
+            task_id = request.task_id
+            put_data = Raw_input_table.objects.get(user_name=user_name, id=task_id)
+            put_data.checked = 0
+            put_data.save()
+            return Response({'success':True})
+        except:
+            return Response({'success':False})
+
 class case_result(APIView):
 
     def get(self, request, task_id, user_name, format=None):
@@ -461,3 +473,17 @@ class case_result(APIView):
         }
         return Response(json_result)
 
+class result_detail(APIView):
+
+    def get(self, request, task_id, gene_name, cDNA, user_name, format=None):
+        data = Main_table.objects.get(user_name=user_name, task_id=task_id)
+        detail = json.loads(data.interpretation_chinese, object_pairs_hook=OrderedDict)
+        detail_df = pd.read_json(detail)
+        result_detail_df = detail_df[detail_df['gene']==gene_name and detail_df['variant']==cDNA]
+        result_detail = result_detail_df.iloc[:,[2,3]]
+
+        json_result = {
+            'success':True,
+            'result_detail':result_detail.to_json(orient='records')
+        }
+        return Response(json_result)
