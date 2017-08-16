@@ -75,7 +75,7 @@ const check_annotation_actions={
       let option = {
         method:'GET'
       }
-      return fetch(server_domain + apis.check_annotation + `${task_id}/${gene_name}/${cDNA}/${user_name}`, option)
+      return fetch(server_domain + apis.check_annotation + `${task_id}/${gene_name}/${cDNA}/${user_name}/`, option)
       .then(res=>{
         return res.json()
       })

@@ -17104,7 +17104,7 @@ var check_annotation_actions = {
       var option = {
         method: 'GET'
       };
-      return fetch(_base.server_domain + _base.apis.check_annotation + (task_id + '/' + gene_name + '/' + cDNA + '/' + user_name), option).then(function (res) {
+      return fetch(_base.server_domain + _base.apis.check_annotation + (task_id + '/' + gene_name + '/' + cDNA + '/' + user_name + '/'), option).then(function (res) {
         return res.json();
       }).then(function (data) {
         console.log('this is annotation data');
