@@ -16854,7 +16854,7 @@ var initialState = {
     progress_task_list: [{
       id: 1,
       task_name: 'xiaonan',
-      status: '正在处理xxx基因',
+      status: 'Annotating variants using genomic databases',
       processed_time: '5分钟',
       checked: false
     }, {
@@ -16862,6 +16862,12 @@ var initialState = {
       task_name: 'tianqi',
       status: 'succeed',
       processed_time: '4分钟',
+      checked: false
+    }, {
+      id: 3,
+      task_name: 'huihuihui',
+      status: 'xxxxx failed',
+      processed_time: '2分钟',
       checked: false
     }],
     all_task_list: [{
@@ -16883,54 +16889,31 @@ var initialState = {
   results: {
     isFetching: false,
     result_data: {
-      summary_table_data: [
-        //  {
-        //    gene:'WWOX',
-        //    transcript:'chr16:g.78466583C>G',
-        //    variant:'GCGTG',
-        //    protein:'danbaizhi',
-        //    zygosity:'peixing',
-        //    correlated_phenotypes:'biaoxingpipei',
-        //    pheno_match_score:39,
-        //    hit_criteria:"PM2|BP4",
-        //    pathogenicity:'Uncertain Significance',
-        //    pathogenicity_score:0.88,
-        //    final_score:1.8
-        //  },
-        //  {
-        //    gene:'WNT7A',
-        //    transcript:'chr3:g.13896304C>T',
-        //    variant:'GCGTG',
-        //    protein:'danbaizhi',
-        //    zygosity:'peixing',
-        //    correlated_phenotypes:'biaoxingpipei',
-        //    pheno_match_score:45,
-        //    hit_criteria:"PM2|BP4",
-        //    pathogenicity:'Uncertain Significance',
-        //    pathogenicity_score:1.28,
-        //    final_score:1.1
-        //  }
-      ],
-      phenotype_match_table: [
-        // {
-        //   gene:'WWOX',
-        //   transcript:'chr16:g.78466583C>G',
-        //   variant:'GCGTG',
-        //   protein:'danbaizhi',
-        //   zygosity:'peixing',
-        //   correlated_phenotypes:'biaoxingpipei',
-        //   pheno_match_score:39,
-        // },
-        // {
-        //   gene:'WNT7A',
-        //   transcript:'chr3:g.13896304C>T',
-        //   variant:'GCGTG',
-        //   protein:'danbaizhi',
-        //   zygosity:'peixing',
-        //   correlated_phenotypes:'biaoxingpipei',
-        //   pheno_match_score:45,
-        // }
-      ],
+      summary_table_data: [{
+        gene: 'WWOX',
+        transcript: 'chr16:g.78466583C>G',
+        variant: 'GCGTG',
+        protein: 'danbaizhi',
+        zygosity: 'peixing',
+        correlated_phenotypes: 'biaoxingpipei',
+        pheno_match_score: 39,
+        hit_criteria: "PM2|BP4",
+        pathogenicity: 'Uncertain Significance',
+        pathogenicity_score: 0.88,
+        final_score: 1.8
+      }, {
+        gene: 'WNT7A',
+        transcript: 'chr3:g.13896304C>T',
+        variant: 'GCGTG',
+        protein: 'danbaizhi',
+        zygosity: 'peixing',
+        correlated_phenotypes: 'biaoxingpipei',
+        pheno_match_score: 45,
+        hit_criteria: "PM2|BP4",
+        pathogenicity: 'Uncertain Significance',
+        pathogenicity_score: 1.28,
+        final_score: 1.1
+      }],
       incidental_table_data: [
         // {
         //   gene:'WWOX',
@@ -16971,24 +16954,13 @@ var initialState = {
         //   correlated_phenotypes:'from paper'
         // }
       ],
-      input_gene_data: [
-        // {
-        //   gene:'WWOX',
-        //   transcript:'chr16:g.78466583C>G',
-        //   cDNA:'GCGTG',
-        //   protein:'danbaizhi',
-        //   zygosity:'peixing',
-        //   pheno_matched_score:25,
-        // },
-        // {
-        //   gene:'Shio OM4',
-        //   transcript:'chr16:g.78466583C>G',
-        //   cDNA:'GCGTG',
-        //   protein:'danbaizhi',
-        //   zygosity:'peixing',
-        //   pheno_matched_score:39,
-        // }
-      ],
+      input_gene_data: [{
+        Gene: 'PPTERER',
+        HGVS_cDNa: 'fdsfdsfdsfsdf'
+      }, {
+        Gene: 'PPTdsfdfERER',
+        HGVS_cDNa: 'fdsfdsfdsfdsfdsfsdf'
+      }],
       interpretation_data: [
         // {
         //   gene:'WWT7',
@@ -18629,6 +18601,7 @@ var General_data_table = function (_React$Component) {
     value: function componentWillReceiveProps(props) {
       var _this2 = this;
 
+      console.log('hahahha' + props.table_data[0]);
       // Define the transforms of rows
       var getSortingColumns = function getSortingColumns() {
         return _this2.state.sortingColumns || {};
@@ -19971,7 +19944,12 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 // Mapping the status to a percentage
-var mappingDict = {};
+var mappingDict = {
+  'Preprocessing data for interpretation': '10%', 'generating candidate variants': '20%',
+  'Annotating variants using genomic databases': '40%', 'Mapping phenotypes to genes': '40%',
+  'Searching biomedical literatures': '55%', 'Checking ACMG standard': '80%', 'Filtering variants based on phenotypes': '90%',
+  'succeed': '100%'
+};
 
 var Processing_task = function (_React$Component) {
   _inherits(Processing_task, _React$Component);
@@ -19985,8 +19963,8 @@ var Processing_task = function (_React$Component) {
   _createClass(Processing_task, [{
     key: 'render',
     value: function render() {
-      // const current_percent = mappingDict[this.props.task_info.status];
-      var current_percent = '50%';
+      var current_percent = mappingDict[this.props.task_info.status];
+      // const current_percent = '50%';
       var barStyle = {
         "width": current_percent
       };

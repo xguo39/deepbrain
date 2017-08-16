@@ -78,6 +78,7 @@ class General_data_table extends React.Component{
   }
 
   componentWillReceiveProps(props){
+    console.log('hahahha'+props.table_data[0]);
     // Define the transforms of rows
     const getSortingColumns = () => this.state.sortingColumns || {};
     const sortingOrder = {

@@ -3,7 +3,10 @@ import {static_image} from 'base.config';
 
 // Mapping the status to a percentage
 const mappingDict = {
-
+ 'Preprocessing data for interpretation':'10%', 'generating candidate variants':'20%',
+ 'Annotating variants using genomic databases':'40%', 'Mapping phenotypes to genes':'40%',
+ 'Searching biomedical literatures':'55%', 'Checking ACMG standard':'80%', 'Filtering variants based on phenotypes': '90%',
+  'succeed':'100%',
 }
 
 class Processing_task extends React.Component{
@@ -12,8 +15,8 @@ class Processing_task extends React.Component{
   }
 
   render(){
-    // const current_percent = mappingDict[this.props.task_info.status];
-    const current_percent = '50%';
+    const current_percent = mappingDict[this.props.task_info.status];
+    // const current_percent = '50%';
     let barStyle={
       "width":current_percent,
     }
