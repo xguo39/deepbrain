@@ -143,8 +143,17 @@ const initialState = {
           // interpretation:''
         },
       ]
-    }
-    
+    },
+    annotation_data:[
+      {
+        criteria:'变异注释',
+        interpretation:'xxooxoxoxoxoxoodfdsfdsfdsfdsfdfdsf'
+      },
+      {
+        criteria:'PVS1',
+        interpretation:'yykkdfdfsdfdsfsdfdsfsdfsdfsdfjfjdsfdksnflkndf'
+      }
+    ]
   }
 };
 

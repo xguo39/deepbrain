@@ -16,6 +16,7 @@ class New_task_progress extends React.Component {
       const task_info = target.getAttribute('alt').split(',');
       const task_id = parseInt(task_info[0]);
       const task_name = task_info[1];
+      this.props.checkedChange(task_id);
       this.props.toResult(task_id, task_name);
     }else if(target.className.indexOf('failed_task')!==-1){
       const task_info = target.getAttribute('alt').split(',');

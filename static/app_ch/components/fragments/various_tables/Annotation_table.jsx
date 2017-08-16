@@ -1,5 +1,9 @@
 import React from 'react';
 import * as Table from 'reactabular-table';
+// const mappingDict = {
+//   criteria:'标准',
+//   interpretation:'解读'
+// }
 
 class Annotation_table extends React.Component{
   constructor(props){
@@ -7,7 +11,7 @@ class Annotation_table extends React.Component{
     this.state={
       columns:[
         {
-          property:'standard',
+          property:'criteria',
           header:{
             label:'标准'
           },
@@ -16,7 +20,7 @@ class Annotation_table extends React.Component{
           }
         },
         {
-          property:'analyze',
+          property:'interpretation',
           header:{
             label:'解读'
           },
@@ -39,7 +43,7 @@ class Annotation_table extends React.Component{
             <Table.Header />
             <Table.Body
               rows={rows}
-              rowKey='standard'
+              rowKey={({ rowData, rowIndex }) => rowIndex}
             />
           </Table.Provider>
       </div>

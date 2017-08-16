@@ -2454,7 +2454,7 @@ var apis = {
   all_task_list: '/api/task/all_task_list/',
   checked_change: '/api/task/task_check/',
   fetch_case_result: '/api/result/',
-  fetch_annotation: '/api/result/:task_id/:gene_name/'
+  check_annotation: '/api/result/'
 };
 
 exports.static_image = static_image;
@@ -9496,13 +9496,13 @@ var Annotation_page = function (_React$Component) {
     value: function componentWillMount() {
       var gene_name = this.props.match.params.gene_name;
       var cDNA = this.props.match.params.cDNA;
-      this.props.fetchAnnotation(gene_name, cDNA);
+      var task_id = this.props.match.params.task_id;
+      this.props.fetchAnnotation(task_id, gene_name, cDNA);
     }
   }, {
     key: '_handleClick',
     value: function _handleClick(evt) {
       var target = evt.target;
-      // console.log(target);
       if (target.getAttribute('alt') === 'back-sign') {
         this.props.goBack();
       }
@@ -9562,16 +9562,7 @@ Annotation_page.propTypes = {
   annotation_data: _react2.default.PropTypes.array
 };
 
-Annotation_page.defaultProps = {
-  goBack: function goBack() {},
-  annotation_data: [{
-    standard: '变异注释',
-    analyze: 'xxooxoxoxoxoxoodfdsfdsfdsfdsfdfdsf'
-  }, {
-    standard: 'PVS1',
-    analyze: 'yykkdfdfsdfdsfsdfdsfsdfsdfsdfjfjdsfdksnflkndf'
-  }]
-};
+Annotation_page.defaultProps = {};
 
 exports.default = Annotation_page;
 
@@ -16961,8 +16952,14 @@ var initialState = {
         // criteria:'dfsfsdfsdf',
         // interpretation:''
       }]
-    }
-
+    },
+    annotation_data: [{
+      criteria: '变异注释',
+      interpretation: 'xxooxoxoxoxoxoodfdsfdsfdsfdsfdfdsf'
+    }, {
+      criteria: 'PVS1',
+      interpretation: 'yykkdfdfsdfdsfsdfdsfsdfsdfsdfjfjdsfdksnflkndf'
+    }]
   }
 };
 
@@ -17069,8 +17066,6 @@ var result_data_actions = {
       return fetch(_base.server_domain + _base.apis.fetch_case_result + (task_id + '/' + user_name + '/'), option).then(function (res) {
         return res.json();
       }).then(function (data) {
-        console.log('this is result data');
-        console.log(data);
         if (data.success) {
           dispatch(result_actions.fetchResultDataSuccess(data.result_data));
         } else {
@@ -17082,7 +17077,48 @@ var result_data_actions = {
 
 };
 
-var check_annotation_actions = {};
+var check_annotation_actions = {
+  REQUEST_CHECK_ANNOTATION: 'REQUEST_CHECK_ANNOTATION',
+  CHECK_ANNOTATION_SUCCESS: 'CHECK_ANNOTATION_SUCCESS',
+  CHECK_ANNOTATION_FAILURE: 'CHECK_ANNOTATION_FAILURE',
+  requestCheckAnnotation: function requestCheckAnnotation() {
+    return {
+      type: result_actions.REQUEST_CHECK_ANNOTATION
+    };
+  },
+  checkAnnotationSuccess: function checkAnnotationSuccess(annotation_data) {
+    return {
+      type: result_actions.CHECK_ANNOTATION_SUCCESS,
+      payload: annotation_data
+    };
+  },
+  checkAnnotationFailure: function checkAnnotationFailure(errCode) {
+    return {
+      type: result_actions.CHECK_ANNOTATION_FAILURE,
+      payload: errCode
+    };
+  },
+  checkAnnotation: function checkAnnotation(task_id, gene_name, cDNA) {
+    return function (dispatch) {
+      dispatch(result_actions.requestCheckAnnotation());
+      var option = {
+        method: 'GET'
+      };
+      return fetch(_base.server_domain + _base.apis.check_annotation + (task_id + '/' + gene_name + '/' + cDNA + '/' + user_name), option).then(function (res) {
+        return res.json();
+      }).then(function (data) {
+        console.log('this is annotation data');
+        console.log(data);
+        if (data.success) {
+          dispatch(result_actions.checkAnnotationSuccess(data.result_detail));
+        } else {
+          dispatch(result_actions.checkAnnotationFailure(data.errCode));
+        }
+      });
+    };
+  }
+
+};
 
 var review_actions = {};
 
@@ -17437,6 +17473,7 @@ var New_task_progress = function (_React$Component) {
         var task_info = target.getAttribute('alt').split(',');
         var task_id = parseInt(task_info[0]);
         var task_name = task_info[1];
+        this.props.checkedChange(task_id);
         this.props.toResult(task_id, task_name);
       } else if (target.className.indexOf('failed_task') !== -1) {
         var _task_info = target.getAttribute('alt').split(',');
@@ -18264,6 +18301,11 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
+// const mappingDict = {
+//   criteria:'标准',
+//   interpretation:'解读'
+// }
+
 var Annotation_table = function (_React$Component) {
   _inherits(Annotation_table, _React$Component);
 
@@ -18274,7 +18316,7 @@ var Annotation_table = function (_React$Component) {
 
     _this.state = {
       columns: [{
-        property: 'standard',
+        property: 'criteria',
         header: {
           label: '标准'
         },
@@ -18282,7 +18324,7 @@ var Annotation_table = function (_React$Component) {
           className: 'col1'
         }
       }, {
-        property: 'analyze',
+        property: 'interpretation',
         header: {
           label: '解读'
         },
@@ -18313,7 +18355,11 @@ var Annotation_table = function (_React$Component) {
           _react2.default.createElement(Table.Header, null),
           _react2.default.createElement(Table.Body, {
             rows: rows,
-            rowKey: 'standard'
+            rowKey: function rowKey(_ref) {
+              var rowData = _ref.rowData,
+                  rowIndex = _ref.rowIndex;
+              return rowIndex;
+            }
           })
         )
       );
@@ -18737,10 +18783,12 @@ var General_data_table = function (_React$Component) {
         className: className
       };
     }
+
+    // hanle pagination select
+
   }, {
     key: '_handleSelect',
     value: function _handleSelect(page) {
-      // hanle pagination select
       var pages = Math.ceil(this.state.rows.length / this.state.pagination.perPage);
       this.setState({
         pagination: _extends({}, this.state.pagination, {
@@ -21287,7 +21335,9 @@ var _reactRouterRedux = __webpack_require__(12);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var mapStateToProps = function mapStateToProps(state) {
-  return {};
+  return {
+    annotation_data: state.results.annotation_data
+  };
 };
 
 var mapDispatchToProps = function mapDispatchToProps(dispatch) {
@@ -21295,8 +21345,8 @@ var mapDispatchToProps = function mapDispatchToProps(dispatch) {
     goBack: function goBack() {
       dispatch((0, _reactRouterRedux.go)(-1));
     },
-    fetchAnnotation: function fetchAnnotation(gene_name, cDNA) {
-      console.log(gene_name);
+    fetchAnnotation: function fetchAnnotation(task_id, gene_name, cDNA) {
+      dispatch(_root_actions2.default.checkAnnotation(task_id, gene_name, cDNA));
     }
   };
 };
@@ -21469,8 +21519,8 @@ var mapDispatchToProps = function mapDispatchToProps(dispatch) {
       dispatch(_root_actions2.default.fetchResultData(task_id));
     },
 
-    showAnnotation: function showAnnotation(current_path, gene, transcript) {
-      dispatch((0, _reactRouterRedux.push)(current_path + '/' + gene + '/' + transcript));
+    showAnnotation: function showAnnotation(current_path, gene, cDNA) {
+      dispatch((0, _reactRouterRedux.push)(current_path + '/' + gene + '/' + cDNA));
     }
   };
 };
@@ -21635,6 +21685,23 @@ function results() {
       });
 
     case _root_actions2.default.FETCH_RESULT_DATA_FAILURE:
+      return _extends({}, state, {
+        isFetching: false,
+        errCode: action.payload
+      });
+
+    case _root_actions2.default.REQUEST_CHECK_ANNOTATION:
+      return _extends({}, state, {
+        isFetching: true
+      });
+
+    case _root_actions2.default.CHECK_ANNOTATION_SUCCESS:
+      return _extends({}, state, {
+        isFetching: false,
+        annotation_data: action.payload
+      });
+
+    case _root_actions2.default.CHECK_ANNOTATION_FAILURE:
       return _extends({}, state, {
         isFetching: false,
         errCode: action.payload

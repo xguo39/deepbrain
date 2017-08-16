@@ -148,7 +148,8 @@ class General_data_table extends React.Component{
     }
   }
 
-  _handleSelect(page){ // hanle pagination select
+  // hanle pagination select
+  _handleSelect(page){
     const pages = Math.ceil(
       this.state.rows.length / this.state.pagination.perPage
     );

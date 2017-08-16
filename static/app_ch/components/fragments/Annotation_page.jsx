@@ -10,12 +10,12 @@ class Annotation_page extends React.Component{
   componentWillMount(){
     const gene_name = this.props.match.params.gene_name;
     const cDNA = this.props.match.params.cDNA;
-    this.props.fetchAnnotation(gene_name, cDNA);
+    const task_id = this.props.match.params.task_id;
+    this.props.fetchAnnotation(task_id, gene_name, cDNA);
   }
 
   _handleClick(evt){
     let target = evt.target;
-    // console.log(target);
     if(target.getAttribute('alt')==='back-sign'){
       this.props.goBack();
     }
@@ -46,18 +46,7 @@ Annotation_page.propTypes={
 }
 
 Annotation_page.defaultProps={
-  goBack:()=>{},
-  annotation_data:[
-    {
-      standard:'变异注释',
-      analyze:'xxooxoxoxoxoxoodfdsfdsfdsfdsfdfdsf'
-    },
-    {
-      standard:'PVS1',
-      analyze:'yykkdfdfsdfdsfsdfdsfsdfsdfsdfjfjdsfdksnflkndf'
-    }
 
-  ]
 }
 
 export default Annotation_page;
