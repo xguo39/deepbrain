@@ -58,89 +58,89 @@ const initialState = {
     result_data:{
       summary_table_data:[
          {
-           gene:'WWOX',
-           transcript:'chr16:g.78466583C>G',
-           variant:'GCGTG',
-           protein:'danbaizhi',
-           zygosity:'peixing',
-           correlated_phenotypes:'biaoxingpipei',
-           pheno_match_score:39,
-           hit_criteria:"PM2|BP4",
-           pathogenicity:'Uncertain Significance',
-           pathogenicity_score:0.88,
-           final_score:1.8
+          //  gene:'WWOX',
+          //  transcript:'chr16:g.78466583C>G',
+          //  variant:'GCGTG',
+          //  protein:'danbaizhi',
+          //  zygosity:'peixing',
+          //  correlated_phenotypes:'biaoxingpipei',
+          //  pheno_match_score:39,
+          //  hit_criteria:"PM2|BP4",
+          //  pathogenicity:'Uncertain Significance',
+          //  pathogenicity_score:0.88,
+          //  final_score:1.8
          },
          {
-           gene:'WNT7A',
-           transcript:'chr3:g.13896304C>T',
-           variant:'GCGTG',
-           protein:'danbaizhi',
-           zygosity:'peixing',
-           correlated_phenotypes:'biaoxingpipei',
-           pheno_match_score:45,
-           hit_criteria:"PM2|BP4",
-           pathogenicity:'Uncertain Significance',
-           pathogenicity_score:1.28,
-           final_score:1.1
+          //  gene:'WNT7A',
+          //  transcript:'chr3:g.13896304C>T',
+          //  variant:'GCGTG',
+          //  protein:'danbaizhi',
+          //  zygosity:'peixing',
+          //  correlated_phenotypes:'biaoxingpipei',
+          //  pheno_match_score:45,
+          //  hit_criteria:"PM2|BP4",
+          //  pathogenicity:'Uncertain Significance',
+          //  pathogenicity_score:1.28,
+          //  final_score:1.1
          }
       ],
       incidental_table_data:[
-        // {
-        //   gene:'WWOX',
-        //   transcript:'chr16:g.78466583C>G',
-        //   variant:'GCGTG',
-        //   protein:'danbaizhi',
-        //   zygosity:'peixing',
-        //   pheno_match_score:39,
-        //   hit_criteria:"PM2|BP4",
-        //   pathogenicity:'Uncertain Significance',
-        // },
-        // {
-        //   gene:'Shio OM4',
-        //   transcript:'chr16:g.78466583C>G',
-        //   variant:'GCGTG',
-        //   protein:'danbaizhi',
-        //   zygosity:'peixing',
-        //   pheno_match_score:88,
-        //   hit_criteria:"PM2|BP4",
-        //   pathogenicity:'Uncertain Significance',
-        // }
+        {
+          // gene:'WWOX',
+          // transcript:'chr16:g.78466583C>G',
+          // variant:'GCGTG',
+          // protein:'danbaizhi',
+          // zygosity:'peixing',
+          // pheno_match_score:39,
+          // hit_criteria:"PM2|BP4",
+          // pathogenicity:'Uncertain Significance',
+        },
+        {
+          // gene:'Shio OM4',
+          // transcript:'chr16:g.78466583C>G',
+          // variant:'GCGTG',
+          // protein:'danbaizhi',
+          // zygosity:'peixing',
+          // pheno_match_score:88,
+          // hit_criteria:"PM2|BP4",
+          // pathogenicity:'Uncertain Significance',
+        }
       ],
       candidate_table_data:[
-        // {
-        //   gene:'WWOX',
-        //   transcript:'chr16:g.78466583C>G',
-        //   cDNA:'GCGTG',
-        //   protein:'danbaizhi',
-        //   zygosity:'peixing',
-        //   correlated_phenotypes:'from paper'
-        // },
-        // {
-        //   gene:'Shio OM4',
-        //   transcript:'chr16:g.78466583C>G',
-        //   cDNA:'GCGTG',
-        //   protein:'danbaizhi',
-        //   zygosity:'peixing',
-        //   correlated_phenotypes:'from paper'
-        // }
+        {
+          // gene:'WWOX',
+          // transcript:'chr16:g.78466583C>G',
+          // cDNA:'GCGTG',
+          // protein:'danbaizhi',
+          // zygosity:'peixing',
+          // correlated_phenotypes:'from paper'
+        },
+        {
+          // gene:'Shio OM4',
+          // transcript:'chr16:g.78466583C>G',
+          // cDNA:'GCGTG',
+          // protein:'danbaizhi',
+          // zygosity:'peixing',
+          // correlated_phenotypes:'from paper'
+        }
       ],
       input_gene_data:[
         {
-          Gene:'PPTERER',
-          HGVS_cDNa:'fdsfdsfdsfsdf'
+          // Gene:'PPTERER',
+          // HGVS_cDNa:'fdsfdsfdsfsdf'
         },
         {
-          Gene:'PPTdsfdfERER',
-          HGVS_cDNa:'fdsfdsfdsfdsfdsfsdf'
+          // Gene:'PPTdsfdfERER',
+          // HGVS_cDNa:'fdsfdsfdsfdsfdsfsdf'
         }
       ],
       interpretation_data:[
-        // {
-        //   gene:'WWT7',
-        //   variant:'dsfsdfsf',
-        //   criteria:'dfsfsdfsdf',
-        //   interpretation:''
-        // },
+        {
+          // gene:'WWT7',
+          // variant:'dsfsdfsf',
+          // criteria:'dfsfsdfsdf',
+          // interpretation:''
+        },
       ]
     }
   }
