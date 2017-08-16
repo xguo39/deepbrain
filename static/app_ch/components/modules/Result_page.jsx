@@ -10,6 +10,7 @@ class Result_page extends React.Component{
     let summary_data = [...this.props.result_data.summary_table_data];
     summary_data[0] = {...this.props.result_data.summary_table_data[0]};
     delete summary_data[0]['correlated_phenotypes'];
+    delete summary_data[0]['id'];
     this.state={
       current_data:summary_data
     }
@@ -40,6 +41,7 @@ class Result_page extends React.Component{
           let summary_data = [...this.props.result_data.summary_table_data];
           summary_data[0] = {...this.props.result_data.summary_table_data[0]};
           delete summary_data[0]['correlated_phenotypes'];
+          delete summary_data[0]['id'];
           // delete this.props.result_data.summary_table_data[0]['correlated_phenotypes'];
           this.setState({
             ...this.state,
@@ -53,6 +55,7 @@ class Result_page extends React.Component{
           phenotype_match_data[0] = {...this.props.result_data.summary_table_data[0]};
           delete phenotype_match_data[0]['hit_criteria'];delete phenotype_match_data[0]['pathogenicity'];
           delete phenotype_match_data[0]['pathogenicity_score'];delete phenotype_match_data[0]['final_score'];
+          delete phenotype_match_data[0]['id'];
           this.setState({
             ...this.state,
             current_data:phenotype_match_data,

@@ -1,5 +1,5 @@
 import React from 'react';
-import {Processing_task, Completed_task} from 'components/models/Progress_task.jsx';
+import {Processing_task, Completed_task, Failed_task} from 'components/models/Progress_task.jsx';
 
 class New_task_progress extends React.Component {
   constructor(props){
@@ -17,6 +17,10 @@ class New_task_progress extends React.Component {
       const task_id = parseInt(task_info[0]);
       const task_name = task_info[1];
       this.props.toResult(task_id, task_name);
+    }else if(target.className.indexOf('failed_task')!==-1){
+      const task_info = target.getAttribute('alt').split(',');
+      const task_id = parseInt(task_info[0]);
+      this.props.checkedChange(task_id);
     };
   }
 
@@ -27,6 +31,10 @@ class New_task_progress extends React.Component {
         if(status.indexOf('failed') === -1){
           return <div key={index} className='td3 td-stripe'>
             <Processing_task task_info={task}/>
+          </div>
+        }else{
+          return <div key={index} className='td3'>
+            <Failed_task task_info={task}/>
           </div>
         }
       }
@@ -52,6 +60,7 @@ New_task_progress.propTypes={
   progress_task_list:React.PropTypes.array,
   fetchTaskList:React.PropTypes.func,
   toResult:React.PropTypes.func,
+  checkedChange:React.PropTypes.func
 }
 
 New_task_progress.defaultProps={

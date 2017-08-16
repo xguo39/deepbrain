@@ -24,7 +24,7 @@ class Processing_task extends React.Component{
       <div>
         <p className='task-title'>{`${this.props.task_info.task_name}：${current_percent}`}</p>
         <div className="progress">
-          <div className="progress-bar progress-bar-info" role="progressbar" aria-valuenow="50"
+          <div className="progress-bar progress-bar-info active" role="progressbar" aria-valuenow="50"
           aria-valuemin="0" aria-valuemax="100" style={barStyle}>
             <span className="sr-only">50% Complete</span>
           </div>
@@ -50,4 +50,19 @@ class Completed_task extends React.Component{
   }
 }
 
-export {Processing_task, Completed_task};
+class Failed_task extends React.Component{
+  constructor(props){
+    super(props);
+  }
+
+  render(){
+    return (
+      <div className='failed_task' alt={`${this.props.task_info.id},${this.props.task_info.task_name}`}>
+        <span>{this.props.task_info.task_name}</span><span>  失败</span>
+        {/* <img src={static_image+'finish_logo.png'} alt='finish_logo'/> */}
+      </div>
+    )
+  }
+}
+
+export {Processing_task, Completed_task, Failed_task};

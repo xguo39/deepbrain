@@ -6,8 +6,8 @@ import { compose } from 'redux';
 import {Paginator, paginate} from '../../helpers';
 const mappingDict={
   gene:'基因',transcript:'转录本',variant:'c.DNA',protein:'蛋白质',zygosity:'配型',correlated_phenotypes:'表型匹配',
-  pheno_match_score:'表型匹配得分', hit_criteria:'ACMG评判标准', pathogenicity:'致病性',
-  pathogenicity_score:'致病性得分', final_score:'总分'
+  pheno_match_score:'表型匹配得分', hit_criteria:'ACMG评判标准', pathogenicity:'致病性', criteria:'标准',
+  interpretation:'解读', pathogenicity_score:'致病性得分', final_score:'总分'
 }
 
 class General_data_table extends React.Component{
@@ -78,7 +78,6 @@ class General_data_table extends React.Component{
   }
 
   componentWillReceiveProps(props){
-    console.log('hahahha'+props.table_data[0]);
     // Define the transforms of rows
     const getSortingColumns = () => this.state.sortingColumns || {};
     const sortingOrder = {
