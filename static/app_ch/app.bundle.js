@@ -21317,7 +21317,6 @@ var mapDispatchToProps = function mapDispatchToProps(dispatch) {
       dispatch((0, _reactRouterRedux.push)('/home/ch/new/result/' + task_id + '/' + task_name));
     },
     checkedChange: function checkedChange(task_id) {
-      // console.log(task_id);
       dispatch(_root_actions2.default.checkedChange(task_id));
     }
   };
