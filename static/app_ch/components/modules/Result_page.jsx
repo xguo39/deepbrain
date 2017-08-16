@@ -46,7 +46,7 @@ class Result_page extends React.Component{
           // delete this.props.result_data.summary_table_data[0]['correlated_phenotypes'];
           this.setState({
             ...this.state,
-            
+            current_table:'summary_table',
             current_data:summary_data,
           })
           break;
@@ -60,6 +60,7 @@ class Result_page extends React.Component{
           delete phenotype_match_data[0]['id'];
           this.setState({
             ...this.state,
+            current_table:'phenotype_match_table',
             current_data:phenotype_match_data,
           })
           break;
@@ -67,6 +68,7 @@ class Result_page extends React.Component{
         case 'incidental_finding_table':
           this.setState({
             ...this.state,
+            current_table:'incidental_finding_table',
             current_data:this.props.result_data.incidental_table_data,
           })
           break;
@@ -74,6 +76,7 @@ class Result_page extends React.Component{
         case 'candidate_gene_table':
           this.setState({
             ...this.state,
+            current_table:'candidate_gene_table',
             current_data:this.props.result_data.candidate_table_data,
           })
           break;
@@ -81,6 +84,7 @@ class Result_page extends React.Component{
         case 'input_gene_table':
           this.setState({
             ...this.state,
+            current_table:'input_gene_table',
             current_data:this.props.result_data.input_gene_data,
           })
           break;
@@ -88,6 +92,7 @@ class Result_page extends React.Component{
         case 'generate_result_table':
           this.setState({
             ...this.state,
+            current_table:'generate_result_table',
             current_data:this.props.result_data.interpretation_data,
           })
           break;
@@ -99,10 +104,12 @@ class Result_page extends React.Component{
 
     // Click to check the detail annotation of a gene variant
     if(target.nodeName==='TD'){
-      let gene = target.parentElement.children[0].innerHTML;
-      let transcript = target.parentElement.children[1].innerHTML;
-      let current_path = this.props.match.url;
-      this.props.showAnnotation(current_path, gene, transcript);
+      if(this.state.current_table === 'summary_table' || this.state.current_table === 'phenotype_match_table'){
+        let gene = target.parentElement.children[0].innerHTML;
+        let cDNA = target.parentElement.children[2].innerHTML;
+        let current_path = this.props.match.url;
+        this.props.showAnnotation(current_path, gene, cDNA);
+      }
     }
     //
   }

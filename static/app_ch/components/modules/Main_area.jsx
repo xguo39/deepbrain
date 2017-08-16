@@ -32,7 +32,7 @@ class Main_area extends React.Component{
                  <Route path="/home/ch/new/task_list" component={Task_list}/>
                  <Route path="/home/ch/new/review_list" component={Review_list}/>
                  <Route path="/home/ch/new/result/:task_id/:task_name" component={Result_page}/>
-                 <Route path="/home/ch/new/result/:task_id/:task_name/:gene_name" component={Annotation_page}/>
+                 <Route path="/home/ch/new/result/:task_id/:task_name/:gene_name/:cDNA" component={Annotation_page}/>
                </main>
              </div>
        </div>

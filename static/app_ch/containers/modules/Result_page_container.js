@@ -19,8 +19,8 @@ const mapDispatchToProps = (dispatch)=>{
        dispatch(root_actions.fetchResultData(task_id));
      },
 
-     showAnnotation:(current_path, gene, transicript)=>{
-       dispatch(push(`${current_path}/${gene}`));
+     showAnnotation:(current_path, gene, transcript)=>{
+       dispatch(push(`${current_path}/${gene}/${transcript}`));
      }
   }
 }

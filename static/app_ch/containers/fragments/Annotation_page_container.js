@@ -13,6 +13,9 @@ const mapDispatchToProps = (dispatch)=>{
   return{
     goBack:()=>{
       dispatch(go(-1));
+    },
+    fetchAnnotation:(gene_name, cDNA)=>{
+      console.log(gene_name);
     }
   }
 }

@@ -7,6 +7,12 @@ class Annotation_page extends React.Component{
     super(props);
   }
 
+  componentWillMount(){
+    const gene_name = this.props.match.params.gene_name;
+    const cDNA = this.props.match.params.cDNA;
+    this.props.fetchAnnotation(gene_name, cDNA);
+  }
+
   _handleClick(evt){
     let target = evt.target;
     // console.log(target);
@@ -17,13 +23,13 @@ class Annotation_page extends React.Component{
 
   render(){
     const gene_name = this.props.match.params.gene_name;
+    const cDNA = this.props.match.params.cDNA;
     return(
       <div className='annotation_page' onClick={(evt)=>{this._handleClick(evt)}}>
          <div className='annotation_area container-fluid'>
            <div className='annotation_header'>
               <p>基因：<span>{`${gene_name}`}</span></p>
-              <p>转录本：<span>xxxx</span></p>
-              <p>变异：<span>xxxx</span></p>
+              <p>cDNA：<span>{`${cDNA}`}</span></p>
            </div>
            <img src={static_image+'cancel_icon.png'} alt='back-sign'></img>
            <Annotation_table table_data={this.props.annotation_data}/>
@@ -35,6 +41,7 @@ class Annotation_page extends React.Component{
 
 Annotation_page.propTypes={
   goBack:React.PropTypes.func,
+  fetchAnnotation:React.PropTypes.func,
   annotation_data:React.PropTypes.array
 }
 
