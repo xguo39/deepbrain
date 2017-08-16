@@ -23,6 +23,10 @@ import json
 import sys
 import pickle
 
+import os
+
+BASE = os.path.dirname(os.path.abspath(__file__))
+
 reload(sys)
 sys.setdefaultencoding('utf-8')
 
@@ -253,7 +257,7 @@ def getZygosity(parent_ngs, candidate_vars_zygosity, proband_gender, variant_id_
     if parent_ngs in [0, 1, 2]:
         for item in candidate_vars_zygosity:
             gene, variant, transcript, variant_id, chrom, ref, allele1, allele2, mother1, mother2, father1, father2 = item
-            if variant_id in variant_id_to_gene: gene = variant_id_to_gene[variant_id]
+            if not gene and variant_id in variant_id_to_gene: gene = variant_id_to_gene[variant_id]
             proband_alts, mother_alts, father_alts = getAlts(ref, allele1, allele2, mother1, mother2, father1, father2) 
             #print 'p: ', proband_alts, mother_alts, father_alts
             if parent_ngs == 0:
@@ -272,7 +276,7 @@ def getZygosity(parent_ngs, candidate_vars_zygosity, proband_gender, variant_id_
         comp_het_genes = getCompHetGenes(candidate_vars_zygosity, variant_id_to_gene)
         for item in candidate_vars_zygosity:
             gene, variant, transcript, variant_id, chrom, ref, allele1, allele2, mother1, mother2, father1, father2 = item
-            if variant_id in variant_id_to_gene: gene = variant_id_to_gene[variant_id]
+            if not gene and variant_id in variant_id_to_gene: gene = variant_id_to_gene[variant_id]
             proband_alts, mother_alts, father_alts = getAlts(ref, allele1, allele2, mother1, mother2, father1, father2)
             if allele1 not in [mother1, mother2, father1, father2] or allele2 not in [mother1, mother2, father1, father2]:  
                 zygosity = 'de novo'
@@ -442,10 +446,12 @@ def read_input_gene_file(input_gene, parent_ngs, father_vcf, mother_vcf, proband
         else:
             candidate_vars.append((gene, variant, transcript, variant_id, zygosity))
 
-    non_snpeff_var_data = []
-    non_snpeff_var_data, variant_id_to_gene = collectVariantInfo.getVariantInfoFromMyVariant(candidate_vars) # because comp het requires gene info, we have to get gene info from variant id for cases where input files do not have gene info
     #print candidate_vars_zygosity
     #print candidate_vars 
+    non_snpeff_var_data = []
+    variant_id_to_gene = dict()
+    if not CANDIDATE_GENES:
+        non_snpeff_var_data, variant_id_to_gene = collectVariantInfo.getVariantInfoFromMyVariant(candidate_vars) # because comp het requires gene info, we have to get gene info from variant id for cases where input files do not have gene info
     if candidate_vars_zygosity: # this means we need to derive zygosity information from input files; at least one of parents' allele info is available
         candidate_vars = getZygosity(parent_ngs, candidate_vars_zygosity, proband_gender, variant_id_to_gene)  # 'zygosity' in the candidate_vars is updated
 
@@ -503,7 +509,7 @@ def getJaxCandidateGenes(gene_associated_phenos, gene_associated_pheno_hpoids, v
 
 def getIncidentalFindings(df_final_res):
     # final_incidental_findings_genes is a dict with gene as key and associated phenotypes as value 
-    infile = open('data/incidental_findings_genes.p', 'rb')
+    infile = open(os.path.join(BASE, 'data/incidental_findings_genes.p'), 'rb')
     all_incidental_findings_gene_phenos = pickle.load(infile)
     infile.close()
 
@@ -633,12 +639,12 @@ def master_function(raw_input_id):
             # if phenos are provided, we return a df_ranking_genes dataframe, which contains 'gene', 'variant', 'score_sim', 'hits', 'score', 'zygosity', 'associated_phenotypes'
             if candidate_gene_report:
                 jax_candidate_genes, jax_gene_key_phenos = getJaxCandidateGenes(gene_associated_phenos, gene_associated_pheno_hpoids, variants)
-                df_jax_candidate_genes = df_final_res[df_final_res['gene'].isin(jax_candidate_genes), ['gene', 'transcript', 'variant', 'protein', 'id', 'zygosity','correlated_phenotypes']]
+                df_jax_candidate_genes = df_final_res.loc[df_final_res['gene'].isin(jax_candidate_genes), ['gene', 'transcript', 'variant', 'protein', 'id', 'zygosity','correlated_phenotypes']]
                 df_jax_gene_key_phenos = pd.DataFrame(jax_gene_key_phenos.items(), columns=['gene', 'Jax phenotypes matched']) 
                 df_jax_candidate_genes = df_jax_candidate_genes.merge(df_jax_gene_key_phenos, how = 'left', on = 'gene')
             if incidental_finding_report:
                 incidental_findings_genes, incidental_finding_gene_phenos = getIncidentalFindings(df_final_res)
-                df_incidental_findings_genes = df_final_res[df_final_res['gene'].isin(incidental_findings_genes), ['gene', 'transcript', 'variant', 'protein', 'id', 'zygosity', 'hit_criteria']]
+                df_incidental_findings_genes = df_final_res.loc[df_final_res['gene'].isin(incidental_findings_genes), ['gene', 'transcript', 'variant', 'protein', 'id', 'zygosity', 'hit_criteria']]
                 df_incidental_finding_gene_phenos = pd.DataFrame(incidental_finding_gene_phenos.items(), columns=['gene', 'associated_phenotypes']) 
                 df_incidental_findings_genes = df_incidental_findings_genes.merge(df_incidental_finding_gene_phenos, how = 'left', on = 'gene')
             return df_final_res, df_genes, phenos, field_names, variant_ACMG_interpretation, variant_ACMG_interpret_chinese, df_ranking_genes, df_jax_candidate_genes, df_incidental_findings_genes

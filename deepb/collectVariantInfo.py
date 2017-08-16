@@ -29,7 +29,6 @@ def convertAminoAcidLowertoCap1letter(protein):
   return protein
 
 def collectAll(gene, variant, transcript):
-  mv = myvariant.MyVariantInfo()
   attempt, max_attempts = 0, 3
   while True:
     attempt += 1    
@@ -693,6 +692,7 @@ def getVariantidfromDB(candidate_vars):
   return res
 
 def get_variants(candidate_vars):
+  global mv
   mv = myvariant.MyVariantInfo()
   variantidfromDB = getVariantidfromDB(candidate_vars)
 
@@ -871,6 +871,7 @@ def get_variants(candidate_vars):
   return final_res, variants
 
 def getVariantInfoFromMyVariant(candidate_vars):
+  global mv
   mv = myvariant.MyVariantInfo()
   variant_id_to_gene = dict()
 
@@ -924,7 +925,7 @@ def getVariantInfoFromMyVariant(candidate_vars):
 
 def get_variants_from_vcf(candidate_vars, variantid_zygosity, non_snpeff_var_data):
   # if the input file is VCF, then candidate_vars do not contain gene symbol information; they only have variant ids; need to query gene, variant, transcript information from myvariant
-  mv = myvariant.MyVariantInfo()
+  #mv = myvariant.MyVariantInfo()
 
   variants = defaultdict(dict)
 

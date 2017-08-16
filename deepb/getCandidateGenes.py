@@ -1,5 +1,8 @@
 import pandas as pd
 import pickle
+import os
+
+BASE = os.path.dirname(os.path.abspath(__file__))
 
 def gethposuperclass():
     global hpo_superclass
@@ -43,7 +46,7 @@ def getAllAncestorsBFS(node, tree):
     return P  
 
 def getCandidateGenes(gene_associated_phenos, gene_associated_pheno_hpoids, variants):
-    infile = open('data/jax_phenotypes.p', 'rb')
+    infile = open(os.path.join(BASE, 'data/jax_phenotypes.p'), 'rb')
     associated_genes, jax_gene_key_phenos = pickle.load(infile)
     infile.close()
     gethposuperclass()
