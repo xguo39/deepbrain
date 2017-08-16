@@ -17092,10 +17092,244 @@ exports.default = result_actions;
 
 /***/ }),
 /* 218 */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-throw new Error("Module build failed: SyntaxError: Unexpected token, expected , (187:33)\n\n\u001b[0m \u001b[90m 185 | \u001b[39m      \u001b[36mvar\u001b[39m option \u001b[33m=\u001b[39m {\n \u001b[90m 186 | \u001b[39m        method\u001b[33m:\u001b[39m\u001b[32m'PUT'\u001b[39m\u001b[33m,\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 187 | \u001b[39m        body\u001b[33m:\u001b[39m\u001b[33mJSON\u001b[39m\u001b[33m.\u001b[39mstringify(data)\u001b[33m;\u001b[39m\n \u001b[90m     | \u001b[39m                                 \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 188 | \u001b[39m      }\n \u001b[90m 189 | \u001b[39m      \u001b[36mreturn\u001b[39m fetch(server_domain \u001b[33m+\u001b[39m apis\u001b[33m.\u001b[39mchecked_change\u001b[33m+\u001b[39m\u001b[32m`${user_name}/`\u001b[39m\u001b[33m,\u001b[39m option)\n \u001b[90m 190 | \u001b[39m      \u001b[33m.\u001b[39mthen(res\u001b[33m=>\u001b[39m{\u001b[0m\n");
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+var _base = __webpack_require__(26);
+
+var user_name = document.getElementById('user_name').innerHTML;
+
+var upload_task_actions = {
+
+  REQUEST_UPLOAD_TASK: 'REQUEST_UPLOAD_TASK',
+  UPLOAD_TASK_SUCCESS: 'UPLOAD_TASK_SUCCESS',
+  UPLOAD_TASK_FAILURE: 'UPLOAD_TASK_FAILURE',
+
+  requestUploadTask: function requestUploadTask() {
+    return {
+      type: task_actions.REQUEST_UPLOAD_TASK
+    };
+  },
+
+  uploadTaskSuccess: function uploadTaskSuccess() {
+    return {
+      type: task_actions.UPLOAD_TASK_SUCCESS
+    };
+  },
+
+  uploadTaskFailure: function uploadTaskFailure(errCode) {
+    return {
+      type: task_actions.UPLOAD_TASK_FAILURE,
+      payload: errCode
+    };
+  },
+
+  // Upload new task with form data
+  uploadTask: function uploadTask(taskData) {
+    return function (dispatch) {
+      dispatch(task_actions.requestUploadTask());
+      var option = {
+        method: 'POST',
+        body: taskData
+      };
+      return fetch(_base.server_domain + _base.apis.upload_task + (user_name + '/'), option).then(function (res) {
+        return res.json();
+      }).then(function (data) {
+        if (data.success) {
+          dispatch(task_actions.uploadTaskSuccess());
+          // Constanly fetch the progress task list after uploading
+          dispatch(task_actions.fetchProgressTask());
+        } else {
+          dispatch(task_actions.uploadTaskFailure(errCode));
+        }
+      });
+    };
+  }
+
+};
+
+var progress_task_actions = {
+  REQUEST_PROGRESS_TASK: 'REQUEST_PROGRESS_TASK',
+  FETCH_PROGRESS_TASK_SUCCESS: 'FETCH_PROGRESS_TASK_SUCCESS',
+  FETCH_PROGRESS_TASK_FAIL: 'FETCH_PROGRESS_TASK_FAIL',
+
+  requestProgressTask: function requestProgressTask() {
+    return {
+      type: task_actions.REQUEST_PROGRESS_TASK
+    };
+  },
+
+  fetchProgressTaskSuccess: function fetchProgressTaskSuccess(progress_task_list) {
+    return {
+      type: task_actions.FETCH_PROGRESS_TASK_SUCCESS,
+      payload: progress_task_list
+    };
+  },
+
+  fetchProgressTaskFail: function fetchProgressTaskFail(errCode) {
+    return {
+      type: task_actions.FETCH_PROGRESS_TASK_FAIL,
+      payload: errCode
+    };
+  },
+
+  timeout: null,
+
+  fetchProgressTask: function fetchProgressTask() {
+    return function (dispatch) {
+      dispatch(task_actions.requestProgressTask());
+      var option = {
+        method: 'GET'
+      };
+      return fetch(_base.server_domain + _base.apis.progress_task_list + (user_name + '/'), option).then(function (res) {
+        return res.json();
+      }).then(function (data) {
+        if (data.success) {
+          dispatch(task_actions.fetchProgressTaskSuccess(data.list));
+          // Constanly checked the progress list
+          var _iteratorNormalCompletion = true;
+          var _didIteratorError = false;
+          var _iteratorError = undefined;
+
+          try {
+            for (var _iterator = data.list[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+              var task = _step.value;
+
+              if (task.status !== 'succeed' && task.status.indexOf('failed') === -1) {
+                task_actions.timeout = setTimeout(function () {
+                  return dispatch(task_actions.fetchProgressTask());
+                }, 5000);
+                break;
+              }
+            }
+          } catch (err) {
+            _didIteratorError = true;
+            _iteratorError = err;
+          } finally {
+            try {
+              if (!_iteratorNormalCompletion && _iterator.return) {
+                _iterator.return();
+              }
+            } finally {
+              if (_didIteratorError) {
+                throw _iteratorError;
+              }
+            }
+          }
+        } else {
+          dispatch(task_actions.fetchProgressTaskFail(errcode));
+        }
+      });
+    };
+  }
+
+};
+
+var all_task_actions = {
+  REQUEST_ALL_TASK: 'REQUEST_ALL_TASK',
+  FETCH_ALL_TASK_SUCCESS: 'FETCH_ALL_TASK_SUCCESS',
+  FETCH_ALL_TASK_FAILURE: 'FETCH_ALL_TASK_FAILURE',
+
+  requestAllTask: function requestAllTask() {
+    return {
+      type: task_actions.REQUEST_ALL_TASK
+    };
+  },
+
+  fetchAllTaskSuccess: function fetchAllTaskSuccess(task_list) {
+    return {
+      type: task_actions.FETCH_ALL_TASK_SUCCESS,
+      payload: task_list
+    };
+  },
+
+  fetchAllTaskFailure: function fetchAllTaskFailure(errCode) {
+    return {
+      type: task_actions.FETCH_ALL_TASK_FAILURE,
+      payload: errCode
+    };
+  },
+
+  // Fetch all task
+  fetchTaskList: function fetchTaskList() {
+    return function (dispatch) {
+      dispatch(task_actions.requestAllTask());
+      var option = {
+        method: 'GET'
+      };
+      return fetch(_base.server_domain + _base.apis.all_task_list + (user_name + '/'), option).then(function (res) {
+        return res.json();
+      }).then(function (data) {
+        if (data.success) {
+          dispatch(task_actions.fetchAllTaskSuccess(data.list));
+        } else {
+          dispatch(task_actions.fetchAllTaskFailure(errcode));
+        }
+      });
+    };
+  }
+
+};
+
+var checked_change_actions = {
+  REQUEST_CHECKED_CHANGE: 'REQUEST_CHECKED_CHANGE',
+  CHECKED_CHANGE_SUCCESS: 'CHECKED_CHANGE_SUCCESS',
+  CHECKED_CHANGE_FAILURE: 'CHECKED_CHANGE_FAILURE',
+
+  requestCheckedChange: function requestCheckedChange() {
+    return {
+      type: task_actions.REQUEST_CHECKED_CHANGE
+    };
+  },
+
+  checkedChangeSuccess: function checkedChangeSuccess() {
+    return {
+      type: task_actions.CHECKED_CHANGE_SUCCESS
+    };
+  },
+
+  checkedChangeFailure: function checkedChangeFailure(errCode) {
+    return {
+      type: task_actions.CHECKED_CHANGE_FAILURE,
+      payload: errCode
+    };
+  },
+
+  checkedChange: function checkedChange(task_id) {
+    return function (dispatch) {
+      dispatch(task_actions.requestCheckedChange());
+      var data = { task_id: task_id };
+      var option = {
+        method: 'PUT',
+        body: JSON.stringify(data)
+      };
+      return fetch(_base.server_domain + _base.apis.checked_change + (user_name + '/'), option).then(function (res) {
+        return res.json();
+      }).then(function (data) {
+        console.log('this is checked change');
+        console.log(data);
+        if (data.success) {
+          dispatch(task_actions.fetchProgressTask());
+        } else {
+          dispatch(task_actions.checkedChangeFailure(data.errCode));
+        }
+      });
+    };
+  }
+
+};
+
+var task_actions = _extends({}, upload_task_actions, progress_task_actions, all_task_actions, checked_change_actions);
+
+exports.default = task_actions;
 
 /***/ }),
 /* 219 */
@@ -20111,6 +20345,7 @@ var Result_page = function (_React$Component) {
     delete summary_data[0]['correlated_phenotypes'];
     delete summary_data[0]['id'];
     _this.state = {
+      current_table: 'summary_table',
       current_data: summary_data
     };
     return _this;
