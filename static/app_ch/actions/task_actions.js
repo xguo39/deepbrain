@@ -91,14 +91,11 @@ const progress_task_actions = {
         if(data.success){
           dispatch(task_actions.fetchProgressTaskSuccess(data.list));
           // Constanly checked the progress list
-          let inProgress = false;
           for(var task of data.list){
-            if(task.status !== 'succeed'){
-              inProgress = true;
+            if(task.status !== 'succeed' && task.status.indexOf('failed')===-1){
+             task_actions.timeout = setTimeout(()=>dispatch(task_actions.fetchProgressTask()), 5000);
+             break;
             }
-          }
-          if(inProgress){
-           //task_actions.timeout = setTimeout(()=>dispatch(task_actions.fetchProgressTask()), 5000);
           }
         }else{
           dispatch(task_actions.fetchProgressTaskFail(errcode));
@@ -157,10 +154,58 @@ const all_task_actions = {
 
 }
 
+const checked_change_actions={
+  REQUEST_CHECKED_CHANGE:'REQUEST_CHECKED_CHANGE',
+  CHECKED_CHANGE_SUCCESS:'CHECKED_CHANGE_SUCCESS',
+  CHECKED_CHANGE_FAILURE:'CHECKED_CHANGE_FAILURE',
+
+  requestCheckedChange:()=>{
+    return {
+      type:task_actions.REQUEST_CHECKED_CHANGE
+    }
+  },
+
+  checkedChangeSuccess:()=>{
+    return {
+      type:task_actions.CHECKED_CHANGE_SUCCESS
+    }
+  },
+
+  checkedChangeFailure:(errCode)=>{
+    return {
+      type:task_actions.CHECKED_CHANGE_FAILURE,
+      payload:errCode
+    }
+  },
+
+  checkedChange:(task_id)=>{
+    return (dispatch)=>{
+      dispatch(task_actions.requestCheckedChange());
+      var option = {
+        method:'PUT',
+        body:{task_id}
+      }
+      return fetch(server_domain + apis.all_task_list+`${user_name}/`, option)
+      .then(res=>{
+        return res.json();
+      })
+      .then(data=>{
+        if(data.success){
+          dispatch(task_actions.fetchProgressTask())
+        }else{
+          dispatch(task_actions.checkedChangeFailure(data.errCode));
+        }
+      })
+    }
+  }
+
+}
+
 const task_actions = {
   ...upload_task_actions,
   ...progress_task_actions,
-  ...all_task_actions
+  ...all_task_actions,
+  ...checked_change_actions
 }
 
 export default task_actions;

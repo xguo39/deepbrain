@@ -16,6 +16,10 @@ const mapDispatchToProps = (dispatch)=>{
     },
     toResult:(task_id, task_name)=>{
       dispatch(push(`/home/ch/new/result/${task_id}/${task_name}`));
+    },
+    checkedChange:(task_id)=>{
+      // console.log(task_id);
+      dispatch(root_actions.checkedChange(task_id));
     }
   }
 }
