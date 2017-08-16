@@ -10,7 +10,6 @@ class Result_page extends React.Component{
     let summary_data = [...this.props.result_data.summary_table_data];
     summary_data[0] = {...this.props.result_data.summary_table_data[0]};
     delete summary_data[0]['correlated_phenotypes'];
-    // delete this.props.result_data.summary_table_data[0]['correlated_phenotypes'];
     this.state={
       current_data:summary_data
     }
@@ -77,7 +76,7 @@ class Result_page extends React.Component{
         case 'input_gene_table':
           this.setState({
             ...this.state,
-            current_data:this.props.result_data.input_table_data,
+            current_data:this.props.result_data.input_gene_data,
           })
           break;
 
@@ -205,8 +204,7 @@ Result_page.propTypes={
 }
 
 Result_page.defaultProps={
-  goBack:()=>{},
-  showAnnotation:()=>{},
+
 }
 
 export default Result_page;
