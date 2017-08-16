@@ -17306,10 +17306,11 @@ var checked_change_actions = {
   checkedChange: function checkedChange(task_id) {
     return function (dispatch) {
       dispatch(task_actions.requestCheckedChange());
-      var data = { task_id: task_id };
+      var data = new FormData();
+      data.append('task_id', task_id);
       var option = {
         method: 'PUT',
-        body: JSON.stringify(data)
+        body: data
       };
       return fetch(_base.server_domain + _base.apis.checked_change + (user_name + '/'), option).then(function (res) {
         return res.json();
@@ -20404,6 +20405,7 @@ var Result_page = function (_React$Component) {
             delete summary_data[0]['id'];
             // delete this.props.result_data.summary_table_data[0]['correlated_phenotypes'];
             this.setState(_extends({}, this.state, {
+
               current_data: summary_data
             }));
             break;

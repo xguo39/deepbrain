@@ -181,10 +181,11 @@ const checked_change_actions={
   checkedChange:(task_id)=>{
     return (dispatch)=>{
       dispatch(task_actions.requestCheckedChange());
-      let data = {task_id:task_id}
+      let data = new FormData();
+      data.append('task_id', task_id);
       var option = {
         method:'PUT',
-        body:JSON.stringify(data)
+        body:data
       }
       return fetch(server_domain + apis.checked_change+`${user_name}/`, option)
       .then(res=>{

@@ -46,6 +46,7 @@ class Result_page extends React.Component{
           // delete this.props.result_data.summary_table_data[0]['correlated_phenotypes'];
           this.setState({
             ...this.state,
+            
             current_data:summary_data,
           })
           break;
