@@ -13,6 +13,7 @@ class Side_navbar extends React.Component{
   }
 
   componentDidMount(){
+
     let pathname = this.props.location.pathname;
     pathname = pathname.substring(pathname.lastIndexOf('/')+1);
     let currentActive;
@@ -36,6 +37,7 @@ class Side_navbar extends React.Component{
     this.setState({
       active_link:document.getElementsByClassName('nav-link active')[0]
     });
+  
   }
 
   _handleClick(evt){

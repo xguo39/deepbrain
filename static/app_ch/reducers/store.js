@@ -18,43 +18,22 @@ const initialState = {
         status:'Annotating variants using genomic databases',
         processed_time:'5分钟',
         checked: false,
-     },
-     {
-       id:2,
-       task_name:'tianqi',
-       status:'succeed',
-       processed_time:'4分钟',
-       checked:false,
-     },
-     {
-       id:3,
-       task_name:'huihuihui',
-       status:'xxxxx failed',
-       processed_time:'2分钟',
-       checked:false,
      }
     ],
     all_task_list:[
       {
-       id:1,
-       task_name:"xiaonan",
-       pub_date: '2017-06-18, 12:03pm',
-       status:'succeed',
-       processed_time:'0',
-       checked:false
+      //  id:1,
+      //  task_name:"xiaonan",
+      //  pub_date: '2017-06-18, 12:03pm',
+      //  status:'succeed',
+      //  processed_time:'0',
+      //  checked:false
       },
-      {
-       id:2,
-       task_name:"tianqi",
-       pub_date: '2017-06-18, 12:03pm',
-       status:'xxxxxxxx fail',
-       processed_time:'0',
-       checked:true
-      }
     ]
   },
   results:{
     isFetching:false,
+    received_new_data:false,
     result_data:{
       summary_table_data:[
          {
@@ -107,14 +86,7 @@ const initialState = {
       ]
     },
     annotation_data:[
-      {
-        // criteria:'变异注释',
-        // interpretation:""
-      },
-      {
-        // criteria:'PVS1',
-        // interpretation:"dsfsdfsdfsdfsdfsf "
-      }
+      {}
     ]
   }
 };

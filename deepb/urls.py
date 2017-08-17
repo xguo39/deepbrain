@@ -24,7 +24,7 @@ urlpatterns = [
     url(r'^api/task/all_task_list/(?P<user_name>[-\w]+)/$', views.all_task_list.as_view()),
     url(r'^api/task/task_check/(?P<user_name>[-\w]+)/$', views.task_check.as_view()),
     url(r'^api/result/(?P<task_id>[0-9]+)/(?P<user_name>[-\w]+)/$', views.case_result.as_view()),
-    url(r'^api/result/(?P<task_id>[0-9]+)/(?P<gene_name>[-\w]+)/(?P<cDNA>[-\w]+)/(?P<user_name>[-\w]+)/$', views.result_detail.as_view()),
+    url(r'^api/result/(?P<task_id>[0-9]+)/(?P<gene_name>[-\w]+)/(?P<user_name>[-\w]+)/$', views.result_detail.as_view()),
 ]
 
 

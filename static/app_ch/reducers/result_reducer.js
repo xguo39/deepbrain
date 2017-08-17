@@ -12,7 +12,14 @@ export default function results(state={},action){
       return {
         ...state,
         isFetching:false,
-        result_data:action.payload
+        result_data:action.payload,
+        received_new_data:true
+      }
+
+    case root_actions.UPDATE_DATA_SUCCESS:
+      return {
+        ...state,
+        received_new_data:false
       }
 
     case root_actions.FETCH_RESULT_DATA_FAILURE:

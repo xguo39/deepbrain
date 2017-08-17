@@ -14590,7 +14590,7 @@ selectorFactory) {
       Connect.prototype.notifyNestedSubsOnComponentDidUpdate = function notifyNestedSubsOnComponentDidUpdate() {
         // `componentDidUpdate` is conditionally implemented when `onStateChange` determines it
         // needs to notify nested subs. Once called, it unimplements itself until further state
-        // changes occur. Doing it this way vs having a permanent `componentDidUpdate` that does
+        // changes occur. Doing it this way vs having a permanent `componentDidMount` that does
         // a boolean check every time avoids an extra method call most of the time, resulting
         // in some perf boost.
         this.componentDidUpdate = undefined;
@@ -14636,31 +14636,14 @@ selectorFactory) {
 
     if (process.env.NODE_ENV !== 'production') {
       Connect.prototype.componentWillUpdate = function componentWillUpdate() {
-        var _this2 = this;
-
         // We are hot reloading!
         if (this.version !== version) {
           this.version = version;
           this.initSelector();
 
-          // If any connected descendants don't hot reload (and resubscribe in the process), their
-          // listeners will be lost when we unsubscribe. Unfortunately, by copying over all
-          // listeners, this does mean that the old versions of connected descendants will still be
-          // notified of state changes; however, their onStateChange function is a no-op so this
-          // isn't a huge deal.
-          var oldListeners = [];
-
-          if (this.subscription) {
-            oldListeners = this.subscription.listeners.get();
-            this.subscription.tryUnsubscribe();
-          }
+          if (this.subscription) this.subscription.tryUnsubscribe();
           this.initSubscription();
-          if (shouldHandleStateChanges) {
-            this.subscription.trySubscribe();
-            oldListeners.forEach(function (listener) {
-              return _this2.subscription.listeners.subscribe(listener);
-            });
-          }
+          if (shouldHandleStateChanges) this.subscription.trySubscribe();
         }
       };
     }
@@ -16847,37 +16830,19 @@ var initialState = {
       status: 'Annotating variants using genomic databases',
       processed_time: '5分钟',
       checked: false
-    }, {
-      id: 2,
-      task_name: 'tianqi',
-      status: 'succeed',
-      processed_time: '4分钟',
-      checked: false
-    }, {
-      id: 3,
-      task_name: 'huihuihui',
-      status: 'xxxxx failed',
-      processed_time: '2分钟',
-      checked: false
     }],
     all_task_list: [{
-      id: 1,
-      task_name: "xiaonan",
-      pub_date: '2017-06-18, 12:03pm',
-      status: 'succeed',
-      processed_time: '0',
-      checked: false
-    }, {
-      id: 2,
-      task_name: "tianqi",
-      pub_date: '2017-06-18, 12:03pm',
-      status: 'xxxxxxxx fail',
-      processed_time: '0',
-      checked: true
+      //  id:1,
+      //  task_name:"xiaonan",
+      //  pub_date: '2017-06-18, 12:03pm',
+      //  status:'succeed',
+      //  processed_time:'0',
+      //  checked:false
     }]
   },
   results: {
     isFetching: false,
+    received_new_data: false,
     result_data: {
       summary_table_data: [{
         //  gene:'WWOX',
@@ -16921,13 +16886,7 @@ var initialState = {
         interpretation: "突变类型: missense_variant.<br/>蛋白功能区: NAD(P)-binding domain.<br/>HGVS ID: chr16:g.78466583C>G.<br/>RefSeq ID: <a href=' '> rs117209694 </a ><br/>蛋白质: p.Asn330Lys.<br/>外显子: 8.<br/>GeneCards: <a href='http://www.genecards.org/cgi-bin/carddisp.pl?gene=WWOX'> WWOX </a ><br/>OMIM: <a href='https://www.omim.org/entry/605131'> 605131 </a ><br/>Decipher: <a href='https://decipher.sanger.ac.uk/search?q=WWOX#consented-patients/results'> WWOX </a ><br/>Genetics Home Reference: <a href='https://ghr.nlm.nih.gov/gene/WWOX'> WWOX </a ><br/>GeneReviews: <a href='https://www.ncbi.nlm.nih.gov/books/NBK1116/?term=WWOX'> WWOX </a ><br/>ExAC 最小等位基因频率(MAF): 0.000174 (<a href='http://exac.broadinstitute.org/variant/16-78466583-C-G'> 16-78466583-C-G </a >)<br/>ExAC 最小等位基因频率(MAF)详细数据: Total Allele Count (21), Total Allele Number (120722), Allele Frequency for all races (0.0002), Number of Homozygotes (0), Homozygotes Percentage (0.0000), African Allele Count (1), African Allele Number (9796), African Allele Frequency (0.0001), Latino Allele Count (0), Latino Allele Number (11570), Latino Allele Frequency (0.0000), East Asian Allele Count (0), East Asian Allele Number (8622), East Asian Allele Frequency (0.0000), European (Finnish) Allele Count (0), European (Finnish) Allele Number (6612), European (Finnish) Allele Frequency (0.0000), European (Non-Finnish) Allele Count (20), European (Non-Finnish) Allele Number (66710), European (Non-Finnish) "
       }]
     },
-    annotation_data: [{
-      // criteria:'变异注释',
-      // interpretation:""
-    }, {
-      // criteria:'PVS1',
-      // interpretation:"dsfsdfsdfsdfsdfsf "
-    }]
+    annotation_data: [{}]
   }
 };
 
@@ -17004,6 +16963,7 @@ var result_data_actions = {
   REQUEST_RESULT_DATA: 'REQUEST_RESULT_DATA',
   FETCH_RESULT_DATA_SUCCESS: 'FETCH_RESULT_DATA_SUCCESS',
   FETCH_RESULT_DATA_FAILURE: 'FETCH_RESULT_DATA_FAILURE',
+  UPDATE_DATA_SUCCESS: 'UPDATE_DATA_SUCCESS',
 
   requestResultData: function requestResultData() {
     return {
@@ -17024,6 +16984,13 @@ var result_data_actions = {
       payload: errCode
     };
   },
+
+  updateDataSuccess: function updateDataSuccess() {
+    return {
+      type: result_actions.UPDATE_DATA_SUCCESS
+    };
+  },
+
 
   fetchResultData: function fetchResultData(task_id) {
     return function (dispatch) {
@@ -18314,6 +18281,38 @@ var Annotation_table = function (_React$Component) {
   }
 
   _createClass(Annotation_table, [{
+    key: 'componentWillReceiveProps',
+    value: function componentWillReceiveProps(props) {
+      var _this2 = this;
+
+      console.log(props);
+      this.setState({
+        columns: [{
+          property: 'criteria',
+          header: {
+            label: '标准'
+          },
+          props: {
+            className: 'col1'
+          }
+        }, {
+          property: 'interpretation',
+          header: {
+            label: '解读'
+          },
+          cell: {
+            formatters: [function (interpretation) {
+              return _this2._unescapeHTML(interpretation);
+            }]
+          },
+          props: {
+            className: 'col2'
+          }
+        }],
+        rows: props.table_data
+      });
+    }
+  }, {
     key: '_unescapeHTML',
     value: function _unescapeHTML(html) {
       var escapeEl = document.createElement('textarea');
@@ -20429,18 +20428,6 @@ var Result_page = function (_React$Component) {
   }
 
   _createClass(Result_page, [{
-    key: 'componentWillReceiveProps',
-    value: function componentWillReceiveProps() {
-      var summary_data = [].concat(_toConsumableArray(this.props.result_data.summary_table_data));
-      summary_data[0] = _extends({}, this.props.result_data.summary_table_data[0]);
-      delete summary_data[0]['correlated_phenotypes'];
-      delete summary_data[0]['id'];
-      this.setState({
-        current_table: 'summary_table',
-        current_data: summary_data
-      });
-    }
-  }, {
     key: 'componentWillMount',
     value: function componentWillMount() {
       var task_id = this.props.match.params.task_id;
@@ -20562,6 +20549,22 @@ var Result_page = function (_React$Component) {
       var review_form_data = new FormData(evt.target);
     }
   }, {
+    key: '_updateState',
+    value: function _updateState() {
+      if (this.props.received_new_data) {
+        console.log('update here');
+        var summary_data = [].concat(_toConsumableArray(this.props.result_data.summary_table_data));
+        summary_data[0] = _extends({}, this.props.result_data.summary_table_data[0]);
+        delete summary_data[0]['correlated_phenotypes'];
+        delete summary_data[0]['id'];
+        this.setState({
+          current_table: 'summary_table',
+          current_data: summary_data
+        });
+        this.props.updateDataFinish();
+      }
+    }
+  }, {
     key: '_renderTable',
     value: function _renderTable(table_data) {
       if (table_data.length !== 0) {
@@ -20587,6 +20590,7 @@ var Result_page = function (_React$Component) {
     value: function render() {
       var _this2 = this;
 
+      this._updateState();
       return _react2.default.createElement(
         'div',
         { className: 'result_page' },
@@ -20802,7 +20806,10 @@ Result_page.propTypes = {
   goBack: _react2.default.PropTypes.func.isRequired,
   showAnnotation: _react2.default.PropTypes.func,
   fetchResultData: _react2.default.PropTypes.func,
-  result_data: _react2.default.PropTypes.object
+  updateDataFinish: _react2.default.PropTypes.func,
+  result_data: _react2.default.PropTypes.object,
+  received_new_data: _react2.default.PropTypes.bool
+
 };
 
 Result_page.defaultProps = {};
@@ -21012,6 +21019,7 @@ var Side_navbar = function (_React$Component) {
   _createClass(Side_navbar, [{
     key: 'componentDidMount',
     value: function componentDidMount() {
+
       var pathname = this.props.location.pathname;
       pathname = pathname.substring(pathname.lastIndexOf('/') + 1);
       var currentActive = void 0;
@@ -21562,7 +21570,8 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var mapStateToProps = function mapStateToProps(state) {
   return {
-    result_data: state.results.result_data
+    result_data: state.results.result_data,
+    received_new_data: state.results.received_new_data
   };
 };
 
@@ -21574,6 +21583,10 @@ var mapDispatchToProps = function mapDispatchToProps(dispatch) {
 
     fetchResultData: function fetchResultData(task_id) {
       dispatch(_root_actions2.default.fetchResultData(task_id));
+    },
+
+    updateDataFinish: function updateDataFinish() {
+      dispatch(_root_actions2.default.updateDataSuccess());
     },
 
     showAnnotation: function showAnnotation(current_path, gene, cDNA) {
@@ -21738,7 +21751,13 @@ function results() {
     case _root_actions2.default.FETCH_RESULT_DATA_SUCCESS:
       return _extends({}, state, {
         isFetching: false,
-        result_data: action.payload
+        result_data: action.payload,
+        received_new_data: true
+      });
+
+    case _root_actions2.default.UPDATE_DATA_SUCCESS:
+      return _extends({}, state, {
+        received_new_data: false
       });
 
     case _root_actions2.default.FETCH_RESULT_DATA_FAILURE:
@@ -40751,6 +40770,7 @@ function createProvider() {
     children: __WEBPACK_IMPORTED_MODULE_1_prop_types___default.a.element.isRequired
   };
   Provider.childContextTypes = (_Provider$childContex = {}, _Provider$childContex[storeKey] = __WEBPACK_IMPORTED_MODULE_2__utils_PropTypes__["a" /* storeShape */].isRequired, _Provider$childContex[subscriptionKey] = __WEBPACK_IMPORTED_MODULE_2__utils_PropTypes__["b" /* subscriptionShape */], _Provider$childContex);
+  Provider.displayName = 'Provider';
 
   return Provider;
 }
@@ -41155,9 +41175,6 @@ function createListenerCollection() {
       for (var i = 0; i < listeners.length; i++) {
         listeners[i]();
       }
-    },
-    get: function get() {
-      return next;
     },
     subscribe: function subscribe(listener) {
       var isSubscribed = true;

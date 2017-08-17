@@ -17,17 +17,6 @@ class Result_page extends React.Component{
     }
   }
 
-  componentWillReceiveProps(){
-    let summary_data = [...this.props.result_data.summary_table_data];
-    summary_data[0] = {...this.props.result_data.summary_table_data[0]};
-    delete summary_data[0]['correlated_phenotypes'];
-    delete summary_data[0]['id'];
-    this.setState({
-      current_table:'summary_table',
-      current_data:summary_data
-    })
-  }
-
   componentWillMount(){
     const task_id = this.props.match.params.task_id;
     this.props.fetchResultData(task_id);
@@ -130,6 +119,21 @@ class Result_page extends React.Component{
     let review_form_data = new FormData(evt.target);
   }
 
+  _updateState(){
+    if(this.props.received_new_data){
+      console.log('update here');
+      let summary_data = [...this.props.result_data.summary_table_data];
+      summary_data[0] = {...this.props.result_data.summary_table_data[0]};
+      delete summary_data[0]['correlated_phenotypes'];
+      delete summary_data[0]['id'];
+      this.setState({
+        current_table:'summary_table',
+        current_data:summary_data
+      });
+      this.props.updateDataFinish();
+    }
+  }
+
   _renderTable(table_data){
     if(table_data.length!==0){
       return <General_data_table table_data={this.state.current_data}/>
@@ -143,6 +147,7 @@ class Result_page extends React.Component{
   }
 
   render(){
+    this._updateState();
     return(
       <div className='result_page'>
          {/* Backsign area */}
@@ -235,7 +240,10 @@ Result_page.propTypes={
   goBack:React.PropTypes.func.isRequired,
   showAnnotation:React.PropTypes.func,
   fetchResultData:React.PropTypes.func,
+  updateDataFinish:React.PropTypes.func,
   result_data:React.PropTypes.object,
+  received_new_data:React.PropTypes.bool,
+
 }
 
 Result_page.defaultProps={
