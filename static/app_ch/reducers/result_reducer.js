@@ -22,6 +22,18 @@ export default function results(state={},action){
         received_new_data:false
       }
 
+    case root_actions.CLEAR_RESULT_DATA:
+      return {
+        ...state,
+        result_data:{
+          summary_table_data:[],
+          incidental_table_data:[],
+          candidate_table_data:[],
+          input_gene_data:[],
+          interpretation_data:[]
+        }
+      }
+
     case root_actions.FETCH_RESULT_DATA_FAILURE:
       return {
         ...state,

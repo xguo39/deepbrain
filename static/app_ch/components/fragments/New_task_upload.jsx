@@ -113,7 +113,6 @@ class New_task_upload extends React.Component {
       <div className='new_task_upload'>
         <form id="myForm" name="myForm" encType="multipart/form-data" onSubmit={(evt)=>this._handleSubmit(evt)}>
         <div className='form-tb'>
-
           <div className='tb-section'>
             <div className='tr'>
                 <div className='td1'><label htmlFor='enter_task_name'>任务名称:</label></div>
@@ -124,9 +123,9 @@ class New_task_upload extends React.Component {
             <div className='tr tr-stripe'>
                 <div className='td1 td-left'><label>性别:</label></div>
                 <div className='td2'>
-                  <label className="radio-inline"><input type="radio" name="patient_gender" value='1'/>男</label>
-                  <label className="radio-inline"><input type="radio" name="patient_gender" value='2'/>女</label>
-                  <label className="radio-inline"><input type="radio" name="patient_gender" value='0'/>不明</label>
+                  <label className="radio-inline"><input type="radio" required name="patient_gender" value='1'/>男</label>
+                  <label className="radio-inline"><input type="radio" required name="patient_gender" value='2'/>女</label>
+                  <label className="radio-inline"><input type="radio" required name="patient_gender" value='0'/>不明</label>
                 </div>
                 <div className='td2'>
                   <span style={{marginRight:'10px'}}>年龄:</span>
@@ -134,7 +133,7 @@ class New_task_upload extends React.Component {
                 </div>
             </div>
             <div className='tr tr-widen'>
-                <div className='td1'><label>基因信息:</label></div>
+                <div className='td1'><label>基因信息:<br/>(必选)</label></div>
                 <div className='td2'>
                   <label htmlFor='input_gene_file' className='file_input'>
                     <span>选择文件</span>

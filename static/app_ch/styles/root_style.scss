@@ -23,6 +23,7 @@ html, body, #root, #root>div,.main_area, .row{
 *::-webkit-scrollbar
 {
 	width: 6px;
+  height: 6px;
 	background-color: #E0E9EC;
 }
 
@@ -93,6 +94,7 @@ html, body, #root, #root>div,.main_area, .row{
     &.active{
       background: linear-gradient(90deg, rgba(68, 140, 203,0.6) 0%, rgba(255,255,255,0.0) 92%);
       border-left: 5px #78DCFF solid;
+      border-right: 0px;
     }
     &:focus{
       background: linear-gradient(90deg, rgba(68, 140, 203,0.6) 0%, rgba(255,255,255,0.0) 92%);
@@ -135,44 +137,6 @@ main{
 }
 
 // Define the new task style
-.tb-section{
-  margin-bottom: 25px;
-  background-color: white;
-  box-shadow: -3px 2px 2px 0 rgba(119,151,178,0.16);
-}
-
-.tr{
-  position: relative;
-  width: 100%;
-  display: flex;
-}
-
-.td1{
-  position: relative;
-  display: inline;
-  width: 20%;
-  height: 100%;
-  text-align: center;
-  margin: auto 0px;
-  padding-top:15px;
-  padding-bottom: 15px;
-}
-
-.td2{
-  position: relative;
-  display: inline;
-  width: 40%;
-  height: 100%;
-  margin: auto 0px;
-  padding: 10px 0px;
-  font-size: 13px;
-  input{
-    // vertical-align: middle;
-  }
-
-}
-
-
 .tr-stripe{
   background-color: #F5F6F7;
 }

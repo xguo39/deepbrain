@@ -22,6 +22,10 @@ class Result_page extends React.Component{
     this.props.fetchResultData(task_id);
   }
 
+  componentWillUnmount(){
+    this.props.clearResultData();
+  }
+
   _handleClick(evt){
     let target = evt.target;
     let parentTarget = evt.currentTarget;
@@ -121,7 +125,6 @@ class Result_page extends React.Component{
 
   _updateState(){
     if(this.props.received_new_data){
-      console.log('update here');
       let summary_data = [...this.props.result_data.summary_table_data];
       summary_data[0] = {...this.props.result_data.summary_table_data[0]};
       delete summary_data[0]['correlated_phenotypes'];
@@ -241,9 +244,9 @@ Result_page.propTypes={
   showAnnotation:React.PropTypes.func,
   fetchResultData:React.PropTypes.func,
   updateDataFinish:React.PropTypes.func,
+  clearResultData:React.PropTypes.func,
   result_data:React.PropTypes.object,
   received_new_data:React.PropTypes.bool,
-
 }
 
 Result_page.defaultProps={

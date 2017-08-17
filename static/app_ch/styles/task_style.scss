@@ -10,9 +10,9 @@
   color:#406A8C;
   &>label{
     position: absolute;
-    top:92%;
+    top:88%;
     // top:560px;
-    left:78%;
+    left:78.5%;
     padding-left: 30px;
     padding-right: 30px;
     background-color: #0275d8;
@@ -28,6 +28,52 @@
 }
 
 .new_task_upload{
+  form{
+    height: 100%;
+    .form-tb{
+      height:100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+    }
+    .tb-section{
+      flex: 1 0 auto;
+      margin-bottom: 25px;
+      background-color: white;
+      box-shadow: -3px 2px 2px 0 rgba(119,151,178,0.16);
+      display: flex;
+      flex-direction: column;
+    }
+    .tr{
+      flex-grow: 1;
+      position: relative;
+      width: 100%;
+      display: flex;
+    }
+    .td1{
+      position: relative;
+      display: inline;
+      width: 20%;
+      height: 100%;
+      text-align: center;
+      margin: auto 0px;
+      padding-top:15px;
+      padding-bottom: 15px;
+    }
+
+    .td2{
+      position: relative;
+      display: inline;
+      width: 40%;
+      height: 100%;
+      margin: auto 0px;
+      padding: 10px 0px;
+      font-size: 13px;
+      input{
+        // vertical-align: middle;
+      }
+    }
+  }
   position: relative;
   flex-grow: 0;
   width: 70%;
@@ -36,6 +82,8 @@
   margin-top: 20px;
   overflow:auto;
   overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
   label{
     margin-bottom: 0px;
     font-weight: normal;
@@ -81,7 +129,6 @@
   #task_submit{
     display: none;
   }
-
 }
 
 // Design the progress tasks list
@@ -92,7 +139,7 @@
   box-shadow: -3px 2px 2px 0 rgba(119,151,178,0.16);
   margin-top: 20px;
   width: 22%;
-  height:85%;
+  height:79%;
   // height: 525px;
   overflow: auto;
   .tb-title{

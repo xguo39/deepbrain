@@ -26,6 +26,10 @@ const mapDispatchToProps = (dispatch)=>{
 
      showAnnotation:(current_path, gene, cDNA)=>{
        dispatch(push(`${current_path}/${gene}/${cDNA}`));
+     },
+
+     clearResultData:()=>{
+       dispatch(root_actions.clearResultData());
      }
   }
 }
