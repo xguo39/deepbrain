@@ -117,7 +117,7 @@ class New_task_upload extends React.Component {
           <div className='tb-section'>
             <div className='tr'>
                 <div className='td1'><label htmlFor='enter_task_name'>任务名称:</label></div>
-                <div className='td2'><input id='enter_task_name' type="text" name="task_name" placeholder="Active" required autoFocus={true}/></div>
+                <div className='td2'><input id='enter_task_name' type="text" name="task_name" placeholder="Task name" required autoFocus={true}/></div>
                 {/* <div className='td2'><span>使用说明</span></div> */}
                 <div className='td2'></div>
             </div>

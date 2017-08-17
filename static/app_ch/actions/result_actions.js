@@ -59,6 +59,8 @@ const check_annotation_actions={
   REQUEST_CHECK_ANNOTATION:'REQUEST_CHECK_ANNOTATION',
   CHECK_ANNOTATION_SUCCESS:'CHECK_ANNOTATION_SUCCESS',
   CHECK_ANNOTATION_FAILURE:'CHECK_ANNOTATION_FAILURE',
+  CLEAR_ANNOTATION:'CLEAR_ANNOTATION',
+
   requestCheckAnnotation:()=>{
     return {
       type:result_actions.REQUEST_CHECK_ANNOTATION
@@ -99,7 +101,14 @@ const check_annotation_actions={
         }
       })
     }
+  },
+
+  clearAnnotation:()=>{
+    return {
+      type:result_actions.CLEAR_ANNOTATION
+    }
   }
+
 
 }
 

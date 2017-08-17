@@ -79,10 +79,10 @@ const initialState = {
       ]
     },
     annotation_data:[
-      {
-        // criteria:'lalal',
-        // interpretation:'fsdfsdfs'
-      }
+      // {
+      //   // criteria:'lalal',
+      //   // interpretation:'fsdfsdfs'
+      // }
     ]
   },
 

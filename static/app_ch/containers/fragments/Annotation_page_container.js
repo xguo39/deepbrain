@@ -16,6 +16,9 @@ const mapDispatchToProps = (dispatch)=>{
     },
     fetchAnnotation:(task_id, gene_name, cDNA)=>{
       dispatch(root_actions.checkAnnotation(task_id, gene_name, cDNA));
+    },
+    clearAnnotation:()=>{
+      dispatch(root_actions.clearAnnotation());
     }
   }
 }

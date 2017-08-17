@@ -49,6 +49,12 @@ export default function results(state={},action){
         errCode:action.payload
       }
 
+    case root_actions.CLEAR_ANNOTATION:
+      return {
+        ...state,
+        annotation_data:[]
+      }
+
     default:
       return state;
   }

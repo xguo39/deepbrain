@@ -17,6 +17,7 @@ class Annotation_page extends React.Component{
   _handleClick(evt){
     let target = evt.target;
     if(target.getAttribute('alt')==='back-sign'){
+      this.props.clearAnnotation();
       this.props.goBack();
     }
   }
@@ -46,6 +47,7 @@ class Annotation_page extends React.Component{
 Annotation_page.propTypes={
   goBack:React.PropTypes.func,
   fetchAnnotation:React.PropTypes.func,
+  clearAnnotation:React.PropTypes.func,
   annotation_data:React.PropTypes.array
 }
 
