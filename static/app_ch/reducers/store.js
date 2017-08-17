@@ -13,14 +13,14 @@ const initialState = {
     isFetching:false,
     progress_task_list:[],
     all_task_list:[
-      {
-       id:1,
-       task_name:"xiaonan",
-       pub_date: '2017-06-18, 12:03pm',
-       status:'succeed',
-       processed_time:'0',
-       checked:false
-      },
+      // {
+      //  id:1,
+      //  task_name:"xiaonan",
+      //  pub_date: '2017-06-18, 12:03pm',
+      //  status:'succeed',
+      //  processed_time:'0',
+      //  checked:false
+      // },
     ]
   },
   results:{
