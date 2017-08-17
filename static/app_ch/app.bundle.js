@@ -20430,7 +20430,16 @@ var Result_page = function (_React$Component) {
 
   _createClass(Result_page, [{
     key: 'componentWillReceiveProps',
-    value: function componentWillReceiveProps() {}
+    value: function componentWillReceiveProps() {
+      var summary_data = [].concat(_toConsumableArray(this.props.result_data.summary_table_data));
+      summary_data[0] = _extends({}, this.props.result_data.summary_table_data[0]);
+      delete summary_data[0]['correlated_phenotypes'];
+      delete summary_data[0]['id'];
+      this.state = {
+        current_table: 'summary_table',
+        current_data: summary_data
+      };
+    }
   }, {
     key: 'componentWillMount',
     value: function componentWillMount() {
@@ -20562,13 +20571,13 @@ var Result_page = function (_React$Component) {
           return _react2.default.createElement(
             'div',
             null,
-            '\u8BE5\u6848\u4F8B\u672A\u8981\u6C42 \u9644\u5E26\u53D1\u73B0\u8868 \u6570\u636E'
+            '\u8BE5\u6848\u4F8B\u672A\u8981\u6C42 \u9644\u5E26\u53D1\u73B0\u8868'
           );
         } else if (this.state.current_table === 'candidate_gene_table') {
           return _react2.default.createElement(
             'div',
             null,
-            '\u8BE5\u6848\u4F8B\u672A\u8981\u6C42 \u5907\u9009\u57FA\u56E0\u8868 \u6570\u636E'
+            '\u8BE5\u6848\u4F8B\u672A\u8981\u6C42 \u5907\u9009\u57FA\u56E0\u8868'
           );
         }
       }

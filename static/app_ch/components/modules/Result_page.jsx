@@ -18,7 +18,14 @@ class Result_page extends React.Component{
   }
 
   componentWillReceiveProps(){
-
+    let summary_data = [...this.props.result_data.summary_table_data];
+    summary_data[0] = {...this.props.result_data.summary_table_data[0]};
+    delete summary_data[0]['correlated_phenotypes'];
+    delete summary_data[0]['id'];
+    this.state={
+      current_table:'summary_table',
+      current_data:summary_data
+    }
   }
 
   componentWillMount(){
@@ -128,9 +135,9 @@ class Result_page extends React.Component{
       return <General_data_table table_data={this.state.current_data}/>
     }else{
       if(this.state.current_table==='incidental_finding_table'){
-        return <div>该案例未要求 附带发现表 数据</div>
+        return <div>该案例未要求 附带发现表</div>
       }else if(this.state.current_table==='candidate_gene_table'){
-        return <div>该案例未要求 备选基因表 数据</div>
+        return <div>该案例未要求 备选基因表</div>
       }
     }
   }
