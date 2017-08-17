@@ -61,6 +61,25 @@ export default function tasks(state={}, action){
         errCode:action.payload
       }
 
+    case root_actions.REQUEST_CHECKED_CHANGE:
+      return{
+        ...state,
+        isFetching:true
+      }
+
+    case root_actions.CHECKED_CHANGE_SUCCESS:
+      return{
+        ...state,
+        isFetching:false
+      }
+
+    case root_actions.CHECKED_CHANGE_FAILURE:
+      return{
+        ...state,
+        isFetching:false,
+        errCode:action.payload
+      }
+
     default:
      return state
   }

@@ -77,7 +77,7 @@ class Review_list extends React.Component{
 
                <Table.Body
                  rows={rows}
-                 rowKey='id'
+                 rowKey={({ rowData, rowIndex }) => rowIndex}
                  onRow={(row, { rowIndex, rowKey })=>this._handleBodyRow(row, { rowIndex, rowKey })}/>
 
              </Table.Provider>

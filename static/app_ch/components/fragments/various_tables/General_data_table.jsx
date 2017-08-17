@@ -6,8 +6,8 @@ import { compose } from 'redux';
 import {Paginator, paginate} from '../../helpers';
 const mappingDict={
   gene:'基因',transcript:'转录本',variant:'c.DNA',protein:'蛋白质',zygosity:'配型',correlated_phenotypes:'表型匹配',
-  pheno_match_score:'表型匹配得分', hit_criteria:'ACMG评判标准', pathogenicity:'致病性',
-  pathogenicity_score:'致病性得分', final_score:'总分'
+  pheno_match_score:'表型匹配得分', hit_criteria:'ACMG评判标准', pathogenicity:'致病性', criteria:'标准',
+  interpretation:'解读', pathogenicity_score:'致病性得分', final_score:'总分'
 }
 
 class General_data_table extends React.Component{
@@ -57,12 +57,26 @@ class General_data_table extends React.Component{
           }
         })
       }else{
-        columns.push({
-          property:`${column_key}`,
-          header:{
-            label:`${mappingDict[column_key]?mappingDict[column_key]:column_key}`
-          }
-        })
+        if(column_key==='interpretation'){
+          columns.push({
+            property:`${column_key}`,
+            header:{
+              label:`${mappingDict[column_key]?mappingDict[column_key]:column_key}`
+            },
+            cell:{
+              formatters:[
+                interpretation => this._unescapeHTML(interpretation)
+              ]
+            }
+          })
+        }else{
+          columns.push({
+            property:`${column_key}`,
+            header:{
+              label:`${mappingDict[column_key]?mappingDict[column_key]:column_key}`
+            }
+          })
+        }
       }
     }
     this.state={
@@ -122,12 +136,26 @@ class General_data_table extends React.Component{
           }
         })
       }else{
-        columns.push({
-          property:`${column_key}`,
-          header:{
-            label:`${mappingDict[column_key]?mappingDict[column_key]:column_key}`
-          }
-        })
+        if(column_key==='interpretation'){
+          columns.push({
+            property:`${column_key}`,
+            header:{
+              label:`${mappingDict[column_key]?mappingDict[column_key]:column_key}`
+            },
+            cell:{
+              formatters:[
+                interpretation => this._unescapeHTML(interpretation)
+              ]
+            }
+          })
+        }else{
+          columns.push({
+            property:`${column_key}`,
+            header:{
+              label:`${mappingDict[column_key]?mappingDict[column_key]:column_key}`
+            }
+          })
+        }
       }
     }
     this.setState({
@@ -148,7 +176,8 @@ class General_data_table extends React.Component{
     }
   }
 
-  _handleSelect(page){ // hanle pagination select
+  // hanle pagination select
+  _handleSelect(page){
     const pages = Math.ceil(
       this.state.rows.length / this.state.pagination.perPage
     );
@@ -158,6 +187,10 @@ class General_data_table extends React.Component{
        page: Math.min(Math.max(page, 1), pages)
      }
    });
+  }
+
+  _unescapeHTML(html){
+    return  <div className='interpretation_content' dangerouslySetInnerHTML={{ __html: `${html}` }}></div>
   }
 
   render(){

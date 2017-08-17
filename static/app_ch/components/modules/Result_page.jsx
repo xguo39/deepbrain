@@ -10,8 +10,9 @@ class Result_page extends React.Component{
     let summary_data = [...this.props.result_data.summary_table_data];
     summary_data[0] = {...this.props.result_data.summary_table_data[0]};
     delete summary_data[0]['correlated_phenotypes'];
-    // delete this.props.result_data.summary_table_data[0]['correlated_phenotypes'];
+    delete summary_data[0]['id'];
     this.state={
+      current_table:'summary_table',
       current_data:summary_data
     }
   }
@@ -41,9 +42,10 @@ class Result_page extends React.Component{
           let summary_data = [...this.props.result_data.summary_table_data];
           summary_data[0] = {...this.props.result_data.summary_table_data[0]};
           delete summary_data[0]['correlated_phenotypes'];
-          // delete this.props.result_data.summary_table_data[0]['correlated_phenotypes'];
+          delete summary_data[0]['id'];
           this.setState({
             ...this.state,
+            current_table:'summary_table',
             current_data:summary_data,
           })
           break;
@@ -54,8 +56,10 @@ class Result_page extends React.Component{
           phenotype_match_data[0] = {...this.props.result_data.summary_table_data[0]};
           delete phenotype_match_data[0]['hit_criteria'];delete phenotype_match_data[0]['pathogenicity'];
           delete phenotype_match_data[0]['pathogenicity_score'];delete phenotype_match_data[0]['final_score'];
+          delete phenotype_match_data[0]['id'];
           this.setState({
             ...this.state,
+            current_table:'phenotype_match_table',
             current_data:phenotype_match_data,
           })
           break;
@@ -63,6 +67,7 @@ class Result_page extends React.Component{
         case 'incidental_finding_table':
           this.setState({
             ...this.state,
+            current_table:'incidental_finding_table',
             current_data:this.props.result_data.incidental_table_data,
           })
           break;
@@ -70,6 +75,7 @@ class Result_page extends React.Component{
         case 'candidate_gene_table':
           this.setState({
             ...this.state,
+            current_table:'candidate_gene_table',
             current_data:this.props.result_data.candidate_table_data,
           })
           break;
@@ -77,13 +83,15 @@ class Result_page extends React.Component{
         case 'input_gene_table':
           this.setState({
             ...this.state,
-            current_data:this.props.result_data.input_table_data,
+            current_table:'input_gene_table',
+            current_data:this.props.result_data.input_gene_data,
           })
           break;
 
         case 'generate_result_table':
           this.setState({
             ...this.state,
+            current_table:'generate_result_table',
             current_data:this.props.result_data.interpretation_data,
           })
           break;
@@ -95,10 +103,13 @@ class Result_page extends React.Component{
 
     // Click to check the detail annotation of a gene variant
     if(target.nodeName==='TD'){
-      let gene = target.parentElement.children[0].innerHTML;
-      let transcript = target.parentElement.children[1].innerHTML;
-      let current_path = this.props.match.url;
-      this.props.showAnnotation(current_path, gene, transcript);
+      if(this.state.current_table === 'summary_table' || this.state.current_table === 'phenotype_match_table'){
+        let gene = target.parentElement.children[0].innerHTML;
+        let cDNA = target.parentElement.children[2].innerHTML;
+        cDNA = cDNA.replace('&amp;','&').replace('&gt;','>');
+        let current_path = this.props.match.url;
+        this.props.showAnnotation(current_path, gene, cDNA);
+      }
     }
     //
   }
@@ -108,7 +119,35 @@ class Result_page extends React.Component{
     let review_form_data = new FormData(evt.target);
   }
 
+  _updateState(){
+    if(this.props.received_new_data){
+      console.log('update here');
+      let summary_data = [...this.props.result_data.summary_table_data];
+      summary_data[0] = {...this.props.result_data.summary_table_data[0]};
+      delete summary_data[0]['correlated_phenotypes'];
+      delete summary_data[0]['id'];
+      this.setState({
+        current_table:'summary_table',
+        current_data:summary_data
+      });
+      this.props.updateDataFinish();
+    }
+  }
+
+  _renderTable(table_data){
+    if(table_data.length!==0){
+      return <General_data_table table_data={this.state.current_data}/>
+    }else{
+      if(this.state.current_table==='incidental_finding_table'){
+        return <div>该案例未要求 附带发现表</div>
+      }else if(this.state.current_table==='candidate_gene_table'){
+        return <div>该案例未要求 备选基因表</div>
+      }
+    }
+  }
+
   render(){
+    this._updateState();
     return(
       <div className='result_page'>
          {/* Backsign area */}
@@ -189,7 +228,7 @@ class Result_page extends React.Component{
            </div>
            {/* Table Area */}
            <div className='result_table' onClick={(evt)=>this._handleClick(evt)}>
-             <General_data_table table_data={this.state.current_data}/>
+             {this._renderTable(this.state.current_data)}
            </div>
          </div>
       </div>
@@ -201,12 +240,14 @@ Result_page.propTypes={
   goBack:React.PropTypes.func.isRequired,
   showAnnotation:React.PropTypes.func,
   fetchResultData:React.PropTypes.func,
+  updateDataFinish:React.PropTypes.func,
   result_data:React.PropTypes.object,
+  received_new_data:React.PropTypes.bool,
+
 }
 
 Result_page.defaultProps={
-  goBack:()=>{},
-  showAnnotation:()=>{},
+
 }
 
 export default Result_page;

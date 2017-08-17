@@ -26,7 +26,7 @@ SECRET_KEY = '(9#+i8y4oxabldvxmgxsy+@#5h^q=vfgd@urh9(h)2+%0is3(h'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['52.37.227.215','127.0.0.1','54.70.221.155', 'www.genonova.com', 'genonova.com']
+ALLOWED_HOSTS = ['52.37.227.215','52.199.76.187','127.0.0.1','54.70.221.155', 'www.genonova.com', 'genonova.com']
 
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),

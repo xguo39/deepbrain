@@ -11,7 +11,7 @@ const apis={
   all_task_list:'/api/task/all_task_list/',
   checked_change:'/api/task/task_check/',
   fetch_case_result:'/api/result/',
-  fetch_annotation:'/api/result/:task_id/:gene_name/'
+  check_annotation:'/api/result/'
 }
 
 

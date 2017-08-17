@@ -156,7 +156,7 @@ def getMissenseAAPathogenicity():
             line = line.rstrip('\n')
             parts = line.split('\t')
             gene, protein, clinvar_id = parts[0], parts[1], parts[3]
-            clinvar_id = "<a href='https://www.ncbi.nlm.nih.gov/clinvar/variation/%s/'> %s </a>" %(clinvar_id, clinvar_id)
+            clinvar_id = "<a href='https://www.ncbi.nlm.nih.gov/clinvar/variation/%s/' target='_blank'> %s </a>" %(clinvar_id, clinvar_id)
             try:
                 original_AA = re.match(r'p\.[A-Za-z]{3}[0-9]{1,10}', protein).group(0)
             except AttributeError:
@@ -240,7 +240,7 @@ def check_PS1_PM5(variant_):
                 for article_info in variant_pubmed_articles:
                     pmid, title, journal, year, impact_factor = article_info
                     if pmid == pmid_:
-                        pubmed_article_info.append("<a href='https://www.ncbi.nlm.nih.gov/pubmed/%s'> %s </a>: title: %s, journal: %s, year: %s, impact_factor: %s" %(pmid, pmid, title, journal, year, impact_factor))  
+                        pubmed_article_info.append("<a href='https://www.ncbi.nlm.nih.gov/pubmed/%s' target='_blank'> %s </a>: title: %s, journal: %s, year: %s, impact_factor: %s" %(pmid, pmid, title, journal, year, impact_factor))  
             PS1 = pathogenicity_score
             curr_interpret.append('The variant was reported in literatures (PMIDs: %s) and the pathogenicity score (0-1) is %s.' % ('; '.join(pubmed_article_info), str(PS1))) 
             curr_interpret_chinese.append('此基因变异曾被之前生物医学文献报道 (PMIDs: %s)，致病性分数 (0-1) 为%s.' % ('; '.join(pubmed_article_info), str(PS1))) 
@@ -351,7 +351,7 @@ def getPubMedEval(df_pubmed):
     for index, row in df_pubmed.iterrows():
         gene, variant, pathogenicity_score, impactfactor, year, title, text, pmid = row['Gene'], row['Variant'], row['pathogenicity_score'], row['Impact_Factor'], row['Year'], row['Title'], row['Abstract'], row['PMID']
         plain_pmid = pmid
-        pmid = "<a href='https://www.ncbi.nlm.nih.gov/pubmed/%s'> %s </a>" %(pmid, pmid)
+        pmid = "<a href='https://www.ncbi.nlm.nih.gov/pubmed/%s' target='_blank'> %s </a>" %(pmid, pmid)
         count, weighted_count = checkFunctionalStudy(title, text, impactfactor)
         if (gene, variant) not in study_pathogenicity_score: 
             study_pathogenicity_score[(gene,variant)] = [pathogenicity_score]
@@ -1072,8 +1072,8 @@ def check_PP5_BP6(variant_):
     curr_interpret, curr_interpret_chinese = [], []
     clinvar_pathogenicity = variant_['clinvar_pathogenicity']
     clinvar_pmids, clinvar_variation_ids, clinvar_review_status = variant_['clinvar_pmids'], variant_['clinvar_variation_ids'], variant_['clinvar_review_status']   
-    clinvar_pmids = ["<a href='https://www.ncbi.nlm.nih.gov/pubmed/%s'> %s </a>" %(i,i) for i in clinvar_pmids]
-    clinvar_variation_ids = ["<a href='https://www.ncbi.nlm.nih.gov/clinvar/variation/%s/'> %s </a>" %(i,i) for i in clinvar_variation_ids.split('|')]
+    clinvar_pmids = ["<a href='https://www.ncbi.nlm.nih.gov/pubmed/%s' target='_blank'> %s </a>" %(i,i) for i in clinvar_pmids]
+    clinvar_variation_ids = ["<a href='https://www.ncbi.nlm.nih.gov/clinvar/variation/%s/' target='_blank'> %s </a>" %(i,i) for i in clinvar_variation_ids.split('|')]
     # clinvar_pmids is a list
     clinvar_variation_ids = ', '.join(clinvar_variation_ids)
     if clinvar_review_status:
@@ -1178,8 +1178,8 @@ def check_PP5_BP6_bak(variant_):
     curr_interpret, curr_interpret_chinese = [], []
     clinvar_pathogenicity = variant_['clinvar_pathogenicity'].lower()
     clinvar_pmids, clinvar_variation_ids, clinvar_review_status = variant_['clinvar_pmids'], variant_['clinvar_variation_ids'], variant_['clinvar_review_status']   
-    clinvar_pmids = ["<a href='https://www.ncbi.nlm.nih.gov/pubmed/%s'> %s </a>" %(i,i) for i in clinvar_pmids]
-    clinvar_variation_ids = ["<a href='https://www.ncbi.nlm.nih.gov/clinvar/variation/%s/'> %s </a>" %(i,i) for i in clinvar_variation_ids.split('|')]
+    clinvar_pmids = ["<a href='https://www.ncbi.nlm.nih.gov/pubmed/%s' target='_blank'> %s </a>" %(i,i) for i in clinvar_pmids]
+    clinvar_variation_ids = ["<a href='https://www.ncbi.nlm.nih.gov/clinvar/variation/%s/' target='_blank'> %s </a>" %(i,i) for i in clinvar_variation_ids.split('|')]
     # clinvar_pmids is a list
     clinvar_variation_ids = ', '.join(clinvar_variation_ids)
     if clinvar_review_status:
@@ -1529,8 +1529,8 @@ def Get_ACMG_result(df_hpo_ranking_genes, variants, df_pubmed, parent_ngs, paren
         #print variant_
         gene_0, variant_0, protein_0, id_0, rsid_0, transcript_0, effect_0, exon_0, interpro_domain_0, ref_0, alt_0, maf_exac_0, maf_1000g_0, maf_esp6500_0, dann_0, fathmm_0, metasvm_0, gerp_0, dbscSNV_rf_0, dbscSNV_ada_0, clinvar_pathogenicity_0, clinvar_pmids_0, clinvar_variation_ids_0, clinvar_review_status_0, zygosity_0, clinvar_diseases_0 = variant_['gene'], variant_['variant'], variant_['protein'], variant_['id'], variant_['rsid'], variant_['transcript'], variant_['effect'], variant_['exon'], variant_['interpro_domain'], variant_['ref'], variant_['alt'], variant_['maf_exac'], variant_['maf_1000g'], variant_['maf_esp6500'], variant_['dann'], variant_['fathmm'], variant_['metasvm'], variant_['gerp++'], variant_['dbscSNV_rf_score'], variant_['dbscSNV_ada_score'], variant_['clinvar_pathogenicity'], variant_['clinvar_pmids'], variant_['clinvar_variation_ids'], variant_['clinvar_review_status'], variant_['zygosity'], variant_['clinvar_associated_diseases']  
         
-        clinvar_pmids_0_ = ["<a href='https://www.ncbi.nlm.nih.gov/pubmed/%s'> %s </a>" %(i,i) for i in clinvar_pmids_0]
-        clinvar_variation_ids_0 = ["<a href='https://www.ncbi.nlm.nih.gov/clinvar/variation/%s/'> %s </a>" %(i,i) for i in clinvar_variation_ids_0.split('|')]
+        clinvar_pmids_0_ = ["<a href='https://www.ncbi.nlm.nih.gov/pubmed/%s' target='_blank'> %s </a>" %(i,i) for i in clinvar_pmids_0]
+        clinvar_variation_ids_0 = ["<a href='https://www.ncbi.nlm.nih.gov/clinvar/variation/%s/' target='_blank'> %s </a>" %(i,i) for i in clinvar_variation_ids_0.split('|')]
 
     	interpret, curr_interpret, interpret_chinese, curr_interpret_chinese = [], [], [], []   
     	if effect_0: 
@@ -1543,8 +1543,8 @@ def Get_ACMG_result(df_hpo_ranking_genes, variants, df_pubmed, parent_ngs, paren
                 curr_interpret.append('HGVS ID: %s.' % id_0) 
                 curr_interpret_chinese.append('HGVS ID: %s.' % id_0) 
     	if rsid_0: 
-                curr_interpret.append("RefSeq ID: <a href='https://www.ncbi.nlm.nih.gov/projects/SNP/snp_ref.cgi?rs=%s'> %s </a>"  % (rsid_0, rsid_0)) 
-                curr_interpret_chinese.append("RefSeq ID: <a href='https://www.ncbi.nlm.nih.gov/projects/SNP/snp_ref.cgi?rs=%s'> %s </a>"  % (rsid_0, rsid_0)) 
+                curr_interpret.append("RefSeq ID: <a href='https://www.ncbi.nlm.nih.gov/projects/SNP/snp_ref.cgi?rs=%s' target='_blank'> %s </a>"  % (rsid_0, rsid_0)) 
+                curr_interpret_chinese.append("RefSeq ID: <a href='https://www.ncbi.nlm.nih.gov/projects/SNP/snp_ref.cgi?rs=%s' target='_blank'> %s </a>"  % (rsid_0, rsid_0)) 
         if protein_0: 
                 curr_interpret.append('Protein: %s.' % protein_0) 
                 curr_interpret_chinese.append('蛋白质: %s.' % protein_0) 
@@ -1553,22 +1553,22 @@ def Get_ACMG_result(df_hpo_ranking_genes, variants, df_pubmed, parent_ngs, paren
                 curr_interpret_chinese.append('外显子: %s.' % exon_0) 
         if gene_0:
                 # Add genecards link
-                curr_interpret.append("GeneCards: <a href='http://www.genecards.org/cgi-bin/carddisp.pl?gene=%s'> %s </a>"  % (gene_0, gene_0))
-                curr_interpret_chinese.append("GeneCards: <a href='http://www.genecards.org/cgi-bin/carddisp.pl?gene=%s'> %s </a>"  % (gene_0, gene_0))
+                curr_interpret.append("GeneCards: <a href='http://www.genecards.org/cgi-bin/carddisp.pl?gene=%s' target='_blank'> %s </a>"  % (gene_0, gene_0))
+                curr_interpret_chinese.append("GeneCards: <a href='http://www.genecards.org/cgi-bin/carddisp.pl?gene=%s' target='_blank'> %s </a>"  % (gene_0, gene_0))
                 # Add OMIM link
                 if gene_0 in gene2omim: 
                     omim_id = gene2omim[gene_0]
-                    curr_interpret.append("OMIM: <a href='https://www.omim.org/entry/%s'> %s </a>"  % (omim_id, omim_id))
-                    curr_interpret_chinese.append("OMIM: <a href='https://www.omim.org/entry/%s'> %s </a>"  % (omim_id, omim_id))
+                    curr_interpret.append("OMIM: <a href='https://www.omim.org/entry/%s' target='_blank'> %s </a>"  % (omim_id, omim_id))
+                    curr_interpret_chinese.append("OMIM: <a href='https://www.omim.org/entry/%s' target='_blank'> %s </a>"  % (omim_id, omim_id))
                 # Add Decipher link
-                curr_interpret.append("Decipher: <a href='https://decipher.sanger.ac.uk/search?q=%s#consented-patients/results'> %s </a>"  % (gene_0, gene_0))
-                curr_interpret_chinese.append("Decipher: <a href='https://decipher.sanger.ac.uk/search?q=%s#consented-patients/results'> %s </a>"  % (gene_0, gene_0))
+                curr_interpret.append("Decipher: <a href='https://decipher.sanger.ac.uk/search?q=%s#consented-patients/results' target='_blank'> %s </a>"  % (gene_0, gene_0))
+                curr_interpret_chinese.append("Decipher: <a href='https://decipher.sanger.ac.uk/search?q=%s#consented-patients/results' target='_blank'> %s </a>"  % (gene_0, gene_0))
                 # Add Genetics Home Reference link
-                curr_interpret.append("Genetics Home Reference: <a href='https://ghr.nlm.nih.gov/gene/%s'> %s </a>"  % (gene_0, gene_0))
-                curr_interpret_chinese.append("Genetics Home Reference: <a href='https://ghr.nlm.nih.gov/gene/%s'> %s </a>"  % (gene_0, gene_0))
+                curr_interpret.append("Genetics Home Reference: <a href='https://ghr.nlm.nih.gov/gene/%s' target='_blank'> %s </a>"  % (gene_0, gene_0))
+                curr_interpret_chinese.append("Genetics Home Reference: <a href='https://ghr.nlm.nih.gov/gene/%s' target='_blank'> %s </a>"  % (gene_0, gene_0))
                 # Add GeneReviews link
-                curr_interpret.append("GeneReviews: <a href='https://www.ncbi.nlm.nih.gov/books/NBK1116/?term=%s'> %s </a>"  % (gene_0, gene_0))
-                curr_interpret_chinese.append("GeneReviews: <a href='https://www.ncbi.nlm.nih.gov/books/NBK1116/?term=%s'> %s </a>"  % (gene_0, gene_0))
+                curr_interpret.append("GeneReviews: <a href='https://www.ncbi.nlm.nih.gov/books/NBK1116/?term=%s' target='_blank'> %s </a>"  % (gene_0, gene_0))
+                curr_interpret_chinese.append("GeneReviews: <a href='https://www.ncbi.nlm.nih.gov/books/NBK1116/?term=%s' target='_blank'> %s </a>"  % (gene_0, gene_0))
 
     	if maf_exac_0:
                 if id_0:
@@ -1581,8 +1581,8 @@ def Get_ACMG_result(df_hpo_ranking_genes, variants, df_pubmed, parent_ngs, paren
                     hgvs_id = hgvs_id.replace('C', '-C') 
                     hgvs_id = hgvs_id.replace('G', '-G') 
                     #print id_0, hgvs_id
-                    curr_interpret.append("ExAC MAF: %s (<a href='http://exac.broadinstitute.org/variant/%s'> %s </a>)"  % (maf_exac_0, hgvs_id, hgvs_id)) 
-                    curr_interpret_chinese.append("ExAC 最小等位基因频率(MAF): %s (<a href='http://exac.broadinstitute.org/variant/%s'> %s </a>)"  % (maf_exac_0, hgvs_id, hgvs_id)) 
+                    curr_interpret.append("ExAC MAF: %s (<a href='http://exac.broadinstitute.org/variant/%s' target='_blank'> %s </a>)"  % (maf_exac_0, hgvs_id, hgvs_id)) 
+                    curr_interpret_chinese.append("ExAC 最小等位基因频率(MAF): %s (<a href='http://exac.broadinstitute.org/variant/%s' target='_blank'> %s </a>)"  % (maf_exac_0, hgvs_id, hgvs_id)) 
                 else:
                     curr_interpret.append('ExAC MAF: %s.' % maf_exac_0) 
                     curr_interpret_chinese.append('ExAC 最小等位基因频率(MAF): %s.' % maf_exac_0) 
@@ -1615,7 +1615,7 @@ def Get_ACMG_result(df_hpo_ranking_genes, variants, df_pubmed, parent_ngs, paren
     	if dbscSNV_ada_0: 
                 curr_interpret.append('AdaBoost dbscSNV splicing effect prediction: %s (Pathogenicity Cutoff: 0.6).' % dbscSNV_ada_0)
                 curr_interpret_chinese.append('基于AdaBoost算法的dbscSNV剪接效应(splicing effect)预测分数: %s (致病分数阈值: %s).' % (dbscSNV_ada_0, '0.6'))
-    	if clinvar_variation_ids_0 != ["<a href='https://www.ncbi.nlm.nih.gov/clinvar/variation//'>  </a>"]: 
+    	if clinvar_variation_ids_0 != ["<a href='https://www.ncbi.nlm.nih.gov/clinvar/variation//' target='_blank'>  </a>"]: 
                 curr_interpret.append('Clinvar variation ids: %s.' % ",".join(clinvar_variation_ids_0))
                 curr_interpret_chinese.append('Clinvar数据库ID: %s.' % ",".join(clinvar_variation_ids_0))
     	if clinvar_pathogenicity_0:
@@ -1641,18 +1641,18 @@ def Get_ACMG_result(df_hpo_ranking_genes, variants, df_pubmed, parent_ngs, paren
                     if pmid not in pubmed_articles_from_clinvar:
                         continue
                     title, journal, year, impact_factor, pathogenicity_score = pubmed_articles_from_clinvar[pmid]
-                    clinvar_pubmed_articles.append("<a href='https://www.ncbi.nlm.nih.gov/pubmed/%s'> %s </a>: title: %s, journal: %s, year: %s, impact_factor: %s" %(pmid, pmid, title, journal, year, impact_factor))
+                    clinvar_pubmed_articles.append("<a href='https://www.ncbi.nlm.nih.gov/pubmed/%s' target='_blank'> %s </a>: title: %s, journal: %s, year: %s, impact_factor: %s" %(pmid, pmid, title, journal, year, impact_factor))
                 curr_interpret.append('Pubmed references from Clinvar: %s.' % "; ".join(clinvar_pubmed_articles))
                 curr_interpret_chinese.append('Clinvar数据库记录的Pubmed相关生物医学文献: %s.' % "; ".join(clinvar_pubmed_articles))
         if clinvar_diseases_0:
                 curr_interpret.append('Associated diseases from Clinvar: %s.' % clinvar_diseases_0)
                 curr_interpret_chinese.append('Clinvar数据库记录的与此变异相关的疾病: %s.' % clinvar_diseases_0)
         if (gene_0, variant_0) in pubmed_articles.keys():
-                pubmed_articles_0 = ["<a href='https://www.ncbi.nlm.nih.gov/pubmed/%s'> %s </a>: title: %s, journal: %s, year: %s, impact_factor: %s" %(i[0],i[0], i[1], i[2], i[3], i[4]) for i in pubmed_articles[(gene_0, variant_0)]]
+                pubmed_articles_0 = ["<a href='https://www.ncbi.nlm.nih.gov/pubmed/%s' target='_blank'> %s </a>: title: %s, journal: %s, year: %s, impact_factor: %s" %(i[0],i[0], i[1], i[2], i[3], i[4]) for i in pubmed_articles[(gene_0, variant_0)]]
                 curr_interpret.append('Pubmed references: %s.' % "; ".join(pubmed_articles_0))
                 curr_interpret_chinese.append('Pubmed相关生物医学文献: %s.' % "; ".join(pubmed_articles_0))
         elif not clinvar_pmids_0 and gene_0 in pubmed_articles_genes_novariant:
-                pubmed_articles_0 = ["<a href='https://www.ncbi.nlm.nih.gov/pubmed/%s'> %s </a>: title: %s, journal: %s, year: %s, impact_factor: %s" %(i[0],i[0], i[1], i[2], i[3], i[4]) for i in pubmed_articles_genes_novariant[gene_0]]
+                pubmed_articles_0 = ["<a href='https://www.ncbi.nlm.nih.gov/pubmed/%s' target='_blank'> %s </a>: title: %s, journal: %s, year: %s, impact_factor: %s" %(i[0],i[0], i[1], i[2], i[3], i[4]) for i in pubmed_articles_genes_novariant[gene_0]]
                 curr_interpret.append('Pubmed references: %s.' % "; ".join(pubmed_articles_0))
                 curr_interpret_chinese.append('Pubmed相关生物医学文献: %s.' % "; ".join(pubmed_articles_0))
 

@@ -15,144 +15,65 @@ const initialState = {
      {
         id:1,
         task_name: 'xiaonan',
-        status:'正在处理xxx基因',
+        status:'Annotating variants using genomic databases',
         processed_time:'5分钟',
-        checked: false
-     },
-     {
-       id:2,
-       task_name:'tianqi',
-       status:'succeed',
-       processed_time:'4分钟',
-       checked:false
-     },
+        checked: false,
+     }
     ],
     all_task_list:[
       {
-       id:1,
-       task_name:"xiaonan",
-       pub_date: '2017-06-18, 12:03pm',
-       status:'succeed',
-       processed_time:'0',
-       checked:false
+      //  id:1,
+      //  task_name:"xiaonan",
+      //  pub_date: '2017-06-18, 12:03pm',
+      //  status:'succeed',
+      //  processed_time:'0',
+      //  checked:false
       },
-      {
-       id:2,
-       task_name:"tianqi",
-       pub_date: '2017-06-18, 12:03pm',
-       status:'xxxxxxxx fail',
-       processed_time:'0',
-       checked:true
-      }
     ]
   },
   results:{
     isFetching:false,
+    received_new_data:false,
     result_data:{
       summary_table_data:[
          {
-           gene:'WWOX',
-           transcript:'chr16:g.78466583C>G',
-           variant:'GCGTG',
-           protein:'danbaizhi',
-           zygosity:'peixing',
-           correlated_phenotypes:'biaoxingpipei',
-           pheno_match_score:39,
-           hit_criteria:"PM2|BP4",
-           pathogenicity:'Uncertain Significance',
-           pathogenicity_score:0.88,
-           final_score:1.8
+          //  gene:'WWOX',
+          //  transcript:'chr16:g.78466583C>G',
+          //  variant:'c.5354G&t>A',
+          //  protein:'danbaizhi',
+          //  id:'2313fsfsf',
+          //  zygosity:'peixing',
+          //  correlated_phenotypes:'biaoxingpipei',
+          //  pheno_match_score:39,
+          //  hit_criteria:"PM2|BP4",
+          //  pathogenicity:'Uncertain Significance',
+          //  pathogenicity_score:0.88,
+          //  final_score:1.8
          },
          {
-           gene:'WNT7A',
-           transcript:'chr3:g.13896304C>T',
-           variant:'GCGTG',
-           protein:'danbaizhi',
-           zygosity:'peixing',
-           correlated_phenotypes:'biaoxingpipei',
-           pheno_match_score:45,
-           hit_criteria:"PM2|BP4",
-           pathogenicity:'Uncertain Significance',
-           pathogenicity_score:1.28,
-           final_score:1.1
+          //  gene:'WNT7A',
+          //  transcript:'chr3:g.13896304C>T',
+          //  variant:'c.5224G&t>C',
+          //  protein:'danbaizhi',
+          //  zygosity:'peixing',
+          //  correlated_phenotypes:'biaoxingpipei',
+          //  pheno_match_score:45,
+          //  hit_criteria:"PM2|BP4",
+          //  pathogenicity:'Uncertain Significance',
+          //  pathogenicity_score:1.28,
+          //  final_score:1.1
          }
       ],
-      phenotype_match_table:[
+      incidental_table_data:[],
+      candidate_table_data:[],
+      input_gene_data:[
         {
-          gene:'WWOX',
-          transcript:'chr16:g.78466583C>G',
-          variant:'GCGTG',
-          protein:'danbaizhi',
-          zygosity:'peixing',
-          correlated_phenotypes:'biaoxingpipei',
-          pheno_match_score:39,
+          // Gene:'PPTERER',
+          // HGVS_cDNa:'fdsfdsfdsfsdf'
         },
         {
-          gene:'WNT7A',
-          transcript:'chr3:g.13896304C>T',
-          variant:'GCGTG',
-          protein:'danbaizhi',
-          zygosity:'peixing',
-          correlated_phenotypes:'biaoxingpipei',
-          pheno_match_score:45,
-        }
-      ],
-      incidental_table_data:[
-        {
-          gene:'WWOX',
-          transcript:'chr16:g.78466583C>G',
-          variant:'GCGTG',
-          protein:'danbaizhi',
-          zygosity:'peixing',
-          pheno_match_score:39,
-          hit_criteria:"PM2|BP4",
-          pathogenicity:'Uncertain Significance',
-        },
-        {
-          gene:'Shio OM4',
-          transcript:'chr16:g.78466583C>G',
-          variant:'GCGTG',
-          protein:'danbaizhi',
-          zygosity:'peixing',
-          pheno_match_score:88,
-          hit_criteria:"PM2|BP4",
-          pathogenicity:'Uncertain Significance',
-        }
-      ],
-      candidate_table_data:[
-        {
-          gene:'WWOX',
-          transcript:'chr16:g.78466583C>G',
-          cDNA:'GCGTG',
-          protein:'danbaizhi',
-          zygosity:'peixing',
-          correlated_phenotypes:'from paper'
-        },
-        {
-          gene:'Shio OM4',
-          transcript:'chr16:g.78466583C>G',
-          cDNA:'GCGTG',
-          protein:'danbaizhi',
-          zygosity:'peixing',
-          correlated_phenotypes:'from paper'
-        }
-      ],
-      input_table_data:[
-        {
-          gene:'WWOX',
-          transcript:'chr16:g.78466583C>G',
-          cDNA:'GCGTG',
-          protein:'danbaizhi',
-          zygosity:'peixing',
-          pheno_matched_score:25,
-        },
-        {
-          gene:'Shio OM4',
-          transcript:'chr16:g.78466583C>G',
-          cDNA:'GCGTG',
-          protein:'danbaizhi',
-          zygosity:'peixing',
-          pheno_matched_score:39,
+          // Gene:'PPTdsfdfERER',
+          // HGVS_cDNa:'fdsfdsfdsfdsfdsfsdf'
         }
       ],
       interpretation_data:[
@@ -160,10 +81,13 @@ const initialState = {
           gene:'WWT7',
           variant:'dsfsdfsf',
           criteria:'dfsfsdfsdf',
-          interpretation:''
+          interpretation:"突变类型: missense_variant.<br/>蛋白功能区: NAD(P)-binding domain.<br/>HGVS ID: chr16:g.78466583C>G.<br/>RefSeq ID: <a href=' '> rs117209694 </a ><br/>蛋白质: p.Asn330Lys.<br/>外显子: 8.<br/>GeneCards: <a href='http://www.genecards.org/cgi-bin/carddisp.pl?gene=WWOX'> WWOX </a ><br/>OMIM: <a href='https://www.omim.org/entry/605131'> 605131 </a ><br/>Decipher: <a href='https://decipher.sanger.ac.uk/search?q=WWOX#consented-patients/results'> WWOX </a ><br/>Genetics Home Reference: <a href='https://ghr.nlm.nih.gov/gene/WWOX'> WWOX </a ><br/>GeneReviews: <a href='https://www.ncbi.nlm.nih.gov/books/NBK1116/?term=WWOX'> WWOX </a ><br/>ExAC 最小等位基因频率(MAF): 0.000174 (<a href='http://exac.broadinstitute.org/variant/16-78466583-C-G'> 16-78466583-C-G </a >)<br/>ExAC 最小等位基因频率(MAF)详细数据: Total Allele Count (21), Total Allele Number (120722), Allele Frequency for all races (0.0002), Number of Homozygotes (0), Homozygotes Percentage (0.0000), African Allele Count (1), African Allele Number (9796), African Allele Frequency (0.0001), Latino Allele Count (0), Latino Allele Number (11570), Latino Allele Frequency (0.0000), East Asian Allele Count (0), East Asian Allele Number (8622), East Asian Allele Frequency (0.0000), European (Finnish) Allele Count (0), European (Finnish) Allele Number (6612), European (Finnish) Allele Frequency (0.0000), European (Non-Finnish) Allele Count (20), European (Non-Finnish) Allele Number (66710), European (Non-Finnish) "
         },
       ]
-    }
+    },
+    annotation_data:[
+      {}
+    ]
   }
 };
 

@@ -5,7 +5,8 @@ import {push, go} from 'react-router-redux';
 
 const mapStateToProps = (state)=>{
   return {
-    result_data:state.results.result_data
+    result_data:state.results.result_data,
+    received_new_data:state.results.received_new_data
   }
 }
 
@@ -19,8 +20,12 @@ const mapDispatchToProps = (dispatch)=>{
        dispatch(root_actions.fetchResultData(task_id));
      },
 
-     showAnnotation:(current_path, gene, transicript)=>{
-       dispatch(push(`${current_path}/${gene}`));
+     updateDataFinish:()=>{
+       dispatch(root_actions.updateDataSuccess());
+     },
+
+     showAnnotation:(current_path, gene, cDNA)=>{
+       dispatch(push(`${current_path}/${gene}/${cDNA}`));
      }
   }
 }

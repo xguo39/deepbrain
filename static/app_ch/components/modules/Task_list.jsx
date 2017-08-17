@@ -104,7 +104,7 @@ class Task_list extends React.Component{
 
                 <Table.Body
                   rows={searchedRows}
-                  rowKey='task_name'
+                  rowKey={({ rowData, rowIndex }) => rowIndex}
                   onRow={(row, { rowIndex, rowKey })=>this._handleBodyRow(row, { rowIndex, rowKey })}/>
 
               </Table.Provider>

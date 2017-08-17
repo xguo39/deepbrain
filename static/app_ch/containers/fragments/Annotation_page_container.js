@@ -5,7 +5,7 @@ import {push,go} from 'react-router-redux';
 
 const mapStateToProps = (state)=>{
   return {
-
+     annotation_data:state.results.annotation_data
   }
 }
 
@@ -13,6 +13,9 @@ const mapDispatchToProps = (dispatch)=>{
   return{
     goBack:()=>{
       dispatch(go(-1));
+    },
+    fetchAnnotation:(task_id, gene_name, cDNA)=>{
+      dispatch(root_actions.checkAnnotation(task_id, gene_name, cDNA));
     }
   }
 }

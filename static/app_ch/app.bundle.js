@@ -2454,7 +2454,7 @@ var apis = {
   all_task_list: '/api/task/all_task_list/',
   checked_change: '/api/task/task_check/',
   fetch_case_result: '/api/result/',
-  fetch_annotation: '/api/result/:task_id/:gene_name/'
+  check_annotation: '/api/result/'
 };
 
 exports.static_image = static_image;
@@ -9492,10 +9492,17 @@ var Annotation_page = function (_React$Component) {
   }
 
   _createClass(Annotation_page, [{
+    key: 'componentWillMount',
+    value: function componentWillMount() {
+      var gene_name = this.props.match.params.gene_name;
+      var cDNA = this.props.match.params.cDNA;
+      var task_id = this.props.match.params.task_id;
+      this.props.fetchAnnotation(task_id, gene_name, cDNA);
+    }
+  }, {
     key: '_handleClick',
     value: function _handleClick(evt) {
       var target = evt.target;
-      // console.log(target);
       if (target.getAttribute('alt') === 'back-sign') {
         this.props.goBack();
       }
@@ -9506,6 +9513,7 @@ var Annotation_page = function (_React$Component) {
       var _this2 = this;
 
       var gene_name = this.props.match.params.gene_name;
+      var cDNA = this.props.match.params.cDNA;
       return _react2.default.createElement(
         'div',
         { className: 'annotation_page', onClick: function onClick(evt) {
@@ -9530,21 +9538,11 @@ var Annotation_page = function (_React$Component) {
             _react2.default.createElement(
               'p',
               null,
-              '\u8F6C\u5F55\u672C\uFF1A',
+              'cDNA\uFF1A',
               _react2.default.createElement(
                 'span',
                 null,
-                'xxxx'
-              )
-            ),
-            _react2.default.createElement(
-              'p',
-              null,
-              '\u53D8\u5F02\uFF1A',
-              _react2.default.createElement(
-                'span',
-                null,
-                'xxxx'
+                '' + cDNA.replace('&amp;', '&').replace('&gt;', '>')
               )
             )
           ),
@@ -9560,19 +9558,11 @@ var Annotation_page = function (_React$Component) {
 
 Annotation_page.propTypes = {
   goBack: _react2.default.PropTypes.func,
+  fetchAnnotation: _react2.default.PropTypes.func,
   annotation_data: _react2.default.PropTypes.array
 };
 
-Annotation_page.defaultProps = {
-  goBack: function goBack() {},
-  annotation_data: [{
-    standard: '变异注释',
-    analyze: 'xxooxoxoxoxoxoodfdsfdsfdsfdsfdfdsf'
-  }, {
-    standard: 'PVS1',
-    analyze: 'yykkdfdfsdfdsfsdfdsfsdfsdfsdfjfjdsfdksnflkndf'
-  }]
-};
+Annotation_page.defaultProps = {};
 
 exports.default = Annotation_page;
 
@@ -16837,133 +16827,66 @@ var initialState = {
     progress_task_list: [{
       id: 1,
       task_name: 'xiaonan',
-      status: '正在处理xxx基因',
+      status: 'Annotating variants using genomic databases',
       processed_time: '5分钟',
-      checked: false
-    }, {
-      id: 2,
-      task_name: 'tianqi',
-      status: 'succeed',
-      processed_time: '4分钟',
       checked: false
     }],
     all_task_list: [{
-      id: 1,
-      task_name: "xiaonan",
-      pub_date: '2017-06-18, 12:03pm',
-      status: 'succeed',
-      processed_time: '0',
-      checked: false
-    }, {
-      id: 2,
-      task_name: "tianqi",
-      pub_date: '2017-06-18, 12:03pm',
-      status: 'xxxxxxxx fail',
-      processed_time: '0',
-      checked: true
+      //  id:1,
+      //  task_name:"xiaonan",
+      //  pub_date: '2017-06-18, 12:03pm',
+      //  status:'succeed',
+      //  processed_time:'0',
+      //  checked:false
     }]
   },
   results: {
     isFetching: false,
+    received_new_data: false,
     result_data: {
       summary_table_data: [{
-        gene: 'WWOX',
-        transcript: 'chr16:g.78466583C>G',
-        variant: 'GCGTG',
-        protein: 'danbaizhi',
-        zygosity: 'peixing',
-        correlated_phenotypes: 'biaoxingpipei',
-        pheno_match_score: 39,
-        hit_criteria: "PM2|BP4",
-        pathogenicity: 'Uncertain Significance',
-        pathogenicity_score: 0.88,
-        final_score: 1.8
+        //  gene:'WWOX',
+        //  transcript:'chr16:g.78466583C>G',
+        //  variant:'c.5354G&t>A',
+        //  protein:'danbaizhi',
+        //  id:'2313fsfsf',
+        //  zygosity:'peixing',
+        //  correlated_phenotypes:'biaoxingpipei',
+        //  pheno_match_score:39,
+        //  hit_criteria:"PM2|BP4",
+        //  pathogenicity:'Uncertain Significance',
+        //  pathogenicity_score:0.88,
+        //  final_score:1.8
       }, {
-        gene: 'WNT7A',
-        transcript: 'chr3:g.13896304C>T',
-        variant: 'GCGTG',
-        protein: 'danbaizhi',
-        zygosity: 'peixing',
-        correlated_phenotypes: 'biaoxingpipei',
-        pheno_match_score: 45,
-        hit_criteria: "PM2|BP4",
-        pathogenicity: 'Uncertain Significance',
-        pathogenicity_score: 1.28,
-        final_score: 1.1
+        //  gene:'WNT7A',
+        //  transcript:'chr3:g.13896304C>T',
+        //  variant:'c.5224G&t>C',
+        //  protein:'danbaizhi',
+        //  zygosity:'peixing',
+        //  correlated_phenotypes:'biaoxingpipei',
+        //  pheno_match_score:45,
+        //  hit_criteria:"PM2|BP4",
+        //  pathogenicity:'Uncertain Significance',
+        //  pathogenicity_score:1.28,
+        //  final_score:1.1
       }],
-      phenotype_match_table: [{
-        gene: 'WWOX',
-        transcript: 'chr16:g.78466583C>G',
-        variant: 'GCGTG',
-        protein: 'danbaizhi',
-        zygosity: 'peixing',
-        correlated_phenotypes: 'biaoxingpipei',
-        pheno_match_score: 39
+      incidental_table_data: [],
+      candidate_table_data: [],
+      input_gene_data: [{
+        // Gene:'PPTERER',
+        // HGVS_cDNa:'fdsfdsfdsfsdf'
       }, {
-        gene: 'WNT7A',
-        transcript: 'chr3:g.13896304C>T',
-        variant: 'GCGTG',
-        protein: 'danbaizhi',
-        zygosity: 'peixing',
-        correlated_phenotypes: 'biaoxingpipei',
-        pheno_match_score: 45
-      }],
-      incidental_table_data: [{
-        gene: 'WWOX',
-        transcript: 'chr16:g.78466583C>G',
-        variant: 'GCGTG',
-        protein: 'danbaizhi',
-        zygosity: 'peixing',
-        pheno_match_score: 39,
-        hit_criteria: "PM2|BP4",
-        pathogenicity: 'Uncertain Significance'
-      }, {
-        gene: 'Shio OM4',
-        transcript: 'chr16:g.78466583C>G',
-        variant: 'GCGTG',
-        protein: 'danbaizhi',
-        zygosity: 'peixing',
-        pheno_match_score: 88,
-        hit_criteria: "PM2|BP4",
-        pathogenicity: 'Uncertain Significance'
-      }],
-      candidate_table_data: [{
-        gene: 'WWOX',
-        transcript: 'chr16:g.78466583C>G',
-        cDNA: 'GCGTG',
-        protein: 'danbaizhi',
-        zygosity: 'peixing',
-        correlated_phenotypes: 'from paper'
-      }, {
-        gene: 'Shio OM4',
-        transcript: 'chr16:g.78466583C>G',
-        cDNA: 'GCGTG',
-        protein: 'danbaizhi',
-        zygosity: 'peixing',
-        correlated_phenotypes: 'from paper'
-      }],
-      input_table_data: [{
-        gene: 'WWOX',
-        transcript: 'chr16:g.78466583C>G',
-        cDNA: 'GCGTG',
-        protein: 'danbaizhi',
-        zygosity: 'peixing',
-        pheno_matched_score: 25
-      }, {
-        gene: 'Shio OM4',
-        transcript: 'chr16:g.78466583C>G',
-        cDNA: 'GCGTG',
-        protein: 'danbaizhi',
-        zygosity: 'peixing',
-        pheno_matched_score: 39
+        // Gene:'PPTdsfdfERER',
+        // HGVS_cDNa:'fdsfdsfdsfdsfdsfsdf'
       }],
       interpretation_data: [{
         gene: 'WWT7',
         variant: 'dsfsdfsf',
         criteria: 'dfsfsdfsdf',
-        interpretation: ''
+        interpretation: "突变类型: missense_variant.<br/>蛋白功能区: NAD(P)-binding domain.<br/>HGVS ID: chr16:g.78466583C>G.<br/>RefSeq ID: <a href=' '> rs117209694 </a ><br/>蛋白质: p.Asn330Lys.<br/>外显子: 8.<br/>GeneCards: <a href='http://www.genecards.org/cgi-bin/carddisp.pl?gene=WWOX'> WWOX </a ><br/>OMIM: <a href='https://www.omim.org/entry/605131'> 605131 </a ><br/>Decipher: <a href='https://decipher.sanger.ac.uk/search?q=WWOX#consented-patients/results'> WWOX </a ><br/>Genetics Home Reference: <a href='https://ghr.nlm.nih.gov/gene/WWOX'> WWOX </a ><br/>GeneReviews: <a href='https://www.ncbi.nlm.nih.gov/books/NBK1116/?term=WWOX'> WWOX </a ><br/>ExAC 最小等位基因频率(MAF): 0.000174 (<a href='http://exac.broadinstitute.org/variant/16-78466583-C-G'> 16-78466583-C-G </a >)<br/>ExAC 最小等位基因频率(MAF)详细数据: Total Allele Count (21), Total Allele Number (120722), Allele Frequency for all races (0.0002), Number of Homozygotes (0), Homozygotes Percentage (0.0000), African Allele Count (1), African Allele Number (9796), African Allele Frequency (0.0001), Latino Allele Count (0), Latino Allele Number (11570), Latino Allele Frequency (0.0000), East Asian Allele Count (0), East Asian Allele Number (8622), East Asian Allele Frequency (0.0000), European (Finnish) Allele Count (0), European (Finnish) Allele Number (6612), European (Finnish) Allele Frequency (0.0000), European (Non-Finnish) Allele Count (20), European (Non-Finnish) Allele Number (66710), European (Non-Finnish) "
       }]
-    }
+    },
+    annotation_data: [{}]
   }
 };
 
@@ -17040,6 +16963,7 @@ var result_data_actions = {
   REQUEST_RESULT_DATA: 'REQUEST_RESULT_DATA',
   FETCH_RESULT_DATA_SUCCESS: 'FETCH_RESULT_DATA_SUCCESS',
   FETCH_RESULT_DATA_FAILURE: 'FETCH_RESULT_DATA_FAILURE',
+  UPDATE_DATA_SUCCESS: 'UPDATE_DATA_SUCCESS',
 
   requestResultData: function requestResultData() {
     return {
@@ -17061,6 +16985,13 @@ var result_data_actions = {
     };
   },
 
+  updateDataSuccess: function updateDataSuccess() {
+    return {
+      type: result_actions.UPDATE_DATA_SUCCESS
+    };
+  },
+
+
   fetchResultData: function fetchResultData(task_id) {
     return function (dispatch) {
       dispatch(result_actions.requestResultData());
@@ -17070,8 +17001,6 @@ var result_data_actions = {
       return fetch(_base.server_domain + _base.apis.fetch_case_result + (task_id + '/' + user_name + '/'), option).then(function (res) {
         return res.json();
       }).then(function (data) {
-        console.log('this is result data');
-        console.log(data);
         if (data.success) {
           dispatch(result_actions.fetchResultDataSuccess(data.result_data));
         } else {
@@ -17083,7 +17012,51 @@ var result_data_actions = {
 
 };
 
-var check_annotation_actions = {};
+var check_annotation_actions = {
+  REQUEST_CHECK_ANNOTATION: 'REQUEST_CHECK_ANNOTATION',
+  CHECK_ANNOTATION_SUCCESS: 'CHECK_ANNOTATION_SUCCESS',
+  CHECK_ANNOTATION_FAILURE: 'CHECK_ANNOTATION_FAILURE',
+  requestCheckAnnotation: function requestCheckAnnotation() {
+    return {
+      type: result_actions.REQUEST_CHECK_ANNOTATION
+    };
+  },
+  checkAnnotationSuccess: function checkAnnotationSuccess(annotation_data) {
+    return {
+      type: result_actions.CHECK_ANNOTATION_SUCCESS,
+      payload: annotation_data
+    };
+  },
+  checkAnnotationFailure: function checkAnnotationFailure(errCode) {
+    return {
+      type: result_actions.CHECK_ANNOTATION_FAILURE,
+      payload: errCode
+    };
+  },
+  checkAnnotation: function checkAnnotation(task_id, gene_name, cDNA) {
+    return function (dispatch) {
+      dispatch(result_actions.requestCheckAnnotation());
+      var data = new FormData();
+      data.append('cDNA', cDNA);
+      var option = {
+        method: 'POST',
+        body: data
+      };
+      return fetch(_base.server_domain + _base.apis.check_annotation + (task_id + '/' + gene_name + '/' + user_name + '/'), option).then(function (res) {
+        return res.json();
+      }).then(function (data) {
+        console.log('this is annotation data');
+        console.log(data);
+        if (data.success) {
+          dispatch(result_actions.checkAnnotationSuccess(data.result_detail));
+        } else {
+          dispatch(result_actions.checkAnnotationFailure(data.errCode));
+        }
+      });
+    };
+  }
+
+};
 
 var review_actions = {};
 
@@ -17196,7 +17169,6 @@ var progress_task_actions = {
         if (data.success) {
           dispatch(task_actions.fetchProgressTaskSuccess(data.list));
           // Constanly checked the progress list
-          var inProgress = false;
           var _iteratorNormalCompletion = true;
           var _didIteratorError = false;
           var _iteratorError = undefined;
@@ -17205,8 +17177,11 @@ var progress_task_actions = {
             for (var _iterator = data.list[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
               var task = _step.value;
 
-              if (task.status !== 'succeed') {
-                inProgress = true;
+              if (task.status !== 'succeed' && task.status.indexOf('failed') === -1) {
+                task_actions.timeout = setTimeout(function () {
+                  return dispatch(task_actions.fetchProgressTask());
+                }, 5000);
+                break;
               }
             }
           } catch (err) {
@@ -17222,10 +17197,6 @@ var progress_task_actions = {
                 throw _iteratorError;
               }
             }
-          }
-
-          if (inProgress) {
-            //task_actions.timeout = setTimeout(()=>dispatch(task_actions.fetchProgressTask()), 5000);
           }
         } else {
           dispatch(task_actions.fetchProgressTaskFail(errcode));
@@ -17282,7 +17253,56 @@ var all_task_actions = {
 
 };
 
-var task_actions = _extends({}, upload_task_actions, progress_task_actions, all_task_actions);
+var checked_change_actions = {
+  REQUEST_CHECKED_CHANGE: 'REQUEST_CHECKED_CHANGE',
+  CHECKED_CHANGE_SUCCESS: 'CHECKED_CHANGE_SUCCESS',
+  CHECKED_CHANGE_FAILURE: 'CHECKED_CHANGE_FAILURE',
+
+  requestCheckedChange: function requestCheckedChange() {
+    return {
+      type: task_actions.REQUEST_CHECKED_CHANGE
+    };
+  },
+
+  checkedChangeSuccess: function checkedChangeSuccess() {
+    return {
+      type: task_actions.CHECKED_CHANGE_SUCCESS
+    };
+  },
+
+  checkedChangeFailure: function checkedChangeFailure(errCode) {
+    return {
+      type: task_actions.CHECKED_CHANGE_FAILURE,
+      payload: errCode
+    };
+  },
+
+  checkedChange: function checkedChange(task_id) {
+    return function (dispatch) {
+      dispatch(task_actions.requestCheckedChange());
+      var data = new FormData();
+      data.append('task_id', task_id);
+      var option = {
+        method: 'PUT',
+        body: data
+      };
+      return fetch(_base.server_domain + _base.apis.checked_change + (user_name + '/'), option).then(function (res) {
+        return res.json();
+      }).then(function (data) {
+        console.log('this is checked change');
+        console.log(data);
+        if (data.success) {
+          dispatch(task_actions.fetchProgressTask());
+        } else {
+          dispatch(task_actions.checkedChangeFailure(data.errCode));
+        }
+      });
+    };
+  }
+
+};
+
+var task_actions = _extends({}, upload_task_actions, progress_task_actions, all_task_actions, checked_change_actions);
 
 exports.default = task_actions;
 
@@ -17391,7 +17411,12 @@ var New_task_progress = function (_React$Component) {
         var task_info = target.getAttribute('alt').split(',');
         var task_id = parseInt(task_info[0]);
         var task_name = task_info[1];
+        this.props.checkedChange(task_id);
         this.props.toResult(task_id, task_name);
+      } else if (target.className.indexOf('failed_task') !== -1) {
+        var _task_info = target.getAttribute('alt').split(',');
+        var _task_id = parseInt(_task_info[0]);
+        this.props.checkedChange(_task_id);
       };
     }
   }, {
@@ -17405,6 +17430,12 @@ var New_task_progress = function (_React$Component) {
               'div',
               { key: index, className: 'td3 td-stripe' },
               _react2.default.createElement(_Progress_task.Processing_task, { task_info: task })
+            );
+          } else {
+            return _react2.default.createElement(
+              'div',
+              { key: index, className: 'td3' },
+              _react2.default.createElement(_Progress_task.Failed_task, { task_info: task })
             );
           }
         } else {
@@ -17442,7 +17473,8 @@ var New_task_progress = function (_React$Component) {
 New_task_progress.propTypes = {
   progress_task_list: _react2.default.PropTypes.array,
   fetchTaskList: _react2.default.PropTypes.func,
-  toResult: _react2.default.PropTypes.func
+  toResult: _react2.default.PropTypes.func,
+  checkedChange: _react2.default.PropTypes.func
 };
 
 New_task_progress.defaultProps = {
@@ -17550,6 +17582,18 @@ var New_task_upload = function (_React$Component) {
 
       this.props.submit_task(taskData);
       myForm.reset();
+      this.setState({
+        father_check: false,
+        father_check_pheno: false,
+        mother_check: false,
+        mother_check_pheno: false,
+        incidental_findings_check: false,
+        candidate_genes_check: false,
+        input_gene_file: '尚未选择',
+        input_phen: '尚未选择',
+        father_gene_file: '尚未选择',
+        mother_gene_file: '尚未选择'
+      });
     }
   }, {
     key: '_handleChange',
@@ -18195,6 +18239,11 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
+// const mappingDict = {
+//   criteria:'标准',
+//   interpretation:'解读'
+// }
+
 var Annotation_table = function (_React$Component) {
   _inherits(Annotation_table, _React$Component);
 
@@ -18205,7 +18254,7 @@ var Annotation_table = function (_React$Component) {
 
     _this.state = {
       columns: [{
-        property: 'standard',
+        property: 'criteria',
         header: {
           label: '标准'
         },
@@ -18213,9 +18262,14 @@ var Annotation_table = function (_React$Component) {
           className: 'col1'
         }
       }, {
-        property: 'analyze',
+        property: 'interpretation',
         header: {
           label: '解读'
+        },
+        cell: {
+          formatters: [function (interpretation) {
+            return _this._unescapeHTML(interpretation);
+          }]
         },
         props: {
           className: 'col2'
@@ -18227,6 +18281,45 @@ var Annotation_table = function (_React$Component) {
   }
 
   _createClass(Annotation_table, [{
+    key: 'componentWillReceiveProps',
+    value: function componentWillReceiveProps(props) {
+      var _this2 = this;
+
+      console.log(props);
+      this.setState({
+        columns: [{
+          property: 'criteria',
+          header: {
+            label: '标准'
+          },
+          props: {
+            className: 'col1'
+          }
+        }, {
+          property: 'interpretation',
+          header: {
+            label: '解读'
+          },
+          cell: {
+            formatters: [function (interpretation) {
+              return _this2._unescapeHTML(interpretation);
+            }]
+          },
+          props: {
+            className: 'col2'
+          }
+        }],
+        rows: props.table_data
+      });
+    }
+  }, {
+    key: '_unescapeHTML',
+    value: function _unescapeHTML(html) {
+      var escapeEl = document.createElement('textarea');
+      escapeEl.innerHTML = html;
+      return _react2.default.createElement('div', { className: 'interpretation_content', dangerouslySetInnerHTML: { __html: '' + html } });
+    }
+  }, {
     key: 'render',
     value: function render() {
       var _state = this.state,
@@ -18244,7 +18337,11 @@ var Annotation_table = function (_React$Component) {
           _react2.default.createElement(Table.Header, null),
           _react2.default.createElement(Table.Body, {
             rows: rows,
-            rowKey: 'standard'
+            rowKey: function rowKey(_ref) {
+              var rowData = _ref.rowData,
+                  rowIndex = _ref.rowIndex;
+              return rowIndex;
+            }
           })
         )
       );
@@ -18513,8 +18610,8 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 var mappingDict = {
   gene: '基因', transcript: '转录本', variant: 'c.DNA', protein: '蛋白质', zygosity: '配型', correlated_phenotypes: '表型匹配',
-  pheno_match_score: '表型匹配得分', hit_criteria: 'ACMG评判标准', pathogenicity: '致病性',
-  pathogenicity_score: '致病性得分', final_score: '总分'
+  pheno_match_score: '表型匹配得分', hit_criteria: 'ACMG评判标准', pathogenicity: '致病性', criteria: '标准',
+  interpretation: '解读', pathogenicity_score: '致病性得分', final_score: '总分'
 };
 
 var General_data_table = function (_React$Component) {
@@ -18569,12 +18666,26 @@ var General_data_table = function (_React$Component) {
           }
         });
       } else {
-        columns.push({
-          property: '' + column_key,
-          header: {
-            label: '' + (mappingDict[column_key] ? mappingDict[column_key] : column_key)
-          }
-        });
+        if (column_key === 'interpretation') {
+          columns.push({
+            property: '' + column_key,
+            header: {
+              label: '' + (mappingDict[column_key] ? mappingDict[column_key] : column_key)
+            },
+            cell: {
+              formatters: [function (interpretation) {
+                return _this._unescapeHTML(interpretation);
+              }]
+            }
+          });
+        } else {
+          columns.push({
+            property: '' + column_key,
+            header: {
+              label: '' + (mappingDict[column_key] ? mappingDict[column_key] : column_key)
+            }
+          });
+        }
       }
     }
     _this.state = {
@@ -18639,12 +18750,26 @@ var General_data_table = function (_React$Component) {
             }
           });
         } else {
-          columns.push({
-            property: '' + column_key,
-            header: {
-              label: '' + (mappingDict[column_key] ? mappingDict[column_key] : column_key)
-            }
-          });
+          if (column_key === 'interpretation') {
+            columns.push({
+              property: '' + column_key,
+              header: {
+                label: '' + (mappingDict[column_key] ? mappingDict[column_key] : column_key)
+              },
+              cell: {
+                formatters: [function (interpretation) {
+                  return _this2._unescapeHTML(interpretation);
+                }]
+              }
+            });
+          } else {
+            columns.push({
+              property: '' + column_key,
+              header: {
+                label: '' + (mappingDict[column_key] ? mappingDict[column_key] : column_key)
+              }
+            });
+          }
         }
       }
       this.setState({
@@ -18668,16 +18793,23 @@ var General_data_table = function (_React$Component) {
         className: className
       };
     }
+
+    // hanle pagination select
+
   }, {
     key: '_handleSelect',
     value: function _handleSelect(page) {
-      // hanle pagination select
       var pages = Math.ceil(this.state.rows.length / this.state.pagination.perPage);
       this.setState({
         pagination: _extends({}, this.state.pagination, {
           page: Math.min(Math.max(page, 1), pages)
         })
       });
+    }
+  }, {
+    key: '_unescapeHTML',
+    value: function _unescapeHTML(html) {
+      return _react2.default.createElement('div', { className: 'interpretation_content', dangerouslySetInnerHTML: { __html: '' + html } });
     }
   }, {
     key: 'render',
@@ -19918,7 +20050,7 @@ function paginate(_ref) {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.Completed_task = exports.Processing_task = undefined;
+exports.Failed_task = exports.Completed_task = exports.Processing_task = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -19937,7 +20069,12 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 // Mapping the status to a percentage
-var mappingDict = {};
+var mappingDict = {
+  'Preprocessing data for interpretation': '10%', 'generating candidate variants': '20%',
+  'Annotating variants using genomic databases': '40%', 'Mapping phenotypes to genes': '40%',
+  'Searching biomedical literatures': '55%', 'Checking ACMG standard': '80%', 'Filtering variants based on phenotypes': '90%',
+  'succeed': '100%'
+};
 
 var Processing_task = function (_React$Component) {
   _inherits(Processing_task, _React$Component);
@@ -19951,8 +20088,8 @@ var Processing_task = function (_React$Component) {
   _createClass(Processing_task, [{
     key: 'render',
     value: function render() {
-      // const current_percent = mappingDict[this.props.task_info.status];
-      var current_percent = '50%';
+      var current_percent = mappingDict[this.props.task_info.status];
+      // const current_percent = '50%';
       var barStyle = {
         "width": current_percent
       };
@@ -19969,7 +20106,7 @@ var Processing_task = function (_React$Component) {
           { className: 'progress' },
           _react2.default.createElement(
             'div',
-            { className: 'progress-bar progress-bar-info', role: 'progressbar', 'aria-valuenow': '50',
+            { className: 'progress-bar progress-bar-info active', role: 'progressbar', 'aria-valuenow': '50',
               'aria-valuemin': '0', 'aria-valuemax': '100', style: barStyle },
             _react2.default.createElement(
               'span',
@@ -20025,8 +20162,41 @@ var Completed_task = function (_React$Component2) {
   return Completed_task;
 }(_react2.default.Component);
 
+var Failed_task = function (_React$Component3) {
+  _inherits(Failed_task, _React$Component3);
+
+  function Failed_task(props) {
+    _classCallCheck(this, Failed_task);
+
+    return _possibleConstructorReturn(this, (Failed_task.__proto__ || Object.getPrototypeOf(Failed_task)).call(this, props));
+  }
+
+  _createClass(Failed_task, [{
+    key: 'render',
+    value: function render() {
+      return _react2.default.createElement(
+        'div',
+        { className: 'failed_task', alt: this.props.task_info.id + ',' + this.props.task_info.task_name },
+        _react2.default.createElement(
+          'span',
+          null,
+          this.props.task_info.task_name
+        ),
+        _react2.default.createElement(
+          'span',
+          null,
+          '  \u5931\u8D25'
+        )
+      );
+    }
+  }]);
+
+  return Failed_task;
+}(_react2.default.Component);
+
 exports.Processing_task = Processing_task;
 exports.Completed_task = Completed_task;
+exports.Failed_task = Failed_task;
 
 /***/ }),
 /* 233 */
@@ -20112,7 +20282,7 @@ var Main_area = function (_React$Component) {
             _react2.default.createElement(_reactRouterDom.Route, { path: '/home/ch/new/task_list', component: _Task_list_container2.default }),
             _react2.default.createElement(_reactRouterDom.Route, { path: '/home/ch/new/review_list', component: _Review_list_container2.default }),
             _react2.default.createElement(_reactRouterDom.Route, { path: '/home/ch/new/result/:task_id/:task_name', component: _Result_page_container2.default }),
-            _react2.default.createElement(_reactRouterDom.Route, { path: '/home/ch/new/result/:task_id/:task_name/:gene_name', component: _Annotation_page_container2.default })
+            _react2.default.createElement(_reactRouterDom.Route, { path: '/home/ch/new/result/:task_id/:task_name/:gene_name/:cDNA', component: _Annotation_page_container2.default })
           )
         )
       );
@@ -20249,8 +20419,9 @@ var Result_page = function (_React$Component) {
     var summary_data = [].concat(_toConsumableArray(_this.props.result_data.summary_table_data));
     summary_data[0] = _extends({}, _this.props.result_data.summary_table_data[0]);
     delete summary_data[0]['correlated_phenotypes'];
-    // delete this.props.result_data.summary_table_data[0]['correlated_phenotypes'];
+    delete summary_data[0]['id'];
     _this.state = {
+      current_table: 'summary_table',
       current_data: summary_data
     };
     return _this;
@@ -20306,8 +20477,9 @@ var Result_page = function (_React$Component) {
             var summary_data = [].concat(_toConsumableArray(this.props.result_data.summary_table_data));
             summary_data[0] = _extends({}, this.props.result_data.summary_table_data[0]);
             delete summary_data[0]['correlated_phenotypes'];
-            // delete this.props.result_data.summary_table_data[0]['correlated_phenotypes'];
+            delete summary_data[0]['id'];
             this.setState(_extends({}, this.state, {
+              current_table: 'summary_table',
               current_data: summary_data
             }));
             break;
@@ -20318,31 +20490,37 @@ var Result_page = function (_React$Component) {
             phenotype_match_data[0] = _extends({}, this.props.result_data.summary_table_data[0]);
             delete phenotype_match_data[0]['hit_criteria'];delete phenotype_match_data[0]['pathogenicity'];
             delete phenotype_match_data[0]['pathogenicity_score'];delete phenotype_match_data[0]['final_score'];
+            delete phenotype_match_data[0]['id'];
             this.setState(_extends({}, this.state, {
+              current_table: 'phenotype_match_table',
               current_data: phenotype_match_data
             }));
             break;
 
           case 'incidental_finding_table':
             this.setState(_extends({}, this.state, {
+              current_table: 'incidental_finding_table',
               current_data: this.props.result_data.incidental_table_data
             }));
             break;
 
           case 'candidate_gene_table':
             this.setState(_extends({}, this.state, {
+              current_table: 'candidate_gene_table',
               current_data: this.props.result_data.candidate_table_data
             }));
             break;
 
           case 'input_gene_table':
             this.setState(_extends({}, this.state, {
-              current_data: this.props.result_data.input_table_data
+              current_table: 'input_gene_table',
+              current_data: this.props.result_data.input_gene_data
             }));
             break;
 
           case 'generate_result_table':
             this.setState(_extends({}, this.state, {
+              current_table: 'generate_result_table',
               current_data: this.props.result_data.interpretation_data
             }));
             break;
@@ -20354,10 +20532,13 @@ var Result_page = function (_React$Component) {
 
       // Click to check the detail annotation of a gene variant
       if (target.nodeName === 'TD') {
-        var gene = target.parentElement.children[0].innerHTML;
-        var transcript = target.parentElement.children[1].innerHTML;
-        var current_path = this.props.match.url;
-        this.props.showAnnotation(current_path, gene, transcript);
+        if (this.state.current_table === 'summary_table' || this.state.current_table === 'phenotype_match_table') {
+          var gene = target.parentElement.children[0].innerHTML;
+          var cDNA = target.parentElement.children[2].innerHTML;
+          cDNA = cDNA.replace('&amp;', '&').replace('&gt;', '>');
+          var current_path = this.props.match.url;
+          this.props.showAnnotation(current_path, gene, cDNA);
+        }
       }
       //
     }
@@ -20368,10 +20549,48 @@ var Result_page = function (_React$Component) {
       var review_form_data = new FormData(evt.target);
     }
   }, {
+    key: '_updateState',
+    value: function _updateState() {
+      if (this.props.received_new_data) {
+        console.log('update here');
+        var summary_data = [].concat(_toConsumableArray(this.props.result_data.summary_table_data));
+        summary_data[0] = _extends({}, this.props.result_data.summary_table_data[0]);
+        delete summary_data[0]['correlated_phenotypes'];
+        delete summary_data[0]['id'];
+        this.setState({
+          current_table: 'summary_table',
+          current_data: summary_data
+        });
+        this.props.updateDataFinish();
+      }
+    }
+  }, {
+    key: '_renderTable',
+    value: function _renderTable(table_data) {
+      if (table_data.length !== 0) {
+        return _react2.default.createElement(_fragments.General_data_table, { table_data: this.state.current_data });
+      } else {
+        if (this.state.current_table === 'incidental_finding_table') {
+          return _react2.default.createElement(
+            'div',
+            null,
+            '\u8BE5\u6848\u4F8B\u672A\u8981\u6C42 \u9644\u5E26\u53D1\u73B0\u8868'
+          );
+        } else if (this.state.current_table === 'candidate_gene_table') {
+          return _react2.default.createElement(
+            'div',
+            null,
+            '\u8BE5\u6848\u4F8B\u672A\u8981\u6C42 \u5907\u9009\u57FA\u56E0\u8868'
+          );
+        }
+      }
+    }
+  }, {
     key: 'render',
     value: function render() {
       var _this2 = this;
 
+      this._updateState();
       return _react2.default.createElement(
         'div',
         { className: 'result_page' },
@@ -20573,7 +20792,7 @@ var Result_page = function (_React$Component) {
             { className: 'result_table', onClick: function onClick(evt) {
                 return _this2._handleClick(evt);
               } },
-            _react2.default.createElement(_fragments.General_data_table, { table_data: this.state.current_data })
+            this._renderTable(this.state.current_data)
           )
         )
       );
@@ -20587,13 +20806,13 @@ Result_page.propTypes = {
   goBack: _react2.default.PropTypes.func.isRequired,
   showAnnotation: _react2.default.PropTypes.func,
   fetchResultData: _react2.default.PropTypes.func,
-  result_data: _react2.default.PropTypes.object
+  updateDataFinish: _react2.default.PropTypes.func,
+  result_data: _react2.default.PropTypes.object,
+  received_new_data: _react2.default.PropTypes.bool
+
 };
 
-Result_page.defaultProps = {
-  goBack: function goBack() {},
-  showAnnotation: function showAnnotation() {}
-};
+Result_page.defaultProps = {};
 
 exports.default = Result_page;
 
@@ -20718,10 +20937,14 @@ var Review_list = function (_React$Component) {
             _react2.default.createElement(Table.Header, null),
             _react2.default.createElement(Table.Body, {
               rows: rows,
-              rowKey: 'id',
-              onRow: function onRow(row, _ref2) {
-                var rowIndex = _ref2.rowIndex,
-                    rowKey = _ref2.rowKey;
+              rowKey: function rowKey(_ref2) {
+                var rowData = _ref2.rowData,
+                    rowIndex = _ref2.rowIndex;
+                return rowIndex;
+              },
+              onRow: function onRow(row, _ref3) {
+                var rowIndex = _ref3.rowIndex,
+                    rowKey = _ref3.rowKey;
                 return _this3._handleBodyRow(row, { rowIndex: rowIndex, rowKey: rowKey });
               } })
           )
@@ -20796,6 +21019,7 @@ var Side_navbar = function (_React$Component) {
   _createClass(Side_navbar, [{
     key: 'componentDidMount',
     value: function componentDidMount() {
+
       var pathname = this.props.location.pathname;
       pathname = pathname.substring(pathname.lastIndexOf('/') + 1);
       var currentActive = void 0;
@@ -21110,10 +21334,14 @@ var Task_list = function (_React$Component) {
             _react2.default.createElement(Table.Header, null),
             _react2.default.createElement(Table.Body, {
               rows: searchedRows,
-              rowKey: 'task_name',
-              onRow: function onRow(row, _ref2) {
-                var rowIndex = _ref2.rowIndex,
-                    rowKey = _ref2.rowKey;
+              rowKey: function rowKey(_ref2) {
+                var rowData = _ref2.rowData,
+                    rowIndex = _ref2.rowIndex;
+                return rowIndex;
+              },
+              onRow: function onRow(row, _ref3) {
+                var rowIndex = _ref3.rowIndex,
+                    rowKey = _ref3.rowKey;
                 return _this3._handleBodyRow(row, { rowIndex: rowIndex, rowKey: rowKey });
               } })
           )
@@ -21172,13 +21400,18 @@ var _reactRouterRedux = __webpack_require__(12);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var mapStateToProps = function mapStateToProps(state) {
-  return {};
+  return {
+    annotation_data: state.results.annotation_data
+  };
 };
 
 var mapDispatchToProps = function mapDispatchToProps(dispatch) {
   return {
     goBack: function goBack() {
       dispatch((0, _reactRouterRedux.go)(-1));
+    },
+    fetchAnnotation: function fetchAnnotation(task_id, gene_name, cDNA) {
+      dispatch(_root_actions2.default.checkAnnotation(task_id, gene_name, cDNA));
     }
   };
 };
@@ -21223,6 +21456,9 @@ var mapDispatchToProps = function mapDispatchToProps(dispatch) {
     },
     toResult: function toResult(task_id, task_name) {
       dispatch((0, _reactRouterRedux.push)('/home/ch/new/result/' + task_id + '/' + task_name));
+    },
+    checkedChange: function checkedChange(task_id) {
+      dispatch(_root_actions2.default.checkedChange(task_id));
     }
   };
 };
@@ -21334,7 +21570,8 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var mapStateToProps = function mapStateToProps(state) {
   return {
-    result_data: state.results.result_data
+    result_data: state.results.result_data,
+    received_new_data: state.results.received_new_data
   };
 };
 
@@ -21348,8 +21585,12 @@ var mapDispatchToProps = function mapDispatchToProps(dispatch) {
       dispatch(_root_actions2.default.fetchResultData(task_id));
     },
 
-    showAnnotation: function showAnnotation(current_path, gene, transicript) {
-      dispatch((0, _reactRouterRedux.push)(current_path + '/' + gene));
+    updateDataFinish: function updateDataFinish() {
+      dispatch(_root_actions2.default.updateDataSuccess());
+    },
+
+    showAnnotation: function showAnnotation(current_path, gene, cDNA) {
+      dispatch((0, _reactRouterRedux.push)(current_path + '/' + gene + '/' + cDNA));
     }
   };
 };
@@ -21510,10 +21751,33 @@ function results() {
     case _root_actions2.default.FETCH_RESULT_DATA_SUCCESS:
       return _extends({}, state, {
         isFetching: false,
-        result_data: action.payload
+        result_data: action.payload,
+        received_new_data: true
+      });
+
+    case _root_actions2.default.UPDATE_DATA_SUCCESS:
+      return _extends({}, state, {
+        received_new_data: false
       });
 
     case _root_actions2.default.FETCH_RESULT_DATA_FAILURE:
+      return _extends({}, state, {
+        isFetching: false,
+        errCode: action.payload
+      });
+
+    case _root_actions2.default.REQUEST_CHECK_ANNOTATION:
+      return _extends({}, state, {
+        isFetching: true
+      });
+
+    case _root_actions2.default.CHECK_ANNOTATION_SUCCESS:
+      return _extends({}, state, {
+        isFetching: false,
+        annotation_data: action.payload
+      });
+
+    case _root_actions2.default.CHECK_ANNOTATION_FAILURE:
       return _extends({}, state, {
         isFetching: false,
         errCode: action.payload
@@ -21632,6 +21896,22 @@ function tasks() {
       });
 
     case _root_actions2.default.FETCH_PROGRESS_TASK_FAIL:
+      return _extends({}, state, {
+        isFetching: false,
+        errCode: action.payload
+      });
+
+    case _root_actions2.default.REQUEST_CHECKED_CHANGE:
+      return _extends({}, state, {
+        isFetching: true
+      });
+
+    case _root_actions2.default.CHECKED_CHANGE_SUCCESS:
+      return _extends({}, state, {
+        isFetching: false
+      });
+
+    case _root_actions2.default.CHECKED_CHANGE_FAILURE:
       return _extends({}, state, {
         isFetching: false,
         errCode: action.payload
@@ -24449,7 +24729,7 @@ exports = module.exports = __webpack_require__(254)(undefined);
 
 
 // module
-exports.push([module.i, ".new_task {\n  position: relative;\n  width: 100%;\n  height: 100%;\n  margin-left: 20px;\n  display: flex;\n  flex-flow: row nowrap;\n  justify-content: flex-start;\n  color: #406A8C; }\n  .new_task > label {\n    position: absolute;\n    top: 560px;\n    left: 77%;\n    padding-left: 30px;\n    padding-right: 30px;\n    background-color: #0275d8;\n    border: 0px; }\n    .new_task > label span {\n      padding: 25px 10px; }\n    .new_task > label:hover {\n      background-color: #025fb1; }\n\n.new_task_upload {\n  position: relative;\n  flex-grow: 0;\n  width: 70%;\n  height: 95%;\n  margin-right: 20px;\n  margin-top: 20px;\n  overflow: auto;\n  overflow-x: hidden; }\n  .new_task_upload label {\n    margin-bottom: 0px;\n    font-weight: normal; }\n  .new_task_upload .file_input {\n    position: relative;\n    z-index: 5;\n    width: 80px;\n    height: 20px;\n    background: #FFFFFF;\n    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.5);\n    border-radius: 8px;\n    margin-bottom: 10px;\n    margin-top: 10px;\n    vertical-align: middle;\n    text-align: center;\n    cursor: pointer; }\n    .new_task_upload .file_input span {\n      position: relative;\n      display: inline-block;\n      font-size: 11px;\n      color: #53BAEC;\n      cursor: pointer; }\n      .new_task_upload .file_input span.prompt {\n        display: block;\n        margin-top: 5px;\n        color: #406A8C;\n        font-size: 10px;\n        cursor: default; }\n    .new_task_upload .file_input input {\n      position: relative;\n      visibility: hidden;\n      width: 0px;\n      height: 0px;\n      z-index: 0; }\n  .new_task_upload textarea {\n    border: 1px solid #e6e6e6; }\n  .new_task_upload #task_submit {\n    display: none; }\n\n.new_task_progress {\n  position: relative;\n  flex-grow: 0;\n  background: #FFFFFF;\n  box-shadow: -3px 2px 2px 0 rgba(119, 151, 178, 0.16);\n  margin-top: 20px;\n  width: 22%;\n  height: 525px;\n  overflow: auto; }\n  .new_task_progress .tb-title {\n    position: relative;\n    width: 100%;\n    padding-top: 0px;\n    padding: 20px; }\n\n.task_list {\n  position: relative;\n  margin: 20px 20px;\n  width: 65%;\n  height: 90%; }\n  .task_list .search_container {\n    position: relative;\n    width: 100%;\n    height: 7%;\n    margin-bottom: 10px; }\n    .task_list .search_container span {\n      position: absolute;\n      height: 50%;\n      font-size: 12px;\n      opacity: 0.4;\n      transform: translate(0, -50%); }\n    .task_list .search_container div {\n      position: relative;\n      width: 100%;\n      height: 100%; }\n      .task_list .search_container div select {\n        display: none; }\n      .task_list .search_container div input {\n        position: relative;\n        width: 100%;\n        height: 100%;\n        border: 0px;\n        /* Input: */\n        background: #FFFFFF;\n        border: 1px solid #58BCEB;\n        border-radius: 4px; }\n        .task_list .search_container div input::-webkit-input-placeholder {\n          text-indent: 6%;\n          background: url(" + __webpack_require__(540) + ") no-repeat;\n          background-position: 2% 0;\n          background-size: 19px; }\n  .task_list p {\n    margin-top: 10px;\n    padding-left: 40px;\n    font-size: 14px;\n    color: #4A90E2; }\n\n.task_list_table {\n  position: relative;\n  width: 100%;\n  background: #FFFFFF;\n  box-shadow: -3px 2px 2px 0 rgba(119, 151, 178, 0.16);\n  overflow: auto;\n  height: 92%; }\n  .task_list_table table {\n    width: 100%;\n    text-align: center;\n    color: #406A8C; }\n  .task_list_table th {\n    text-align: center;\n    background: #FFFFFF;\n    border: 0px;\n    padding: 15px 0px;\n    border-bottom: 1px solid #f2f2f2;\n    font-size: 17px;\n    font-weight: normal; }\n  .task_list_table tr:hover {\n    background: #F5F6F7; }\n  .task_list_table td {\n    padding: 15px 0px;\n    font-size: 15px; }\n  .task_list_table .tc1 {\n    width: 25%; }\n  .task_list_table .tc2 {\n    width: 50%; }\n\n.clickable {\n  cursor: pointer; }\n\n.result_page {\n  position: relative;\n  width: 100%;\n  height: 100%;\n  color: #406A8C; }\n  .result_page .back-sign {\n    position: relative;\n    padding: 15px 15px; }\n    .result_page .back-sign img {\n      position: relative;\n      width: 3%;\n      cursor: pointer; }\n    .result_page .back-sign span {\n      font-size: 18px;\n      margin-left: 10px;\n      vertical-align: middle; }\n\n.result_table_nav {\n  position: relative;\n  display: flex;\n  flex-direction: row;\n  justify-content: space-between;\n  align-items: center; }\n  .result_table_nav ul {\n    position: relative;\n    list-style-type: none;\n    margin: 0px;\n    margin-left: 15px;\n    padding-left: 0px;\n    width: 80%;\n    display: flex;\n    justify-content: space-between;\n    border: 1px solid #58BCEB;\n    border-right: 0px;\n    border-radius: 4px;\n    overflow: hidden; }\n    .result_table_nav ul li {\n      background-color: white;\n      flex-basis: 100%;\n      width: auto;\n      padding: 5px 10px;\n      vertical-align: middle;\n      border: 0px;\n      border-right: 1px solid #58BCEB;\n      text-align: center;\n      cursor: pointer; }\n      .result_table_nav ul li span {\n        vertical-align: middle;\n        color: #406A8C;\n        text-decoration: none;\n        background-color: transparent;\n        border: 0px;\n        pointer-events: none; }\n      .result_table_nav ul li.active {\n        background-color: #4A90E2; }\n        .result_table_nav ul li.active span {\n          color: white; }\n      .result_table_nav ul li:hover {\n        background-color: #4A90E2; }\n        .result_table_nav ul li:hover span {\n          color: white; }\n  .result_table_nav #review_button {\n    margin-right: 20px;\n    background-color: #58BCEB;\n    vertical-align: middle;\n    border: 0px;\n    letter-spacing: 2px;\n    font-size: 14px;\n    padding: 0px 25px;\n    height: 30px;\n    box-shadow: 0 1px 3px 0 rgba(117, 146, 222, 0.85); }\n    .result_table_nav #review_button:hover, .result_table_nav #review_button:focus {\n      background-color: #32ade7; }\n\n.review_block {\n  position: relative;\n  margin-bottom: 15px;\n  width: 100%;\n  height: 170px;\n  background: #F5F6FA;\n  box-shadow: -3px 2px 2px 0 rgba(119, 151, 178, 0.16); }\n  .review_block .question_container {\n    width: 100%;\n    height: 100%;\n    display: flex;\n    flex-direction: row;\n    justify-content: flex-start; }\n  .review_block .review_question {\n    margin-top: 15px;\n    text-align: center;\n    flex-basis: 100%; }\n    .review_block .review_question label {\n      padding: 0px 10px;\n      text-indent: 10px; }\n      .review_block .review_question label span {\n        padding-left: 5px; }\n    .review_block .review_question textarea {\n      border: 1px solid #e6e6e6; }\n  .review_block #review_submit {\n    height: 30px;\n    margin-top: 25px;\n    padding-left: 25px;\n    padding-right: 25px;\n    font-size: 15px;\n    line-height: 0px;\n    letter-spacing: 5px; }\n\n.result_area {\n  position: relative;\n  padding: 15px 15px;\n  padding-bottom: 5px;\n  height: 84%;\n  display: flex;\n  flex-direction: column;\n  justify-content: flex-start;\n  overflow: auto; }\n\n.result_table {\n  flex-grow: 1;\n  width: 100%; }\n  .result_table table {\n    width: 100%;\n    background: #FFFFFF;\n    box-shadow: -3px 2px 2px 0 rgba(119, 151, 178, 0.16); }\n  .result_table thead th {\n    text-align: center;\n    border: 1px solid #e6e6e6;\n    padding: 20px 0px;\n    font-weight: bold; }\n  .result_table thead .sort {\n    cursor: pointer;\n    padding: 0px 0px; }\n  .result_table tbody tr:hover {\n    background-color: rgba(242, 242, 242, 0.6); }\n  .result_table tbody td {\n    text-align: center;\n    max-width: 100px;\n    border: 1px solid #e6e6e6;\n    padding: 5px 0px;\n    word-wrap: break-word; }\n  .result_table .pagify-pagination {\n    position: fixed;\n    left: 19%;\n    top: 95%;\n    font-size: 14px;\n    display: flex;\n    justify-content: flex-start;\n    align-items: center; }\n    .result_table .pagify-pagination span {\n      margin: 0px 5px;\n      cursor: pointer; }\n\n.annotation_page {\n  background: rgba(55, 70, 95, 0.8);\n  position: fixed;\n  width: 100%;\n  height: 100%;\n  left: 0%;\n  top: 0%;\n  z-index: 50; }\n  .annotation_page .annotation_area {\n    position: relative;\n    top: 8%;\n    height: 85%; }\n  .annotation_page .annotation_header {\n    background-color: white;\n    position: relative;\n    width: 70%;\n    margin: 0px auto;\n    color: white;\n    display: flex;\n    justify-content: space-between; }\n    .annotation_page .annotation_header p {\n      color: #406A8C;\n      vertical-align: middle;\n      margin: 0px 7%;\n      letter-spacing: 10px;\n      font-size: 16px;\n      padding: 11px 0px; }\n      .annotation_page .annotation_header p span {\n        color: #4A90E2;\n        letter-spacing: 3px; }\n  .annotation_page img {\n    position: absolute;\n    width: 45px;\n    top: 0%;\n    left: 85%;\n    padding: 0px 0px;\n    cursor: pointer; }\n  .annotation_page .annotation_table {\n    background-color: white;\n    position: relative;\n    width: 70%;\n    max-height: 90%;\n    margin: 10px auto;\n    overflow: auto; }\n    .annotation_page .annotation_table table {\n      position: relative;\n      width: 100%;\n      color: #406A8C; }\n      .annotation_page .annotation_table table .col1 {\n        width: 20%;\n        border-right: 1px solid #f2f2f2; }\n      .annotation_page .annotation_table table .col2 {\n        width: 80%; }\n    .annotation_page .annotation_table th {\n      text-align: center;\n      font-size: 16px;\n      font-weight: normal;\n      letter-spacing: 10px;\n      padding: 10px 0px;\n      border-bottom: 1px solid #f2f2f2; }\n    .annotation_page .annotation_table td {\n      padding: 6px 0px; }\n      .annotation_page .annotation_table td.col1 {\n        text-align: center; }\n      .annotation_page .annotation_table td.col2 {\n        text-align: left;\n        text-indent: 20px; }\n\n.review_list {\n  position: relative;\n  margin: 25px 25px;\n  width: 65%;\n  height: 90%; }\n  .review_list p {\n    margin-top: 10px;\n    padding-left: 40px;\n    font-size: 14px;\n    color: #4A90E2; }\n\n.review_list_table {\n  position: relative;\n  width: 100%;\n  overflow: auto;\n  background: #FFFFFF;\n  box-shadow: -3px 2px 2px 0 rgba(119, 151, 178, 0.16);\n  text-align: center; }\n  .review_list_table table {\n    width: 100%;\n    color: #406A8C; }\n  .review_list_table th {\n    text-align: center;\n    background: #FFFFFF;\n    border: 0px;\n    padding: 15px 0px;\n    border-bottom: 1px solid #f2f2f2;\n    font-size: 17px;\n    font-weight: normal; }\n  .review_list_table tr:hover {\n    background: #F5F6F7; }\n  .review_list_table td {\n    padding: 15px 0px;\n    font-size: 15px; }\n  .review_list_table .tc1 {\n    width: 25%; }\n  .review_list_table .tc2 {\n    width: 50%; }\n\nbody {\n  overflow: hidden;\n  background-color: #F5F8FA; }\n\nhtml, body, #root, #root > div, .main_area, .row {\n  height: 100%; }\n\n.btn {\n  background-color: #4A90E2;\n  border-color: #4A90E2; }\n  .btn:hover, .btn:focus {\n    background-color: #2479db;\n    border-color: #2479db; }\n\n*::-webkit-scrollbar {\n  width: 6px;\n  background-color: #E0E9EC; }\n\n*::-webkit-scrollbar-thumb {\n  background-color: #58BCEB;\n  border-radius: 6px; }\n\n.navbar {\n  position: relative;\n  background: #00061D;\n  opacity: 0.85;\n  box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.5);\n  margin-bottom: 0;\n  border: 0px;\n  border-radius: 0px;\n  z-index: 10; }\n\n.main_area {\n  position: relative; }\n\n.sidebar {\n  position: relative;\n  z-index: 5;\n  height: 100%;\n  padding-left: 0px;\n  padding-right: 0px;\n  overflow: hidden; }\n  .sidebar .bg {\n    position: absolute;\n    left: 0;\n    top: 0;\n    width: 100%;\n    height: 100%;\n    z-index: 8; }\n  .sidebar .bg-filter {\n    position: absolute;\n    background: linear-gradient(#0b4774, #09385D);\n    left: 0;\n    top: 0;\n    width: 100%;\n    height: 100%;\n    opacity: 0.8;\n    z-index: 10; }\n  .sidebar ul {\n    position: relative;\n    margin-top: 10px;\n    padding-right: 10px;\n    z-index: 20; }\n  .sidebar .nav-item {\n    margin: 10px auto; }\n  .sidebar .nav-link {\n    position: relative;\n    z-index: 30;\n    background: rgba(255, 255, 255, 0); }\n    .sidebar .nav-link.active {\n      background: linear-gradient(90deg, rgba(68, 140, 203, 0.6) 0%, rgba(255, 255, 255, 0) 92%);\n      border-left: 5px #78DCFF solid; }\n    .sidebar .nav-link:focus {\n      background: linear-gradient(90deg, rgba(68, 140, 203, 0.6) 0%, rgba(255, 255, 255, 0) 92%);\n      border-left: 5px #78DCFF solid; }\n    .sidebar .nav-link img {\n      position: relative;\n      display: inline;\n      margin-right: 20px;\n      margin-left: 15%;\n      width: 10%;\n      z-index: 10;\n      pointer-events: none; }\n    .sidebar .nav-link span {\n      position: relative;\n      color: white;\n      font-size: 16px;\n      font-weight: lighter;\n      letter-spacing: 3px;\n      line-height: 150%;\n      vertical-align: middle;\n      z-index: 10;\n      pointer-events: none; }\n\nmain {\n  position: relative;\n  background-color: #F5F8FA;\n  height: 90%;\n  overflow: scroll; }\n  main::-webkit-scrollbar {\n    display: none; }\n\n.tb-section {\n  margin-bottom: 25px;\n  background-color: white;\n  box-shadow: -3px 2px 2px 0 rgba(119, 151, 178, 0.16); }\n\n.tr {\n  position: relative;\n  width: 100%;\n  display: flex; }\n\n.td1 {\n  position: relative;\n  display: inline;\n  width: 20%;\n  height: 100%;\n  text-align: center;\n  margin: auto 0px;\n  padding-top: 15px;\n  padding-bottom: 15px; }\n\n.td2 {\n  position: relative;\n  display: inline;\n  width: 40%;\n  height: 100%;\n  margin: auto 0px;\n  padding: 10px 0px;\n  font-size: 13px; }\n\n.td3 {\n  position: relative;\n  width: 100%;\n  padding: 15px 20px;\n  font-size: 13px;\n  font-weight: 400; }\n  .td3 p {\n    margin-bottom: 6px; }\n  .td3 .progress {\n    margin-bottom: 6px;\n    height: 8px; }\n    .td3 .progress .progress-bar-info {\n      background-color: #53BAEC; }\n  .td3 .completed_task {\n    padding: 15px 0px;\n    cursor: pointer;\n    transition: .1s; }\n    .td3 .completed_task span {\n      pointer-events: none; }\n    .td3 .completed_task:hover {\n      font-size: 14px; }\n    .td3 .completed_task img {\n      margin-left: 15px;\n      width: 25px; }\n\n.tr-stripe {\n  background-color: #F5F6F7; }\n\n.tr-widen {\n  padding-top: 15px;\n  padding-bottom: 25px; }\n\n.td-left {\n  text-align: center;\n  text-indent: -14px; }\n\n.td-stripe {\n  background-color: #F5F6F7; }\n\n.switch {\n  position: relative;\n  display: inline-block;\n  width: 36px;\n  height: 20.4px;\n  margin-right: 5px; }\n  .switch input {\n    visibility: hidden; }\n  .switch .slider {\n    position: absolute;\n    cursor: pointer;\n    top: 0;\n    left: 0;\n    right: 0;\n    bottom: 0;\n    background-color: #ccc;\n    -webkit-transition: .4s;\n    transition: .4s; }\n  .switch .slider:before {\n    position: absolute;\n    content: \"\";\n    height: 15.6px;\n    width: 15.6px;\n    left: 2.4px;\n    bottom: 2.4px;\n    background-color: white;\n    -webkit-transition: .4s;\n    transition: .4s; }\n  .switch input:checked + .slider {\n    background-color: #2196F3; }\n  .switch input:focus + .slider {\n    box-shadow: 0 0 1px #2196F3; }\n  .switch input:checked + .slider:before {\n    -webkit-transform: translateX(15.6px);\n    -ms-transform: translateX(15.6px);\n    transform: translateX(15.6px); }\n  .switch .slider.round {\n    border-radius: 20.4px; }\n  .switch .slider.round:before {\n    border-radius: 50%; }\n", ""]);
+exports.push([module.i, ".new_task {\n  position: relative;\n  width: 100%;\n  height: 100%;\n  margin-left: 20px;\n  display: flex;\n  flex-flow: row nowrap;\n  justify-content: flex-start;\n  color: #406A8C; }\n  .new_task > label {\n    position: absolute;\n    top: 560px;\n    left: 77%;\n    padding-left: 30px;\n    padding-right: 30px;\n    background-color: #0275d8;\n    border: 0px; }\n    .new_task > label span {\n      padding: 25px 10px; }\n    .new_task > label:hover {\n      background-color: #025fb1; }\n\n.new_task_upload {\n  position: relative;\n  flex-grow: 0;\n  width: 70%;\n  height: 95%;\n  margin-right: 20px;\n  margin-top: 20px;\n  overflow: auto;\n  overflow-x: hidden; }\n  .new_task_upload label {\n    margin-bottom: 0px;\n    font-weight: normal; }\n  .new_task_upload .file_input {\n    position: relative;\n    z-index: 5;\n    width: 80px;\n    height: 20px;\n    background: #FFFFFF;\n    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.5);\n    border-radius: 8px;\n    margin-bottom: 10px;\n    margin-top: 10px;\n    vertical-align: middle;\n    text-align: center;\n    cursor: pointer; }\n    .new_task_upload .file_input span {\n      position: relative;\n      display: inline-block;\n      font-size: 11px;\n      color: #53BAEC;\n      cursor: pointer; }\n      .new_task_upload .file_input span.prompt {\n        display: block;\n        margin-top: 5px;\n        color: #406A8C;\n        font-size: 10px;\n        cursor: default; }\n    .new_task_upload .file_input input {\n      position: relative;\n      visibility: hidden;\n      width: 0px;\n      height: 0px;\n      z-index: 0; }\n  .new_task_upload textarea {\n    border: 1px solid #e6e6e6; }\n  .new_task_upload #task_submit {\n    display: none; }\n\n.new_task_progress {\n  position: relative;\n  flex-grow: 0;\n  background: #FFFFFF;\n  box-shadow: -3px 2px 2px 0 rgba(119, 151, 178, 0.16);\n  margin-top: 20px;\n  width: 22%;\n  height: 525px;\n  overflow: auto; }\n  .new_task_progress .tb-title {\n    position: relative;\n    width: 100%;\n    padding-top: 0px;\n    padding: 20px; }\n\n.td3 {\n  position: relative;\n  width: 100%;\n  padding: 15px 20px;\n  font-size: 13px;\n  font-weight: 400; }\n  .td3 p {\n    margin-bottom: 6px; }\n  .td3 .progress {\n    margin-bottom: 6px;\n    height: 8px; }\n    .td3 .progress .progress-bar-info {\n      background-color: #53BAEC; }\n  .td3 .completed_task {\n    padding: 15px 0px;\n    cursor: pointer;\n    transition: .1s; }\n    .td3 .completed_task span {\n      pointer-events: none; }\n    .td3 .completed_task:hover {\n      font-size: 14px; }\n    .td3 .completed_task img {\n      margin-left: 15px;\n      width: 25px; }\n  .td3 .failed_task {\n    padding: 15px 0px;\n    cursor: pointer;\n    transition: .1s; }\n    .td3 .failed_task span {\n      pointer-events: none; }\n    .td3 .failed_task:hover {\n      font-size: 14px; }\n\n.task_list {\n  position: relative;\n  margin: 20px 20px;\n  width: 65%;\n  height: 90%; }\n  .task_list .search_container {\n    position: relative;\n    width: 100%;\n    height: 7%;\n    margin-bottom: 10px; }\n    .task_list .search_container span {\n      position: absolute;\n      height: 50%;\n      font-size: 12px;\n      opacity: 0.4;\n      transform: translate(0, -50%); }\n    .task_list .search_container div {\n      position: relative;\n      width: 100%;\n      height: 100%; }\n      .task_list .search_container div select {\n        display: none; }\n      .task_list .search_container div input {\n        position: relative;\n        width: 100%;\n        height: 100%;\n        border: 0px;\n        /* Input: */\n        background: #FFFFFF;\n        border: 1px solid #58BCEB;\n        border-radius: 4px; }\n        .task_list .search_container div input::-webkit-input-placeholder {\n          text-indent: 6%;\n          background: url(" + __webpack_require__(540) + ") no-repeat;\n          background-position: 2% 0;\n          background-size: 19px; }\n  .task_list p {\n    margin-top: 10px;\n    padding-left: 40px;\n    font-size: 14px;\n    color: #4A90E2; }\n\n.task_list_table {\n  position: relative;\n  width: 100%;\n  background: #FFFFFF;\n  box-shadow: -3px 2px 2px 0 rgba(119, 151, 178, 0.16);\n  overflow: auto;\n  height: 92%; }\n  .task_list_table table {\n    width: 100%;\n    text-align: center;\n    color: #406A8C; }\n  .task_list_table th {\n    text-align: center;\n    background: #FFFFFF;\n    border: 0px;\n    padding: 15px 0px;\n    border-bottom: 1px solid #f2f2f2;\n    font-size: 17px;\n    font-weight: normal; }\n  .task_list_table tr:hover {\n    background: #F5F6F7; }\n  .task_list_table td {\n    padding: 15px 0px;\n    font-size: 15px; }\n  .task_list_table .tc1 {\n    width: 25%; }\n  .task_list_table .tc2 {\n    width: 50%; }\n\n.clickable {\n  cursor: pointer; }\n\n.result_page {\n  position: relative;\n  width: 100%;\n  height: 100%;\n  color: #406A8C; }\n  .result_page .back-sign {\n    position: relative;\n    padding: 15px 15px; }\n    .result_page .back-sign img {\n      position: relative;\n      width: 3%;\n      cursor: pointer; }\n    .result_page .back-sign span {\n      font-size: 18px;\n      margin-left: 10px;\n      vertical-align: middle; }\n\n.result_table_nav {\n  position: relative;\n  display: flex;\n  flex-direction: row;\n  justify-content: space-between;\n  align-items: center; }\n  .result_table_nav ul {\n    position: relative;\n    list-style-type: none;\n    margin: 0px;\n    margin-left: 15px;\n    padding-left: 0px;\n    width: 80%;\n    display: flex;\n    justify-content: space-between;\n    border: 1px solid #58BCEB;\n    border-right: 0px;\n    border-radius: 4px;\n    overflow: hidden; }\n    .result_table_nav ul li {\n      background-color: white;\n      flex-basis: 100%;\n      width: auto;\n      padding: 5px 10px;\n      vertical-align: middle;\n      border: 0px;\n      border-right: 1px solid #58BCEB;\n      text-align: center;\n      cursor: pointer; }\n      .result_table_nav ul li span {\n        vertical-align: middle;\n        color: #406A8C;\n        text-decoration: none;\n        background-color: transparent;\n        border: 0px;\n        pointer-events: none; }\n      .result_table_nav ul li.active {\n        background-color: #4A90E2; }\n        .result_table_nav ul li.active span {\n          color: white; }\n      .result_table_nav ul li:hover {\n        background-color: #4A90E2; }\n        .result_table_nav ul li:hover span {\n          color: white; }\n  .result_table_nav #review_button {\n    margin-right: 20px;\n    background-color: #58BCEB;\n    vertical-align: middle;\n    border: 0px;\n    letter-spacing: 2px;\n    font-size: 14px;\n    padding: 0px 25px;\n    height: 30px;\n    box-shadow: 0 1px 3px 0 rgba(117, 146, 222, 0.85); }\n    .result_table_nav #review_button:hover, .result_table_nav #review_button:focus {\n      background-color: #32ade7; }\n\n.review_block {\n  position: relative;\n  margin-bottom: 15px;\n  width: 100%;\n  height: 170px;\n  background: #F5F6FA;\n  box-shadow: -3px 2px 2px 0 rgba(119, 151, 178, 0.16); }\n  .review_block .question_container {\n    width: 100%;\n    height: 100%;\n    display: flex;\n    flex-direction: row;\n    justify-content: flex-start; }\n  .review_block .review_question {\n    margin-top: 15px;\n    text-align: center;\n    flex-basis: 100%; }\n    .review_block .review_question label {\n      padding: 0px 10px;\n      text-indent: 10px; }\n      .review_block .review_question label span {\n        padding-left: 5px; }\n    .review_block .review_question textarea {\n      border: 1px solid #e6e6e6; }\n  .review_block #review_submit {\n    height: 30px;\n    margin-top: 25px;\n    padding-left: 25px;\n    padding-right: 25px;\n    font-size: 15px;\n    line-height: 0px;\n    letter-spacing: 5px; }\n\n.result_area {\n  position: relative;\n  padding: 15px 15px;\n  padding-bottom: 5px;\n  height: 84%;\n  display: flex;\n  flex-direction: column;\n  justify-content: flex-start;\n  overflow: auto; }\n\n.result_table {\n  flex-grow: 1;\n  width: 100%; }\n  .result_table table {\n    width: 100%;\n    background: #FFFFFF;\n    box-shadow: -3px 2px 2px 0 rgba(119, 151, 178, 0.16); }\n  .result_table thead th {\n    text-align: center;\n    border: 1px solid #e6e6e6;\n    padding: 20px 5px;\n    font-weight: bold; }\n  .result_table thead .sort {\n    cursor: pointer;\n    padding: 0px 0px; }\n  .result_table tbody tr:hover {\n    background-color: rgba(242, 242, 242, 0.6); }\n  .result_table tbody td {\n    text-align: center;\n    min-width: 80px;\n    border: 1px solid #e6e6e6;\n    padding: 20px 5px;\n    word-wrap: break-word; }\n  .result_table .pagify-pagination {\n    position: fixed;\n    left: 19%;\n    top: 95%;\n    font-size: 14px;\n    display: flex;\n    justify-content: flex-start;\n    align-items: center; }\n    .result_table .pagify-pagination span {\n      margin: 0px 5px;\n      cursor: pointer; }\n\n.annotation_page {\n  background: rgba(55, 70, 95, 0.8);\n  position: fixed;\n  width: 100%;\n  height: 100%;\n  left: 0%;\n  top: 0%;\n  z-index: 50; }\n  .annotation_page .annotation_area {\n    position: relative;\n    top: 8%;\n    height: 85%; }\n  .annotation_page .annotation_header {\n    background-color: white;\n    position: relative;\n    width: 70%;\n    margin: 0px auto;\n    color: white;\n    display: flex;\n    justify-content: center; }\n    .annotation_page .annotation_header p {\n      color: #406A8C;\n      vertical-align: middle;\n      margin: 0px 7%;\n      letter-spacing: 10px;\n      font-size: 16px;\n      padding: 11px 0px; }\n      .annotation_page .annotation_header p span {\n        color: #4A90E2;\n        letter-spacing: 3px; }\n  .annotation_page img {\n    position: absolute;\n    width: 45px;\n    top: 0%;\n    left: 85%;\n    padding: 0px 0px;\n    cursor: pointer; }\n  .annotation_page .annotation_table {\n    background-color: white;\n    position: relative;\n    width: 70%;\n    max-height: 90%;\n    margin: 10px auto;\n    overflow: auto; }\n    .annotation_page .annotation_table table {\n      position: relative;\n      width: 100%;\n      color: #406A8C; }\n      .annotation_page .annotation_table table .col1 {\n        width: 20%;\n        border-right: 1px solid #f2f2f2; }\n      .annotation_page .annotation_table table .col2 {\n        width: 80%; }\n    .annotation_page .annotation_table th {\n      text-align: center;\n      font-size: 16px;\n      font-weight: normal;\n      letter-spacing: 10px;\n      padding: 10px 0px;\n      border-bottom: 1px solid #f2f2f2; }\n    .annotation_page .annotation_table td {\n      padding: 6px 0px; }\n      .annotation_page .annotation_table td.col1 {\n        text-align: center; }\n      .annotation_page .annotation_table td.col2 {\n        text-align: left; }\n\n.interpretation_content {\n  text-align: left;\n  padding-left: 20px;\n  line-height: 20px; }\n  .interpretation_content a {\n    color: #4A90E2; }\n\n.review_list {\n  position: relative;\n  margin: 25px 25px;\n  width: 65%;\n  height: 90%; }\n  .review_list p {\n    margin-top: 10px;\n    padding-left: 40px;\n    font-size: 14px;\n    color: #4A90E2; }\n\n.review_list_table {\n  position: relative;\n  width: 100%;\n  overflow: auto;\n  background: #FFFFFF;\n  box-shadow: -3px 2px 2px 0 rgba(119, 151, 178, 0.16);\n  text-align: center; }\n  .review_list_table table {\n    width: 100%;\n    color: #406A8C; }\n  .review_list_table th {\n    text-align: center;\n    background: #FFFFFF;\n    border: 0px;\n    padding: 15px 0px;\n    border-bottom: 1px solid #f2f2f2;\n    font-size: 17px;\n    font-weight: normal; }\n  .review_list_table tr:hover {\n    background: #F5F6F7; }\n  .review_list_table td {\n    padding: 15px 0px;\n    font-size: 15px; }\n  .review_list_table .tc1 {\n    width: 25%; }\n  .review_list_table .tc2 {\n    width: 50%; }\n\nbody {\n  overflow: hidden;\n  background-color: #F5F8FA; }\n\nhtml, body, #root, #root > div, .main_area, .row {\n  height: 100%; }\n\n.btn {\n  background-color: #4A90E2;\n  border-color: #4A90E2; }\n  .btn:hover, .btn:focus {\n    background-color: #2479db;\n    border-color: #2479db; }\n\n*::-webkit-scrollbar {\n  width: 6px;\n  background-color: #E0E9EC; }\n\n*::-webkit-scrollbar-thumb {\n  background-color: #58BCEB;\n  border-radius: 6px; }\n\n.navbar {\n  position: relative;\n  background: #00061D;\n  opacity: 0.85;\n  box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.5);\n  margin-bottom: 0;\n  border: 0px;\n  border-radius: 0px;\n  z-index: 10; }\n\n.main_area {\n  position: relative; }\n\n.sidebar {\n  position: relative;\n  z-index: 5;\n  height: 100%;\n  padding-left: 0px;\n  padding-right: 0px;\n  overflow: hidden; }\n  .sidebar .bg {\n    position: absolute;\n    left: 0;\n    top: 0;\n    width: 100%;\n    height: 100%;\n    z-index: 8; }\n  .sidebar .bg-filter {\n    position: absolute;\n    background: linear-gradient(#0b4774, #09385D);\n    left: 0;\n    top: 0;\n    width: 100%;\n    height: 100%;\n    opacity: 0.8;\n    z-index: 10; }\n  .sidebar ul {\n    position: relative;\n    margin-top: 10px;\n    padding-right: 10px;\n    z-index: 20; }\n  .sidebar .nav-item {\n    margin: 10px auto; }\n  .sidebar .nav-link {\n    position: relative;\n    z-index: 30;\n    background: rgba(255, 255, 255, 0); }\n    .sidebar .nav-link.active {\n      background: linear-gradient(90deg, rgba(68, 140, 203, 0.6) 0%, rgba(255, 255, 255, 0) 92%);\n      border-left: 5px #78DCFF solid; }\n    .sidebar .nav-link:focus {\n      background: linear-gradient(90deg, rgba(68, 140, 203, 0.6) 0%, rgba(255, 255, 255, 0) 92%);\n      border-left: 5px #78DCFF solid; }\n    .sidebar .nav-link img {\n      position: relative;\n      display: inline;\n      margin-right: 20px;\n      margin-left: 15%;\n      width: 10%;\n      z-index: 10;\n      pointer-events: none; }\n    .sidebar .nav-link span {\n      position: relative;\n      color: white;\n      font-size: 16px;\n      font-weight: lighter;\n      letter-spacing: 3px;\n      line-height: 150%;\n      vertical-align: middle;\n      z-index: 10;\n      pointer-events: none; }\n\nmain {\n  position: relative;\n  background-color: #F5F8FA;\n  height: 90%;\n  overflow: scroll; }\n  main::-webkit-scrollbar {\n    display: none; }\n\n.tb-section {\n  margin-bottom: 25px;\n  background-color: white;\n  box-shadow: -3px 2px 2px 0 rgba(119, 151, 178, 0.16); }\n\n.tr {\n  position: relative;\n  width: 100%;\n  display: flex; }\n\n.td1 {\n  position: relative;\n  display: inline;\n  width: 20%;\n  height: 100%;\n  text-align: center;\n  margin: auto 0px;\n  padding-top: 15px;\n  padding-bottom: 15px; }\n\n.td2 {\n  position: relative;\n  display: inline;\n  width: 40%;\n  height: 100%;\n  margin: auto 0px;\n  padding: 10px 0px;\n  font-size: 13px; }\n\n.tr-stripe {\n  background-color: #F5F6F7; }\n\n.tr-widen {\n  padding-top: 15px;\n  padding-bottom: 25px; }\n\n.td-left {\n  text-align: center;\n  text-indent: -14px; }\n\n.td-stripe {\n  background-color: #F5F6F7; }\n\n.switch {\n  position: relative;\n  display: inline-block;\n  width: 36px;\n  height: 20.4px;\n  margin-right: 5px; }\n  .switch input {\n    visibility: hidden; }\n  .switch .slider {\n    position: absolute;\n    cursor: pointer;\n    top: 0;\n    left: 0;\n    right: 0;\n    bottom: 0;\n    background-color: #ccc;\n    -webkit-transition: .4s;\n    transition: .4s; }\n  .switch .slider:before {\n    position: absolute;\n    content: \"\";\n    height: 15.6px;\n    width: 15.6px;\n    left: 2.4px;\n    bottom: 2.4px;\n    background-color: white;\n    -webkit-transition: .4s;\n    transition: .4s; }\n  .switch input:checked + .slider {\n    background-color: #2196F3; }\n  .switch input:focus + .slider {\n    box-shadow: 0 0 1px #2196F3; }\n  .switch input:checked + .slider:before {\n    -webkit-transform: translateX(15.6px);\n    -ms-transform: translateX(15.6px);\n    transform: translateX(15.6px); }\n  .switch .slider.round {\n    border-radius: 20.4px; }\n  .switch .slider.round:before {\n    border-radius: 50%; }\n", ""]);
 
 // exports
 

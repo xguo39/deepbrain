@@ -437,19 +437,52 @@ class all_task_list(APIView):
         json_result = {'success':True, 'list':serializer.data}
         return Response(json_result)
 
+class task_check(APIView):
+
+    def put(self, request, user_name, format=None):
+        task_id = request.POST.get('task_id', None)
+        # print task_id
+        put_data = Raw_input_table.objects.get(user_name=user_name, id=task_id)
+        put_data.checked = 0
+        put_data.save()
+        return Response({'success':True})
+
+
 class case_result(APIView):
 
     def get(self, request, task_id, user_name, format=None):
         data = Main_table.objects.get(user_name=user_name, task_id=task_id)
+        incidental_table_data = json.loads(data.incidental_findings, object_pairs_hook=OrderedDict)
+        candidate_table_data = json.loads(data.candidate_genes, object_pairs_hook=OrderedDict)     
         json_result = {
             'success':True,
             'result_data':{
                 'summary_table_data': json.loads(data.result, object_pairs_hook=OrderedDict),
-                'incidental_table_data': data.incidental_findings,
-                'candidate_table_data': data.candidate_genes,
+                'incidental_table_data': incidental_table_data,
+                'candidate_table_data': candidate_table_data,
                 'input_gene_data': json.loads(data.input_gene, object_pairs_hook=OrderedDict),
-                # 'interpretation_data': data.interpretation_chinese,
+                'interpretation_data': json.loads(data.interpretation_chinese, object_pairs_hook=OrderedDict),
             }
         }
         return Response(json_result)
 
+class result_detail(APIView):
+
+    def post(self, request, task_id, gene_name, user_name, format=None):
+        cDNA = request.POST.get('cDNA', None)
+        # print cDNA, task_id, gene_name, user_name
+        data = Main_table.objects.get(task_id=task_id)
+        # detail = json.loads(data.interpretation_chinese, object_pairs_hook=OrderedDict)
+        detail_df = pd.read_json(data.interpretation_chinese)
+        # print detail_df.head()
+        result_detail_df = detail_df[detail_df['gene']==gene_name]
+        result_detail_df = result_detail_df[result_detail_df['variant']==cDNA]
+        result_detail_df = result_detail_df.loc[:,['criteria','interpretation']]
+        # print result_detail_df.head()
+        result_detail = result_detail_df.to_json(orient='records')
+        # print result_detail
+        json_result = {
+            'success':True,
+            'result_detail': json.loads(result_detail, object_pairs_hook=OrderedDict)
+        }
+        return Response(json_result)
