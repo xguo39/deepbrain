@@ -452,8 +452,14 @@ class case_result(APIView):
 
     def get(self, request, task_id, user_name, format=None):
         data = Main_table.objects.get(user_name=user_name, task_id=task_id)
-        incidental_table_data = json.loads(data.incidental_findings, object_pairs_hook=OrderedDict)
-        candidate_table_data = json.loads(data.candidate_genes, object_pairs_hook=OrderedDict)     
+        if data.incidental_findings:
+            incidental_table_data = json.loads(data.incidental_findings, object_pairs_hook=OrderedDict)
+        else:
+            incidental_table_data = ''
+        if data.candidate_genes:
+            candidate_table_data = json.loads(data.candidate_genes, object_pairs_hook=OrderedDict)
+        else:
+            candidate_table_data = ''        
         json_result = {
             'success':True,
             'result_data':{
