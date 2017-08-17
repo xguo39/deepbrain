@@ -22,7 +22,7 @@ class Result_page extends React.Component{
     summary_data[0] = {...this.props.result_data.summary_table_data[0]};
     delete summary_data[0]['correlated_phenotypes'];
     delete summary_data[0]['id'];
-    this.state={
+    this.setState={
       current_table:'summary_table',
       current_data:summary_data
     }
