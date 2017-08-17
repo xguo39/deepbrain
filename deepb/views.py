@@ -321,7 +321,7 @@ def lof(request):
 
 @login_required(login_url='/login/')
 def home_new_View_ch(request):
-    print request.user.username
+    # print request.user.username
     return render(request, 'home_ch_new.html', {'user_name': request.user.username})
 
 class new_task(APIView):

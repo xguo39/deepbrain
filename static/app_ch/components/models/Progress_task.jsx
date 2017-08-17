@@ -24,7 +24,7 @@ class Processing_task extends React.Component{
       <div>
         <p className='task-title'>{`${this.props.task_info.task_name}：${current_percent}`}</p>
         <div className="progress">
-          <div className="progress-bar progress-bar-info active" role="progressbar" aria-valuenow="50"
+          <div className="progress-bar progress-bar-info progress-bar-striped active" role="progressbar" aria-valuenow="50"
           aria-valuemin="0" aria-valuemax="100" style={barStyle}>
             <span className="sr-only">50% Complete</span>
           </div>
