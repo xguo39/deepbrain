@@ -1,9 +1,19 @@
+let domain;
+(()=>{
+  const url = window.location.href;
+  const pathname = window.location.pathname;
+  domain = url.replace(pathname,'');
+})()
+
 const basic_info = {
-  static_image:'http://127.0.0.1:8000/static/app_ch/files/images/'
+  // static_image:'http://127.0.0.1:8000/static/app_ch/files/images/'
+  static_image:`${domain}/static/app_ch/files/images/`
 }
 
-const server_domain = 'http://127.0.0.1:8000';
-const static_image = 'http://127.0.0.1:8000/static/app_ch/files/images/';
+// const server_domain = 'http://127.0.0.1:8000';
+// const static_image = 'http://127.0.0.1:8000/static/app_ch/files/images/';
+const server_domain = `${domain}`;
+const static_image = `${domain}/static/app_ch/files/images/`;
 
 const apis={
   upload_task:'/api/task/new_task/',
