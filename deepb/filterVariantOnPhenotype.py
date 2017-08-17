@@ -263,7 +263,7 @@ def searchPhenosFromPubmed(patient_phenotypes, samedomainvariants, domainvariant
     for key in variantphenospmids.keys():
         gene, variant, protein = key
         pmids = variantphenospmids[key]
-        pmids = ["<a href='https://www.ncbi.nlm.nih.gov/pubmed/%s'> %s </a>" %(i,i) for i in pmids]
+        pmids = ["<a href='https://www.ncbi.nlm.nih.gov/pubmed/%s' target='_blank'> %s </a>" %(i,i) for i in pmids]
         if (gene, variant) in curr_interpret:
             curr_interpret[(gene, variant)].append('Previous literature (PMIDs: %s) reported similar phenotypes caused by genetic variants affecting the same protein domain as out current case.' % (', ').join(list(set(pmids))))
             curr_interpret_chinese[(gene, variant)].append('生物医学文献(PMIDs: %s)之前报道此基因变异的相似变异(影响相同蛋白功能区)引发与该病人相似的表型.' % (', ').join(list(set(pmids))))
