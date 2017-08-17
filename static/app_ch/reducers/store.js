@@ -85,8 +85,8 @@ const initialState = {
           //  final_score:1.1
          }
       ],
-      incidental_table_data:'',
-      candidate_table_data:'',
+      incidental_table_data:[],
+      candidate_table_data:[],
       input_gene_data:[
         {
           // Gene:'PPTERER',

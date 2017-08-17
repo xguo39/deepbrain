@@ -16905,8 +16905,8 @@ var initialState = {
         //  pathogenicity_score:1.28,
         //  final_score:1.1
       }],
-      incidental_table_data: '',
-      candidate_table_data: '',
+      incidental_table_data: [],
+      candidate_table_data: [],
       input_gene_data: [{
         // Gene:'PPTERER',
         // HGVS_cDNa:'fdsfdsfdsfsdf'
@@ -20482,7 +20482,6 @@ var Result_page = function (_React$Component) {
             summary_data[0] = _extends({}, this.props.result_data.summary_table_data[0]);
             delete summary_data[0]['correlated_phenotypes'];
             delete summary_data[0]['id'];
-            // delete this.props.result_data.summary_table_data[0]['correlated_phenotypes'];
             this.setState(_extends({}, this.state, {
               current_table: 'summary_table',
               current_data: summary_data
@@ -20556,7 +20555,7 @@ var Result_page = function (_React$Component) {
   }, {
     key: '_renderTable',
     value: function _renderTable(table_data) {
-      if (table_data) {
+      if (table_data.length !== 0) {
         return _react2.default.createElement(_fragments.General_data_table, { table_data: this.state.current_data });
       } else {
         if (this.state.current_table === 'incidental_finding_table') {

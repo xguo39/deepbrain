@@ -47,7 +47,6 @@ class Result_page extends React.Component{
           summary_data[0] = {...this.props.result_data.summary_table_data[0]};
           delete summary_data[0]['correlated_phenotypes'];
           delete summary_data[0]['id'];
-          // delete this.props.result_data.summary_table_data[0]['correlated_phenotypes'];
           this.setState({
             ...this.state,
             current_table:'summary_table',
@@ -125,7 +124,7 @@ class Result_page extends React.Component{
   }
 
   _renderTable(table_data){
-    if(table_data){
+    if(table_data.length!==0){
       return <General_data_table table_data={this.state.current_data}/>
     }else{
       if(this.state.current_table==='incidental_finding_table'){
