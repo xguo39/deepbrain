@@ -24,6 +24,11 @@ class Annotation_table extends React.Component{
           header:{
             label:'解读'
           },
+          cell:{
+            formatters:[
+              interpretation => this._unescapeHTML(interpretation)
+            ]
+          },
           props:{
             className:'col2'
           }
@@ -31,6 +36,12 @@ class Annotation_table extends React.Component{
       ],
       rows:this.props.table_data
     }
+  }
+
+  _unescapeHTML(html) {
+    var escapeEl = document.createElement('textarea');
+    escapeEl.innerHTML = html;
+    return  <div className='interpretation_content' dangerouslySetInnerHTML={{ __html: `${html}` }}></div>
   }
 
   render(){

@@ -17,6 +17,10 @@ class Result_page extends React.Component{
     }
   }
 
+  componentWillReceiveProps(){
+
+  }
+
   componentWillMount(){
     const task_id = this.props.match.params.task_id;
     this.props.fetchResultData(task_id);
@@ -120,6 +124,18 @@ class Result_page extends React.Component{
     let review_form_data = new FormData(evt.target);
   }
 
+  _renderTable(table_data){
+    if(table_data){
+      return <General_data_table table_data={this.state.current_data}/>
+    }else{
+      if(this.state.current_table==='incidental_finding_table'){
+        return <div>该案例未要求 附带发现表 数据</div>
+      }else if(this.state.current_table==='candidate_gene_table'){
+        return <div>该案例未要求 备选基因表 数据</div>
+      }
+    }
+  }
+
   render(){
     return(
       <div className='result_page'>
@@ -201,7 +217,7 @@ class Result_page extends React.Component{
            </div>
            {/* Table Area */}
            <div className='result_table' onClick={(evt)=>this._handleClick(evt)}>
-             <General_data_table table_data={this.state.current_data}/>
+             {this._renderTable(this.state.current_data)}
            </div>
          </div>
       </div>

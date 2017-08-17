@@ -57,12 +57,26 @@ class General_data_table extends React.Component{
           }
         })
       }else{
-        columns.push({
-          property:`${column_key}`,
-          header:{
-            label:`${mappingDict[column_key]?mappingDict[column_key]:column_key}`
-          }
-        })
+        if(column_key==='interpretation'){
+          columns.push({
+            property:`${column_key}`,
+            header:{
+              label:`${mappingDict[column_key]?mappingDict[column_key]:column_key}`
+            },
+            cell:{
+              formatters:[
+                interpretation => this._unescapeHTML(interpretation)
+              ]
+            }
+          })
+        }else{
+          columns.push({
+            property:`${column_key}`,
+            header:{
+              label:`${mappingDict[column_key]?mappingDict[column_key]:column_key}`
+            }
+          })
+        }
       }
     }
     this.state={
@@ -122,12 +136,26 @@ class General_data_table extends React.Component{
           }
         })
       }else{
-        columns.push({
-          property:`${column_key}`,
-          header:{
-            label:`${mappingDict[column_key]?mappingDict[column_key]:column_key}`
-          }
-        })
+        if(column_key==='interpretation'){
+          columns.push({
+            property:`${column_key}`,
+            header:{
+              label:`${mappingDict[column_key]?mappingDict[column_key]:column_key}`
+            },
+            cell:{
+              formatters:[
+                interpretation => this._unescapeHTML(interpretation)
+              ]
+            }
+          })
+        }else{
+          columns.push({
+            property:`${column_key}`,
+            header:{
+              label:`${mappingDict[column_key]?mappingDict[column_key]:column_key}`
+            }
+          })
+        }
       }
     }
     this.setState({
@@ -159,6 +187,10 @@ class General_data_table extends React.Component{
        page: Math.min(Math.max(page, 1), pages)
      }
    });
+  }
+
+  _unescapeHTML(html){
+    return  <div className='interpretation_content' dangerouslySetInnerHTML={{ __html: `${html}` }}></div>
   }
 
   render(){

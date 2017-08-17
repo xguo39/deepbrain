@@ -16880,65 +16880,33 @@ var initialState = {
     isFetching: false,
     result_data: {
       summary_table_data: [{
-        gene: 'WWOX',
-        transcript: 'chr16:g.78466583C>G',
-        variant: 'c.5354G&t>A',
-        protein: 'danbaizhi',
-        id: '2313fsfsf',
-        zygosity: 'peixing',
-        correlated_phenotypes: 'biaoxingpipei',
-        pheno_match_score: 39,
-        hit_criteria: "PM2|BP4",
-        pathogenicity: 'Uncertain Significance',
-        pathogenicity_score: 0.88,
-        final_score: 1.8
+        //  gene:'WWOX',
+        //  transcript:'chr16:g.78466583C>G',
+        //  variant:'c.5354G&t>A',
+        //  protein:'danbaizhi',
+        //  id:'2313fsfsf',
+        //  zygosity:'peixing',
+        //  correlated_phenotypes:'biaoxingpipei',
+        //  pheno_match_score:39,
+        //  hit_criteria:"PM2|BP4",
+        //  pathogenicity:'Uncertain Significance',
+        //  pathogenicity_score:0.88,
+        //  final_score:1.8
       }, {
-        gene: 'WNT7A',
-        transcript: 'chr3:g.13896304C>T',
-        variant: 'c.5224G&t>C',
-        protein: 'danbaizhi',
-        zygosity: 'peixing',
-        correlated_phenotypes: 'biaoxingpipei',
-        pheno_match_score: 45,
-        hit_criteria: "PM2|BP4",
-        pathogenicity: 'Uncertain Significance',
-        pathogenicity_score: 1.28,
-        final_score: 1.1
+        //  gene:'WNT7A',
+        //  transcript:'chr3:g.13896304C>T',
+        //  variant:'c.5224G&t>C',
+        //  protein:'danbaizhi',
+        //  zygosity:'peixing',
+        //  correlated_phenotypes:'biaoxingpipei',
+        //  pheno_match_score:45,
+        //  hit_criteria:"PM2|BP4",
+        //  pathogenicity:'Uncertain Significance',
+        //  pathogenicity_score:1.28,
+        //  final_score:1.1
       }],
-      incidental_table_data: [{
-        // gene:'WWOX',
-        // transcript:'chr16:g.78466583C>G',
-        // variant:'GCGTG',
-        // protein:'danbaizhi',
-        // zygosity:'peixing',
-        // pheno_match_score:39,
-        // hit_criteria:"PM2|BP4",
-        // pathogenicity:'Uncertain Significance',
-      }, {
-        // gene:'Shio OM4',
-        // transcript:'chr16:g.78466583C>G',
-        // variant:'GCGTG',
-        // protein:'danbaizhi',
-        // zygosity:'peixing',
-        // pheno_match_score:88,
-        // hit_criteria:"PM2|BP4",
-        // pathogenicity:'Uncertain Significance',
-      }],
-      candidate_table_data: [{
-        // gene:'WWOX',
-        // transcript:'chr16:g.78466583C>G',
-        // cDNA:'GCGTG',
-        // protein:'danbaizhi',
-        // zygosity:'peixing',
-        // correlated_phenotypes:'from paper'
-      }, {
-        // gene:'Shio OM4',
-        // transcript:'chr16:g.78466583C>G',
-        // cDNA:'GCGTG',
-        // protein:'danbaizhi',
-        // zygosity:'peixing',
-        // correlated_phenotypes:'from paper'
-      }],
+      incidental_table_data: '',
+      candidate_table_data: '',
       input_gene_data: [{
         // Gene:'PPTERER',
         // HGVS_cDNa:'fdsfdsfdsfsdf'
@@ -16947,18 +16915,18 @@ var initialState = {
         // HGVS_cDNa:'fdsfdsfdsfdsfdsfsdf'
       }],
       interpretation_data: [{
-        // gene:'WWT7',
-        // variant:'dsfsdfsf',
-        // criteria:'dfsfsdfsdf',
-        // interpretation:''
+        gene: 'WWT7',
+        variant: 'dsfsdfsf',
+        criteria: 'dfsfsdfsdf',
+        interpretation: "突变类型: missense_variant.<br/>蛋白功能区: NAD(P)-binding domain.<br/>HGVS ID: chr16:g.78466583C>G.<br/>RefSeq ID: <a href=' '> rs117209694 </a ><br/>蛋白质: p.Asn330Lys.<br/>外显子: 8.<br/>GeneCards: <a href='http://www.genecards.org/cgi-bin/carddisp.pl?gene=WWOX'> WWOX </a ><br/>OMIM: <a href='https://www.omim.org/entry/605131'> 605131 </a ><br/>Decipher: <a href='https://decipher.sanger.ac.uk/search?q=WWOX#consented-patients/results'> WWOX </a ><br/>Genetics Home Reference: <a href='https://ghr.nlm.nih.gov/gene/WWOX'> WWOX </a ><br/>GeneReviews: <a href='https://www.ncbi.nlm.nih.gov/books/NBK1116/?term=WWOX'> WWOX </a ><br/>ExAC 最小等位基因频率(MAF): 0.000174 (<a href='http://exac.broadinstitute.org/variant/16-78466583-C-G'> 16-78466583-C-G </a >)<br/>ExAC 最小等位基因频率(MAF)详细数据: Total Allele Count (21), Total Allele Number (120722), Allele Frequency for all races (0.0002), Number of Homozygotes (0), Homozygotes Percentage (0.0000), African Allele Count (1), African Allele Number (9796), African Allele Frequency (0.0001), Latino Allele Count (0), Latino Allele Number (11570), Latino Allele Frequency (0.0000), East Asian Allele Count (0), East Asian Allele Number (8622), East Asian Allele Frequency (0.0000), European (Finnish) Allele Count (0), European (Finnish) Allele Number (6612), European (Finnish) Allele Frequency (0.0000), European (Non-Finnish) Allele Count (20), European (Non-Finnish) Allele Number (66710), European (Non-Finnish) "
       }]
     },
     annotation_data: [{
-      criteria: '变异注释',
-      interpretation: 'xxooxoxoxoxoxoodfdsfdsfdsfdsfdfdsf'
+      // criteria:'变异注释',
+      // interpretation:""
     }, {
-      criteria: 'PVS1',
-      interpretation: 'yykkdfdfsdfdsfsdfdsfsdfsdfsdfjfjdsfdksnflkndf'
+      // criteria:'PVS1',
+      // interpretation:"dsfsdfsdfsdfsdfsf "
     }]
   }
 };
@@ -18331,6 +18299,11 @@ var Annotation_table = function (_React$Component) {
         header: {
           label: '解读'
         },
+        cell: {
+          formatters: [function (interpretation) {
+            return _this._unescapeHTML(interpretation);
+          }]
+        },
         props: {
           className: 'col2'
         }
@@ -18341,6 +18314,13 @@ var Annotation_table = function (_React$Component) {
   }
 
   _createClass(Annotation_table, [{
+    key: '_unescapeHTML',
+    value: function _unescapeHTML(html) {
+      var escapeEl = document.createElement('textarea');
+      escapeEl.innerHTML = html;
+      return _react2.default.createElement('div', { className: 'interpretation_content', dangerouslySetInnerHTML: { __html: '' + html } });
+    }
+  }, {
     key: 'render',
     value: function render() {
       var _state = this.state,
@@ -18687,12 +18667,26 @@ var General_data_table = function (_React$Component) {
           }
         });
       } else {
-        columns.push({
-          property: '' + column_key,
-          header: {
-            label: '' + (mappingDict[column_key] ? mappingDict[column_key] : column_key)
-          }
-        });
+        if (column_key === 'interpretation') {
+          columns.push({
+            property: '' + column_key,
+            header: {
+              label: '' + (mappingDict[column_key] ? mappingDict[column_key] : column_key)
+            },
+            cell: {
+              formatters: [function (interpretation) {
+                return _this._unescapeHTML(interpretation);
+              }]
+            }
+          });
+        } else {
+          columns.push({
+            property: '' + column_key,
+            header: {
+              label: '' + (mappingDict[column_key] ? mappingDict[column_key] : column_key)
+            }
+          });
+        }
       }
     }
     _this.state = {
@@ -18757,12 +18751,26 @@ var General_data_table = function (_React$Component) {
             }
           });
         } else {
-          columns.push({
-            property: '' + column_key,
-            header: {
-              label: '' + (mappingDict[column_key] ? mappingDict[column_key] : column_key)
-            }
-          });
+          if (column_key === 'interpretation') {
+            columns.push({
+              property: '' + column_key,
+              header: {
+                label: '' + (mappingDict[column_key] ? mappingDict[column_key] : column_key)
+              },
+              cell: {
+                formatters: [function (interpretation) {
+                  return _this2._unescapeHTML(interpretation);
+                }]
+              }
+            });
+          } else {
+            columns.push({
+              property: '' + column_key,
+              header: {
+                label: '' + (mappingDict[column_key] ? mappingDict[column_key] : column_key)
+              }
+            });
+          }
         }
       }
       this.setState({
@@ -18798,6 +18806,11 @@ var General_data_table = function (_React$Component) {
           page: Math.min(Math.max(page, 1), pages)
         })
       });
+    }
+  }, {
+    key: '_unescapeHTML',
+    value: function _unescapeHTML(html) {
+      return _react2.default.createElement('div', { className: 'interpretation_content', dangerouslySetInnerHTML: { __html: '' + html } });
     }
   }, {
     key: 'render',
@@ -20416,6 +20429,9 @@ var Result_page = function (_React$Component) {
   }
 
   _createClass(Result_page, [{
+    key: 'componentWillReceiveProps',
+    value: function componentWillReceiveProps() {}
+  }, {
     key: 'componentWillMount',
     value: function componentWillMount() {
       var task_id = this.props.match.params.task_id;
@@ -20536,6 +20552,27 @@ var Result_page = function (_React$Component) {
     value: function _handleSubmit(evt) {
       evt.preventDefault();
       var review_form_data = new FormData(evt.target);
+    }
+  }, {
+    key: '_renderTable',
+    value: function _renderTable(table_data) {
+      if (table_data) {
+        return _react2.default.createElement(_fragments.General_data_table, { table_data: this.state.current_data });
+      } else {
+        if (this.state.current_table === 'incidental_finding_table') {
+          return _react2.default.createElement(
+            'div',
+            null,
+            '\u8BE5\u6848\u4F8B\u672A\u8981\u6C42 \u9644\u5E26\u53D1\u73B0\u8868 \u6570\u636E'
+          );
+        } else if (this.state.current_table === 'candidate_gene_table') {
+          return _react2.default.createElement(
+            'div',
+            null,
+            '\u8BE5\u6848\u4F8B\u672A\u8981\u6C42 \u5907\u9009\u57FA\u56E0\u8868 \u6570\u636E'
+          );
+        }
+      }
     }
   }, {
     key: 'render',
@@ -20743,7 +20780,7 @@ var Result_page = function (_React$Component) {
             { className: 'result_table', onClick: function onClick(evt) {
                 return _this2._handleClick(evt);
               } },
-            _react2.default.createElement(_fragments.General_data_table, { table_data: this.state.current_data })
+            this._renderTable(this.state.current_data)
           )
         )
       );
@@ -20885,10 +20922,14 @@ var Review_list = function (_React$Component) {
             _react2.default.createElement(Table.Header, null),
             _react2.default.createElement(Table.Body, {
               rows: rows,
-              rowKey: 'id',
-              onRow: function onRow(row, _ref2) {
-                var rowIndex = _ref2.rowIndex,
-                    rowKey = _ref2.rowKey;
+              rowKey: function rowKey(_ref2) {
+                var rowData = _ref2.rowData,
+                    rowIndex = _ref2.rowIndex;
+                return rowIndex;
+              },
+              onRow: function onRow(row, _ref3) {
+                var rowIndex = _ref3.rowIndex,
+                    rowKey = _ref3.rowKey;
                 return _this3._handleBodyRow(row, { rowIndex: rowIndex, rowKey: rowKey });
               } })
           )
@@ -21277,10 +21318,14 @@ var Task_list = function (_React$Component) {
             _react2.default.createElement(Table.Header, null),
             _react2.default.createElement(Table.Body, {
               rows: searchedRows,
-              rowKey: 'task_name',
-              onRow: function onRow(row, _ref2) {
-                var rowIndex = _ref2.rowIndex,
-                    rowKey = _ref2.rowKey;
+              rowKey: function rowKey(_ref2) {
+                var rowData = _ref2.rowData,
+                    rowIndex = _ref2.rowIndex;
+                return rowIndex;
+              },
+              onRow: function onRow(row, _ref3) {
+                var rowIndex = _ref3.rowIndex,
+                    rowKey = _ref3.rowKey;
                 return _this3._handleBodyRow(row, { rowIndex: rowIndex, rowKey: rowKey });
               } })
           )
@@ -21524,10 +21569,6 @@ var mapDispatchToProps = function mapDispatchToProps(dispatch) {
     },
 
     showAnnotation: function showAnnotation(current_path, gene, cDNA) {
-      //  console.log(cDNA
-      //    .replace("&gt;",'>')
-      //    .replace("&amp;", '&' )
-      //     );
       dispatch((0, _reactRouterRedux.push)(current_path + '/' + gene + '/' + cDNA));
     }
   };
@@ -24661,7 +24702,7 @@ exports = module.exports = __webpack_require__(254)(undefined);
 
 
 // module
-exports.push([module.i, ".new_task {\n  position: relative;\n  width: 100%;\n  height: 100%;\n  margin-left: 20px;\n  display: flex;\n  flex-flow: row nowrap;\n  justify-content: flex-start;\n  color: #406A8C; }\n  .new_task > label {\n    position: absolute;\n    top: 560px;\n    left: 77%;\n    padding-left: 30px;\n    padding-right: 30px;\n    background-color: #0275d8;\n    border: 0px; }\n    .new_task > label span {\n      padding: 25px 10px; }\n    .new_task > label:hover {\n      background-color: #025fb1; }\n\n.new_task_upload {\n  position: relative;\n  flex-grow: 0;\n  width: 70%;\n  height: 95%;\n  margin-right: 20px;\n  margin-top: 20px;\n  overflow: auto;\n  overflow-x: hidden; }\n  .new_task_upload label {\n    margin-bottom: 0px;\n    font-weight: normal; }\n  .new_task_upload .file_input {\n    position: relative;\n    z-index: 5;\n    width: 80px;\n    height: 20px;\n    background: #FFFFFF;\n    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.5);\n    border-radius: 8px;\n    margin-bottom: 10px;\n    margin-top: 10px;\n    vertical-align: middle;\n    text-align: center;\n    cursor: pointer; }\n    .new_task_upload .file_input span {\n      position: relative;\n      display: inline-block;\n      font-size: 11px;\n      color: #53BAEC;\n      cursor: pointer; }\n      .new_task_upload .file_input span.prompt {\n        display: block;\n        margin-top: 5px;\n        color: #406A8C;\n        font-size: 10px;\n        cursor: default; }\n    .new_task_upload .file_input input {\n      position: relative;\n      visibility: hidden;\n      width: 0px;\n      height: 0px;\n      z-index: 0; }\n  .new_task_upload textarea {\n    border: 1px solid #e6e6e6; }\n  .new_task_upload #task_submit {\n    display: none; }\n\n.new_task_progress {\n  position: relative;\n  flex-grow: 0;\n  background: #FFFFFF;\n  box-shadow: -3px 2px 2px 0 rgba(119, 151, 178, 0.16);\n  margin-top: 20px;\n  width: 22%;\n  height: 525px;\n  overflow: auto; }\n  .new_task_progress .tb-title {\n    position: relative;\n    width: 100%;\n    padding-top: 0px;\n    padding: 20px; }\n\n.td3 {\n  position: relative;\n  width: 100%;\n  padding: 15px 20px;\n  font-size: 13px;\n  font-weight: 400; }\n  .td3 p {\n    margin-bottom: 6px; }\n  .td3 .progress {\n    margin-bottom: 6px;\n    height: 8px; }\n    .td3 .progress .progress-bar-info {\n      background-color: #53BAEC; }\n  .td3 .completed_task {\n    padding: 15px 0px;\n    cursor: pointer;\n    transition: .1s; }\n    .td3 .completed_task span {\n      pointer-events: none; }\n    .td3 .completed_task:hover {\n      font-size: 14px; }\n    .td3 .completed_task img {\n      margin-left: 15px;\n      width: 25px; }\n  .td3 .failed_task {\n    padding: 15px 0px;\n    cursor: pointer;\n    transition: .1s; }\n    .td3 .failed_task span {\n      pointer-events: none; }\n    .td3 .failed_task:hover {\n      font-size: 14px; }\n\n.task_list {\n  position: relative;\n  margin: 20px 20px;\n  width: 65%;\n  height: 90%; }\n  .task_list .search_container {\n    position: relative;\n    width: 100%;\n    height: 7%;\n    margin-bottom: 10px; }\n    .task_list .search_container span {\n      position: absolute;\n      height: 50%;\n      font-size: 12px;\n      opacity: 0.4;\n      transform: translate(0, -50%); }\n    .task_list .search_container div {\n      position: relative;\n      width: 100%;\n      height: 100%; }\n      .task_list .search_container div select {\n        display: none; }\n      .task_list .search_container div input {\n        position: relative;\n        width: 100%;\n        height: 100%;\n        border: 0px;\n        /* Input: */\n        background: #FFFFFF;\n        border: 1px solid #58BCEB;\n        border-radius: 4px; }\n        .task_list .search_container div input::-webkit-input-placeholder {\n          text-indent: 6%;\n          background: url(" + __webpack_require__(540) + ") no-repeat;\n          background-position: 2% 0;\n          background-size: 19px; }\n  .task_list p {\n    margin-top: 10px;\n    padding-left: 40px;\n    font-size: 14px;\n    color: #4A90E2; }\n\n.task_list_table {\n  position: relative;\n  width: 100%;\n  background: #FFFFFF;\n  box-shadow: -3px 2px 2px 0 rgba(119, 151, 178, 0.16);\n  overflow: auto;\n  height: 92%; }\n  .task_list_table table {\n    width: 100%;\n    text-align: center;\n    color: #406A8C; }\n  .task_list_table th {\n    text-align: center;\n    background: #FFFFFF;\n    border: 0px;\n    padding: 15px 0px;\n    border-bottom: 1px solid #f2f2f2;\n    font-size: 17px;\n    font-weight: normal; }\n  .task_list_table tr:hover {\n    background: #F5F6F7; }\n  .task_list_table td {\n    padding: 15px 0px;\n    font-size: 15px; }\n  .task_list_table .tc1 {\n    width: 25%; }\n  .task_list_table .tc2 {\n    width: 50%; }\n\n.clickable {\n  cursor: pointer; }\n\n.result_page {\n  position: relative;\n  width: 100%;\n  height: 100%;\n  color: #406A8C; }\n  .result_page .back-sign {\n    position: relative;\n    padding: 15px 15px; }\n    .result_page .back-sign img {\n      position: relative;\n      width: 3%;\n      cursor: pointer; }\n    .result_page .back-sign span {\n      font-size: 18px;\n      margin-left: 10px;\n      vertical-align: middle; }\n\n.result_table_nav {\n  position: relative;\n  display: flex;\n  flex-direction: row;\n  justify-content: space-between;\n  align-items: center; }\n  .result_table_nav ul {\n    position: relative;\n    list-style-type: none;\n    margin: 0px;\n    margin-left: 15px;\n    padding-left: 0px;\n    width: 80%;\n    display: flex;\n    justify-content: space-between;\n    border: 1px solid #58BCEB;\n    border-right: 0px;\n    border-radius: 4px;\n    overflow: hidden; }\n    .result_table_nav ul li {\n      background-color: white;\n      flex-basis: 100%;\n      width: auto;\n      padding: 5px 10px;\n      vertical-align: middle;\n      border: 0px;\n      border-right: 1px solid #58BCEB;\n      text-align: center;\n      cursor: pointer; }\n      .result_table_nav ul li span {\n        vertical-align: middle;\n        color: #406A8C;\n        text-decoration: none;\n        background-color: transparent;\n        border: 0px;\n        pointer-events: none; }\n      .result_table_nav ul li.active {\n        background-color: #4A90E2; }\n        .result_table_nav ul li.active span {\n          color: white; }\n      .result_table_nav ul li:hover {\n        background-color: #4A90E2; }\n        .result_table_nav ul li:hover span {\n          color: white; }\n  .result_table_nav #review_button {\n    margin-right: 20px;\n    background-color: #58BCEB;\n    vertical-align: middle;\n    border: 0px;\n    letter-spacing: 2px;\n    font-size: 14px;\n    padding: 0px 25px;\n    height: 30px;\n    box-shadow: 0 1px 3px 0 rgba(117, 146, 222, 0.85); }\n    .result_table_nav #review_button:hover, .result_table_nav #review_button:focus {\n      background-color: #32ade7; }\n\n.review_block {\n  position: relative;\n  margin-bottom: 15px;\n  width: 100%;\n  height: 170px;\n  background: #F5F6FA;\n  box-shadow: -3px 2px 2px 0 rgba(119, 151, 178, 0.16); }\n  .review_block .question_container {\n    width: 100%;\n    height: 100%;\n    display: flex;\n    flex-direction: row;\n    justify-content: flex-start; }\n  .review_block .review_question {\n    margin-top: 15px;\n    text-align: center;\n    flex-basis: 100%; }\n    .review_block .review_question label {\n      padding: 0px 10px;\n      text-indent: 10px; }\n      .review_block .review_question label span {\n        padding-left: 5px; }\n    .review_block .review_question textarea {\n      border: 1px solid #e6e6e6; }\n  .review_block #review_submit {\n    height: 30px;\n    margin-top: 25px;\n    padding-left: 25px;\n    padding-right: 25px;\n    font-size: 15px;\n    line-height: 0px;\n    letter-spacing: 5px; }\n\n.result_area {\n  position: relative;\n  padding: 15px 15px;\n  padding-bottom: 5px;\n  height: 84%;\n  display: flex;\n  flex-direction: column;\n  justify-content: flex-start;\n  overflow: auto; }\n\n.result_table {\n  flex-grow: 1;\n  width: 100%; }\n  .result_table table {\n    width: 100%;\n    background: #FFFFFF;\n    box-shadow: -3px 2px 2px 0 rgba(119, 151, 178, 0.16); }\n  .result_table thead th {\n    text-align: center;\n    border: 1px solid #e6e6e6;\n    padding: 20px 0px;\n    font-weight: bold; }\n  .result_table thead .sort {\n    cursor: pointer;\n    padding: 0px 0px; }\n  .result_table tbody tr:hover {\n    background-color: rgba(242, 242, 242, 0.6); }\n  .result_table tbody td {\n    text-align: center;\n    min-width: 80px;\n    border: 1px solid #e6e6e6;\n    padding: 20px 0px;\n    word-wrap: break-word; }\n  .result_table .pagify-pagination {\n    position: fixed;\n    left: 19%;\n    top: 95%;\n    font-size: 14px;\n    display: flex;\n    justify-content: flex-start;\n    align-items: center; }\n    .result_table .pagify-pagination span {\n      margin: 0px 5px;\n      cursor: pointer; }\n\n.annotation_page {\n  background: rgba(55, 70, 95, 0.8);\n  position: fixed;\n  width: 100%;\n  height: 100%;\n  left: 0%;\n  top: 0%;\n  z-index: 50; }\n  .annotation_page .annotation_area {\n    position: relative;\n    top: 8%;\n    height: 85%; }\n  .annotation_page .annotation_header {\n    background-color: white;\n    position: relative;\n    width: 70%;\n    margin: 0px auto;\n    color: white;\n    display: flex;\n    justify-content: center; }\n    .annotation_page .annotation_header p {\n      color: #406A8C;\n      vertical-align: middle;\n      margin: 0px 7%;\n      letter-spacing: 10px;\n      font-size: 16px;\n      padding: 11px 0px; }\n      .annotation_page .annotation_header p span {\n        color: #4A90E2;\n        letter-spacing: 3px; }\n  .annotation_page img {\n    position: absolute;\n    width: 45px;\n    top: 0%;\n    left: 85%;\n    padding: 0px 0px;\n    cursor: pointer; }\n  .annotation_page .annotation_table {\n    background-color: white;\n    position: relative;\n    width: 70%;\n    max-height: 90%;\n    margin: 10px auto;\n    overflow: auto; }\n    .annotation_page .annotation_table table {\n      position: relative;\n      width: 100%;\n      color: #406A8C; }\n      .annotation_page .annotation_table table .col1 {\n        width: 20%;\n        border-right: 1px solid #f2f2f2; }\n      .annotation_page .annotation_table table .col2 {\n        width: 80%; }\n    .annotation_page .annotation_table th {\n      text-align: center;\n      font-size: 16px;\n      font-weight: normal;\n      letter-spacing: 10px;\n      padding: 10px 0px;\n      border-bottom: 1px solid #f2f2f2; }\n    .annotation_page .annotation_table td {\n      padding: 6px 0px; }\n      .annotation_page .annotation_table td.col1 {\n        text-align: center; }\n      .annotation_page .annotation_table td.col2 {\n        text-align: left;\n        text-indent: 20px; }\n\n.review_list {\n  position: relative;\n  margin: 25px 25px;\n  width: 65%;\n  height: 90%; }\n  .review_list p {\n    margin-top: 10px;\n    padding-left: 40px;\n    font-size: 14px;\n    color: #4A90E2; }\n\n.review_list_table {\n  position: relative;\n  width: 100%;\n  overflow: auto;\n  background: #FFFFFF;\n  box-shadow: -3px 2px 2px 0 rgba(119, 151, 178, 0.16);\n  text-align: center; }\n  .review_list_table table {\n    width: 100%;\n    color: #406A8C; }\n  .review_list_table th {\n    text-align: center;\n    background: #FFFFFF;\n    border: 0px;\n    padding: 15px 0px;\n    border-bottom: 1px solid #f2f2f2;\n    font-size: 17px;\n    font-weight: normal; }\n  .review_list_table tr:hover {\n    background: #F5F6F7; }\n  .review_list_table td {\n    padding: 15px 0px;\n    font-size: 15px; }\n  .review_list_table .tc1 {\n    width: 25%; }\n  .review_list_table .tc2 {\n    width: 50%; }\n\nbody {\n  overflow: hidden;\n  background-color: #F5F8FA; }\n\nhtml, body, #root, #root > div, .main_area, .row {\n  height: 100%; }\n\n.btn {\n  background-color: #4A90E2;\n  border-color: #4A90E2; }\n  .btn:hover, .btn:focus {\n    background-color: #2479db;\n    border-color: #2479db; }\n\n*::-webkit-scrollbar {\n  width: 6px;\n  background-color: #E0E9EC; }\n\n*::-webkit-scrollbar-thumb {\n  background-color: #58BCEB;\n  border-radius: 6px; }\n\n.navbar {\n  position: relative;\n  background: #00061D;\n  opacity: 0.85;\n  box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.5);\n  margin-bottom: 0;\n  border: 0px;\n  border-radius: 0px;\n  z-index: 10; }\n\n.main_area {\n  position: relative; }\n\n.sidebar {\n  position: relative;\n  z-index: 5;\n  height: 100%;\n  padding-left: 0px;\n  padding-right: 0px;\n  overflow: hidden; }\n  .sidebar .bg {\n    position: absolute;\n    left: 0;\n    top: 0;\n    width: 100%;\n    height: 100%;\n    z-index: 8; }\n  .sidebar .bg-filter {\n    position: absolute;\n    background: linear-gradient(#0b4774, #09385D);\n    left: 0;\n    top: 0;\n    width: 100%;\n    height: 100%;\n    opacity: 0.8;\n    z-index: 10; }\n  .sidebar ul {\n    position: relative;\n    margin-top: 10px;\n    padding-right: 10px;\n    z-index: 20; }\n  .sidebar .nav-item {\n    margin: 10px auto; }\n  .sidebar .nav-link {\n    position: relative;\n    z-index: 30;\n    background: rgba(255, 255, 255, 0); }\n    .sidebar .nav-link.active {\n      background: linear-gradient(90deg, rgba(68, 140, 203, 0.6) 0%, rgba(255, 255, 255, 0) 92%);\n      border-left: 5px #78DCFF solid; }\n    .sidebar .nav-link:focus {\n      background: linear-gradient(90deg, rgba(68, 140, 203, 0.6) 0%, rgba(255, 255, 255, 0) 92%);\n      border-left: 5px #78DCFF solid; }\n    .sidebar .nav-link img {\n      position: relative;\n      display: inline;\n      margin-right: 20px;\n      margin-left: 15%;\n      width: 10%;\n      z-index: 10;\n      pointer-events: none; }\n    .sidebar .nav-link span {\n      position: relative;\n      color: white;\n      font-size: 16px;\n      font-weight: lighter;\n      letter-spacing: 3px;\n      line-height: 150%;\n      vertical-align: middle;\n      z-index: 10;\n      pointer-events: none; }\n\nmain {\n  position: relative;\n  background-color: #F5F8FA;\n  height: 90%;\n  overflow: scroll; }\n  main::-webkit-scrollbar {\n    display: none; }\n\n.tb-section {\n  margin-bottom: 25px;\n  background-color: white;\n  box-shadow: -3px 2px 2px 0 rgba(119, 151, 178, 0.16); }\n\n.tr {\n  position: relative;\n  width: 100%;\n  display: flex; }\n\n.td1 {\n  position: relative;\n  display: inline;\n  width: 20%;\n  height: 100%;\n  text-align: center;\n  margin: auto 0px;\n  padding-top: 15px;\n  padding-bottom: 15px; }\n\n.td2 {\n  position: relative;\n  display: inline;\n  width: 40%;\n  height: 100%;\n  margin: auto 0px;\n  padding: 10px 0px;\n  font-size: 13px; }\n\n.tr-stripe {\n  background-color: #F5F6F7; }\n\n.tr-widen {\n  padding-top: 15px;\n  padding-bottom: 25px; }\n\n.td-left {\n  text-align: center;\n  text-indent: -14px; }\n\n.td-stripe {\n  background-color: #F5F6F7; }\n\n.switch {\n  position: relative;\n  display: inline-block;\n  width: 36px;\n  height: 20.4px;\n  margin-right: 5px; }\n  .switch input {\n    visibility: hidden; }\n  .switch .slider {\n    position: absolute;\n    cursor: pointer;\n    top: 0;\n    left: 0;\n    right: 0;\n    bottom: 0;\n    background-color: #ccc;\n    -webkit-transition: .4s;\n    transition: .4s; }\n  .switch .slider:before {\n    position: absolute;\n    content: \"\";\n    height: 15.6px;\n    width: 15.6px;\n    left: 2.4px;\n    bottom: 2.4px;\n    background-color: white;\n    -webkit-transition: .4s;\n    transition: .4s; }\n  .switch input:checked + .slider {\n    background-color: #2196F3; }\n  .switch input:focus + .slider {\n    box-shadow: 0 0 1px #2196F3; }\n  .switch input:checked + .slider:before {\n    -webkit-transform: translateX(15.6px);\n    -ms-transform: translateX(15.6px);\n    transform: translateX(15.6px); }\n  .switch .slider.round {\n    border-radius: 20.4px; }\n  .switch .slider.round:before {\n    border-radius: 50%; }\n", ""]);
+exports.push([module.i, ".new_task {\n  position: relative;\n  width: 100%;\n  height: 100%;\n  margin-left: 20px;\n  display: flex;\n  flex-flow: row nowrap;\n  justify-content: flex-start;\n  color: #406A8C; }\n  .new_task > label {\n    position: absolute;\n    top: 560px;\n    left: 77%;\n    padding-left: 30px;\n    padding-right: 30px;\n    background-color: #0275d8;\n    border: 0px; }\n    .new_task > label span {\n      padding: 25px 10px; }\n    .new_task > label:hover {\n      background-color: #025fb1; }\n\n.new_task_upload {\n  position: relative;\n  flex-grow: 0;\n  width: 70%;\n  height: 95%;\n  margin-right: 20px;\n  margin-top: 20px;\n  overflow: auto;\n  overflow-x: hidden; }\n  .new_task_upload label {\n    margin-bottom: 0px;\n    font-weight: normal; }\n  .new_task_upload .file_input {\n    position: relative;\n    z-index: 5;\n    width: 80px;\n    height: 20px;\n    background: #FFFFFF;\n    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.5);\n    border-radius: 8px;\n    margin-bottom: 10px;\n    margin-top: 10px;\n    vertical-align: middle;\n    text-align: center;\n    cursor: pointer; }\n    .new_task_upload .file_input span {\n      position: relative;\n      display: inline-block;\n      font-size: 11px;\n      color: #53BAEC;\n      cursor: pointer; }\n      .new_task_upload .file_input span.prompt {\n        display: block;\n        margin-top: 5px;\n        color: #406A8C;\n        font-size: 10px;\n        cursor: default; }\n    .new_task_upload .file_input input {\n      position: relative;\n      visibility: hidden;\n      width: 0px;\n      height: 0px;\n      z-index: 0; }\n  .new_task_upload textarea {\n    border: 1px solid #e6e6e6; }\n  .new_task_upload #task_submit {\n    display: none; }\n\n.new_task_progress {\n  position: relative;\n  flex-grow: 0;\n  background: #FFFFFF;\n  box-shadow: -3px 2px 2px 0 rgba(119, 151, 178, 0.16);\n  margin-top: 20px;\n  width: 22%;\n  height: 525px;\n  overflow: auto; }\n  .new_task_progress .tb-title {\n    position: relative;\n    width: 100%;\n    padding-top: 0px;\n    padding: 20px; }\n\n.td3 {\n  position: relative;\n  width: 100%;\n  padding: 15px 20px;\n  font-size: 13px;\n  font-weight: 400; }\n  .td3 p {\n    margin-bottom: 6px; }\n  .td3 .progress {\n    margin-bottom: 6px;\n    height: 8px; }\n    .td3 .progress .progress-bar-info {\n      background-color: #53BAEC; }\n  .td3 .completed_task {\n    padding: 15px 0px;\n    cursor: pointer;\n    transition: .1s; }\n    .td3 .completed_task span {\n      pointer-events: none; }\n    .td3 .completed_task:hover {\n      font-size: 14px; }\n    .td3 .completed_task img {\n      margin-left: 15px;\n      width: 25px; }\n  .td3 .failed_task {\n    padding: 15px 0px;\n    cursor: pointer;\n    transition: .1s; }\n    .td3 .failed_task span {\n      pointer-events: none; }\n    .td3 .failed_task:hover {\n      font-size: 14px; }\n\n.task_list {\n  position: relative;\n  margin: 20px 20px;\n  width: 65%;\n  height: 90%; }\n  .task_list .search_container {\n    position: relative;\n    width: 100%;\n    height: 7%;\n    margin-bottom: 10px; }\n    .task_list .search_container span {\n      position: absolute;\n      height: 50%;\n      font-size: 12px;\n      opacity: 0.4;\n      transform: translate(0, -50%); }\n    .task_list .search_container div {\n      position: relative;\n      width: 100%;\n      height: 100%; }\n      .task_list .search_container div select {\n        display: none; }\n      .task_list .search_container div input {\n        position: relative;\n        width: 100%;\n        height: 100%;\n        border: 0px;\n        /* Input: */\n        background: #FFFFFF;\n        border: 1px solid #58BCEB;\n        border-radius: 4px; }\n        .task_list .search_container div input::-webkit-input-placeholder {\n          text-indent: 6%;\n          background: url(" + __webpack_require__(540) + ") no-repeat;\n          background-position: 2% 0;\n          background-size: 19px; }\n  .task_list p {\n    margin-top: 10px;\n    padding-left: 40px;\n    font-size: 14px;\n    color: #4A90E2; }\n\n.task_list_table {\n  position: relative;\n  width: 100%;\n  background: #FFFFFF;\n  box-shadow: -3px 2px 2px 0 rgba(119, 151, 178, 0.16);\n  overflow: auto;\n  height: 92%; }\n  .task_list_table table {\n    width: 100%;\n    text-align: center;\n    color: #406A8C; }\n  .task_list_table th {\n    text-align: center;\n    background: #FFFFFF;\n    border: 0px;\n    padding: 15px 0px;\n    border-bottom: 1px solid #f2f2f2;\n    font-size: 17px;\n    font-weight: normal; }\n  .task_list_table tr:hover {\n    background: #F5F6F7; }\n  .task_list_table td {\n    padding: 15px 0px;\n    font-size: 15px; }\n  .task_list_table .tc1 {\n    width: 25%; }\n  .task_list_table .tc2 {\n    width: 50%; }\n\n.clickable {\n  cursor: pointer; }\n\n.result_page {\n  position: relative;\n  width: 100%;\n  height: 100%;\n  color: #406A8C; }\n  .result_page .back-sign {\n    position: relative;\n    padding: 15px 15px; }\n    .result_page .back-sign img {\n      position: relative;\n      width: 3%;\n      cursor: pointer; }\n    .result_page .back-sign span {\n      font-size: 18px;\n      margin-left: 10px;\n      vertical-align: middle; }\n\n.result_table_nav {\n  position: relative;\n  display: flex;\n  flex-direction: row;\n  justify-content: space-between;\n  align-items: center; }\n  .result_table_nav ul {\n    position: relative;\n    list-style-type: none;\n    margin: 0px;\n    margin-left: 15px;\n    padding-left: 0px;\n    width: 80%;\n    display: flex;\n    justify-content: space-between;\n    border: 1px solid #58BCEB;\n    border-right: 0px;\n    border-radius: 4px;\n    overflow: hidden; }\n    .result_table_nav ul li {\n      background-color: white;\n      flex-basis: 100%;\n      width: auto;\n      padding: 5px 10px;\n      vertical-align: middle;\n      border: 0px;\n      border-right: 1px solid #58BCEB;\n      text-align: center;\n      cursor: pointer; }\n      .result_table_nav ul li span {\n        vertical-align: middle;\n        color: #406A8C;\n        text-decoration: none;\n        background-color: transparent;\n        border: 0px;\n        pointer-events: none; }\n      .result_table_nav ul li.active {\n        background-color: #4A90E2; }\n        .result_table_nav ul li.active span {\n          color: white; }\n      .result_table_nav ul li:hover {\n        background-color: #4A90E2; }\n        .result_table_nav ul li:hover span {\n          color: white; }\n  .result_table_nav #review_button {\n    margin-right: 20px;\n    background-color: #58BCEB;\n    vertical-align: middle;\n    border: 0px;\n    letter-spacing: 2px;\n    font-size: 14px;\n    padding: 0px 25px;\n    height: 30px;\n    box-shadow: 0 1px 3px 0 rgba(117, 146, 222, 0.85); }\n    .result_table_nav #review_button:hover, .result_table_nav #review_button:focus {\n      background-color: #32ade7; }\n\n.review_block {\n  position: relative;\n  margin-bottom: 15px;\n  width: 100%;\n  height: 170px;\n  background: #F5F6FA;\n  box-shadow: -3px 2px 2px 0 rgba(119, 151, 178, 0.16); }\n  .review_block .question_container {\n    width: 100%;\n    height: 100%;\n    display: flex;\n    flex-direction: row;\n    justify-content: flex-start; }\n  .review_block .review_question {\n    margin-top: 15px;\n    text-align: center;\n    flex-basis: 100%; }\n    .review_block .review_question label {\n      padding: 0px 10px;\n      text-indent: 10px; }\n      .review_block .review_question label span {\n        padding-left: 5px; }\n    .review_block .review_question textarea {\n      border: 1px solid #e6e6e6; }\n  .review_block #review_submit {\n    height: 30px;\n    margin-top: 25px;\n    padding-left: 25px;\n    padding-right: 25px;\n    font-size: 15px;\n    line-height: 0px;\n    letter-spacing: 5px; }\n\n.result_area {\n  position: relative;\n  padding: 15px 15px;\n  padding-bottom: 5px;\n  height: 84%;\n  display: flex;\n  flex-direction: column;\n  justify-content: flex-start;\n  overflow: auto; }\n\n.result_table {\n  flex-grow: 1;\n  width: 100%; }\n  .result_table table {\n    width: 100%;\n    background: #FFFFFF;\n    box-shadow: -3px 2px 2px 0 rgba(119, 151, 178, 0.16); }\n  .result_table thead th {\n    text-align: center;\n    border: 1px solid #e6e6e6;\n    padding: 20px 5px;\n    font-weight: bold; }\n  .result_table thead .sort {\n    cursor: pointer;\n    padding: 0px 0px; }\n  .result_table tbody tr:hover {\n    background-color: rgba(242, 242, 242, 0.6); }\n  .result_table tbody td {\n    text-align: center;\n    min-width: 80px;\n    border: 1px solid #e6e6e6;\n    padding: 20px 5px;\n    word-wrap: break-word; }\n  .result_table .pagify-pagination {\n    position: fixed;\n    left: 19%;\n    top: 95%;\n    font-size: 14px;\n    display: flex;\n    justify-content: flex-start;\n    align-items: center; }\n    .result_table .pagify-pagination span {\n      margin: 0px 5px;\n      cursor: pointer; }\n\n.annotation_page {\n  background: rgba(55, 70, 95, 0.8);\n  position: fixed;\n  width: 100%;\n  height: 100%;\n  left: 0%;\n  top: 0%;\n  z-index: 50; }\n  .annotation_page .annotation_area {\n    position: relative;\n    top: 8%;\n    height: 85%; }\n  .annotation_page .annotation_header {\n    background-color: white;\n    position: relative;\n    width: 70%;\n    margin: 0px auto;\n    color: white;\n    display: flex;\n    justify-content: center; }\n    .annotation_page .annotation_header p {\n      color: #406A8C;\n      vertical-align: middle;\n      margin: 0px 7%;\n      letter-spacing: 10px;\n      font-size: 16px;\n      padding: 11px 0px; }\n      .annotation_page .annotation_header p span {\n        color: #4A90E2;\n        letter-spacing: 3px; }\n  .annotation_page img {\n    position: absolute;\n    width: 45px;\n    top: 0%;\n    left: 85%;\n    padding: 0px 0px;\n    cursor: pointer; }\n  .annotation_page .annotation_table {\n    background-color: white;\n    position: relative;\n    width: 70%;\n    max-height: 90%;\n    margin: 10px auto;\n    overflow: auto; }\n    .annotation_page .annotation_table table {\n      position: relative;\n      width: 100%;\n      color: #406A8C; }\n      .annotation_page .annotation_table table .col1 {\n        width: 20%;\n        border-right: 1px solid #f2f2f2; }\n      .annotation_page .annotation_table table .col2 {\n        width: 80%; }\n    .annotation_page .annotation_table th {\n      text-align: center;\n      font-size: 16px;\n      font-weight: normal;\n      letter-spacing: 10px;\n      padding: 10px 0px;\n      border-bottom: 1px solid #f2f2f2; }\n    .annotation_page .annotation_table td {\n      padding: 6px 0px; }\n      .annotation_page .annotation_table td.col1 {\n        text-align: center; }\n      .annotation_page .annotation_table td.col2 {\n        text-align: left; }\n\n.interpretation_content {\n  text-align: left;\n  padding-left: 20px;\n  line-height: 20px; }\n  .interpretation_content a {\n    color: #4A90E2; }\n\n.review_list {\n  position: relative;\n  margin: 25px 25px;\n  width: 65%;\n  height: 90%; }\n  .review_list p {\n    margin-top: 10px;\n    padding-left: 40px;\n    font-size: 14px;\n    color: #4A90E2; }\n\n.review_list_table {\n  position: relative;\n  width: 100%;\n  overflow: auto;\n  background: #FFFFFF;\n  box-shadow: -3px 2px 2px 0 rgba(119, 151, 178, 0.16);\n  text-align: center; }\n  .review_list_table table {\n    width: 100%;\n    color: #406A8C; }\n  .review_list_table th {\n    text-align: center;\n    background: #FFFFFF;\n    border: 0px;\n    padding: 15px 0px;\n    border-bottom: 1px solid #f2f2f2;\n    font-size: 17px;\n    font-weight: normal; }\n  .review_list_table tr:hover {\n    background: #F5F6F7; }\n  .review_list_table td {\n    padding: 15px 0px;\n    font-size: 15px; }\n  .review_list_table .tc1 {\n    width: 25%; }\n  .review_list_table .tc2 {\n    width: 50%; }\n\nbody {\n  overflow: hidden;\n  background-color: #F5F8FA; }\n\nhtml, body, #root, #root > div, .main_area, .row {\n  height: 100%; }\n\n.btn {\n  background-color: #4A90E2;\n  border-color: #4A90E2; }\n  .btn:hover, .btn:focus {\n    background-color: #2479db;\n    border-color: #2479db; }\n\n*::-webkit-scrollbar {\n  width: 6px;\n  background-color: #E0E9EC; }\n\n*::-webkit-scrollbar-thumb {\n  background-color: #58BCEB;\n  border-radius: 6px; }\n\n.navbar {\n  position: relative;\n  background: #00061D;\n  opacity: 0.85;\n  box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.5);\n  margin-bottom: 0;\n  border: 0px;\n  border-radius: 0px;\n  z-index: 10; }\n\n.main_area {\n  position: relative; }\n\n.sidebar {\n  position: relative;\n  z-index: 5;\n  height: 100%;\n  padding-left: 0px;\n  padding-right: 0px;\n  overflow: hidden; }\n  .sidebar .bg {\n    position: absolute;\n    left: 0;\n    top: 0;\n    width: 100%;\n    height: 100%;\n    z-index: 8; }\n  .sidebar .bg-filter {\n    position: absolute;\n    background: linear-gradient(#0b4774, #09385D);\n    left: 0;\n    top: 0;\n    width: 100%;\n    height: 100%;\n    opacity: 0.8;\n    z-index: 10; }\n  .sidebar ul {\n    position: relative;\n    margin-top: 10px;\n    padding-right: 10px;\n    z-index: 20; }\n  .sidebar .nav-item {\n    margin: 10px auto; }\n  .sidebar .nav-link {\n    position: relative;\n    z-index: 30;\n    background: rgba(255, 255, 255, 0); }\n    .sidebar .nav-link.active {\n      background: linear-gradient(90deg, rgba(68, 140, 203, 0.6) 0%, rgba(255, 255, 255, 0) 92%);\n      border-left: 5px #78DCFF solid; }\n    .sidebar .nav-link:focus {\n      background: linear-gradient(90deg, rgba(68, 140, 203, 0.6) 0%, rgba(255, 255, 255, 0) 92%);\n      border-left: 5px #78DCFF solid; }\n    .sidebar .nav-link img {\n      position: relative;\n      display: inline;\n      margin-right: 20px;\n      margin-left: 15%;\n      width: 10%;\n      z-index: 10;\n      pointer-events: none; }\n    .sidebar .nav-link span {\n      position: relative;\n      color: white;\n      font-size: 16px;\n      font-weight: lighter;\n      letter-spacing: 3px;\n      line-height: 150%;\n      vertical-align: middle;\n      z-index: 10;\n      pointer-events: none; }\n\nmain {\n  position: relative;\n  background-color: #F5F8FA;\n  height: 90%;\n  overflow: scroll; }\n  main::-webkit-scrollbar {\n    display: none; }\n\n.tb-section {\n  margin-bottom: 25px;\n  background-color: white;\n  box-shadow: -3px 2px 2px 0 rgba(119, 151, 178, 0.16); }\n\n.tr {\n  position: relative;\n  width: 100%;\n  display: flex; }\n\n.td1 {\n  position: relative;\n  display: inline;\n  width: 20%;\n  height: 100%;\n  text-align: center;\n  margin: auto 0px;\n  padding-top: 15px;\n  padding-bottom: 15px; }\n\n.td2 {\n  position: relative;\n  display: inline;\n  width: 40%;\n  height: 100%;\n  margin: auto 0px;\n  padding: 10px 0px;\n  font-size: 13px; }\n\n.tr-stripe {\n  background-color: #F5F6F7; }\n\n.tr-widen {\n  padding-top: 15px;\n  padding-bottom: 25px; }\n\n.td-left {\n  text-align: center;\n  text-indent: -14px; }\n\n.td-stripe {\n  background-color: #F5F6F7; }\n\n.switch {\n  position: relative;\n  display: inline-block;\n  width: 36px;\n  height: 20.4px;\n  margin-right: 5px; }\n  .switch input {\n    visibility: hidden; }\n  .switch .slider {\n    position: absolute;\n    cursor: pointer;\n    top: 0;\n    left: 0;\n    right: 0;\n    bottom: 0;\n    background-color: #ccc;\n    -webkit-transition: .4s;\n    transition: .4s; }\n  .switch .slider:before {\n    position: absolute;\n    content: \"\";\n    height: 15.6px;\n    width: 15.6px;\n    left: 2.4px;\n    bottom: 2.4px;\n    background-color: white;\n    -webkit-transition: .4s;\n    transition: .4s; }\n  .switch input:checked + .slider {\n    background-color: #2196F3; }\n  .switch input:focus + .slider {\n    box-shadow: 0 0 1px #2196F3; }\n  .switch input:checked + .slider:before {\n    -webkit-transform: translateX(15.6px);\n    -ms-transform: translateX(15.6px);\n    transform: translateX(15.6px); }\n  .switch .slider.round {\n    border-radius: 20.4px; }\n  .switch .slider.round:before {\n    border-radius: 50%; }\n", ""]);
 
 // exports
 

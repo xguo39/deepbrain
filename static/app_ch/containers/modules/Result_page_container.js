@@ -20,10 +20,6 @@ const mapDispatchToProps = (dispatch)=>{
      },
 
      showAnnotation:(current_path, gene, cDNA)=>{
-      //  console.log(cDNA
-      //    .replace("&gt;",'>')
-      //    .replace("&amp;", '&' )
-      //     );
        dispatch(push(`${current_path}/${gene}/${cDNA}`));
      }
   }
