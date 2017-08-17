@@ -5,6 +5,7 @@ const result_data_actions={
   REQUEST_RESULT_DATA:'REQUEST_RESULT_DATA',
   FETCH_RESULT_DATA_SUCCESS:'FETCH_RESULT_DATA_SUCCESS',
   FETCH_RESULT_DATA_FAILURE:'FETCH_RESULT_DATA_FAILURE',
+  UPDATE_DATA_SUCCESS:'UPDATE_DATA_SUCCESS',
 
   requestResultData:()=>{
     return {
@@ -26,6 +27,12 @@ const result_data_actions={
     }
   },
 
+  updateDataSuccess(){
+    return {
+      type:result_actions.UPDATE_DATA_SUCCESS
+    }
+  },
+
   fetchResultData:(task_id)=>{
     return (dispatch)=>{
       dispatch(result_actions.requestResultData());
@@ -44,7 +51,7 @@ const result_data_actions={
         }
       })
     }
-  }
+  },
 
 }
 

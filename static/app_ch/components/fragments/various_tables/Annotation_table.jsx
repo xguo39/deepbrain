@@ -38,6 +38,38 @@ class Annotation_table extends React.Component{
     }
   }
 
+  componentWillReceiveProps(props){
+    console.log(props);
+    this.setState({
+      columns:[
+        {
+          property:'criteria',
+          header:{
+            label:'标准'
+          },
+          props:{
+            className:'col1'
+          }
+        },
+        {
+          property:'interpretation',
+          header:{
+            label:'解读'
+          },
+          cell:{
+            formatters:[
+              interpretation => this._unescapeHTML(interpretation)
+            ]
+          },
+          props:{
+            className:'col2'
+          }
+        }
+      ],
+      rows:props.table_data
+    })
+  }
+
   _unescapeHTML(html) {
     var escapeEl = document.createElement('textarea');
     escapeEl.innerHTML = html;
