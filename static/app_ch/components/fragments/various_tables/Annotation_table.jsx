@@ -39,7 +39,6 @@ class Annotation_table extends React.Component{
   }
 
   componentWillReceiveProps(props){
-    console.log(props);
     this.setState({
       columns:[
         {
