@@ -16,7 +16,7 @@ class Top_navbar extends React.Component{
               <span className="icon-bar"></span>
               <span className="icon-bar"></span>
             </button>
-            <a className="navbar-brand" href="#"><small>诺亚基因解读平台 1.0</small></a>
+            <a className="navbar-brand" href="#"><small>诺亚医生 | 遗传病基因智能解读 Beta</small></a>
           </div>
 
           <div className="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
@@ -34,8 +34,8 @@ class Top_navbar extends React.Component{
                 <ul className="dropdown-menu" role="menu">
                   <li><a href="#">用户名:test</a></li>
                   <li className="divider"></li>
-                  <li><a href='#'>修改密码</a></li>
-                  <li><a href='#'>退出登陆</a></li>
+                  <li><a href='/password/change/'>修改密码</a></li>
+                  <li><a href='/logout/'>退出登陆</a></li>
                 </ul>
               </li>
 

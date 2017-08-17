@@ -26,25 +26,29 @@ class New_task_progress extends React.Component {
   }
 
   _loadProgressList(progress_list){
-    return progress_list.map((task, index)=>{
-      let status = task.status;
-      if(status!=='succeed'){
-        if(status.indexOf('failed') === -1){
-          return <div key={index} className='td3 td-stripe'>
-            <Processing_task task_info={task}/>
-          </div>
-        }else{
+    if(progress_list.length > 0){
+      return progress_list.map((task, index)=>{
+        let status = task.status;
+        if(status!=='succeed'){
+          if(status.indexOf('failed') === -1){
+            return <div key={index} className='td3 td-stripe'>
+              <Processing_task task_info={task}/>
+            </div>
+          }else{
+            return <div key={index} className='td3'>
+              <Failed_task task_info={task}/>
+            </div>
+          }
+        }
+        else{
           return <div key={index} className='td3'>
-            <Failed_task task_info={task}/>
+            <Completed_task task_info={task}/>
           </div>
         }
-      }
-      else{
-        return <div key={index} className='td3'>
-          <Completed_task task_info={task}/>
-        </div>
-      }
-    })
+      })
+    }else{
+      return <div></div>
+    }
   }
 
   render(){
