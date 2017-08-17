@@ -724,6 +724,25 @@ def searchPhenosFromPubmed(phenos, CANDIDATE_GENES):
 
     return phenosgenefromPubmed
 
+
+def getHPOIDfromPheno(pheno, final_matches):
+    """ final_matches (list): each element is a tuple (hponame, hpoid, similarity_score)
+        e.g., [('Postnatal macrocephaly','HP:0005490',0.5), ('Macrocephaly,relative','HP:0004482-synonym', 0.5), ...]
+    """
+    if not final_matches:
+        return '', ''
+    max_sim_hpo_pheno = ''
+    max_sim_hpoid = ''
+    max_similarity_score = 0.0
+    for match in final_matches:
+        hpo_pheno, hpoid, sim = match
+        hpoid = hpoid.split('-')[0]
+        if sim > max_similarity_score: 
+            max_similarity_score = sim
+            max_sim_hpo_pheno = hpo_pheno
+            max_sim_hpoid = hpoid 
+    return max_sim_hpo_pheno, max_sim_hpoid 
+
 def generate_score(phenos, CANDIDATE_GENES, corner_cases, original_phenos):
     """ This is the main function in this .py file. It is called in the main.py file.
 
@@ -752,6 +771,7 @@ def generate_score(phenos, CANDIDATE_GENES, corner_cases, original_phenos):
     gene_associated_phenos = dict()
     all_mapped_genes_score_phenospecificity = {}
     gene_associated_pheno_hpoids = dict()
+    pheno_to_hpo_pheno_and_id = dict()
 
     # Get phenotype-gene associations from Pubmed
     phenosgenefromPubmed = searchPhenosFromPubmed(phenos, CANDIDATE_GENES)
@@ -762,6 +782,8 @@ def generate_score(phenos, CANDIDATE_GENES, corner_cases, original_phenos):
         # matches =  map2hpo(pheno)
         final_matches = map2hpoWithPhenoSynonyms(pheno)
         # pprint.pprint(final_matches)
+        max_sim_hpo_pheno, max_sim_hpoid = getHPOIDfromPheno(pheno, final_matches)
+        pheno_to_hpo_pheno_and_id[pheno] = (max_sim_hpo_pheno, max_sim_hpoid)
         mapped_genes, final_matches_hpoids = map2gene(final_matches, CANDIDATE_GENES)
 
         for gene in mapped_genes:
@@ -868,4 +890,4 @@ def generate_score(phenos, CANDIDATE_GENES, corner_cases, original_phenos):
         if hits:
             ranking_diseases.append((disease, score, hits))
 
-    return ranking_genes, ranking_diseases, gene_associated_phenos, gene_associated_pheno_hpoids
+    return ranking_genes, ranking_diseases, gene_associated_phenos, gene_associated_pheno_hpoids, pheno_to_hpo_pheno_and_id
