@@ -211,6 +211,7 @@ def getAlts(ref, allele1, allele2, mother1, mother2, father1, father2):
     if mother2 != ref: mother_alts.append(mother2)
     if father1 != ref: father_alts.append(father1)
     if father2 != ref: father_alts.append(father2)
+    proband_alts, mother_alts, father_alts = list(set(proband_alts)), list(set(mother_alts)), list(set(father_alts))
     return proband_alts, mother_alts, father_alts
 
 def parentAltInProbandAlts(parent_alts, proband_alts):
@@ -302,7 +303,7 @@ def read_input_gene_file(input_gene, parent_ngs, father_vcf, mother_vcf, proband
     #print field_names
     # if input is vcf file
     input_is_vcf = False
-    if '#CHROM' in field_names and 'POS' in field_names and 'REF' in field_names and 'ALT' in field_names: 
+    if '#CHROM' in field_names and 'POS' in field_names and 'REF' in field_names and 'ALT' in field_names and 'QUAL' in field_names and 'FILTER' in field_names and 'INFO' in field_names: 
         input_is_vcf = True 
         df_vcf = convertFile2DF(input_gene, delimiter, 'proband')
         df_vcf_father, df_vcf_mother = pd.DataFrame(), pd.DataFrame()
@@ -480,7 +481,7 @@ def read_input_gene_file(input_gene, parent_ngs, father_vcf, mother_vcf, proband
     return candidate_vars, CANDIDATE_GENES, df_genes, field_names, gene_zygosity, non_snpeff_var_data # non_snpeff_var_data from MyVariant 
 
 def map_phenotype2gene(CANDIDATE_GENES, phenos, corner_cases, candidate_vars, original_phenos):
-	ranking_genes, ranking_disease, gene_associated_phenos, gene_associated_pheno_hpoids = map_phenotype_to_gene.generate_score(phenos, CANDIDATE_GENES, corner_cases, original_phenos)
+	ranking_genes, ranking_disease, gene_associated_phenos, gene_associated_pheno_hpoids, pheno_to_hpo_pheno_and_id = map_phenotype_to_gene.generate_score(phenos, CANDIDATE_GENES, corner_cases, original_phenos)
 	# gene_associated_phenos = dict(list) e.g., {'BRCA1':['breast..', '..'], 'PTPN11':['noonan', '..']}
 	for gene in gene_associated_phenos.keys():
 		phenos = gene_associated_phenos[gene]
@@ -495,7 +496,7 @@ def map_phenotype2gene(CANDIDATE_GENES, phenos, corner_cases, candidate_vars, or
 		if var[0] in hpo_filtered_genes:
 			tmp_candidate_vars.append(var)
 	candidate_vars = tmp_candidate_vars
-	return ranking_genes, candidate_vars, df_gene_associated_phenos, gene_associated_phenos, gene_associated_pheno_hpoids
+	return ranking_genes, candidate_vars, df_gene_associated_phenos, gene_associated_phenos, gene_associated_pheno_hpoids, pheno_to_hpo_pheno_and_id
 
 def update_phenotype2gene(final_res, variants, ranking_genes, gene_zygosity, candidate_vars):
 	ranking_genes = update_phenotype_to_gene.rankGenePhenoByCodingEffect(final_res, variants, ranking_genes)
@@ -563,7 +564,7 @@ def master_function(raw_input_id):
         if phenos:
             raw_input.status = "Mapping phenotypes to genes"
             raw_input.save()
-            ranking_genes, candidate_vars, df_gene_associated_phenos, gene_associated_phenos, gene_associated_pheno_hpoids = map_phenotype2gene(CANDIDATE_GENES, phenos, corner_cases, candidate_vars, original_phenos)
+            ranking_genes, candidate_vars, df_gene_associated_phenos, gene_associated_phenos, gene_associated_pheno_hpoids, pheno_to_hpo_pheno_and_id = map_phenotype2gene(CANDIDATE_GENES, phenos, corner_cases, candidate_vars, original_phenos)
             #print 'gene_associated_phenos is: ', gene_associated_phenos
         else:
             ranking_genes = []
@@ -577,7 +578,7 @@ def master_function(raw_input_id):
         if phenos:
             raw_input.status = "Mapping phenotypes to genes"
             raw_input.save()
-            ranking_genes, candidate_vars, df_gene_associated_phenos, gene_associated_phenos, gene_associated_pheno_hpoids = map_phenotype2gene(CANDIDATE_GENES, phenos, corner_cases, candidate_vars, original_phenos)
+            ranking_genes, candidate_vars, df_gene_associated_phenos, gene_associated_phenos, gene_associated_pheno_hpoids, pheno_to_hpo_pheno_and_id = map_phenotype2gene(CANDIDATE_GENES, phenos, corner_cases, candidate_vars, original_phenos)
         else:
             ranking_genes = []
             for key in gene_zygosity.keys():

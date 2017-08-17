@@ -913,7 +913,7 @@ def getVariantInfoFromMyVariant(candidate_vars):
   for data in non_snpeff_var_data:
     non_snpeff = data
     try:
-      print non_snpeff
+      #print non_snpeff
       variant_id = non_snpeff['_id'] 
     except KeyError:
       continue

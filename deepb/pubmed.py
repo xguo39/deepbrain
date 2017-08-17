@@ -32,7 +32,7 @@ def convertAminoAcidLowertoCap1letter(protein):
   protein = robj_amino_acid.sub(lambda m: amino_acid_mapping.mapl2u[m.group(0)], protein)
   return protein
 
-def queryPubmedDBGenes(candidate_vars, df_genes, db):
+def queryPubmedDBGenes(candidate_vars, df_genes, cursor, db):
   genes_in_var_query = pd.unique(df_genes['Gene'].values).tolist()
   candidate_genes = []
   for var in candidate_vars:
@@ -45,7 +45,7 @@ def queryPubmedDBGenes(candidate_vars, df_genes, db):
   for gene in genes_to_be_queried:
      query += "gene='%s' or " % (gene)
   query = query[0:-4]
-  cursor = db.cursor()
+  #cursor = db.cursor()
   cursor.execute(query)
   data = cursor.fetchall()
   db.close()
@@ -110,7 +110,7 @@ def queryPubmedDB(candidate_vars):
   df = df[['Gene', 'Variant', 'Protein', 'Title', 'Journal', 'Year', 'Impact_Factor', 'Abstract', 'PMID', 'pathogenicity_score']]
   df.drop_duplicates(inplace = True)
   df = df[df.Abstract.notnull() & (df.Abstract != '')]
-  df_pubmed_genes_novariant = queryPubmedDBGenes(candidate_vars, df, db)
+  df_pubmed_genes_novariant = queryPubmedDBGenes(candidate_vars, df, cursor, db)
   return df, df_pubmed_genes_novariant
 
 
