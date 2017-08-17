@@ -20435,10 +20435,10 @@ var Result_page = function (_React$Component) {
       summary_data[0] = _extends({}, this.props.result_data.summary_table_data[0]);
       delete summary_data[0]['correlated_phenotypes'];
       delete summary_data[0]['id'];
-      this.setState = {
+      this.setState({
         current_table: 'summary_table',
         current_data: summary_data
-      };
+      });
     }
   }, {
     key: 'componentWillMount',
