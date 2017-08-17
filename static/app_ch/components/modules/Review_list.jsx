@@ -38,18 +38,18 @@ class Review_list extends React.Component{
         }
       ],
       rows:[
-        {
-          id:1,
-          name:"xiaonan",
-          time:'July 18, 2017, 12:03 p.m.',
-          status:false
-        },
-        {
-          id:2,
-          name:"tianqi",
-          time:'July 18, 2017, 12:03 p.m.',
-          status:false
-        }
+        // {
+        //   id:1,
+        //   name:"xiaonan",
+        //   time:'July 18, 2017, 12:03 p.m.',
+        //   status:false
+        // },
+        // {
+        //   id:2,
+        //   name:"tianqi",
+        //   time:'July 18, 2017, 12:03 p.m.',
+        //   status:false
+        // }
       ]
     }
   }
