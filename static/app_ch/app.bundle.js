@@ -16648,7 +16648,12 @@ var Top_navbar = function (_React$Component) {
   function Top_navbar(props) {
     _classCallCheck(this, Top_navbar);
 
-    return _possibleConstructorReturn(this, (Top_navbar.__proto__ || Object.getPrototypeOf(Top_navbar)).call(this, props));
+    var _this = _possibleConstructorReturn(this, (Top_navbar.__proto__ || Object.getPrototypeOf(Top_navbar)).call(this, props));
+
+    _this.state = {
+      user_name: document.getElementById('user_name').innerHTML
+    };
+    return _this;
   }
 
   _createClass(Top_navbar, [{
@@ -16741,7 +16746,8 @@ var Top_navbar = function (_React$Component) {
                     _react2.default.createElement(
                       'a',
                       { href: '#' },
-                      '\u7528\u6237\u540D:test'
+                      '\u7528\u6237\u540D:',
+                      '' + this.state.user_name
                     )
                   ),
                   _react2.default.createElement('li', { className: 'divider' }),
@@ -20610,13 +20616,13 @@ var Result_page = function (_React$Component) {
           return _react2.default.createElement(
             'div',
             null,
-            '\u8BE5\u6848\u4F8B\u672A\u8981\u6C42 \u9644\u5E26\u53D1\u73B0\u8868'
+            '\u65E0 \u9644\u5E26\u53D1\u73B0\u4FE1\u606F'
           );
         } else if (this.state.current_table === 'candidate_gene_table') {
           return _react2.default.createElement(
             'div',
             null,
-            '\u8BE5\u6848\u4F8B\u672A\u8981\u6C42 \u5907\u9009\u57FA\u56E0\u8868'
+            '\u65E0 \u5907\u9009\u57FA\u56E0\u4FE1\u606F'
           );
         }
       }

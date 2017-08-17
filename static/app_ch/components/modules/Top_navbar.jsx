@@ -3,6 +3,9 @@ import React from 'react';
 class Top_navbar extends React.Component{
   constructor(props){
       super(props);
+      this.state = {
+        user_name:document.getElementById('user_name').innerHTML
+      }
   }
 
   render(){
@@ -32,7 +35,7 @@ class Top_navbar extends React.Component{
               <li className="dropdown">
                 <a href="#" className="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">账户 <span className="caret"></span></a>
                 <ul className="dropdown-menu" role="menu">
-                  <li><a href="#">用户名:test</a></li>
+                  <li><a href="#">用户名:{`${this.state.user_name}`}</a></li>
                   <li className="divider"></li>
                   <li><a href='/password/change/'>修改密码</a></li>
                   <li><a href='/logout/'>退出登陆</a></li>
