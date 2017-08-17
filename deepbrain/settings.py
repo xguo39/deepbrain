@@ -32,7 +32,7 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),
 ]
 
-LOGIN_REDIRECT_URL = '/home/ch'
+LOGIN_REDIRECT_URL = '/home/ch/new/'
 
 # Application definition
 
