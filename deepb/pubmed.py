@@ -39,7 +39,8 @@ def queryPubmedDBGenes(candidate_vars, df_genes, cursor, db):
      gene, variant, protein = var
      candidate_genes.append(gene)
   genes_to_be_queried = list(set(candidate_genes) - set(genes_in_var_query)) 
-
+  if not genes_to_be_queried:
+    return pd.DataFrame()
   # query pubmed articles mentioning genes in genes_to_be_queried
   query = "select gene, pmid, title, journal, year, impact_factor from pubmed_var where "
   for gene in genes_to_be_queried:
@@ -112,5 +113,4 @@ def queryPubmedDB(candidate_vars):
   df = df[df.Abstract.notnull() & (df.Abstract != '')]
   df_pubmed_genes_novariant = queryPubmedDBGenes(candidate_vars, df, cursor, db)
   return df, df_pubmed_genes_novariant
-
 

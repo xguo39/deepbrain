@@ -1534,41 +1534,41 @@ def Get_ACMG_result(df_hpo_ranking_genes, variants, df_pubmed, parent_ngs, paren
 
     	interpret, curr_interpret, interpret_chinese, curr_interpret_chinese = [], [], [], []   
     	if effect_0: 
-                curr_interpret.append('Effect: %s.' % effect_0)
-                curr_interpret_chinese.append('突变类型: %s.' % effect_0)
+                curr_interpret.append('<b>Effect</b>: %s.' % effect_0)
+                curr_interpret_chinese.append('<b>突变类型</b>: %s.' % effect_0)
     	if interpro_domain_0: 
-                curr_interpret.append('Protein domain: %s.' % '|'.join(interpro_domain_0))
-                curr_interpret_chinese.append('蛋白功能区: %s.' % '|'.join(interpro_domain_0))
+                curr_interpret.append('<b>Protein domain</b>: %s.' % '|'.join(interpro_domain_0))
+                curr_interpret_chinese.append('<b>蛋白功能区</b>: %s.' % '|'.join(interpro_domain_0))
     	if id_0: 
-                curr_interpret.append('HGVS ID: %s.' % id_0) 
-                curr_interpret_chinese.append('HGVS ID: %s.' % id_0) 
+                curr_interpret.append('<b>HGVS ID</b>: %s.' % id_0) 
+                curr_interpret_chinese.append('<b>HGVS ID</b>: %s.' % id_0) 
     	if rsid_0: 
-                curr_interpret.append("RefSeq ID: <a href='https://www.ncbi.nlm.nih.gov/projects/SNP/snp_ref.cgi?rs=%s' target='_blank'> %s </a>"  % (rsid_0, rsid_0)) 
-                curr_interpret_chinese.append("RefSeq ID: <a href='https://www.ncbi.nlm.nih.gov/projects/SNP/snp_ref.cgi?rs=%s' target='_blank'> %s </a>"  % (rsid_0, rsid_0)) 
+                curr_interpret.append("<b>RefSeq ID</b>: <a href='https://www.ncbi.nlm.nih.gov/projects/SNP/snp_ref.cgi?rs=%s' target='_blank'> %s </a>"  % (rsid_0, rsid_0)) 
+                curr_interpret_chinese.append("<b>RefSeq ID</b>: <a href='https://www.ncbi.nlm.nih.gov/projects/SNP/snp_ref.cgi?rs=%s' target='_blank'> %s </a>"  % (rsid_0, rsid_0)) 
         if protein_0: 
-                curr_interpret.append('Protein: %s.' % protein_0) 
-                curr_interpret_chinese.append('蛋白质: %s.' % protein_0) 
+                curr_interpret.append('<b>Protein</b>: %s.' % protein_0) 
+                curr_interpret_chinese.append('<b>蛋白质</b>: %s.' % protein_0) 
     	if exon_0: 
-                curr_interpret.append('exon: %s.' % exon_0) 
-                curr_interpret_chinese.append('外显子: %s.' % exon_0) 
+                curr_interpret.append('<b>exon</b>: %s.' % exon_0) 
+                curr_interpret_chinese.append('<b>外显子</b>: %s.' % exon_0) 
         if gene_0:
                 # Add genecards link
-                curr_interpret.append("GeneCards: <a href='http://www.genecards.org/cgi-bin/carddisp.pl?gene=%s' target='_blank'> %s </a>"  % (gene_0, gene_0))
-                curr_interpret_chinese.append("GeneCards: <a href='http://www.genecards.org/cgi-bin/carddisp.pl?gene=%s' target='_blank'> %s </a>"  % (gene_0, gene_0))
+                curr_interpret.append("<b>GeneCards</b>: <a href='http://www.genecards.org/cgi-bin/carddisp.pl?gene=%s' target='_blank'> %s </a>"  % (gene_0, gene_0))
+                curr_interpret_chinese.append("<b>GeneCards</b>: <a href='http://www.genecards.org/cgi-bin/carddisp.pl?gene=%s' target='_blank'> %s </a>"  % (gene_0, gene_0))
                 # Add OMIM link
                 if gene_0 in gene2omim: 
                     omim_id = gene2omim[gene_0]
-                    curr_interpret.append("OMIM: <a href='https://www.omim.org/entry/%s' target='_blank'> %s </a>"  % (omim_id, omim_id))
-                    curr_interpret_chinese.append("OMIM: <a href='https://www.omim.org/entry/%s' target='_blank'> %s </a>"  % (omim_id, omim_id))
+                    curr_interpret.append("<b>OMIM</b>: <a href='https://www.omim.org/entry/%s' target='_blank'> %s </a>"  % (omim_id, omim_id))
+                    curr_interpret_chinese.append("<b>OMIM</b>: <a href='https://www.omim.org/entry/%s' target='_blank'> %s </a>"  % (omim_id, omim_id))
                 # Add Decipher link
-                curr_interpret.append("Decipher: <a href='https://decipher.sanger.ac.uk/search?q=%s#consented-patients/results' target='_blank'> %s </a>"  % (gene_0, gene_0))
-                curr_interpret_chinese.append("Decipher: <a href='https://decipher.sanger.ac.uk/search?q=%s#consented-patients/results' target='_blank'> %s </a>"  % (gene_0, gene_0))
+                curr_interpret.append("<b>Decipher</b>: <a href='https://decipher.sanger.ac.uk/search?q=%s#consented-patients/results' target='_blank'> %s </a>"  % (gene_0, gene_0))
+                curr_interpret_chinese.append("<b>Decipher</b>: <a href='https://decipher.sanger.ac.uk/search?q=%s#consented-patients/results' target='_blank'> %s </a>"  % (gene_0, gene_0))
                 # Add Genetics Home Reference link
-                curr_interpret.append("Genetics Home Reference: <a href='https://ghr.nlm.nih.gov/gene/%s' target='_blank'> %s </a>"  % (gene_0, gene_0))
-                curr_interpret_chinese.append("Genetics Home Reference: <a href='https://ghr.nlm.nih.gov/gene/%s' target='_blank'> %s </a>"  % (gene_0, gene_0))
+                curr_interpret.append("<b>Genetics Home Reference</b>: <a href='https://ghr.nlm.nih.gov/gene/%s' target='_blank'> %s </a>"  % (gene_0, gene_0))
+                curr_interpret_chinese.append("<b>Genetics Home Reference</b>: <a href='https://ghr.nlm.nih.gov/gene/%s' target='_blank'> %s </a>"  % (gene_0, gene_0))
                 # Add GeneReviews link
-                curr_interpret.append("GeneReviews: <a href='https://www.ncbi.nlm.nih.gov/books/NBK1116/?term=%s' target='_blank'> %s </a>"  % (gene_0, gene_0))
-                curr_interpret_chinese.append("GeneReviews: <a href='https://www.ncbi.nlm.nih.gov/books/NBK1116/?term=%s' target='_blank'> %s </a>"  % (gene_0, gene_0))
+                curr_interpret.append("<b>GeneReviews</b>: <a href='https://www.ncbi.nlm.nih.gov/books/NBK1116/?term=%s' target='_blank'> %s </a>"  % (gene_0, gene_0))
+                curr_interpret_chinese.append("<b>GeneReviews</b>: <a href='https://www.ncbi.nlm.nih.gov/books/NBK1116/?term=%s' target='_blank'> %s </a>"  % (gene_0, gene_0))
 
     	if maf_exac_0:
                 if id_0:
@@ -1581,56 +1581,56 @@ def Get_ACMG_result(df_hpo_ranking_genes, variants, df_pubmed, parent_ngs, paren
                     hgvs_id = hgvs_id.replace('C', '-C') 
                     hgvs_id = hgvs_id.replace('G', '-G') 
                     #print id_0, hgvs_id
-                    curr_interpret.append("ExAC MAF: %s (<a href='http://exac.broadinstitute.org/variant/%s' target='_blank'> %s </a>)"  % (maf_exac_0, hgvs_id, hgvs_id)) 
-                    curr_interpret_chinese.append("ExAC 最小等位基因频率(MAF): %s (<a href='http://exac.broadinstitute.org/variant/%s' target='_blank'> %s </a>)"  % (maf_exac_0, hgvs_id, hgvs_id)) 
+                    curr_interpret.append("<b>ExAC MAF</b>: %s (<a href='http://exac.broadinstitute.org/variant/%s' target='_blank'> %s </a>)"  % (maf_exac_0, hgvs_id, hgvs_id)) 
+                    curr_interpret_chinese.append("<b>ExAC 最小等位基因频率(MAF)</b>: %s (<a href='http://exac.broadinstitute.org/variant/%s' target='_blank'> %s </a>)"  % (maf_exac_0, hgvs_id, hgvs_id)) 
                 else:
-                    curr_interpret.append('ExAC MAF: %s.' % maf_exac_0) 
-                    curr_interpret_chinese.append('ExAC 最小等位基因频率(MAF): %s.' % maf_exac_0) 
+                    curr_interpret.append('<b>ExAC MAF</b>: %s.' % maf_exac_0) 
+                    curr_interpret_chinese.append('<b>ExAC 最小等位基因频率(MAF)</b>: %s.' % maf_exac_0) 
                 exac_details = variant_['exac_details']
-                curr_interpret.append('ExAC MAF: Total Allele Count (%s), Total Allele Number (%s), Allele Frequency for all races (%s), Number of Homozygotes (%s), Homozygotes Percentage (%s), African Allele Count (%s), African Allele Number (%s), African Allele Frequency (%s), Latino Allele Count (%s), Latino  Allele Number (%s), Latino Allele Frequency (%s), East Asian Allele Count (%s), East Asian Allele Number (%s), East Asian Allele Frequency (%s), European (Finnish) Allele Count (%s), European (Finnish) Allele Number (%s), European (Finnish) Allele Frequency (%s), European (Non-Finnish) Allele Count (%s), European (Non-Finnish) Allele Number (%s), European (Non-Finnish) Allele Frequency (%s), Other Allele Count (%s), Other Allele Number (%s), Other Allele Frequency (%s), South Asian Allele Count (%s), South Asian Allele Number (%s), South Asian Allele Frequency (%s)' % (exac_details[0], exac_details[1], exac_details[2], exac_details[24], exac_details[25], exac_details[3], exac_details[4], exac_details[5], exac_details[6], exac_details[7], exac_details[8], exac_details[9], exac_details[10], exac_details[11], exac_details[12], exac_details[13], exac_details[14], exac_details[15], exac_details[16], exac_details[17], exac_details[18], exac_details[19], exac_details[20], exac_details[21], exac_details[22], exac_details[23]))
+                curr_interpret.append("<b>ExAC MAF</b>: <div class='first_layer'> <b>Total</b> Allele Count (%s), Total Allele Number (%s), Allele Frequency for all races (%s), <br/> <b>African</b> Allele Count (%s), African Allele Number (%s), African Allele Frequency (%s), <br/> <b>Latino</b> Allele Count (%s), Latino  Allele Number (%s), Latino Allele Frequency (%s), <br/> <b>East Asian</b> Allele Count (%s), East Asian Allele Number (%s), East Asian Allele Frequency (%s), <br/> <b>European (Finnish)</b> Allele Count (%s), European (Finnish) Allele Number (%s), European (Finnish) Allele Frequency (%s), <br/> <b>European (Non-Finnish)</b> Allele Count (%s), European (Non-Finnish) Allele Number (%s), European (Non-Finnish) Allele Frequency (%s), <br/> <b>Other</b> Allele Count (%s), Other Allele Number (%s), Other Allele Frequency (%s), <br/> <b>South Asian</b> Allele Count (%s), South Asian Allele Number (%s), South Asian Allele Frequency (%s) <br/> Number of Homozygotes (%s), Homozygotes Percentage (%s) </div>" % (exac_details[0], exac_details[1], exac_details[2], exac_details[3], exac_details[4], exac_details[5], exac_details[6], exac_details[7], exac_details[8], exac_details[9], exac_details[10], exac_details[11], exac_details[12], exac_details[13], exac_details[14], exac_details[15], exac_details[16], exac_details[17], exac_details[18], exac_details[19], exac_details[20], exac_details[21], exac_details[22], exac_details[23], exac_details[24], exac_details[25]))
 
-                curr_interpret_chinese.append('ExAC 最小等位基因频率(MAF)详细数据: Total Allele Count (%s), Total Allele Number (%s), Allele Frequency for all races (%s), Number of Homozygotes (%s), Homozygotes Percentage (%s), African Allele Count (%s), African Allele Number (%s), African Allele Frequency (%s), Latino Allele Count (%s), Latino  Allele Number (%s), Latino Allele Frequency (%s), East Asian Allele Count (%s), East Asian Allele Number (%s), East Asian Allele Frequency (%s), European (Finnish) Allele Count (%s), European (Finnish) Allele Number (%s), European (Finnish) Allele Frequency (%s), European (Non-Finnish) Allele Count (%s), European (Non-Finnish) Allele Number (%s), European (Non-Finnish) Allele Frequency (%s), Other Allele Count (%s), Other Allele Number (%s), Other Allele Frequency (%s), South Asian Allele Count (%s), South Asian Allele Number (%s), South Asian Allele Frequency (%s)' % (exac_details[0], exac_details[1], exac_details[2], exac_details[24], exac_details[25], exac_details[3], exac_details[4], exac_details[5], exac_details[6], exac_details[7], exac_details[8], exac_details[9], exac_details[10], exac_details[11], exac_details[12], exac_details[13], exac_details[14], exac_details[15], exac_details[16], exac_details[17], exac_details[18], exac_details[19], exac_details[20], exac_details[21], exac_details[22], exac_details[23]))
+                curr_interpret_chinese.append("<b>ExAC 最小等位基因频率(MAF)详细数据</b>: <div class='first_layer'> <b>Total</b> Allele Count (%s), Total Allele Number (%s), Allele Frequency for all races (%s), <br/> <b>African</b> Allele Count (%s), African Allele Number (%s), African Allele Frequency (%s), <br/> <b>Latino</b> Allele Count (%s), Latino  Allele Number (%s), Latino Allele Frequency (%s), <br/> <b>East Asian</b> Allele Count (%s), East Asian Allele Number (%s), East Asian Allele Frequency (%s), <br/> <b>European (Finnish)</b> Allele Count (%s), European (Finnish) Allele Number (%s), European (Finnish) Allele Frequency (%s), <br/> <b>European (Non-Finnish)</b> Allele Count (%s), European (Non-Finnish) Allele Number (%s), European (Non-Finnish) Allele Frequency (%s), <br/> <b>Other</b> Allele Count (%s), Other Allele Number (%s), Other Allele Frequency (%s), <br/> <b>South Asian</b> Allele Count (%s), South Asian Allele Number (%s), South Asian Allele Frequency (%s) <br/> Number of Homozygotes (%s), Homozygotes Percentage (%s) </div>" % (exac_details[0], exac_details[1], exac_details[2], exac_details[3], exac_details[4], exac_details[5], exac_details[6], exac_details[7], exac_details[8], exac_details[9], exac_details[10], exac_details[11], exac_details[12], exac_details[13], exac_details[14], exac_details[15], exac_details[16], exac_details[17], exac_details[18], exac_details[19], exac_details[20], exac_details[21], exac_details[22], exac_details[23], exac_details[24], exac_details[25]))
 
     	if maf_1000g_0: 
-                curr_interpret.append('1000Genomes MAF: %s.' % maf_1000g_0) 
-                curr_interpret_chinese.append('1000Genomes 最小等位基因频率(MAF): %s.' % maf_1000g_0) 
+                curr_interpret.append('<b>1000Genomes MAF</b>: %s.' % maf_1000g_0) 
+                curr_interpret_chinese.append('<b>1000Genomes 最小等位基因频率(MAF)</b>: %s.' % maf_1000g_0) 
     	if maf_esp6500_0: 
-                curr_interpret.append('Exome Sequencing Project(ESP) 6500 MAF: %s.' % maf_esp6500_0) 
-                curr_interpret_chinese.append('Exome Sequencing Project(ESP) 6500 最小等位基因频率(MAF): %s.' % maf_esp6500_0) 
+                curr_interpret.append('<b>Exome Sequencing Project(ESP) 6500 MAF</b>: %s.' % maf_esp6500_0) 
+                curr_interpret_chinese.append('<b>Exome Sequencing Project(ESP) 6500 最小等位基因频率(MAF)</b>: %s.' % maf_esp6500_0) 
     	if dann_0: 
-                curr_interpret.append('DANN pathogenicity score: %s (Pathogenicity Cutoff: 0.96).' % dann_0)
-                curr_interpret_chinese.append('DANN致病性分数: %s (致病分数阈值: %s).' % (dann_0, '0.96'))
+                curr_interpret.append('<b>DANN pathogenicity score</b>: %s (Pathogenicity Cutoff: 0.96).' % dann_0)
+                curr_interpret_chinese.append('<b>DANN致病性分数</b>: %s (致病分数阈值: %s).' % (dann_0, '0.96'))
     	if fathmm_0: 
-                curr_interpret.append('FATHMM pathogenicity score: %s (Pathogenicity Cutoff: 0.81415).' % fathmm_0)
-                curr_interpret_chinese.append('FATHMM致病性分数: %s (致病分数阈值: %s).' % (fathmm_0, '0.81415'))
+                curr_interpret.append('<b>FATHMM pathogenicity score</b>: %s (Pathogenicity Cutoff: 0.81415).' % fathmm_0)
+                curr_interpret_chinese.append('<b>FATHMM致病性分数</b>: %s (致病分数阈值: %s).' % (fathmm_0, '0.81415'))
     	if metasvm_0: 
-                curr_interpret.append('MetaSVM pathogenicity score: %s (Pathogenicity Cutoff: 0.83357).' % metasvm_0)
-                curr_interpret_chinese.append('MetaSVM致病性分数: %s (致病分数阈值: %s).' % (metasvm_0, '0.83357'))
+                curr_interpret.append('<b>MetaSVM pathogenicity score</b>: %s (Pathogenicity Cutoff: 0.83357).' % metasvm_0)
+                curr_interpret_chinese.append('<b>MetaSVM致病性分数</b>: %s (致病分数阈值: %s).' % (metasvm_0, '0.83357'))
     	if gerp_0: 
-                curr_interpret.append('GERP++ conservation score: %s (Pathogenicity Cutoff: 2.0).' % gerp_0)
-                curr_interpret_chinese.append('GERP++序列保守性预测分数: %s (致病分数阈值: %s).' % (gerp_0, '2.0'))
+                curr_interpret.append('<b>GERP++ conservation score</b>: %s (Pathogenicity Cutoff: 2.0).' % gerp_0)
+                curr_interpret_chinese.append('<b>GERP++序列保守性预测分数</b>: %s (致病分数阈值: %s).' % (gerp_0, '2.0'))
     	if dbscSNV_rf_0: 
-                curr_interpret.append('Random Forest dbscSNV splicing effect prediction: %s (Pathogenicity Cutoff: 0.6).' % dbscSNV_rf_0)
-                curr_interpret_chinese.append('基于随机森林算法的dbscSNV剪接效应(splicing effect)预测分数: %s (致病分数阈值: %s).' % (dbscSNV_rf_0, '0.6'))
+                curr_interpret.append('<b>Random Forest dbscSNV splicing effect prediction</b>: %s (Pathogenicity Cutoff: 0.6).' % dbscSNV_rf_0)
+                curr_interpret_chinese.append('<b>基于随机森林算法的dbscSNV剪接效应(splicing effect)预测分数</b>: %s (致病分数阈值: %s).' % (dbscSNV_rf_0, '0.6'))
     	if dbscSNV_ada_0: 
-                curr_interpret.append('AdaBoost dbscSNV splicing effect prediction: %s (Pathogenicity Cutoff: 0.6).' % dbscSNV_ada_0)
-                curr_interpret_chinese.append('基于AdaBoost算法的dbscSNV剪接效应(splicing effect)预测分数: %s (致病分数阈值: %s).' % (dbscSNV_ada_0, '0.6'))
+                curr_interpret.append('<b>AdaBoost dbscSNV splicing effect prediction</b>: %s (Pathogenicity Cutoff: 0.6).' % dbscSNV_ada_0)
+                curr_interpret_chinese.append('<b>基于AdaBoost算法的dbscSNV剪接效应(splicing effect)预测分数</b>: %s (致病分数阈值: %s).' % (dbscSNV_ada_0, '0.6'))
     	if clinvar_variation_ids_0 != ["<a href='https://www.ncbi.nlm.nih.gov/clinvar/variation//' target='_blank'>  </a>"]: 
-                curr_interpret.append('Clinvar variation ids: %s.' % ",".join(clinvar_variation_ids_0))
-                curr_interpret_chinese.append('Clinvar数据库ID: %s.' % ",".join(clinvar_variation_ids_0))
+                curr_interpret.append("<b>Clinvar variation ids</b>: %s. <div class='first_layer'>" % ",".join(clinvar_variation_ids_0))
+                curr_interpret_chinese.append('<b>Clinvar数据库ID</b>: %s.' % ",".join(clinvar_variation_ids_0))
     	if clinvar_pathogenicity_0:
                 joined_clinvar_pathogenicity_0 = []
                 joined_clinvar_pathogenicity_chinese_0 = []
                 for record in clinvar_pathogenicity_0:
                     description, submitter, datelastevaluated, method, comment = record
                     if not re.search('literature', method, re.I):
-                        joined_clinvar_pathogenicity_0.append('Submitter-%s Submission time-%s Classification-%s' % (submitter, datelastevaluated, description)) 
-                        joined_clinvar_pathogenicity_chinese_0.append('提交者-%s 提交时间-%s 致病性分类-%s' % (submitter, datelastevaluated, description)) 
-                joined_clinvar_pathogenicity_0 = '; '.join(joined_clinvar_pathogenicity_0)
-                joined_clinvar_pathogenicity_chinese_0 = '; '.join(joined_clinvar_pathogenicity_chinese_0)
-                curr_interpret.append('Pathogenicity reported by Clinvar (Only showing clinical testing records): %s.' % joined_clinvar_pathogenicity_0)
+                        joined_clinvar_pathogenicity_0.append('<b>Submitter</b>-%s Submission time-%s Classification-%s' % (submitter, datelastevaluated, description)) 
+                        joined_clinvar_pathogenicity_chinese_0.append('<b>提交者</b>-%s 提交时间-%s 致病性分类-%s' % (submitter, datelastevaluated, description)) 
+                joined_clinvar_pathogenicity_0 = '<br>'.join(joined_clinvar_pathogenicity_0) 
+                joined_clinvar_pathogenicity_chinese_0 = '<br>'.join(joined_clinvar_pathogenicity_chinese_0) 
+                curr_interpret.append("<br><U> Pathogenicity reported by Clinvar (Only showing clinical testing records): </U> <br> <div class='second_layer'> %s. </div>" % joined_clinvar_pathogenicity_0)
                 joined_clinvar_pathogenicity_0_chinese = re_map_clinvar_pathogenicity.sub(lambda m: map_clinvar_pathogenicity[m.group()], joined_clinvar_pathogenicity_chinese_0)
-                curr_interpret_chinese.append('Clinvar数据库记录的变异致病性 (只显示临床试验(clinical testing)记录): %s.' % joined_clinvar_pathogenicity_0_chinese)
+                curr_interpret_chinese.append("<br><U> Clinvar数据库记录的变异致病性 (只显示临床试验(clinical testing)记录):</U> <br> <div class='second_layer'> %s. </div>" % joined_clinvar_pathogenicity_0_chinese)
     	#if clinvar_review_status_0: 
         #        curr_interpret.append('Clinvar review status: %s.' % clinvar_review_status_0)
         #        clinvar_review_status_0_chinese = re_map_clinvar_review_status.sub(lambda m: map_clinvar_review_status[m.group()], clinvar_review_status_0)
@@ -1642,19 +1642,21 @@ def Get_ACMG_result(df_hpo_ranking_genes, variants, df_pubmed, parent_ngs, paren
                         continue
                     title, journal, year, impact_factor, pathogenicity_score = pubmed_articles_from_clinvar[pmid]
                     clinvar_pubmed_articles.append("<a href='https://www.ncbi.nlm.nih.gov/pubmed/%s' target='_blank'> %s </a>: title: %s, journal: %s, year: %s, impact_factor: %s" %(pmid, pmid, title, journal, year, impact_factor))
-                curr_interpret.append('Pubmed references from Clinvar: %s.' % "; ".join(clinvar_pubmed_articles))
-                curr_interpret_chinese.append('Clinvar数据库记录的Pubmed相关生物医学文献: %s.' % "; ".join(clinvar_pubmed_articles))
+                curr_interpret.append("<U>Pubmed references from Clinvar:</U><br> <div class='second_layer'> %s. </div>" % "; ".join(clinvar_pubmed_articles))
+                curr_interpret_chinese.append("<U>Clinvar数据库记录的Pubmed相关生物医学文献: </U><br> <div class='second_layer'> %s. </div>" % "<br>".join(clinvar_pubmed_articles))
         if clinvar_diseases_0:
-                curr_interpret.append('Associated diseases from Clinvar: %s.' % clinvar_diseases_0)
-                curr_interpret_chinese.append('Clinvar数据库记录的与此变异相关的疾病: %s.' % clinvar_diseases_0)
+                curr_interpret.append('<U>Associated diseases from Clinvar: </U>%s.' % clinvar_diseases_0)
+                curr_interpret_chinese.append('<U>Clinvar数据库记录的与此变异相关的疾病: </U>%s.' % clinvar_diseases_0)
+        curr_interpret.append('</div>')
+        curr_interpret_chinese.append('</div>')
         if (gene_0, variant_0) in pubmed_articles.keys():
                 pubmed_articles_0 = ["<a href='https://www.ncbi.nlm.nih.gov/pubmed/%s' target='_blank'> %s </a>: title: %s, journal: %s, year: %s, impact_factor: %s" %(i[0],i[0], i[1], i[2], i[3], i[4]) for i in pubmed_articles[(gene_0, variant_0)]]
-                curr_interpret.append('Pubmed references: %s.' % "; ".join(pubmed_articles_0))
-                curr_interpret_chinese.append('Pubmed相关生物医学文献: %s.' % "; ".join(pubmed_articles_0))
+                curr_interpret.append("<b>Pubmed references</b>: <br><div class='first_layer'> %s.</div>" % "; ".join(pubmed_articles_0))
+                curr_interpret_chinese.append("<b>Pubmed相关生物医学文献</b>: <br><div class='first_layer'> %s.</div>" % "<br>".join(pubmed_articles_0))
         elif not clinvar_pmids_0 and gene_0 in pubmed_articles_genes_novariant:
                 pubmed_articles_0 = ["<a href='https://www.ncbi.nlm.nih.gov/pubmed/%s' target='_blank'> %s </a>: title: %s, journal: %s, year: %s, impact_factor: %s" %(i[0],i[0], i[1], i[2], i[3], i[4]) for i in pubmed_articles_genes_novariant[gene_0]]
-                curr_interpret.append('Pubmed references: %s.' % "; ".join(pubmed_articles_0))
-                curr_interpret_chinese.append('Pubmed相关生物医学文献: %s.' % "; ".join(pubmed_articles_0))
+                curr_interpret.append("<b>Pubmed references</b>: <br><div class='first_layer'> %s.</div>" % "; ".join(pubmed_articles_0))
+                curr_interpret_chinese.append("<b>Pubmed相关生物医学文献</b>: <br><div class='first_layer'> %s.</div>" % "<br>".join(pubmed_articles_0))
 
     	curr_interpret = '<br/>'.join(curr_interpret)
     	curr_interpret_chinese = '<br/>'.join(curr_interpret_chinese)
