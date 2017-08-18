@@ -16,6 +16,7 @@ APIs
   - [Checked_change](#checked_change)
   - [Fetch_case_result](#fetch_case_result)
   - [Fetch_Annotation](#fetch_annotation)
+  - [Logout](#logout)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 ---------------------------
