@@ -3,6 +3,7 @@ import {static_image} from 'base.config';
 import {
   General_data_table, Annotation_page
 } from 'components/fragments';
+import Input_basic_info from 'components/models/Input_basic_info';
 
 class Result_page extends React.Component{
   constructor(props){
@@ -143,8 +144,17 @@ class Result_page extends React.Component{
 
   _renderTable(table_data){
     if(table_data.length!==0){
-      return <General_data_table table_data={this.state.current_data}/>
+      if(this.state.current_table === 'input_gene_table'){
+        return <div>
+                 <Input_basic_info input_info={this.props.result_data.input_info}/>
+                 <General_data_table table_data={this.state.current_data}/>
+               </div>
+      }else{
+        return <General_data_table table_data={this.state.current_data}/>
+      }
+
     }else{
+      // If not data return display black space
       if(this.state.current_table==='incidental_finding_table'){
         return <div>无 附带发现信息</div>
       }else if(this.state.current_table==='candidate_gene_table'){
