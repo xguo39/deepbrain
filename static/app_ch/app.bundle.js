@@ -16713,7 +16713,7 @@ var Top_navbar = function (_React$Component) {
                     null,
                     _react2.default.createElement(
                       'a',
-                      { href: '' },
+                      null,
                       'English'
                     )
                   ),
@@ -16722,7 +16722,7 @@ var Top_navbar = function (_React$Component) {
                     null,
                     _react2.default.createElement(
                       'a',
-                      { href: '' },
+                      null,
                       '\u4E2D\u6587'
                     )
                   )
@@ -17187,10 +17187,12 @@ var upload_task_actions = {
         return res.json();
       }).then(function (data) {
         if (data.success) {
+          window.location.reload();
           dispatch(task_actions.uploadTaskSuccess());
           // Constanly fetch the progress task list after uploading
           dispatch(task_actions.fetchProgressTask());
         } else {
+          window.location.reload();
           dispatch(task_actions.uploadTaskFailure(data.errCode));
         }
       });
@@ -21338,8 +21340,10 @@ var Task_list = function (_React$Component) {
           label: '状态'
         },
         cell: {
-          formatters: [function (status) {
-            return status === 'succeed' ? '成功' : '失败';
+          formatters: [
+          // status => status==='succeed'?'成功':'失败'
+          function (status) {
+            if (status === 'succeed') return '成功';else if (status.indexOf('fail') !== -1) return '失败';else return '进程中';
           }]
         },
         props: {
@@ -21371,6 +21375,7 @@ var Task_list = function (_React$Component) {
           } else {
             alert('请查看上传成功的案例');
           }
+          _this2.props.checkedChange(row.id);
         },
         className: className
       };
@@ -21454,16 +21459,13 @@ var Task_list = function (_React$Component) {
 }(_react2.default.Component);
 
 Task_list.propTypes = {
-  toResult: _react2.default.PropTypes.func.isRequired,
-  fetchTaskList: _react2.default.PropTypes.func.isRequired,
+  toResult: _react2.default.PropTypes.func,
+  fetchTaskList: _react2.default.PropTypes.func,
+  checkedChange: _react2.default.PropTypes.func,
   task_list: _react2.default.PropTypes.array
 };
 
-Task_list.defaultProps = {
-  toResult: function toResult() {},
-  fetchTaskList: function fetchTaskList() {},
-  task_list: []
-};
+Task_list.defaultProps = {};
 
 exports.default = Task_list;
 
@@ -21811,6 +21813,9 @@ var mapDispatchToProps = function mapDispatchToProps(dispatch) {
     },
     fetchTaskList: function fetchTaskList() {
       dispatch(_root_actions2.default.fetchTaskList());
+    },
+    checkedChange: function checkedChange(task_id) {
+      dispatch(_root_actions2.default.checkedChange(task_id));
     }
   };
 };

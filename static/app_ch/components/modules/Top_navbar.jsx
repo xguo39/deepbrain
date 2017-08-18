@@ -27,8 +27,8 @@ class Top_navbar extends React.Component{
               <li className="dropdown">
                 <a href="" className="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">语言<span className="caret"></span></a>
                 <ul className="dropdown-menu" role="menu">
-                  <li><a href="">English</a></li>
-                  <li><a href="">中文</a></li>
+                  <li><a>English</a></li>
+                  <li><a>中文</a></li>
                 </ul>
               </li>
 

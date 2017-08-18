@@ -38,10 +38,12 @@ const upload_task_actions = {
       .then(res=>res.json())
       .then(data=>{
         if(data.success){
+          window.location.reload();
           dispatch(task_actions.uploadTaskSuccess());
           // Constanly fetch the progress task list after uploading
           dispatch(task_actions.fetchProgressTask());
         }else{
+          window.location.reload();
           dispatch(task_actions.uploadTaskFailure(data.errCode));
         }
       })

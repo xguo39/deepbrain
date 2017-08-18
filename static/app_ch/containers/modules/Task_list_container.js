@@ -16,6 +16,9 @@ const mapDispatchToProps = (dispatch)=>{
     },
     fetchTaskList:()=>{
       dispatch(root_actions.fetchTaskList());
+    },
+    checkedChange:(task_id)=>{
+      dispatch(root_actions.checkedChange(task_id));
     }
   }
 }

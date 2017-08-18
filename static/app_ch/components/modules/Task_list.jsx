@@ -36,7 +36,12 @@ class Task_list extends React.Component{
           },
           cell:{
             formatters:[
-              status => status==='succeed'?'成功':'失败'
+              // status => status==='succeed'?'成功':'失败'
+              status => {
+                if(status === 'succeed') return '成功';
+                else if(status.indexOf('fail')!==-1) return '失败';
+                else return '进程中';
+              }
             ]
           },
           props:{
@@ -60,6 +65,7 @@ class Task_list extends React.Component{
         }else{
           alert('请查看上传成功的案例');
         }
+        this.props.checkedChange(row.id);
       },
       className:className,
     }
@@ -116,15 +122,14 @@ class Task_list extends React.Component{
 }
 
 Task_list.propTypes={
-  toResult:React.PropTypes.func.isRequired,
-  fetchTaskList:React.PropTypes.func.isRequired,
+  toResult:React.PropTypes.func,
+  fetchTaskList:React.PropTypes.func,
+  checkedChange:React.PropTypes.func,
   task_list:React.PropTypes.array,
 }
 
 Task_list.defaultProps={
-  toResult:()=>{},
-  fetchTaskList:()=>{},
-  task_list:[],
+
 }
 
 export default Task_list;

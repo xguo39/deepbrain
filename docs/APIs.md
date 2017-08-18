@@ -255,10 +255,10 @@ http/1.1 200 OK
     },...
   ],
   input_info:{
-    age:32,
-    gender:'男',
+    age:32, // null if not
+    gender:0, // 0 not know, 1 male, 2 female
     input_pheno:'sdfdsfkjsfkjsdhfksjdlf',
-    parents_gene_info:0
+    parents_gene_info:0 //0 neither, 1 only father, 2 only mother, 3 both
   },
   interpretation_data:[
     {
