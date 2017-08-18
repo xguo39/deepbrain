@@ -16859,36 +16859,62 @@ var initialState = {
   tasks: {
     isFetching: false,
     progress_task_list: [],
-    all_task_list: [
-      // {
-      //  id:1,
-      //  task_name:"xiaonan",
-      //  pub_date: '2017-06-18, 12:03pm',
-      //  status:'succeed',
-      //  processed_time:'0',
-      //  checked:false
-      // },
-    ]
+    all_task_list: [{
+      id: 1,
+      task_name: "xiaonan",
+      pub_date: '2017-06-18, 12:03pm',
+      status: 'succeed',
+      processed_time: '0',
+      checked: false
+    }]
   },
   results: {
     isFetching: false,
     received_new_data: false,
     review_data: [],
     result_data: {
-      summary_table_data: [{
-        gene: 'WWOX',
-        transcript: 'chr16:g.78466583C>G',
-        variant: 'c.5354G&t>A',
-        protein: 'danbaizhi',
-        id: '2313fsfsf',
-        zygosity: 'peixing',
-        correlated_phenotypes: 'biaoxingpipei',
-        pheno_match_score: 39,
-        hit_criteria: "PM2|BP4",
-        pathogenicity: 'Uncertain Significance',
-        pathogenicity_score: 0.88,
-        final_score: 1.8
-      }],
+      summary_table_data: [
+        //  {
+        //    gene:'WWOX',
+        //    transcript:'chr16:g.78466583C>G',
+        //    variant:'c.5354G&t>A',
+        //    protein:'danbaizhi',
+        //    id:'2313fsfsf',
+        //    zygosity:'peixing',
+        //    correlated_phenotypes:'biaoxingpipei',
+        //    pheno_match_score:39,
+        //    hit_criteria:"PM2|BP4",
+        //    pathogenicity:'Uncertain Significance',
+        //    pathogenicity_score:0.88,
+        //    final_score:1.8
+        //  },
+        //  {
+        //    gene:'WNT7A',
+        //    transcript:'chr3:g.13896304C>T',
+        //    variant:'c.5224G&t>C',
+        //    protein:'danbaizhi',
+        //    zygosity:'peixing',
+        //    correlated_phenotypes:'biaoxingpipei',
+        //    pheno_match_score:45,
+        //    hit_criteria:"PM2|BP4",
+        //    pathogenicity:'Uncertain Significance',
+        //    pathogenicity_score:1.28,
+        //    final_score:1.1
+        //  },
+        //  {
+        //    gene:'WNT9A',
+        //    transcript:'chr3:g.13896304C>T',
+        //    variant:'c.5224G&t>C',
+        //    protein:'danbaizhi',
+        //    zygosity:'peixing',
+        //    correlated_phenotypes:'biaoxingpipei',
+        //    pheno_match_score:45,
+        //    hit_criteria:"PM2|BP4",
+        //    pathogenicity:'Uncertain Significance',
+        //    pathogenicity_score:1.28,
+        //    final_score:0.9
+        //  },
+      ],
       incidental_table_data: [],
       candidate_table_data: [],
       input_gene_data: [{
@@ -17163,7 +17189,7 @@ var upload_task_actions = {
           // Constanly fetch the progress task list after uploading
           dispatch(task_actions.fetchProgressTask());
         } else {
-          dispatch(task_actions.uploadTaskFailure(errCode));
+          dispatch(task_actions.uploadTaskFailure(data.errCode));
         }
       });
     };
@@ -17240,7 +17266,7 @@ var progress_task_actions = {
             }
           }
         } else {
-          dispatch(task_actions.fetchProgressTaskFail(errcode));
+          dispatch(task_actions.fetchProgressTaskFail(data.errcode));
         }
       });
     };
@@ -17286,7 +17312,7 @@ var all_task_actions = {
         if (data.success) {
           dispatch(task_actions.fetchAllTaskSuccess(data.list));
         } else {
-          dispatch(task_actions.fetchAllTaskFailure(errcode));
+          dispatch(task_actions.fetchAllTaskFailure(data.errcode));
         }
       });
     };
@@ -17693,10 +17719,18 @@ var New_task_upload = function (_React$Component) {
             this.setState(_extends({}, this.state, { candidate_genes_check: !this.state.candidate_genes_check }));
             break;
 
+          case 'task_submit':
+            console.log('submit trigger');
+            break;
+
           default:
             break;
         }
-      };
+      } else if (target.id === 'task_submit') {
+        if (this.state.input_gene_file === '尚未选择') {
+          alert('请选择基因文件');
+        }
+      }
     }
   }, {
     key: 'render',
@@ -17809,7 +17843,8 @@ var New_task_upload = function (_React$Component) {
                     _react2.default.createElement('input', { id: 'input_gene_file',
                       type: 'file',
                       name: 'gene_file',
-                      required: true, accept: '.txt,.xlsx,.xls,.csv,.vcf',
+                      required: true,
+                      accept: '.txt,.xlsx,.xls,.csv,.vcf',
                       onChange: function onChange(evt) {
                         return _this2._handleChange(evt);
                       } }),
@@ -18685,15 +18720,15 @@ var General_data_table = function (_React$Component) {
     // Dynamically generate the columns
     var columns = [];
     var sortingColumns = {};
-    var order = 0;
     for (var column_key in _this.props.table_data[0]) {
       if (typeof _this.props.table_data[0][column_key] === "number") {
+        var order = 1;
+        if (column_key === 'final_score') order = 0;
         sortingColumns[column_key] = {
           direction: 'desc',
           position: order
-        };
-        order++;
-        columns.push({
+          // order++
+        };columns.push({
           property: '' + column_key,
           header: {
             label: '' + (mappingDict[column_key] ? mappingDict[column_key] : column_key),
@@ -18769,14 +18804,15 @@ var General_data_table = function (_React$Component) {
       // Dynamically update the columns and rows
       var columns = [];
       var sortingColumns = {};
-      var order = 0;
+      // let order = 0;
       for (var column_key in props.table_data[0]) {
         if (typeof props.table_data[0][column_key] === "number") {
+          var order = 2;
+          if (column_key === 'final_score') order = 0;else if (column_key === 'pheno_match_score') order = 1;
           sortingColumns[column_key] = {
             direction: 'desc',
             position: order
           };
-          order++;
           columns.push({
             property: '' + column_key,
             header: {
@@ -20531,9 +20567,13 @@ var Result_page = function (_React$Component) {
             // Waited: Here we cut off the summary_table_data to phenotype_match_table
             var phenotype_match_data = [].concat(_toConsumableArray(this.props.result_data.summary_table_data));
             phenotype_match_data[0] = _extends({}, this.props.result_data.summary_table_data[0]);
-            delete phenotype_match_data[0]['hit_criteria'];delete phenotype_match_data[0]['pathogenicity'];
-            delete phenotype_match_data[0]['pathogenicity_score'];delete phenotype_match_data[0]['final_score'];
-            delete phenotype_match_data[0]['id'];
+            if (phenotype_match_data[0].hasOwnProperty('correlated_phenotypes') === false) {
+              phenotype_match_data = [];
+            } else {
+              delete phenotype_match_data[0]['hit_criteria'];delete phenotype_match_data[0]['pathogenicity'];
+              delete phenotype_match_data[0]['pathogenicity_score'];delete phenotype_match_data[0]['final_score'];
+              delete phenotype_match_data[0]['id'];
+            }
             this.setState(_extends({}, this.state, {
               current_table: 'phenotype_match_table',
               current_data: phenotype_match_data
@@ -20623,6 +20663,12 @@ var Result_page = function (_React$Component) {
             'div',
             null,
             '\u65E0 \u5907\u9009\u57FA\u56E0\u4FE1\u606F'
+          );
+        } else if (this.state.current_table === 'phenotype_match_table') {
+          return _react2.default.createElement(
+            'div',
+            null,
+            '\u65E0 \u8868\u578B\u5BF9\u5E94\u4FE1\u606F'
           );
         }
       }

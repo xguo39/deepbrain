@@ -36,14 +36,15 @@ class General_data_table extends React.Component{
     // Dynamically generate the columns
     let columns = [];
     let sortingColumns={};
-    let order = 0;
     for(let column_key in this.props.table_data[0]){
       if(typeof this.props.table_data[0][column_key] === "number"){
+        let order = 1;
+        if(column_key === 'final_score')  order = 0;
         sortingColumns[column_key]={
           direction:'desc',
           position:order
         }
-        order++
+        // order++
         columns.push({
           property:`${column_key}`,
           header:{
@@ -115,14 +116,16 @@ class General_data_table extends React.Component{
     // Dynamically update the columns and rows
     let columns = [];
     let sortingColumns={};
-    let order = 0;
+    // let order = 0;
     for(let column_key in props.table_data[0]){
       if(typeof props.table_data[0][column_key] === "number"){
+        let order = 2;
+        if(column_key === 'final_score')  order = 0;
+        else if (column_key === 'pheno_match_score') order = 1;
         sortingColumns[column_key]={
           direction:'desc',
           position:order
         }
-        order++
         columns.push({
           property:`${column_key}`,
           header:{

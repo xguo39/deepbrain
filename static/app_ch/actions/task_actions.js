@@ -42,7 +42,7 @@ const upload_task_actions = {
           // Constanly fetch the progress task list after uploading
           dispatch(task_actions.fetchProgressTask());
         }else{
-          dispatch(task_actions.uploadTaskFailure(errCode));
+          dispatch(task_actions.uploadTaskFailure(data.errCode));
         }
       })
     }
@@ -98,7 +98,7 @@ const progress_task_actions = {
             }
           }
         }else{
-          dispatch(task_actions.fetchProgressTaskFail(errcode));
+          dispatch(task_actions.fetchProgressTaskFail(data.errcode));
         }
       })
     }
@@ -146,7 +146,7 @@ const all_task_actions = {
         if(data.success){
           dispatch(task_actions.fetchAllTaskSuccess(data.list));
         }else{
-          dispatch(task_actions.fetchAllTaskFailure(errcode));
+          dispatch(task_actions.fetchAllTaskFailure(data.errcode));
         }
       })
     }

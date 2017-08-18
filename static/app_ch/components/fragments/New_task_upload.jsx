@@ -102,10 +102,19 @@ class New_task_upload extends React.Component {
           this.setState({...this.state, candidate_genes_check:!this.state.candidate_genes_check});
           break;
 
+        case 'task_submit':
+          console.log('submit trigger');
+          break;
+
         default:
           break;
       }
-    };
+    }
+    else if (target.id === 'task_submit') {
+      if(this.state.input_gene_file === '尚未选择'){
+        alert('请选择基因文件');
+      }
+    }
   }
 
   render(){
@@ -140,7 +149,8 @@ class New_task_upload extends React.Component {
                     <input id='input_gene_file'
                       type="file"
                       name="gene_file"
-                      required accept=".txt,.xlsx,.xls,.csv,.vcf"
+                      required
+                      accept=".txt,.xlsx,.xls,.csv,.vcf"
                       onChange={(evt)=>this._handleChange(evt)}/>
                     <span className='prompt'>{this.state.input_gene_file}</span>
                   </label>

@@ -58,9 +58,13 @@ class Result_page extends React.Component{
           // Waited: Here we cut off the summary_table_data to phenotype_match_table
           let phenotype_match_data = [...this.props.result_data.summary_table_data];
           phenotype_match_data[0] = {...this.props.result_data.summary_table_data[0]};
-          delete phenotype_match_data[0]['hit_criteria'];delete phenotype_match_data[0]['pathogenicity'];
-          delete phenotype_match_data[0]['pathogenicity_score'];delete phenotype_match_data[0]['final_score'];
-          delete phenotype_match_data[0]['id'];
+          if(phenotype_match_data[0].hasOwnProperty('correlated_phenotypes') === false){
+            phenotype_match_data = [];
+          }else{
+            delete phenotype_match_data[0]['hit_criteria'];delete phenotype_match_data[0]['pathogenicity'];
+            delete phenotype_match_data[0]['pathogenicity_score'];delete phenotype_match_data[0]['final_score'];
+            delete phenotype_match_data[0]['id'];
+          }
           this.setState({
             ...this.state,
             current_table:'phenotype_match_table',
@@ -145,6 +149,8 @@ class Result_page extends React.Component{
         return <div>无 附带发现信息</div>
       }else if(this.state.current_table==='candidate_gene_table'){
         return <div>无 备选基因信息</div>
+      }else if(this.state.current_table==='phenotype_match_table'){
+        return <div>无 表型对应信息</div>
       }
     }
   }
