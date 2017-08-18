@@ -549,10 +549,13 @@ def master_function(raw_input_id):
     incidental_finding_report = raw_input.incidental_findings
     candidate_gene_report = raw_input.candidate_genes
     #print proband_gender, proband_age
-    #print 'parent_ngs ', parent_ngs
-    #print 'parent_affects ', parent_affects
+    #print type(proband_gender), type(proband_age)
+    #print 'parent_ngs ', parent_ngs, type(parent_ngs)
+    #print 'parent_affects ', parent_affects, type(parent_affects)
     #print father_vcf, mother_vcf
+    #print type(father_vcf), type(mother_vcf)
     #print incidental_finding_report, candidate_gene_report 
+    #print type(incidental_finding_report), type(candidate_gene_report) 
 
     # Read input pheno file and generate phenos and corner_cases 
     phenos, corner_cases, original_phenos, phenotype_translate = read_input_pheno_file(input_phenotype)
@@ -652,6 +655,8 @@ def master_function(raw_input_id):
             df_final_res = df_final_res.merge(df_ranking_genes, on = ['gene', 'variant'], how = 'left')
             df_final_res = df_final_res[['gene', 'transcript', 'variant', 'protein', 'id', 'zygosity','correlated_phenotypes', 'pheno_match_score', 'hit_criteria', 'pathogenicity', 'pathogenicity_score', 'final_score']]
             # if phenos are provided, we return a df_ranking_genes dataframe, which contains 'gene', 'variant', 'score_sim', 'hits', 'score', 'zygosity', 'associated_phenotypes'
+            df_jax_candidate_genes = pd.DataFrame()
+            df_incidental_findings_genes = pd.DataFrame()
             if candidate_gene_report:
                 jax_candidate_genes, jax_gene_key_phenos = getJaxCandidateGenes(gene_associated_phenos, gene_associated_pheno_hpoids, variants)
                 df_jax_candidate_genes = df_final_res.loc[df_final_res['gene'].isin(jax_candidate_genes), ['gene', 'transcript', 'variant', 'protein', 'id', 'zygosity','correlated_phenotypes']]
@@ -667,13 +672,16 @@ def master_function(raw_input_id):
         else:
             df_ranking_genes = df_ranking_genes[['gene', 'variant']]
             ACMG_result = ACMG_result.merge(df_ranking_genes, on = ['gene', 'variant'], how = 'left')
-            if candidate_gene_report:
-                jax_candidate_genes, jax_gene_key_phenos = [], dict()
-                df_jax_candidate_genes = pd.DataFrame()
-            if incidental_finding_report:
-                incidental_findings_genes, incidental_finding_gene_phenos = getIncidentalFindings(ACMG_result)
-                df_incidental_findings_genes = pd.DataFrame()
             ACMG_result.drop('hpo_hit_score', axis = 1, inplace = True)
             ACMG_result = ACMG_result[['gene', 'transcript', 'variant', 'protein', 'id', 'zygosity', 'hit_criteria', 'pathogenicity', 'pathogenicity_score', 'final_score']]
+            df_jax_candidate_genes = pd.DataFrame()
+            df_incidental_findings_genes = pd.DataFrame()
+            if candidate_gene_report:
+                jax_candidate_genes, jax_gene_key_phenos = [], dict()
+            if incidental_finding_report:
+                incidental_findings_genes, incidental_finding_gene_phenos = getIncidentalFindings(ACMG_result)
+                df_incidental_findings_genes = ACMG_result.loc[ACMG_result['gene'].isin(incidental_findings_genes), ['gene', 'transcript', 'variant', 'protein', 'id', 'zygosity', 'hit_criteria']]
+                df_incidental_finding_gene_phenos = pd.DataFrame(incidental_finding_gene_phenos.items(), columns=['gene', 'associated_phenotypes']) 
+                df_incidental_findings_genes = df_incidental_findings_genes.merge(df_incidental_finding_gene_phenos, how = 'left', on = 'gene')
             return ACMG_result, df_genes, phenos, field_names, df_variant_ACMG_interpret, df_variant_ACMG_interpret_chinese, df_ranking_genes, df_jax_candidate_genes, df_incidental_findings_genes
 

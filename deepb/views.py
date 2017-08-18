@@ -349,20 +349,20 @@ class new_task(APIView):
 
         estimate_time = round((0.14*len(raw_input_gene.split('\n')) + 1.69*len(raw_input_phenotype.split(','))+93.83)/60, 0)+1
 
-        if request.POST.get('father_check', None) and request.POST.get('mother_check', None):
+        if request.POST.get('check_father', None)=='1' and request.POST.get('check_mother', None)=='1':
             parent_info = 3
-        elif request.POST.get('mother_check', None):
+        elif request.POST.get('check_mother', None)=='1':
             parent_info = 2
-        elif request.POST.get('father_check', None):
+        elif request.POST.get('check_father', None)=='1':
             parent_info = 1
         else:
             parent_info = 0
 
-        if request.POST.get('father_check_pheno', None) and request.POST.get('mother_check_pheno', None):
+        if request.POST.get('check_father_pheno', None)=='1' and request.POST.get('check_mother_pheno', None)=='1':
             if_same_pheno = 3
-        elif request.POST.get('mother_check_pheno', None):
+        elif request.POST.get('check_mother_pheno', None)=='1':
             if_same_pheno = 2
-        elif request.POST.get('father_check_pheno', None):
+        elif request.POST.get('check_father_pheno', None)=='1':
             if_same_pheno = 1
         else:
             if_same_pheno = 0
@@ -377,18 +377,20 @@ class new_task(APIView):
         except:
             mother_vcf = ''
 
-        if request.POST.get('check_incidental_findings', None):
+        if request.POST.get('check_incidental_findings', None)=='1':
             incidental_findings = 1
         else:
             incidental_findings = 0
 
-        if request.POST.get('check_candidate_genes', None):
+        if request.POST.get('check_candidate_genes', None)=='1':
             candidate_genes = 1
         else:
             candidate_genes = 0        
 
         if request.POST.get('patient_age', None):
             patient_age = int(request.POST.get('patient_age', None))
+        else:
+            patient_age = 0
         if request.POST.get('patient_gender', None):
             patient_gender = int(request.POST.get('patient_gender', None))
 
@@ -452,6 +454,7 @@ class case_result(APIView):
 
     def get(self, request, task_id, user_name, format=None):
         data = Main_table.objects.get(user_name=user_name, task_id=task_id)
+        data_input = Raw_input_table.objects.get(user_name=user_name, id=task_id)
         if data.incidental_findings:
             incidental_table_data = json.loads(data.incidental_findings, object_pairs_hook=OrderedDict)
         else:
@@ -459,7 +462,16 @@ class case_result(APIView):
         if data.candidate_genes:
             candidate_table_data = json.loads(data.candidate_genes, object_pairs_hook=OrderedDict)
         else:
-            candidate_table_data = ''        
+            candidate_table_data = ''
+
+        if data_input.patient_age == 0:
+            age = None
+        else:
+            age = data_input.patient_age
+        gender = data_input.patient_gender
+        input_pheno = data.input_phenotype
+        parents_gene_info = data_input.parent_info
+
         json_result = {
             'success':True,
             'result_data':{
@@ -467,6 +479,7 @@ class case_result(APIView):
                 'incidental_table_data': incidental_table_data,
                 'candidate_table_data': candidate_table_data,
                 'input_gene_data': json.loads(data.input_gene, object_pairs_hook=OrderedDict),
+                'input_info': {'age':age,'gender':gender,'input_pheno':input_pheno,'parents_gene_info':parents_gene_info},
                 'interpretation_data': json.loads(data.interpretation_chinese, object_pairs_hook=OrderedDict),
             }
         }
