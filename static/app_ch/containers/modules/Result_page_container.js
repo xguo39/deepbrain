@@ -5,6 +5,7 @@ import {push, go} from 'react-router-redux';
 
 const mapStateToProps = (state)=>{
   return {
+    isFetching:state.results.isFetching,
     result_data:state.results.result_data,
     received_new_data:state.results.received_new_data
   }

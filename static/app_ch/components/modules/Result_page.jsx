@@ -249,6 +249,11 @@ class Result_page extends React.Component{
            <div className='result_table' onClick={(evt)=>this._handleClick(evt)}>
              {this._renderTable(this.state.current_data)}
            </div>
+           {this.props.isFetching ?
+             <div className='loading_sign'>
+               <img src={static_image+'loading_sign.gif'} alt='result_loding_sign'></img>
+             </div> : null
+           }
          </div>
       </div>
     )
@@ -263,10 +268,10 @@ Result_page.propTypes={
   clearResultData:React.PropTypes.func,
   result_data:React.PropTypes.object,
   received_new_data:React.PropTypes.bool,
+  isFetching:React.PropTypes.bool
 }
 
 Result_page.defaultProps={
-
 }
 
 export default Result_page;
