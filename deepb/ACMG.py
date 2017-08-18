@@ -1628,9 +1628,9 @@ def Get_ACMG_result(df_hpo_ranking_genes, variants, df_pubmed, parent_ngs, paren
                         joined_clinvar_pathogenicity_chinese_0.append('<b>提交者</b>-%s 提交时间-%s 致病性分类-%s' % (submitter, datelastevaluated, description)) 
                 joined_clinvar_pathogenicity_0 = '<br>'.join(joined_clinvar_pathogenicity_0) 
                 joined_clinvar_pathogenicity_chinese_0 = '<br>'.join(joined_clinvar_pathogenicity_chinese_0) 
-                curr_interpret.append("<U> Pathogenicity reported by Clinvar (Only showing clinical testing records): </U> <br> <div class='second_layer'> %s. </div>" % joined_clinvar_pathogenicity_0)
+                curr_interpret[-1] = curr_interpret[-1] + "<U> Pathogenicity reported by Clinvar (Only showing clinical testing records): </U> <br> <div class='second_layer'> %s. </div>" % joined_clinvar_pathogenicity_0)
                 joined_clinvar_pathogenicity_0_chinese = re_map_clinvar_pathogenicity.sub(lambda m: map_clinvar_pathogenicity[m.group()], joined_clinvar_pathogenicity_chinese_0)
-                curr_interpret_chinese.append("<U> Clinvar数据库记录的变异致病性 (只显示临床试验(clinical testing)记录):</U> <br> <div class='second_layer'> %s. </div>" % joined_clinvar_pathogenicity_0_chinese)
+                curr_interpret_chinese[-1] = curr_interpret_chinese[-1] + "<U> Clinvar数据库记录的变异致病性 (只显示临床试验(clinical testing)记录):</U> <br> <div class='second_layer'> %s. </div>" % joined_clinvar_pathogenicity_0_chinese)
     	#if clinvar_review_status_0: 
         #        curr_interpret.append('Clinvar review status: %s.' % clinvar_review_status_0)
         #        clinvar_review_status_0_chinese = re_map_clinvar_review_status.sub(lambda m: map_clinvar_review_status[m.group()], clinvar_review_status_0)
