@@ -309,8 +309,17 @@
   text-align: left;
   padding-left: 20px;
   line-height: 20px;
+  div{
+    // display: inline-block;
+  }
   a{
     color:#4A90E2;
+  }
+  .first_layer{
+    padding-left: 10px;
+  }
+  .second_layer{
+    padding-left: 10px;
   }
 }
 
