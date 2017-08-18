@@ -454,6 +454,7 @@ class case_result(APIView):
 
     def get(self, request, task_id, user_name, format=None):
         data = Main_table.objects.get(user_name=user_name, task_id=task_id)
+        data_input = Raw_input_table.objects.get(user_name=user_name, id=task_id)
         if data.incidental_findings:
             incidental_table_data = json.loads(data.incidental_findings, object_pairs_hook=OrderedDict)
         else:
@@ -461,7 +462,16 @@ class case_result(APIView):
         if data.candidate_genes:
             candidate_table_data = json.loads(data.candidate_genes, object_pairs_hook=OrderedDict)
         else:
-            candidate_table_data = ''        
+            candidate_table_data = ''
+
+        if data_input.patient_age == 0:
+            age = None
+        else:
+            age = data_input.patient_age
+        gender = data_input.patient_gender
+        input_pheno = data.input_phenotype
+        parents_gene_info = data_input.parent_info
+
         json_result = {
             'success':True,
             'result_data':{
@@ -469,6 +479,7 @@ class case_result(APIView):
                 'incidental_table_data': incidental_table_data,
                 'candidate_table_data': candidate_table_data,
                 'input_gene_data': json.loads(data.input_gene, object_pairs_hook=OrderedDict),
+                'input_info': {'age':age,'gender':gender,'input_pheno':input_pheno,'parents_gene_info':parents_gene_info},
                 'interpretation_data': json.loads(data.interpretation_chinese, object_pairs_hook=OrderedDict),
             }
         }
