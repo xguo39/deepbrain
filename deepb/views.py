@@ -349,20 +349,20 @@ class new_task(APIView):
 
         estimate_time = round((0.14*len(raw_input_gene.split('\n')) + 1.69*len(raw_input_phenotype.split(','))+93.83)/60, 0)+1
 
-        if request.POST.get('father_check', None) and request.POST.get('mother_check', None):
+        if request.POST.get('check_father', None)=='1' and request.POST.get('check_mother', None)=='1':
             parent_info = 3
-        elif request.POST.get('mother_check', None):
+        elif request.POST.get('check_mother', None)=='1':
             parent_info = 2
-        elif request.POST.get('father_check', None):
+        elif request.POST.get('check_father', None)=='1':
             parent_info = 1
         else:
             parent_info = 0
 
-        if request.POST.get('father_check_pheno', None) and request.POST.get('mother_check_pheno', None):
+        if request.POST.get('check_father_pheno', None)=='1' and request.POST.get('check_mother_pheno', None)=='1':
             if_same_pheno = 3
-        elif request.POST.get('mother_check_pheno', None):
+        elif request.POST.get('check_mother_pheno', None)=='1':
             if_same_pheno = 2
-        elif request.POST.get('father_check_pheno', None):
+        elif request.POST.get('check_father_pheno', None)=='1':
             if_same_pheno = 1
         else:
             if_same_pheno = 0
@@ -377,18 +377,20 @@ class new_task(APIView):
         except:
             mother_vcf = ''
 
-        if request.POST.get('check_incidental_findings', None):
+        if request.POST.get('check_incidental_findings', None)=='1':
             incidental_findings = 1
         else:
             incidental_findings = 0
 
-        if request.POST.get('check_candidate_genes', None):
+        if request.POST.get('check_candidate_genes', None)=='1':
             candidate_genes = 1
         else:
             candidate_genes = 0        
 
         if request.POST.get('patient_age', None):
             patient_age = int(request.POST.get('patient_age', None))
+        else:
+            patient_age = 0
         if request.POST.get('patient_gender', None):
             patient_gender = int(request.POST.get('patient_gender', None))
 
