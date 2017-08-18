@@ -58,7 +58,7 @@ def getCandidateGenes(gene_associated_phenos, gene_associated_pheno_hpoids, vari
         coding_effect = variants[key]['effect']
         maf_exac = variants[key]['maf_exac']
 
-        if gene_associated_phenos[gene]:
+        if gene not in gene_associated_phenos or gene_associated_phenos[gene]:
             continue
         if not re.match(r'hom|hem|de |comp', zygosity, re.I):
             continue
