@@ -26,10 +26,10 @@ class New_task_upload extends React.Component {
     var inputs = document.getElementsByTagName("input");
     for(var i = 0; i < inputs.length; i++) {
         if(inputs[i].type == "checkbox" && inputs[i].checked===false) {
-            taskData.append(inputs[i].name, false);
+            taskData.append(inputs[i].name, 0);
         }
         else if(inputs[i].type == "checkbox" && inputs[i].checked){
-            taskData.set(inputs[i].name, true);
+            taskData.set(inputs[i].name, 1);
         }
     }
     for (var [key, value] of taskData.entries()) {

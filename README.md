@@ -44,4 +44,4 @@ python manage.py runserver
 Docs
 --------------
 ### API doc
-Please refer to [docs/APIs.md](https://github.com/xguo39/deepbrain/blob/front-end/docs/APIs.md)
+Please refer to [docs/APIs.md](https://github.com/xguo39/deepbrain/blob/master/docs/APIs.md)

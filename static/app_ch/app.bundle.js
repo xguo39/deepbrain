@@ -16682,7 +16682,7 @@ var Top_navbar = function (_React$Component) {
             ),
             _react2.default.createElement(
               'a',
-              { className: 'navbar-brand', href: '#' },
+              { className: 'navbar-brand', href: '' },
               _react2.default.createElement(
                 'small',
                 null,
@@ -16701,7 +16701,7 @@ var Top_navbar = function (_React$Component) {
                 { className: 'dropdown' },
                 _react2.default.createElement(
                   'a',
-                  { href: '#', className: 'dropdown-toggle', 'data-toggle': 'dropdown', role: 'button', 'aria-expanded': 'false' },
+                  { href: '', className: 'dropdown-toggle', 'data-toggle': 'dropdown', role: 'button', 'aria-expanded': 'false' },
                   '\u8BED\u8A00',
                   _react2.default.createElement('span', { className: 'caret' })
                 ),
@@ -16713,7 +16713,7 @@ var Top_navbar = function (_React$Component) {
                     null,
                     _react2.default.createElement(
                       'a',
-                      { href: '#' },
+                      { href: '' },
                       'English'
                     )
                   ),
@@ -16722,7 +16722,7 @@ var Top_navbar = function (_React$Component) {
                     null,
                     _react2.default.createElement(
                       'a',
-                      { href: '#' },
+                      { href: '' },
                       '\u4E2D\u6587'
                     )
                   )
@@ -16745,7 +16745,7 @@ var Top_navbar = function (_React$Component) {
                     null,
                     _react2.default.createElement(
                       'a',
-                      { href: '#' },
+                      { href: '' },
                       '\u7528\u6237\u540D:',
                       '' + this.state.user_name
                     )
@@ -17620,9 +17620,9 @@ var New_task_upload = function (_React$Component) {
       var inputs = document.getElementsByTagName("input");
       for (var i = 0; i < inputs.length; i++) {
         if (inputs[i].type == "checkbox" && inputs[i].checked === false) {
-          taskData.append(inputs[i].name, false);
+          taskData.append(inputs[i].name, 0);
         } else if (inputs[i].type == "checkbox" && inputs[i].checked) {
-          taskData.set(inputs[i].name, true);
+          taskData.set(inputs[i].name, 1);
         }
       }
       var _iteratorNormalCompletion = true;
