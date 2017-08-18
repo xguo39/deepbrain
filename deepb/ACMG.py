@@ -1617,7 +1617,7 @@ def Get_ACMG_result(df_hpo_ranking_genes, variants, df_pubmed, parent_ngs, paren
                 curr_interpret_chinese.append('<b>基于AdaBoost算法的dbscSNV剪接效应(splicing effect)预测分数</b>: %s (致病分数阈值: %s).' % (dbscSNV_ada_0, '0.6'))
     	if clinvar_variation_ids_0 != ["<a href='https://www.ncbi.nlm.nih.gov/clinvar/variation//' target='_blank'>  </a>"]: 
                 curr_interpret.append("<b>Clinvar variation ids</b>: %s. <div class='first_layer'>" % ",".join(clinvar_variation_ids_0))
-                curr_interpret_chinese.append('<b>Clinvar数据库ID</b>: %s.' % ",".join(clinvar_variation_ids_0))
+                curr_interpret_chinese.append("<b>Clinvar数据库ID</b>: %s.<div class='first_layer'>" % ",".join(clinvar_variation_ids_0))
     	if clinvar_pathogenicity_0:
                 joined_clinvar_pathogenicity_0 = []
                 joined_clinvar_pathogenicity_chinese_0 = []
