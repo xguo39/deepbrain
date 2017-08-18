@@ -1713,6 +1713,7 @@ def Get_ACMG_result(df_hpo_ranking_genes, variants, df_pubmed, parent_ngs, paren
     elif df_hpo_ranking_genes.shape[1] == 2:
         df_final_result = df_final_result.merge(df_hpo_ranking_genes, how = 'left', on = 'gene')
     df_final_result.columns = ['gene', 'transcript', 'variant', 'id', 'protein', 'pathogenicity_score', 'pathogenicity', 'hit_criteria', 'hpo_hit_score']
+    df_final_result['hpo_hit_score'].fillna(0.0, inplace = True)
     df_final_result['final_score'] = df_final_result['hpo_hit_score'] * df_final_result['pathogenicity_score']
     df_final_result = df_final_result[['gene', 'transcript', 'variant', 'protein', 'id', 'final_score', 'pathogenicity_score', 'pathogenicity', 'hit_criteria', 'hpo_hit_score']]
     df_final_result.sort_values(by=['final_score'], ascending = [0], inplace = True)

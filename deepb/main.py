@@ -659,5 +659,7 @@ def master_function(raw_input_id):
             if incidental_finding_report:
                 incidental_findings_genes, incidental_finding_gene_phenos = getIncidentalFindings(ACMG_result)
                 df_incidental_findings_genes = pd.DataFrame()
+            ACMG_result.drop('hpo_hit_score', axis = 1, inplace = True)
+            ACMG_result = ACMG_result[['gene', 'transcript', 'variant', 'protein', 'id', 'zygosity', 'hit_criteria', 'pathogenicity', 'pathogenicity_score', 'final_score']]
             return ACMG_result, df_genes, phenos, field_names, df_variant_ACMG_interpret, df_variant_ACMG_interpret_chinese, df_ranking_genes, df_jax_candidate_genes, df_incidental_findings_genes
 
