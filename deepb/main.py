@@ -410,6 +410,7 @@ def read_input_gene_file(input_gene, parent_ngs, father_vcf, mother_vcf, proband
                     pass
                 if not gene and not variant and not transcript and not variant_id:
                     continue
+                mother1, mother2, father1, father2 = '', '', '', ''
                 if mother_allele1_idx is not None:
                     try:
                         mother1 = parts[mother_allele1_idx]
