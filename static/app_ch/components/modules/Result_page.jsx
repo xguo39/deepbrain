@@ -252,7 +252,7 @@ class Result_page extends React.Component{
            {this.props.isFetching ?
              <div className='loading_sign'>
                <img src={static_image+'loading_sign.gif'} alt='result_loding_sign'></img>
-             </div> : null
+             </div> : null 
            }
          </div>
       </div>
