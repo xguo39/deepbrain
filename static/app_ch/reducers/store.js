@@ -29,20 +29,20 @@ const initialState = {
     review_data:[],
     result_data:{
       summary_table_data:[
-        //  {
-        //    gene:'WWOX',
-        //    transcript:'chr16:g.78466583C>G',
-        //    variant:'c.5354G&t>A',
-        //    protein:'danbaizhi',
-        //    id:'2313fsfsf',
-        //    zygosity:'peixing',
-        //    correlated_phenotypes:'biaoxingpipei',
-        //    pheno_match_score:39,
-        //    hit_criteria:"PM2|BP4",
-        //    pathogenicity:'Uncertain Significance',
-        //    pathogenicity_score:0.88,
-        //    final_score:1.8
-        //  },
+         {
+           gene:'WWOX',
+           transcript:'chr16:g.78466583C>G',
+           variant:'c.5354G&t>A',
+           protein:'danbaizhi',
+           id:'2313fsfsf',
+           zygosity:'peixing',
+           correlated_phenotypes:'biaoxingpipei',
+           pheno_match_score:39,
+           hit_criteria:"PM2|BP4",
+           pathogenicity:'Uncertain Significance',
+           pathogenicity_score:0.88,
+           final_score:1.8
+         },
         //  {
         //    gene:'WNT7A',
         //    transcript:'chr3:g.13896304C>T',

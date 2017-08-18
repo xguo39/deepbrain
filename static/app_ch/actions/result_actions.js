@@ -6,6 +6,7 @@ const result_data_actions={
   FETCH_RESULT_DATA_SUCCESS:'FETCH_RESULT_DATA_SUCCESS',
   FETCH_RESULT_DATA_FAILURE:'FETCH_RESULT_DATA_FAILURE',
   UPDATE_DATA_SUCCESS:'UPDATE_DATA_SUCCESS',
+  CLEAR_RESULT_DATA:'CLEAR_RESULT_DATA',
 
   requestResultData:()=>{
     return {
@@ -30,6 +31,12 @@ const result_data_actions={
   updateDataSuccess(){
     return {
       type:result_actions.UPDATE_DATA_SUCCESS
+    }
+  },
+
+  clearResultData(){
+    return {
+      type:result_actions.CLEAR_RESULT_DATA
     }
   },
 
@@ -60,6 +67,7 @@ const check_annotation_actions={
   CHECK_ANNOTATION_SUCCESS:'CHECK_ANNOTATION_SUCCESS',
   CHECK_ANNOTATION_FAILURE:'CHECK_ANNOTATION_FAILURE',
   CLEAR_ANNOTATION:'CLEAR_ANNOTATION',
+
 
   requestCheckAnnotation:()=>{
     return {
