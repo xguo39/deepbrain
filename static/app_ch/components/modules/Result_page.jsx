@@ -180,7 +180,7 @@ class Result_page extends React.Component{
                 <span>备选基因表</span>
               </li>
               <li className='' alt='input_gene_table'>
-                <span>输入基因</span>
+                <span>输入信息</span>
               </li>
               <li className='' alt='generate_result_table'>
                 <span>生成报表</span>

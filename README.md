@@ -1,17 +1,47 @@
-# deepbrain
-### run in local
 
-# dowload redis
-1. brew install redis
-# install according to requirements.txt
-2. pip install -r requirements.txt
-# go to the /src in the redis folder, and run
-3. ./redis-server (or brew services start redis)
-# open another terminal and run
-4. celery -A deepbrain beat -l info
-# open another terminal and run
-5. celery -A deepbrain worker -l info
+Genonova
+==============================
+The backend is running on [Django](https://www.djangoproject.com/)
 
-6. change settings.py database part
-7. python manage.py migrate
-8. python manage.py runserver
+----------------------------------------------------------------------------------------------
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
+
+- [Configuration](#configuration)
+  - [Pre-requisites](#pre-requisites)
+- [Docs](#docs)
+  - [API doc](#api-doc)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+----------------------------------------------------------------------------------------------
+
+Configuration
+--------------
+### Pre-requisites
+* Run in local terminal
+* [Python VirtualEnv Install](https://virtualenv.pypa.io/en/stable/installation/)
+### Download repo and install
+```bash
+# Downlod git repo
+git clone git@github.com:xguo39/deepbrain.git
+# Dowload redis
+brew install redis
+# Install according to requirements.txt
+pip install -r requirements.txt
+# Go to the /src in the redis folder, and run
+./redis-server (or brew services start redis)
+# Open another terminal and run
+celery -A deepbrain beat -l info
+# Open another terminal and run
+celery -A deepbrain worker -l info
+change settings.py database part
+# Lauch the django runtime
+python manage.py migrate
+python manage.py runserver
+```
+
+Docs
+--------------
+### API doc
+Please refer to [docs/APIs.md](https://github.com/xguo39/deepbrain/blob/front-end/docs/APIs.md)

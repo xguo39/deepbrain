@@ -16859,14 +16859,16 @@ var initialState = {
   tasks: {
     isFetching: false,
     progress_task_list: [],
-    all_task_list: [{
-      id: 1,
-      task_name: "xiaonan",
-      pub_date: '2017-06-18, 12:03pm',
-      status: 'succeed',
-      processed_time: '0',
-      checked: false
-    }]
+    all_task_list: [
+      // {
+      //  id:1,
+      //  task_name:"xiaonan",
+      //  pub_date: '2017-06-18, 12:03pm',
+      //  status:'succeed',
+      //  processed_time:'0',
+      //  checked:false
+      // },
+    ]
   },
   results: {
     isFetching: false,
@@ -20745,7 +20747,7 @@ var Result_page = function (_React$Component) {
               _react2.default.createElement(
                 'span',
                 null,
-                '\u8F93\u5165\u57FA\u56E0'
+                '\u8F93\u5165\u4FE1\u606F'
               )
             ),
             _react2.default.createElement(
