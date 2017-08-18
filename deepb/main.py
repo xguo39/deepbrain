@@ -256,6 +256,7 @@ def getZygosity(parent_ngs, candidate_vars_zygosity, proband_gender, variant_id_
     candidate_vars = []
     # if only one parent ngs data are available
     if parent_ngs in [0, 1, 2]:
+        #print "is in [0, 1, 2]"
         for item in candidate_vars_zygosity:
             gene, variant, transcript, variant_id, chrom, ref, allele1, allele2, mother1, mother2, father1, father2 = item
             if not gene and variant_id in variant_id_to_gene: gene = variant_id_to_gene[variant_id]
@@ -274,7 +275,9 @@ def getZygosity(parent_ngs, candidate_vars_zygosity, proband_gender, variant_id_
                 zygosity = ''
             candidate_vars.append((gene, variant, transcript, variant_id, zygosity))
     else: 
+        #print "is in [3]"
         comp_het_genes = getCompHetGenes(candidate_vars_zygosity, variant_id_to_gene)
+        #print candidate_vars_zygosity
         for item in candidate_vars_zygosity:
             gene, variant, transcript, variant_id, chrom, ref, allele1, allele2, mother1, mother2, father1, father2 = item
             if not gene and variant_id in variant_id_to_gene: gene = variant_id_to_gene[variant_id]
@@ -293,6 +296,7 @@ def getZygosity(parent_ngs, candidate_vars_zygosity, proband_gender, variant_id_
             else:
                 zygosity = 'het'
             candidate_vars.append((gene, variant, transcript, variant_id, zygosity))
+        #print candidate_vars
     return candidate_vars
 
 def read_input_gene_file(input_gene, parent_ngs, father_vcf, mother_vcf, proband_gender):
@@ -344,8 +348,8 @@ def read_input_gene_file(input_gene, parent_ngs, father_vcf, mother_vcf, proband
         if re.match(r'allele.*2', field, re.I): allele2_idx = idx
         if re.match(r'gene \(gene\)|gene$', field, re.I): gene_idx = idx
         if re.match(r'zygo', field, re.I): zygosity_idx = idx
-        if re.match(r'mot.*1', field, re.I): mother_allele1_idx = idx
-        if re.match(r'mot.*2', field, re.I): mother_allele2_idx = idx
+        if re.match(r'mot.*all.{0,6}1', field, re.I): mother_allele1_idx = idx
+        if re.match(r'mot.*all.{0,6}2', field, re.I): mother_allele2_idx = idx
         if re.match(r'fat.*all.{0,6}1', field, re.I): father_allele1_idx = idx
         if re.match(r'fat.*all.{0,6}2', field, re.I): father_allele2_idx = idx
 
@@ -410,6 +414,7 @@ def read_input_gene_file(input_gene, parent_ngs, father_vcf, mother_vcf, proband
                     pass
                 if not gene and not variant and not transcript and not variant_id:
                     continue
+                mother1, mother2, father1, father2 = '', '', '', ''
                 if mother_allele1_idx is not None:
                     try:
                         mother1 = parts[mother_allele1_idx]
@@ -432,6 +437,7 @@ def read_input_gene_file(input_gene, parent_ngs, father_vcf, mother_vcf, proband
                         father2 = ''
                     #print 'idx: ', mother_allele1_idx, mother_allele2_idx, father_allele1_idx, father_allele2_idx
                     #print 'c: ', chrome, pos, ref, allele1, allele2,  mother1, mother2, father1, father2
+                #print parent_ngs
                 if not zygosity and ( (mother_allele1_idx is not None and mother_allele2_idx is not None) or (father_allele1_idx is not None and father_allele2_idx is not None) ):
                     candidate_vars_zygosity.append((gene, variant, transcript, variant_id, chrome, ref, allele1, allele2, mother1, mother2, father1, father2))
                     # can be removed after front-end is done
@@ -443,6 +449,8 @@ def read_input_gene_file(input_gene, parent_ngs, father_vcf, mother_vcf, proband
                         parent_ngs = 0 
                     else:
                         parent_ngs = 3
+                #print allele1, allele2, mother1, mother2, father1, father2
+                #print parent_ngs
                 candidate_vars.append((gene, variant, transcript, variant_id, zygosity))
         else:
             candidate_vars.append((gene, variant, transcript, variant_id, zygosity))
@@ -466,6 +474,7 @@ def read_input_gene_file(input_gene, parent_ngs, father_vcf, mother_vcf, proband
         if gene and variant:
             gene_zygosity[(gene, variant)] = zygosity
     #candidate_vars = tmp_candidate_vars
+    #print gene_zygosity
 
     # remove lines in the input file which has wrong number of fields
     field_nums = []
@@ -499,9 +508,9 @@ def map_phenotype2gene(CANDIDATE_GENES, phenos, corner_cases, candidate_vars, or
 	return ranking_genes, candidate_vars, df_gene_associated_phenos, gene_associated_phenos, gene_associated_pheno_hpoids, pheno_to_hpo_pheno_and_id
 
 def update_phenotype2gene(final_res, variants, ranking_genes, gene_zygosity, candidate_vars):
-	ranking_genes = update_phenotype_to_gene.rankGenePhenoByCodingEffect(final_res, variants, ranking_genes)
-	ranking_genes = update_phenotype_to_gene.rankGenePhenoByInheritancePattern(ranking_genes, gene_zygosity, candidate_vars)
-	return ranking_genes
+    ranking_genes = update_phenotype_to_gene.rankGenePhenoByCodingEffect(final_res, variants, ranking_genes)
+    ranking_genes = update_phenotype_to_gene.rankGenePhenoByInheritancePattern(ranking_genes, gene_zygosity, candidate_vars)
+    return ranking_genes
 
 def getJaxCandidateGenes(gene_associated_phenos, gene_associated_pheno_hpoids, variants):
     # jax_candidate_genes is a list of genes; jax_gene_key_phenos is a dict with gene as key and jax key phenotypes as value.
@@ -539,6 +548,11 @@ def master_function(raw_input_id):
     mother_vcf = raw_input.mother_vcf
     incidental_finding_report = raw_input.incidental_findings
     candidate_gene_report = raw_input.candidate_genes
+    #print proband_gender, proband_age
+    #print 'parent_ngs ', parent_ngs
+    #print 'parent_affects ', parent_affects
+    #print father_vcf, mother_vcf
+    #print incidental_finding_report, candidate_gene_report 
 
     # Read input pheno file and generate phenos and corner_cases 
     phenos, corner_cases, original_phenos, phenotype_translate = read_input_pheno_file(input_phenotype)
@@ -634,7 +648,7 @@ def master_function(raw_input_id):
             raw_input.save()
             df_final_res, variant_ACMG_interpretation, variant_ACMG_interpret_chinese = filterVariantOnPhenotype.generateOutput(variants, ACMG_result, phenos, variant_ACMG_interpretation, variant_ACMG_interpret_chinese)
             # df_final_res = df_final_res.merge(df_gene_associated_phenos, on = 'gene', how = 'left')
-            df_ranking_genes = df_ranking_genes[['gene', 'variant', 'zygosity', 'correlated_phenotypes']]
+            df_ranking_genes = df_ranking_genes[['gene', 'variant', 'correlated_phenotypes']]
             df_final_res = df_final_res.merge(df_ranking_genes, on = ['gene', 'variant'], how = 'left')
             df_final_res = df_final_res[['gene', 'transcript', 'variant', 'protein', 'id', 'zygosity','correlated_phenotypes', 'pheno_match_score', 'hit_criteria', 'pathogenicity', 'pathogenicity_score', 'final_score']]
             # if phenos are provided, we return a df_ranking_genes dataframe, which contains 'gene', 'variant', 'score_sim', 'hits', 'score', 'zygosity', 'associated_phenotypes'
@@ -651,7 +665,7 @@ def master_function(raw_input_id):
             return df_final_res, df_genes, phenos, field_names, variant_ACMG_interpretation, variant_ACMG_interpret_chinese, df_ranking_genes, df_jax_candidate_genes, df_incidental_findings_genes
 
         else:
-            df_ranking_genes = df_ranking_genes[['gene', 'variant', 'zygosity']]
+            df_ranking_genes = df_ranking_genes[['gene', 'variant']]
             ACMG_result = ACMG_result.merge(df_ranking_genes, on = ['gene', 'variant'], how = 'left')
             if candidate_gene_report:
                 jax_candidate_genes, jax_gene_key_phenos = [], dict()
