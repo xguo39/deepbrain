@@ -121,7 +121,7 @@ class New_task_upload extends React.Component {
        target.outerHTML='';
     }
     else if (target.id === 'format_instruction'){
-       window.open(`${static_files}使用说明.pdf`, "使用说明");
+       window.open(`${static_files}instruction.pdf`, "使用说明");
     }
   }
 

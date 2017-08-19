@@ -17743,7 +17743,7 @@ var New_task_upload = function (_React$Component) {
         content.style["max-height"] = 'none';
         target.outerHTML = '';
       } else if (target.id === 'format_instruction') {
-        window.open(_base.static_files + '\u4F7F\u7528\u8BF4\u660E.pdf', "使用说明");
+        window.open(_base.static_files + 'instruction.pdf', "使用说明");
       }
     }
   }, {
