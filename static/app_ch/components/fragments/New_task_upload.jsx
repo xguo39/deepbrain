@@ -211,10 +211,10 @@ class New_task_upload extends React.Component {
               <div className='tr'>
                   <div className='td1'>
                     <label htmlFor='parents_info'>
-                      父母信息:<br/><small></small>
+                      父母信息:
                     </label>
                   </div>
-                  <div className='td2'>是否提供父亲基因信息:<br/><span>(若上传文件已包含父母NGS数据则无需再单独上传)</span></div>
+                  <div className='td2'>是否提供父亲基因信息:</div>
                   <div className='td2'>
                       <a data-toggle='collapse' className='switch' href='#father_detail' onClick={(evt)=>this._handleClick(evt)}>
                           <input type='checkbox'
@@ -224,7 +224,7 @@ class New_task_upload extends React.Component {
                             onChange={(evt)=>{this._handleChange(evt)}}/>
                             <label htmlFor='check_father' className='check slider round'></label>
                       </a>
-                      <span >否/是 <br/>&nbsp;</span>
+                      <span >否/是 </span>
                   </div>
               </div>
               <div id='father_detail' className='collapse'>
@@ -246,7 +246,7 @@ class New_task_upload extends React.Component {
                 </div>
                 <div className='tr'>
                   <div className='td1'></div>
-                  <div className='td2'><span>上传父亲基因信息:</span></div>
+                  <div className='td2'><span>上传父亲基因信息:<br/><span>(若上传文件已包含父亲NGS数据则无需再单独上传)</span></span></div>
                   <div className='td2'>
                     <label htmlFor='father_gene_file' className='file_input'>
                       <span>选择文件</span>
@@ -294,7 +294,7 @@ class New_task_upload extends React.Component {
                 </div>
                 <div className='tr'>
                   <div className='td1'></div>
-                  <div className='td2'><span>上传母亲基因信息:</span></div>
+                  <div className='td2'><span>上传母亲基因信息:<br/><span>(若上传文件已包含母亲NGS数据则无需再单独上传)</span></span></div>
                   <div className='td2'>
                     <label htmlFor='mother_gene_file' className='file_input'>
                       <span>选择文件</span>
