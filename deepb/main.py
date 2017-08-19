@@ -157,7 +157,7 @@ def convertFile2DF(inputfile, delimiter, proband_parent):
     columns = []
     vcf_data = []
     chrom_idx, pos_idx, ref_idx, alt_idx, format_idx, sample_idx, GT_idx = None, None, None, None, None, None, None
-    for line in inputfile[1:]:
+    for line in inputfile[0:]:
         if not line:
             continue
         if line.startswith('#'):
@@ -174,18 +174,19 @@ def convertFile2DF(inputfile, delimiter, proband_parent):
             continue
         line = line.rstrip()
         parts = re.split(r'%s' % delimiter, line)
-        for j in xrange(0, len(parts)):
-            part = parts[j]
-            try:
-                formats = part.split(':')
-                for k in xrange(0, len(formats)):
-                    form = formats[k]
-                    if form == 'GT':
-                        GT_idx = k
-                        format_idx = j
-                        sample_idx = j+1
-            except:
-                break
+        if not GT_idx:
+            for j in xrange(0, len(parts)):
+                part = parts[j]
+                try:
+                    formats = part.split(':')
+                    for k in xrange(0, len(formats)):
+                        form = formats[k]
+                        if form == 'GT':
+                            GT_idx = k
+                            format_idx = j
+                            sample_idx = j+1
+                except:
+                    break
         chrom, pos, ref, alts, samples = parts[chrom_idx], parts[pos_idx], parts[ref_idx], parts[alt_idx], parts[sample_idx] 
         alleles = [ref] + alts.split(',')   # ref: A    alts: [C, AA] 
         samples = samples.split(':')
@@ -309,14 +310,18 @@ def read_input_gene_file(input_gene, parent_ngs, father_vcf, mother_vcf, proband
     input_is_vcf = False
     if '#CHROM' in field_names and 'POS' in field_names and 'REF' in field_names and 'ALT' in field_names and 'QUAL' in field_names and 'FILTER' in field_names and 'INFO' in field_names: 
         input_is_vcf = True
+    if re.match('#chrom|chrom', field_names[0], re.I) and re.match('start|pos', field_names[1], re.I) and re.match('ref', field_names[3], re.I) and re.match('alt', field_names[4], re.I) and re.match('info', field_names[5], re.I):
+        input_is_vcf = True
     if input_is_vcf: 
         df_vcf = convertFile2DF(input_gene, delimiter, 'proband')
         df_vcf_father, df_vcf_mother = pd.DataFrame(), pd.DataFrame()
         if father_vcf:
+            father_vcf = father_vcf.split('\n')
             delimiter_f, field_names_f = getFileDelimiter(father_vcf)
             df_vcf_father = convertFile2DF(father_vcf, delimiter_f, 'father')
             df_vcf_father.drop('REF', axis = 1, inplace = True)
         if mother_vcf:
+            mother_vcf = mother_vcf.split('\n')
             delimiter_m, field_names_m = getFileDelimiter(mother_vcf)
             df_vcf_mother = convertFile2DF(mother_vcf, delimiter_m, 'mother')
             df_vcf_mother.drop('REF', axis = 1, inplace = True)
@@ -440,9 +445,9 @@ def read_input_gene_file(input_gene, parent_ngs, father_vcf, mother_vcf, proband
                     #print 'idx: ', mother_allele1_idx, mother_allele2_idx, father_allele1_idx, father_allele2_idx
                     #print 'c: ', chrome, pos, ref, allele1, allele2,  mother1, mother2, father1, father2
                 #print parent_ngs
-                if not parent_ngs_checked and not zygosity and ( (mother_allele1_idx is not None and mother_allele2_idx is not None) or (father_allele1_idx is not None and father_allele2_idx is not None) ):
+                if not zygosity and ( (mother_allele1_idx is not None and mother_allele2_idx is not None) or (father_allele1_idx is not None and father_allele2_idx is not None) ):
                     candidate_vars_zygosity.append((gene, variant, transcript, variant_id, chrome, ref, allele1, allele2, mother1, mother2, father1, father2))
-                    # can be removed after front-end is done
+                if not parent_ngs_checked and not zygosity and ( (mother_allele1_idx is not None and mother_allele2_idx is not None) or (father_allele1_idx is not None and father_allele2_idx is not None) ):
                     if ((mother_allele1_idx is None and mother_allele2_idx is None) and (father_allele1_idx is not None and father_allele2_idx is not None)) or (input_is_vcf and not mother_vcf and father_vcf):
                         parent_ngs = 1
                     elif ((mother_allele1_idx is not None and mother_allele2_idx is not None) and (father_allele1_idx is None and father_allele2_idx is None)) or (input_is_vcf and mother_vcf and not father_vcf):

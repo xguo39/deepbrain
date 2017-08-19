@@ -1558,22 +1558,22 @@ def Get_ACMG_result(df_hpo_ranking_genes, variants, df_pubmed, parent_ngs, paren
     	interpret, curr_interpret, interpret_chinese, curr_interpret_chinese = [], [], [], []   
     	if effect_0: 
                 curr_interpret.append('<b>Effect</b>: %s.' % effect_0)
-                curr_interpret_chinese.append('<b>突变类型</b>: %s.' % effect_0)
+                curr_interpret_chinese.append('<b>突变类型</b>: %s' % effect_0)
     	if interpro_domain_0: 
                 curr_interpret.append('<b>Protein domain</b>: %s.' % '|'.join(interpro_domain_0))
-                curr_interpret_chinese.append('<b>蛋白功能区</b>: %s.' % '|'.join(interpro_domain_0))
+                curr_interpret_chinese.append('<b>蛋白功能区</b>: %s' % '|'.join(interpro_domain_0))
     	if id_0: 
                 curr_interpret.append('<b>HGVS ID</b>: %s.' % id_0) 
-                curr_interpret_chinese.append('<b>HGVS ID</b>: %s.' % id_0) 
+                curr_interpret_chinese.append('<b>HGVS ID</b>: %s' % id_0) 
     	if rsid_0: 
                 curr_interpret.append("<b>RefSeq ID</b>: <a href='https://www.ncbi.nlm.nih.gov/projects/SNP/snp_ref.cgi?rs=%s' target='_blank'> %s </a>"  % (rsid_0, rsid_0)) 
                 curr_interpret_chinese.append("<b>RefSeq ID</b>: <a href='https://www.ncbi.nlm.nih.gov/projects/SNP/snp_ref.cgi?rs=%s' target='_blank'> %s </a>"  % (rsid_0, rsid_0)) 
         if protein_0: 
                 curr_interpret.append('<b>Protein</b>: %s.' % protein_0) 
-                curr_interpret_chinese.append('<b>蛋白质</b>: %s.' % protein_0) 
+                curr_interpret_chinese.append('<b>蛋白质</b>: %s' % protein_0) 
     	if exon_0: 
                 curr_interpret.append('<b>exon</b>: %s.' % exon_0) 
-                curr_interpret_chinese.append('<b>外显子</b>: %s.' % exon_0) 
+                curr_interpret_chinese.append('<b>外显子</b>: %s' % exon_0) 
         if gene_0:
                 # Add genecards link
                 curr_interpret.append("<b>GeneCards</b>: <a href='http://www.genecards.org/cgi-bin/carddisp.pl?gene=%s' target='_blank'> %s </a>"  % (gene_0, gene_0))
@@ -1619,25 +1619,25 @@ def Get_ACMG_result(df_hpo_ranking_genes, variants, df_pubmed, parent_ngs, paren
                 curr_interpret_chinese.append('<b>1000Genomes 最小等位基因频率(MAF)</b>: %s.' % maf_1000g_0) 
     	if maf_esp6500_0: 
                 curr_interpret.append('<b>Exome Sequencing Project(ESP) 6500 MAF</b>: %s.' % maf_esp6500_0) 
-                curr_interpret_chinese.append('<b>Exome Sequencing Project(ESP) 6500 最小等位基因频率(MAF)</b>: %s.' % maf_esp6500_0) 
+                curr_interpret_chinese.append('<b>Exome Sequencing Project(ESP) 6500 最小等位基因频率(MAF)</b>: %s' % maf_esp6500_0) 
     	if dann_0: 
                 curr_interpret.append('<b>DANN pathogenicity score</b>: %s (Pathogenicity Cutoff: 0.96).' % dann_0)
-                curr_interpret_chinese.append('<b>DANN致病性分数</b>: %s (致病分数阈值: %s).' % (dann_0, '0.96'))
+                curr_interpret_chinese.append('<b>DANN致病性分数</b>: %s (致病分数阈值: %s)' % (dann_0, '0.96'))
     	if fathmm_0: 
                 curr_interpret.append('<b>FATHMM pathogenicity score</b>: %s (Pathogenicity Cutoff: 0.81415).' % fathmm_0)
-                curr_interpret_chinese.append('<b>FATHMM致病性分数</b>: %s (致病分数阈值: %s).' % (fathmm_0, '0.81415'))
+                curr_interpret_chinese.append('<b>FATHMM致病性分数</b>: %s (致病分数阈值: %s)' % (fathmm_0, '0.81415'))
     	if metasvm_0: 
                 curr_interpret.append('<b>MetaSVM pathogenicity score</b>: %s (Pathogenicity Cutoff: 0.83357).' % metasvm_0)
-                curr_interpret_chinese.append('<b>MetaSVM致病性分数</b>: %s (致病分数阈值: %s).' % (metasvm_0, '0.83357'))
+                curr_interpret_chinese.append('<b>MetaSVM致病性分数</b>: %s (致病分数阈值: %s)' % (metasvm_0, '0.83357'))
     	if gerp_0: 
                 curr_interpret.append('<b>GERP++ conservation score</b>: %s (Pathogenicity Cutoff: 2.0).' % gerp_0)
-                curr_interpret_chinese.append('<b>GERP++序列保守性预测分数</b>: %s (致病分数阈值: %s).' % (gerp_0, '2.0'))
+                curr_interpret_chinese.append('<b>GERP++序列保守性预测分数</b>: %s (致病分数阈值: %s)' % (gerp_0, '2.0'))
     	if dbscSNV_rf_0: 
                 curr_interpret.append('<b>Random Forest dbscSNV splicing effect prediction</b>: %s (Pathogenicity Cutoff: 0.6).' % dbscSNV_rf_0)
-                curr_interpret_chinese.append('<b>基于随机森林算法的dbscSNV剪接效应(splicing effect)预测分数</b>: %s (致病分数阈值: %s).' % (dbscSNV_rf_0, '0.6'))
+                curr_interpret_chinese.append('<b>基于随机森林算法的dbscSNV剪接效应(splicing effect)预测分数</b>: %s (致病分数阈值: %s)' % (dbscSNV_rf_0, '0.6'))
     	if dbscSNV_ada_0: 
                 curr_interpret.append('<b>AdaBoost dbscSNV splicing effect prediction</b>: %s (Pathogenicity Cutoff: 0.6).' % dbscSNV_ada_0)
-                curr_interpret_chinese.append('<b>基于AdaBoost算法的dbscSNV剪接效应(splicing effect)预测分数</b>: %s (致病分数阈值: %s).' % (dbscSNV_ada_0, '0.6'))
+                curr_interpret_chinese.append('<b>基于AdaBoost算法的dbscSNV剪接效应(splicing effect)预测分数</b>: %s (致病分数阈值: %s)' % (dbscSNV_ada_0, '0.6'))
     	if clinvar_variation_ids_0 != ["<a href='https://www.ncbi.nlm.nih.gov/clinvar/variation//' target='_blank'>  </a>"]: 
                 curr_interpret.append("<b>Clinvar variation ids</b>: %s. <div class='first_layer'>" % ",".join(clinvar_variation_ids_0))
                 curr_interpret_chinese.append("<b>Clinvar数据库ID</b>: %s.<div class='first_layer'>" % ",".join(clinvar_variation_ids_0))
