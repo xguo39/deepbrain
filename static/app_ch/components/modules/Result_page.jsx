@@ -151,7 +151,7 @@ class Result_page extends React.Component{
                </div>
       }else if (this.state.current_table === 'generate_result_table'){
           return <div>
-                   <h4>生成报表文档正在建设中...</h4>
+                   <p className='waiting-hint'>生成文档正在建设中...</p>
                    <General_data_table table_data={this.state.current_data}/>
                  </div>
       }else{
