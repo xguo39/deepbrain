@@ -1509,6 +1509,7 @@ def Get_ACMG_result(df_hpo_ranking_genes, variants, df_pubmed, parent_ngs, paren
     getNullVariantLOF()
     getLOFGenes()
     getMissenseAAPathogenicity()
+    getDeNovoGenes()
     getPubMedEval(df_pubmed)
     getDominantRecessiveDiseaseNames()
     getDiseasePrevalence()
