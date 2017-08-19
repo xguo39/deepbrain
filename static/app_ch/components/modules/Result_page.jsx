@@ -149,10 +149,14 @@ class Result_page extends React.Component{
                  <Input_basic_info input_info={this.props.result_data.input_info}/>
                  <General_data_table table_data={this.state.current_data}/>
                </div>
+      }else if (this.state.current_table === 'generate_result_table'){
+          return <div>
+                   <h4>生成报表文档正在建设中...</h4>
+                   <General_data_table table_data={this.state.current_data}/>
+                 </div>
       }else{
         return <General_data_table table_data={this.state.current_data}/>
       }
-
     }else{
       // If not data return display black space
       if(this.state.current_table==='incidental_finding_table'){
@@ -252,7 +256,7 @@ class Result_page extends React.Component{
            {this.props.isFetching ?
              <div className='loading_sign'>
                <img src={static_image+'loading_sign.gif'} alt='result_loding_sign'></img>
-             </div> : null 
+             </div> : null
            }
          </div>
       </div>

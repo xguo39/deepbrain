@@ -37,7 +37,7 @@ class Side_navbar extends React.Component{
     this.setState({
       active_link:document.getElementsByClassName('nav-link active')[0]
     });
-  
+
   }
 
   _handleClick(evt){
@@ -97,6 +97,24 @@ class Side_navbar extends React.Component{
             </Link>
           </li>
         </ul>
+
+        <div className='related_link_block'>
+           <p>参考链接</p>
+           <a href='https://www.omim.org/' target="_blank">OMIM</a>
+           <a href='https://www.ncbi.nlm.nih.gov/clinvar/' target="_blank">ClinVar</a>
+
+           <a href='https://www.ncbi.nlm.nih.gov/books/NBK1116/' target="_blank">GeneReviews</a>
+           <a href='http://www.genenames.org/' target="_blank">HGNC</a>
+
+           <a href='http://human-phenotype-ontology.github.io/about.html' target="_blank">HPO</a>
+           <a href='http://wiki.chinahpo.org/index.php/%E9%A6%96%E9%A1%B5' target="_blank">中文HPO</a>
+
+           <a href='http://www.acmg.net/docs/Standards_Guidelines_for_the_Interpretation_of_Sequence_Variants.pdf' target="_blank">ACMG</a>
+           <a href='http://acmg.cbgc.org.cn/doku.php?id=start' target="_blank">中文ACMG</a>
+
+           <a href='http://www.orpha.net/consor/cgi-bin/index.php' target="_blank">Orphanet</a>
+           <a href='http://gnomad.broadinstitute.org/' target="_blank">GnomAD</a>
+        </div>
       </nav>
     )
   }

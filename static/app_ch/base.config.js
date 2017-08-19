@@ -14,6 +14,7 @@ const basic_info = {
 // const static_image = 'http://127.0.0.1:8000/static/app_ch/files/images/';
 const server_domain = `${domain}`;
 const static_image = `${domain}/static/app_ch/files/images/`;
+const static_files = `${domain}/static/app_ch/files/`;
 
 const apis={
   upload_task:'/api/task/new_task/',
@@ -25,5 +26,5 @@ const apis={
 }
 
 
-export {static_image, server_domain, apis};
+export {static_files, static_image, server_domain, apis};
 export default basic_info;
