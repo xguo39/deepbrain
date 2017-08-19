@@ -174,10 +174,10 @@ def searchPhenosFromDBdata(patient_phenotypes, variantphenos):
         phenos = list(set(variantphenosfromDB[key])) 
         if (gene, variant) in curr_interpret:
             curr_interpret[(gene, variant)].append("We find variants that affect the same protein domain as our case may lead to the phenos that match our patient's from genomic databases (OMIM, ORPHANET, etc): %s." % (', '.join(list(set(phenos))))) 
-            curr_interpret_chinese[(gene, variant)].append("基因疾病数据库(比如OMIM, ORPHANET)中报道与此基因变异类似、影响相同蛋白功能区的变异可能导致的如下表型与该病人吻合: %s." % (', '.join(list(set(phenos))))) 
+            curr_interpret_chinese[(gene, variant)].append("基因疾病数据库(OMIM, ORPHANET)中报道与此基因变异类似、影响相同蛋白功能区的变异可能导致的如下表型与该病人吻合: %s." % (', '.join(list(set(phenos))))) 
         else:
             curr_interpret[(gene, variant)] = ["We find variants that affect the same protein domain as our case may lead to the phenos that match our patient's from genomic databases (OMIM, ORPHANET, etc): %s." % (', '.join(list(set(phenos))))]
-            curr_interpret_chinese[(gene, variant)] = ["基因疾病数据库(比如OMIM, ORPHANET)中报道与此基因变异类似、影响相同蛋白功能区的变异可能导致的如下表型与该病人吻合: %s." % (', '.join(list(set(phenos))))]
+            curr_interpret_chinese[(gene, variant)] = ["基因疾病数据库(OMIM, ORPHANET)中报道与此基因变异类似、影响相同蛋白功能区的变异可能导致的如下表型与该病人吻合: %s." % (', '.join(list(set(phenos))))]
     return variantphenosfromDB
 
 def initWordDifficultyIndex():
@@ -485,10 +485,10 @@ def getScores(variantphenosfromPubmed, variantphenosfromDB, variantphenos, patie
         oppo_phenos = ', '.join(oppo_phenos)
         if (gene, variant) in curr_interpret:
             curr_interpret[(gene, variant)].append('We found previously reported cases that the genetic variants in the same protein domain as our case caused OPPOSITE phenotypes as our patient: %s.' % oppo_phenos)
-            curr_interpret_chinese[(gene, variant)].append('基因疾病数据库(比如OMIM, ORPHANET)报道与此基因变异相似的变异引发与该病人相反的表型: %s. 该变异对此病人的致病权重应下调.' % oppo_phenos)
+            curr_interpret_chinese[(gene, variant)].append('基因疾病数据库(OMIM, ORPHANET)报道与此基因变异相似的变异引发与该病人相反的表型: %s. 该变异对此病人的致病权重应下调.' % oppo_phenos)
         else:
             curr_interpret[(gene, variant)] = ['We found previously reported cases that the genetic variants in the same protein domain as our case caused OPPOSITE phenotypes as our patient: %s.' % oppo_phenos]
-            curr_interpret_chinese[(gene, variant)] = ['基因疾病数据库(比如OMIM, ORPHANET)报道与此基因变异相似的变异引发与该病人相反的表型: %s. 该变异对此病人的致病权重应下调.' % oppo_phenos]
+            curr_interpret_chinese[(gene, variant)] = ['基因疾病数据库(OMIM, ORPHANET)报道与此基因变异相似的变异引发与该病人相反的表型: %s. 该变异对此病人的致病权重应下调.' % oppo_phenos]
         if originalvar in scores:
             scores[originalvar] = scores[originalvar] * 0.9
         else:

@@ -95,11 +95,11 @@ def check_PVS1(variant_):
     if effect_in_null_variant_types and downstream_null_lof_pathogenic:
         PVS1 = 1 
         curr_interpret.append('There is a pathogenic null variant downstream in the same gene.' ) 
-        curr_interpret_chinese.append('突变位点的下游含有致病的无效变异（null variant）.' ) 
+        curr_interpret_chinese.append('突变位点的下游含有致病的无效变异.' ) 
  
     if effect_in_null_variant_types:
         curr_interpret.append('Allele in a gene where loss of function (LOF) is a known mechanism of disease.') if in_LOF_genes else curr_interpret.append('Allele in a gene where loss of function (LOF) is NOT a known mechanism of disease.') 
-        curr_interpret_chinese.append('变异位点所在基因的功能丢失(loss of function)是已知的致病机制.') if in_LOF_genes else curr_interpret_chinese.append('变异位点所在基因的功能丢失(loss of function)不是已知的致病机制.') 
+        curr_interpret_chinese.append('变异位点所在基因的功能丢失 (loss of function) 是已知的致病机制.') if in_LOF_genes else curr_interpret_chinese.append('变异位点所在基因的功能丢失 (loss of function) 不是已知的致病机制.') 
 
     # google_input = gene+' loss of function'
     # search_results = google.search(google_input, 1)
@@ -119,12 +119,18 @@ def check_PVS1(variant_):
     # else:
     #     curr_interpret.append('Variant NOT in null variant type.')
     #     curr_interpret_chinese.append('基因变异类型不是无效变异(null variant).')
-    if effect_in_null_variant_types: 
-        curr_interpret.append('The variant has damaging splicing effect.') if not_benign_splicing else curr_interpret.append('The variant does NOT have damaging splicing effect.') 
-        curr_interpret_chinese.append('此变异具有有害的剪接效应 (splicing effect).') if not_benign_splicing else curr_interpret_chinese.append('此变异不具有有害的剪接效应 (splicing effect).') 
+    if re.search('splic', variant_effect, re.I) and effect_in_null_variant_types:
+        if not_benign_splicing: 
+            curr_interpret.append('The coding effect is %s and indeed has damaging splicing effect.' % variant_effect) 
+            curr_interpret_chinese.append('此变异是剪接突变，且具有有害的剪接效应 (splicing effect).') 
+            PVS1 = 1 
+        else:
+            curr_interpret.append('The coding effect is %s, but does NOT have damaging splicing effect.' % variant_effect) 
+            curr_interpret_chinese.append('此变异是剪接突变，但不具有有害的剪接效应 (splicing effect).') 
+            PVS1 = 0
 
-    #if effect_in_null_variant_types and in_LOF_genes and not_affect_splicing: PVS1 = 1
-    if effect_in_null_variant_types and in_LOF_genes and not_benign_splicing: PVS1 = 1
+    #if effect_in_null_variant_types and in_LOF_genes and not_benign_splicing: PVS1 = 1
+    if effect_in_null_variant_types and in_LOF_genes: PVS1 = 1
     if transcript in knownGeneCanonical and effect_in_null_variant_types:
         num_exons, transcript_end = knownGeneCanonical[transcript][0], knownGeneCanonical[transcript][2]
         if exon == 1 or exon == num_exons: 
