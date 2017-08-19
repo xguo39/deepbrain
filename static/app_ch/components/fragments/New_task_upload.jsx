@@ -209,8 +209,12 @@ class New_task_upload extends React.Component {
             {/* Parent_info file */}
             <div className='tb-section'>
               <div className='tr'>
-                  <div className='td1'><label htmlFor='parents_info'>父母信息:<br/><small></small></label></div>
-                  <div className='td2'><span>是否提供父亲基因信息:<br/>(若上传文件已包含父母NGS信息则该项无需选择) </span></div>
+                  <div className='td1'>
+                    <label htmlFor='parents_info'>
+                      父母信息:<br/><small></small>
+                    </label>
+                  </div>
+                  <div className='td2'>是否提供父亲基因信息:<br/><span>(若上传文件已包含父母NGS数据则无需再单独上传)</span></div>
                   <div className='td2'>
                       <a data-toggle='collapse' className='switch' href='#father_detail' onClick={(evt)=>this._handleClick(evt)}>
                           <input type='checkbox'
