@@ -302,18 +302,33 @@ def check_PS2_PM6(variant_, parent_ngs, parent_affects):
                 PS2 = 0.5 
                 curr_interpret.append('De Novo is not a known pathogenicity mechanism of the gene.')
                 curr_interpret_chinese.append('新生突变（De Novo）不是此基因的已知致病机制.')
+        else:
+            curr_interpret.append('The variant is not De Novo.')
+            curr_interpret_chinese.append('此变异不是新生突变（De Novo）.')
     elif parent_ngs == 0:
-        curr_interpret.append('No parents NGS data are available.')
-        curr_interpret_chinese.append('没有父亲和母亲的基因测序数据.')
+        if zygosity == 'de novo':
+            curr_interpret.append('The variant is De Novo.')
+            curr_interpret_chinese.append('此变异是新生突变（De Novo）.')
+        else:
+            curr_interpret.append('The variant is not De Novo.')
+            curr_interpret_chinese.append('此变异不是新生突变（De Novo）.')
+        curr_interpret.append('No parents NGS and phenotype data are available.')
+        curr_interpret_chinese.append('没有父亲和母亲的基因测序数据和表型数据.')
     elif parent_affects == 0:
+        if zygosity == 'de novo':
+            curr_interpret.append('The variant is De Novo.')
+            curr_interpret_chinese.append('此变异是新生突变（De Novo）.')
+        else:
+            curr_interpret.append('The variant is not De Novo.')
+            curr_interpret_chinese.append('此变异不是新生突变（De Novo）.')
         curr_interpret.append('No information were provided whether the parents were affected.')
         curr_interpret_chinese.append('没有提供父亲和母亲是否具有相似表型的信息.')
     if zygosity == 'de novo':
         PM6 = 1
     curr_interpret.append('PS2 is met.') if PS2 != 0 else curr_interpret.append('PS2 is NOT met.')
-    curr_interpret_chinese.append('符合PS2标准.') if PS2 != 0 else curr_interpret.append('不符合PS2标准.')
+    curr_interpret_chinese.append('符合PS2标准.') if PS2 != 0 else curr_interpret_chinese.append('不符合PS2标准.')
     curr_interpret.append('PM6 is met.') if PM6 == 1 else curr_interpret.append('PM6 is NOT met.')
-    curr_interpret_chinese.append('符合PM6标准.') if PM6 == 1 else curr_interpret.append('不符合PM6标准.')
+    curr_interpret_chinese.append('符合PM6标准.') if PM6 == 1 else curr_interpret_chinese.append('不符合PM6标准.')
     curr_interpret = ' '.join(curr_interpret)
     curr_interpret_chinese = ' '.join(curr_interpret_chinese)
     interpret.append(('PS2 and PM6', curr_interpret))
@@ -520,10 +535,10 @@ def check_PS4(variant_):
 
     if max_prevalence > 0:
         curr_interpret.append('The prevalence for the disease %s is: %s.' % (str(max_prevalence), max_disease))
-        curr_interpret_chinese.append('疾病%s盛行率是: %s.' % (str(max_prevalence), max_disease))
+        curr_interpret_chinese.append('疾病%s盛行率(prevalence)是: %s.' % (str(max_prevalence), max_disease))
     else:
         curr_interpret.append('The prevalence data are not found.')
-        curr_interpret_chinese.append('未找到相关疾病盛行率报道数据.')
+        curr_interpret_chinese.append('未找到相关疾病盛行率(prevalence)报道数据.')
     if maf_exac:
         curr_interpret.append('The EXAC MAF is: %s.' % (maf_exac))
         curr_interpret_chinese.append('EXAC最小等位基因频率(MAF): %s.' % (maf_exac))
@@ -582,18 +597,18 @@ def check_PM2(variant_):
         if maf_1000g and float(maf_1000g) >= cutoff_maf: has_low_freq = False
         if maf_esp6500 and float(maf_esp6500) >= cutoff_maf: has_low_freq = False
         if not is_recessive and has_low_freq:
-            curr_interpret.append('The variant has an extremely low frequency with MAF < 0.5%, but NOT causes recessive diseases.')
-            curr_interpret_chinese.append('此基因变异的最小等位基因频率(MAF)极低(< 0.5%)，但并不引发隐性遗传病.')        
+            curr_interpret.append('The variant has an extremely low frequency with MAF < 0.1%, but NOT causes recessive diseases.')
+            curr_interpret_chinese.append('此基因变异的最小等位基因频率(MAF)极低(< 0.1%)，但并不引发隐性遗传病.')        
         if is_recessive and not has_low_freq:
-            curr_interpret.append('The variant causes recessive diseases, but NOT have an extremely low frequency with MAF < 0.5%.')
-            curr_interpret_chinese.append('此基因变异的最小等位基因频率(MAF)较高(>= 0.5%)，且并不引发隐性遗传病.')        
+            curr_interpret.append('The variant causes recessive diseases, but NOT have an extremely low frequency with MAF < 0.1%.')
+            curr_interpret_chinese.append('此基因变异引发隐性遗传病, 但其最小等位基因频率(MAF)较高(>= 0.1%).')        
         if not is_recessive and not has_low_freq:
-            curr_interpret.append('The variant does NOT have an extremely low frequency with MAF < 0.5%, and NOT causes recessive diseases.')
-            curr_interpret_chinese.append('此基因变异的最小等位基因频率(MAF)较高(>= 0.5%)，且并不引发隐性遗传病.')
+            curr_interpret.append('The variant does NOT have an extremely low frequency with MAF < 0.1%, and NOT causes recessive diseases.')
+            curr_interpret_chinese.append('此基因变异的最小等位基因频率(MAF)较高(>= 0.1%)，且并不引发隐性遗传病.')
         if is_recessive and has_low_freq:
             PM2 = 1
-            curr_interpret.append('The variant causes recessive diseases and is at an extremely low frequency with MAF < 0.5%.')
-            curr_interpret_chinese.append('此基因变异的最小等位基因频率(MAF)极低(< 0.5%)，且引发隐性遗传病')
+            curr_interpret.append('The variant causes recessive diseases and is at an extremely low frequency with MAF < 0.1%.')
+            curr_interpret_chinese.append('此基因变异的最小等位基因频率(MAF)极低(< 0.1%)，且引发隐性遗传病')
 
     curr_interpret.append('PM2 is met.') if PM2 == 1 else curr_interpret.append('PM2 is NOT met.')
     curr_interpret_chinese.append('符合PM2标准.') if PM2 == 1 else curr_interpret_chinese.append('不符合PM2标准.')    
@@ -663,19 +678,27 @@ def check_BA1_BS1(variant_):
         if has_high_freq_BA1: 
             BA1 = 1 
             curr_interpret.append('Allele frequeny is > 5%.')
-            curr_interpret_chinese.append('等位基因频率 > 5%.')
-        if has_high_freq_BS1: 
+            curr_interpret_chinese.append('等位基因频率(MAF) > 5%.')
+        else:
+            curr_interpret.append('Allele frequeny is < 5%.')
+            curr_interpret_chinese.append('等位基因频率(MAF) < 5%.')
+        if not max_freq:
+            curr_interpret.append('Prevalence of this variant is not found in previous reports or studies.')
+            curr_interpret_chinese.append('未找到相关疾病盛行率(prevalence)报道数据.')
+        elif has_high_freq_BS1: 
             BS1 = 1 
             curr_interpret.append('Allele frequeny is greater than expected for disorder.')
-            curr_interpret_chinese.append('等位基因频率大于由prevalence计算得到的allele frequency.')
-        if not has_high_freq_BA1 and not has_high_freq_BS1:
+            curr_interpret_chinese.append('等位基因频率(MAF)大于由盛行率(prevalence)计算得到的allele frequency.')
+        elif not has_high_freq_BA1 and not has_high_freq_BS1:
             curr_interpret.append('Allele frequeny is smaller than expected for disorder.')
-            curr_interpret_chinese.append('等位基因频率小于由prevalence计算得到的allele frequency.')
+            curr_interpret_chinese.append('等位基因频率(MAF)小于由盛行率(prevalence)计算得到的allele frequency.')
     else:
         curr_interpret.append('No allele frequency data are found in genomic databases.')
-        curr_interpret_chinese.append('未在人类基因数据库中发现此等位基因的频率数据.')    
+        curr_interpret_chinese.append('未在人类基因数据库中发现此等位基因的频率数据(MAF).')    
     curr_interpret.append('BA1 is met.') if BA1 == 1 else curr_interpret.append('BA1 is NOT met.')
     curr_interpret_chinese.append('符合BA1标准.') if BA1 == 1 else curr_interpret_chinese.append('不符合BA1标准.')
+    curr_interpret.append('BS1 is met.') if BS1 == 1 else curr_interpret.append('BS1 is NOT met.')
+    curr_interpret_chinese.append('符合BS1标准.') if BS1 == 1 else curr_interpret_chinese.append('不符合BS1标准.')
     curr_interpret = ' '.join(curr_interpret)
     curr_interpret_chinese = ' '.join(curr_interpret_chinese)
     interpret.append(('BA1 and BS1', curr_interpret))
@@ -1127,7 +1150,7 @@ def check_PP5_BP6(variant_):
     if ('pathogenic' in clinvar_pathogenicity_ or 'risk factor' in clinvar_pathogenicity_) and 'benign' not in clinvar_pathogenicity_ and 'conflicting' not in clinvar_pathogenicity_:
         PP5 = total_pathogenicity_score * clinvar_review_status
         curr_interpret.append('Clinvar (clinical testing records) reports the variant as pathogenic (Clinvar: %s).' % clinvar_variation_ids)
-        curr_interpret_chinese.append('Clinvar (临床试验(clinical testing)记录) 报道此基因变异致病(Clinvar IDs: %s).' % clinvar_variation_ids)
+        curr_interpret_chinese.append('Clinvar (临床检测(clinical testing)记录) 报道此基因变异致病(Clinvar IDs: %s).' % clinvar_variation_ids)
         if clinvar_pmids:
             curr_interpret.append('Pubmed references: %s.' % ', '.join(clinvar_pmids))
             curr_interpret_chinese.append('生物医学参考文献Pubmed: %s.' % ', '.join(clinvar_pmids))
@@ -1137,7 +1160,7 @@ def check_PP5_BP6(variant_):
     elif ('benign' in clinvar_pathogenicity_ or 'protective' in clinvar_pathogenicity_) and 'pathogenic' not in clinvar_pathogenicity_ and 'conflicting' not in clinvar_pathogenicity_:
         BP6 = total_pathogenicity_score * clinvar_review_status
         curr_interpret.append('Clinvar (clinical testing records)  reports the variant as benign (Clinvar: %s).' % clinvar_variation_ids)
-        curr_interpret_chinese.append('Clinvar (临床试验(clinical testing)记录) 报道此基因变异良性(Clinvar IDs: %s).' % clinvar_variation_ids)
+        curr_interpret_chinese.append('Clinvar (临床检测(clinical testing)记录) 报道此基因变异良性(Clinvar IDs: %s).' % clinvar_variation_ids)
         if clinvar_pmids:
             curr_interpret.append('Pubmed references: %s.' % ', '.join(clinvar_pmids))
             curr_interpret_chinese.append('生物医学参考文献Pubmed: %s.' % ', '.join(clinvar_pmids))    
@@ -1146,13 +1169,13 @@ def check_PP5_BP6(variant_):
             curr_interpret_chinese.append('简要证据: %s.' % clinvar_comments)
     elif clinvar_pathogenicity_:
         curr_interpret.append('Clinvar (clinical testing records)  does NOT have a conclusion on this variant (Clinvar: %s).' % clinvar_variation_ids)
-        curr_interpret_chinese.append('Clinvar数据库 (临床试验(clinical testing)记录) 中关于此基因变异的致病性没有确定的结论(Clinvar IDs: %s).' % clinvar_variation_ids)
+        curr_interpret_chinese.append('Clinvar数据库 (临床检测(clinical testing)记录) 中关于此基因变异的致病性没有确定的结论(Clinvar IDs: %s).' % clinvar_variation_ids)
         if clinvar_comments:
             curr_interpret.append('Summary evidence: %s.' % clinvar_comments)
             curr_interpret_chinese.append('简要证据: %s.' % clinvar_comments)
     else:
         curr_interpret.append('Clinvar (clinical testing records)  does NOT have records on this variant.')
-        curr_interpret_chinese.append('未在Clinvar数据库 (临床试验(clinical testing)记录) 中发现关于此基因变异致病性的报道.')
+        curr_interpret_chinese.append('未在Clinvar数据库 (临床检测(clinical testing)记录) 中发现关于此基因变异致病性的报道.')
         #if clinvar_comments:
         #    curr_interpret.append('Summary evidence: %s.' % clinvar_comments)
         #    curr_interpret_chinese.append('简要证据: %s.' % clinvar_comments)
@@ -1461,7 +1484,7 @@ def Get_ACMG_result(df_hpo_ranking_genes, variants, df_pubmed, parent_ngs, paren
     global interpret, curr_interpret, interpret_chinese, curr_interpret_chinese, pubmed_articles
 
     map_clinvar_pathogenicity = {'Uncertain significance':'意义不明确', 'Likely benign':'可能良性', 'Pathogenic':'致病', 'Benign':'良性', 'Likely pathogenic':'可能致病', 'pathologic': '致病', 'not provided':'未提供结论', 'Conflicting interpretations of pathogenicity':'致病性结论不一致', 'other':'其它', 'risk factor':'风险因子', 'drug response':'药物反应', 'Conflicting interpretations of pathogenicity, not provided':'致病性结论不一致', 'Benign/Likely benign':'良性/可能良性', 'association':'有关联', 'conflicting data from submitters':'致病性结论不一致', 'protective':'保护作用', 'Pathogenic, risk factor':'致病，风险因子', 'Pathogenic/Likely pathogenic':'致病、可能致病', 'Likely pathogenic, risk factor':'可能致病，风险因子', 'Pathogenic, other':'致病', 'Likely benign, protective':'可能良性，保护作用', 'Conflicting interpretations of pathogenicity, risk factor':'致病性结论不一致', 'Benign, other':'良性', 'Uncertain significance, risk factor':'意义不明确，风险因子', 'Pathogenic, association':'致病', 'Likely benign, risk factor':'可能良性，风险因子', 'Benign, risk factor':'良性，风险因子', 'Uncertain significance, other':'意义不明确', 'Uncertain significance, Affects':'意义不明确', 'Pathogenic, Affects':'致病', 'Conflicting interpretations of pathogenicity, other':'致病性结论不一致', 'Conflicting interpretations of pathogenicity, Affects':'致病性结论不一致', 'confers sensitivity':'提高灵敏度'}
-    map_clinvar_pathogenicity = {'uncertain significance':'意义不明确', 'likely benign':'可能良性', 'pathogenic':'致病', 'benign':'良性', 'likely pathogenic':'可能致病', 'pathologic': '致病', 'not provided':'未提供结论', 'conflicting interpretations of pathogenicity':'致病性结论不一致', 'other':'其它', 'risk factor':'风险因子', 'drug response':'药物反应', 'conflicting interpretations of pathogenicity, not provided':'致病性结论不一致', 'benign/likely benign':'良性/可能良性', 'association':'有关联', 'conflicting data from submitters':'致病性结论不一致', 'protective':'保护作用', 'pathogenic, risk factor':'致病，风险因子', 'pathogenic/likely pathogenic':'致病、可能致病', 'likely pathogenic, risk factor':'可能致病，风险因子', 'pathogenic, other':'致病', 'likely benign, protective':'可能良性，保护作用', 'conflicting interpretations of pathogenicity, risk factor':'致病性结论不一致', 'benign, other':'良性', 'uncertain significance, risk factor':'意义不明确，风险因子', 'pathogenic, association':'致病', 'likely benign, risk factor':'可能良性，风险因子', 'benign, risk factor':'良性，风险因子', 'uncertain significance, other':'意义不明确', 'uncertain significance, affects':'意义不明确', 'pathogenic, affects':'致病', 'conflicting interpretations of pathogenicity, other':'致病性结论不一致', 'conflicting interpretations of pathogenicity, affects':'致病性结论不一致', 'confers sensitivity':'提高灵敏度'}
+    map_clinvar_pathogenicity = {'uncertain significance':'意义不明确', 'likely benign':'可能良性', 'pathogenic':'致病', 'benign':'良性', 'likely pathogenic':'可能致病', 'pathologic': '致病', 'probably not pathogenic': '可能良性', 'not provided':'未提供结论', 'conflicting interpretations of pathogenicity':'致病性结论不一致', 'other':'其它', 'risk factor':'风险因子', 'drug response':'药物反应', 'conflicting interpretations of pathogenicity, not provided':'致病性结论不一致', 'benign/likely benign':'良性/可能良性', 'association':'有关联', 'conflicting data from submitters':'致病性结论不一致', 'protective':'保护作用', 'pathogenic, risk factor':'致病，风险因子', 'pathogenic/likely pathogenic':'致病、可能致病', 'likely pathogenic, risk factor':'可能致病，风险因子', 'pathogenic, other':'致病', 'likely benign, protective':'可能良性，保护作用', 'conflicting interpretations of pathogenicity, risk factor':'致病性结论不一致', 'benign, other':'良性', 'uncertain significance, risk factor':'意义不明确，风险因子', 'pathogenic, association':'致病', 'likely benign, risk factor':'可能良性，风险因子', 'benign, risk factor':'良性，风险因子', 'uncertain significance, other':'意义不明确', 'uncertain significance, affects':'意义不明确', 'pathogenic, affects':'致病', 'conflicting interpretations of pathogenicity, other':'致病性结论不一致', 'conflicting interpretations of pathogenicity, affects':'致病性结论不一致', 'confers sensitivity':'提高灵敏度'}
     map_clinvar_review_status = {'criteria provided, single submitter':'提供标准，单个提交者', 'no assertion criteria provided':'未提供标准', 'no assertion provided':'未提供结论', 'criteria provided, multiple submitters, no conflicts':'提供标准，多个提交者，致病性结论一致', 'criteria provided, conflicting interpretations':'提供标准，致病性结论不一致', 'reviewed by expert panel':'通过专家评审', 'practice guideline':'实践指南'}
     map_clinvar_pathogenicity_keys = [key for key in map_clinvar_pathogenicity.keys()]
     map_clinvar_pathogenicity_keys.sort(key=len, reverse=True)
@@ -1630,7 +1653,7 @@ def Get_ACMG_result(df_hpo_ranking_genes, variants, df_pubmed, parent_ngs, paren
                 joined_clinvar_pathogenicity_chinese_0 = '<br>'.join(joined_clinvar_pathogenicity_chinese_0) 
                 curr_interpret[-1] = curr_interpret[-1] + "<U> Pathogenicity reported by Clinvar (Only showing clinical testing records): </U> <br> <div class='second_layer'> %s. </div>" % joined_clinvar_pathogenicity_0
                 joined_clinvar_pathogenicity_0_chinese = re_map_clinvar_pathogenicity.sub(lambda m: map_clinvar_pathogenicity[m.group()], joined_clinvar_pathogenicity_chinese_0)
-                curr_interpret_chinese[-1] = curr_interpret_chinese[-1] + "<U> Clinvar数据库记录的变异致病性 (只显示临床试验(clinical testing)记录):</U> <br> <div class='second_layer'> %s. </div>" % joined_clinvar_pathogenicity_0_chinese
+                curr_interpret_chinese[-1] = curr_interpret_chinese[-1] + "<U> Clinvar数据库记录的变异致病性 (只显示临床检测(clinical testing)记录):</U> <br> <div class='second_layer'> %s. </div>" % joined_clinvar_pathogenicity_0_chinese
     	#if clinvar_review_status_0: 
         #        curr_interpret.append('Clinvar review status: %s.' % clinvar_review_status_0)
         #        clinvar_review_status_0_chinese = re_map_clinvar_review_status.sub(lambda m: map_clinvar_review_status[m.group()], clinvar_review_status_0)

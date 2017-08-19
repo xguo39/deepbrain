@@ -308,7 +308,8 @@ def read_input_gene_file(input_gene, parent_ngs, father_vcf, mother_vcf, proband
     # if input is vcf file
     input_is_vcf = False
     if '#CHROM' in field_names and 'POS' in field_names and 'REF' in field_names and 'ALT' in field_names and 'QUAL' in field_names and 'FILTER' in field_names and 'INFO' in field_names: 
-        input_is_vcf = True 
+        input_is_vcf = True
+    if input_is_vcf: 
         df_vcf = convertFile2DF(input_gene, delimiter, 'proband')
         df_vcf_father, df_vcf_mother = pd.DataFrame(), pd.DataFrame()
         if father_vcf:
@@ -356,6 +357,7 @@ def read_input_gene_file(input_gene, parent_ngs, father_vcf, mother_vcf, proband
     input_gene_list = []
     CANDIDATE_GENES = []
     candidate_vars_zygosity = []
+    parent_ngs_checked = False
     for line in input_gene[1:]:
         if not line:
             continue	
@@ -438,7 +440,7 @@ def read_input_gene_file(input_gene, parent_ngs, father_vcf, mother_vcf, proband
                     #print 'idx: ', mother_allele1_idx, mother_allele2_idx, father_allele1_idx, father_allele2_idx
                     #print 'c: ', chrome, pos, ref, allele1, allele2,  mother1, mother2, father1, father2
                 #print parent_ngs
-                if not zygosity and ( (mother_allele1_idx is not None and mother_allele2_idx is not None) or (father_allele1_idx is not None and father_allele2_idx is not None) ):
+                if not parent_ngs_checked and not zygosity and ( (mother_allele1_idx is not None and mother_allele2_idx is not None) or (father_allele1_idx is not None and father_allele2_idx is not None) ):
                     candidate_vars_zygosity.append((gene, variant, transcript, variant_id, chrome, ref, allele1, allele2, mother1, mother2, father1, father2))
                     # can be removed after front-end is done
                     if ((mother_allele1_idx is None and mother_allele2_idx is None) and (father_allele1_idx is not None and father_allele2_idx is not None)) or (input_is_vcf and not mother_vcf and father_vcf):
@@ -449,6 +451,7 @@ def read_input_gene_file(input_gene, parent_ngs, father_vcf, mother_vcf, proband
                         parent_ngs = 0 
                     else:
                         parent_ngs = 3
+                    parent_ngs_checked = True
                 #print allele1, allele2, mother1, mother2, father1, father2
                 #print parent_ngs
                 candidate_vars.append((gene, variant, transcript, variant_id, zygosity))
