@@ -77,7 +77,7 @@ def check_PVS1(variant_):
     #not_benign_splicing = True if ((not dbscSNV_rf_score and not dbscSNV_ada_score) or (dbscSNV_rf_score and float(dbscSNV_rf_score) > dbscSNV_cutoff) or (dbscSNV_ada_score and float(dbscSNV_ada_score) > dbscSNV_cutoff)) else False 
     not_benign_splicing = True if ((dbscSNV_rf_score and float(dbscSNV_rf_score) > dbscSNV_cutoff) or (dbscSNV_ada_score and float(dbscSNV_ada_score) > dbscSNV_cutoff)) else False 
     curr_interpret.append('It is null variant.') if effect_in_null_variant_types else curr_interpret.append('It is NOT null variant.') 
-    curr_interpret_chinese.append('基因变异类型是无效变异(null variant).') if effect_in_null_variant_types else curr_interpret_chinese.append('基因变异类型不是无效变异(null variant).') 
+    curr_interpret_chinese.append('基因变异类型是无效变异 (null variant).') if effect_in_null_variant_types else curr_interpret_chinese.append('基因变异类型不是无效变异 (null variant).') 
     ## 如果coding effect是null variant，查看这个variant downstream（同一gene 同一transcript）有没有null variation 且 pathogenic
     downstream_null_lof_pathogenic = False
     if re.match(r'c\.-', cDNA):
@@ -121,7 +121,7 @@ def check_PVS1(variant_):
     #     curr_interpret_chinese.append('基因变异类型不是无效变异(null variant).')
     if effect_in_null_variant_types: 
         curr_interpret.append('The variant has damaging splicing effect.') if not_benign_splicing else curr_interpret.append('The variant does NOT have damaging splicing effect.') 
-        curr_interpret_chinese.append('此变异具有有害的剪接效应(splicing effect).') if not_benign_splicing else curr_interpret_chinese.append('此变异不具有有害的剪接效应(splicing effect).') 
+        curr_interpret_chinese.append('此变异具有有害的剪接效应 (splicing effect).') if not_benign_splicing else curr_interpret_chinese.append('此变异不具有有害的剪接效应 (splicing effect).') 
 
     #if effect_in_null_variant_types and in_LOF_genes and not_affect_splicing: PVS1 = 1
     if effect_in_null_variant_types and in_LOF_genes and not_benign_splicing: PVS1 = 1
@@ -202,7 +202,7 @@ def check_PS1_PM5(variant_):
         clinvar_ids = missense_AA_pathogenicity[gene][protein]
         clinvar_ids = ', '.join(clinvar_ids)
         curr_interpret.append('Same amino acid change as a previously established pathogenic variant regardless of nucleotide change (Clinvar references: %s).' % clinvar_ids)
-        curr_interpret_chinese.append('之前报道导致相同氨基酸改变的基因变异被证明是致病的 (Clinvar数据库参考: %s).' % clinvar_ids)
+        curr_interpret_chinese.append('与先前已确定为致病性的变异有相同的氨基酸改变 (Clinvar数据库参考: %s).' % clinvar_ids)
     if gene in missense_original_AA and original_AA in missense_original_AA[gene]:
         clinvar_ids, different_proteins = [], []
         for tup in missense_original_AA[gene][original_AA]:
@@ -214,15 +214,15 @@ def check_PS1_PM5(variant_):
             clinvar_ids = ', '.join(clinvar_ids)
             different_proteins = ', '.join(different_proteins)
             curr_interpret.append('Novel missense change at an amino acid residue where a different missense change (%s) determined to be pathogenic has been seen before (Clinvar references: %s).' % (different_proteins, clinvar_ids))
-            curr_interpret_chinese.append('此错义突变 (missense) 发生在的氨基酸残基在之前发现过致病错义突变(%s)，尽管是不同氨基酸改变 (Clinvar数据库参考: %s).' % (different_proteins, clinvar_ids))
+            curr_interpret_chinese.append('新的错义 (missense) 突变导致氨基酸变化，此变异之前未曾报道，但是在同一位点，导致另外一种氨基酸的变异(%s)已经确认是致病性的 (Clinvar数据库参考: %s).' % (different_proteins, clinvar_ids))
 
     not_affect_splicing = False if ((dbscSNV_rf_score and float(dbscSNV_rf_score) > dbscSNV_cutoff) or (dbscSNV_ada_score and float(dbscSNV_ada_score) > dbscSNV_cutoff)) else True
     if not has_pathogenic_same_AA_change: curr_interpret.append('Not find same amino acid change as a previously established pathogenic variant.')
-    if not has_pathogenic_same_AA_change: curr_interpret_chinese.append('未发现之前报道导致相同氨基酸改变的致病基因变异.')
+    if not has_pathogenic_same_AA_change: curr_interpret_chinese.append('没有与先前已确定为致病性的变异有相同的氨基酸改变.')
     if not has_pathogenic_different_AA_change: curr_interpret.append('Not find missense change at an amino acid residue where a different missense change determined to be pathogenic has been seen before.')
-    if not has_pathogenic_different_AA_change: curr_interpret_chinese.append('未发现导致相同氨基酸残基错义突变（不同氨基酸改变）导致的致病基因变异.')
+    if not has_pathogenic_different_AA_change: curr_interpret_chinese.append('新的错义 (missense) 突变导致氨基酸变化，在同一位点，没有发现已经确认是致病性的导致另外一种氨基酸的变异.')
     curr_interpret.append('The variant does NOT have damaging splicing effect.') if not_affect_splicing else curr_interpret.append('The variant has damaging splicing effect.') 
-    curr_interpret_chinese.append('此变异不具有害的剪接效应(splicing effect).') if not_affect_splicing else curr_interpret_chinese.append('此变异具有有害的剪接效应(splicing effect).') 
+    curr_interpret_chinese.append('此变异不具有害的剪接效应 (splicing effect).') if not_affect_splicing else curr_interpret_chinese.append('此变异具有有害的剪接效应 (splicing effect).') 
     if effect_in_missense_variant_types and has_pathogenic_same_AA_change and not_affect_splicing: PS1 = 1
     if effect_in_missense_variant_types and has_pathogenic_different_AA_change: PM5 = 1
 
@@ -240,7 +240,7 @@ def check_PS1_PM5(variant_):
                 for article_info in variant_pubmed_articles:
                     pmid, title, journal, year, impact_factor = article_info
                     if pmid == pmid_:
-                        pubmed_article_info.append("<a href='https://www.ncbi.nlm.nih.gov/pubmed/%s' target='_blank'> %s </a>: title: %s, journal: %s, year: %s, impact_factor: %s" %(pmid, pmid, title, journal, year, impact_factor))  
+                        pubmed_article_info.append("<a href='https://www.ncbi.nlm.nih.gov/pubmed/%s' target='_blank'> %s </a>: title: %s, journal: %s, year: %s, impact_factor: <b>%s</b>" %(pmid, pmid, title, journal, year, impact_factor))  
             PS1 = pathogenicity_score
             curr_interpret.append('The variant was reported in literatures (PMIDs: %s) and the pathogenicity score (0-1) is %s.' % ('; '.join(pubmed_article_info), str(PS1))) 
             curr_interpret_chinese.append('此基因变异曾被之前生物医学文献报道 (PMIDs: %s)，致病性分数 (0-1) 为%s.' % ('; '.join(pubmed_article_info), str(PS1))) 
@@ -278,7 +278,7 @@ def check_PS2_PM6(variant_, parent_ngs, parent_affects):
             curr_interpret_chinese.append('只有母亲的基因测序数据.')
         else:
             curr_interpret.append('Both father and mother NGS data are available.')
-            curr_interpret_chinese.append('父亲和母亲的基因测序数据都有.')
+            curr_interpret_chinese.append('父母的基因测序数据都有.')
         if parent_affects == 1: 
             curr_interpret.append('Father was affected.')
             curr_interpret_chinese.append('父亲有相似表型.')
@@ -287,42 +287,42 @@ def check_PS2_PM6(variant_, parent_ngs, parent_affects):
             curr_interpret_chinese.append('母亲有相似表型.')
         else:
             curr_interpret.append('Both father and mother were affected.')
-            curr_interpret_chinese.append('父亲和母亲都有相似表型.')
+            curr_interpret_chinese.append('父母都有相似表型.')
         if zygosity == 'de novo':
             curr_interpret.append('The variant is De Novo.')
-            curr_interpret_chinese.append('此变异是新生突变（De Novo）.')
+            curr_interpret_chinese.append('此变异是新发变异 (De Novo).')
             de_novo_is_known_mechanism = False
             if gene in denovo_genes:
                 de_novo_is_known_mechanism = True
             if de_novo_is_known_mechanism:
                 PS2 = 1
                 curr_interpret.append('De Novo is a known pathogenicity mechanism of the gene.')
-                curr_interpret_chinese.append('新生突变（De Novo）是此基因的已知致病机制.')
+                curr_interpret_chinese.append('新发变异 (De Novo) 是此基因的已知致病机制.')
             else:
                 PS2 = 0.5 
                 curr_interpret.append('De Novo is not a known pathogenicity mechanism of the gene.')
-                curr_interpret_chinese.append('新生突变（De Novo）不是此基因的已知致病机制.')
+                curr_interpret_chinese.append('新发变异 (De Novo) 不是此基因的已知致病机制.')
         else:
             curr_interpret.append('The variant is not De Novo.')
-            curr_interpret_chinese.append('此变异不是新生突变（De Novo）.')
+            curr_interpret_chinese.append('此变异不是新发变异 (De Novo).')
     elif parent_ngs == 0:
         if zygosity == 'de novo':
             curr_interpret.append('The variant is De Novo.')
-            curr_interpret_chinese.append('此变异是新生突变（De Novo）.')
+            curr_interpret_chinese.append('此变异是新发变异 (De Novo).')
         else:
             curr_interpret.append('The variant is not De Novo.')
-            curr_interpret_chinese.append('此变异不是新生突变（De Novo）.')
+            curr_interpret_chinese.append('此变异不是新发变异 (De Novo).')
         curr_interpret.append('No parents NGS and phenotype data are available.')
-        curr_interpret_chinese.append('没有父亲和母亲的基因测序数据和表型数据.')
+        curr_interpret_chinese.append('没有双亲的基因测序数据和表型数据.')
     elif parent_affects == 0:
         if zygosity == 'de novo':
             curr_interpret.append('The variant is De Novo.')
-            curr_interpret_chinese.append('此变异是新生突变（De Novo）.')
+            curr_interpret_chinese.append('此变异是新发变异 (De Novo).')
         else:
             curr_interpret.append('The variant is not De Novo.')
-            curr_interpret_chinese.append('此变异不是新生突变（De Novo）.')
+            curr_interpret_chinese.append('此变异不是新发变异 (De Novo).')
         curr_interpret.append('No information were provided whether the parents were affected.')
-        curr_interpret_chinese.append('没有提供父亲和母亲是否具有相似表型的信息.')
+        curr_interpret_chinese.append('没有提供双亲是否具有相似表型的信息.')
     if zygosity == 'de novo':
         PM6 = 1
     curr_interpret.append('PS2 is met.') if PS2 != 0 else curr_interpret.append('PS2 is NOT met.')
@@ -535,16 +535,16 @@ def check_PS4(variant_):
 
     if max_prevalence > 0:
         curr_interpret.append('The prevalence for the disease %s is: %s.' % (str(max_prevalence), max_disease))
-        curr_interpret_chinese.append('疾病%s盛行率(prevalence)是: %s.' % (str(max_prevalence), max_disease))
+        curr_interpret_chinese.append('疾病%s盛行率 (prevalence) 是: %s.' % (str(max_prevalence), max_disease))
     else:
         curr_interpret.append('The prevalence data are not found.')
-        curr_interpret_chinese.append('未找到相关疾病盛行率(prevalence)报道数据.')
+        curr_interpret_chinese.append('未找到相关疾病盛行率 (prevalence) 报道数据.')
     if maf_exac:
         curr_interpret.append('The EXAC MAF is: %s.' % (maf_exac))
         curr_interpret_chinese.append('EXAC最小等位基因频率(MAF): %s.' % (maf_exac))
     else:
-        curr_interpret.append('The EXAC does not have MAF data for this allele.')
-        curr_interpret_chinese.append('未找到EXAC最小等位基因频率(MAF)数据.')
+        curr_interpret.append('The MAF data for this allele are not found.')
+        curr_interpret_chinese.append('未找到最小等位基因频率(MAF)数据.')
     if max_PS4 > 0:
         curr_interpret.append('The prevalence of the variant in affected individuals is increased compared with the prevalence in controls: %s vs. %s.' % (str(max_freq), maf_exac))
         curr_interpret_chinese.append('变异出现在患病群体中的频率显著高于对照群体: %s vs. %s.' % (str(max_freq), maf_exac))
@@ -684,14 +684,14 @@ def check_BA1_BS1(variant_):
             curr_interpret_chinese.append('等位基因频率(MAF) < 5%.')
         if not max_freq:
             curr_interpret.append('Prevalence of this variant is not found in previous reports or studies.')
-            curr_interpret_chinese.append('未找到相关疾病盛行率(prevalence)报道数据.')
+            curr_interpret_chinese.append('未找到相关疾病盛行率 (prevalence) 报道数据.')
         elif has_high_freq_BS1: 
             BS1 = 1 
             curr_interpret.append('Allele frequeny is greater than expected for disorder.')
-            curr_interpret_chinese.append('等位基因频率(MAF)大于由盛行率(prevalence)计算得到的allele frequency.')
+            curr_interpret_chinese.append('等位基因频率(MAF)大于由盛行率 (prevalence) 计算得到的allele frequency.')
         elif not has_high_freq_BA1 and not has_high_freq_BS1:
             curr_interpret.append('Allele frequeny is smaller than expected for disorder.')
-            curr_interpret_chinese.append('等位基因频率(MAF)小于由盛行率(prevalence)计算得到的allele frequency.')
+            curr_interpret_chinese.append('等位基因频率(MAF)小于由盛行率 (prevalence) 计算得到的allele frequency.')
     else:
         curr_interpret.append('No allele frequency data are found in genomic databases.')
         curr_interpret_chinese.append('未在人类基因数据库中发现此等位基因的频率数据(MAF).')    
@@ -747,13 +747,13 @@ def check_BS2(variant_):
     if not_adultonset_gene and is_dominant and is_heter: BS2 = 1
     if is_recessive and is_homo: 
         curr_interpret.append('The variant is observed in a healthy adult in the 1000 Genomes Project as a homozygote (for diseases defined as recessive in OMIM).')
-        curr_interpret_chinese.append('此基因变异在健康人中以隐性(纯合子)状态存在.')    
+        curr_interpret_chinese.append('对于早期完全外显的疾病，在健康成年人中发现该变异 (隐性遗传病发现纯合).')    
     elif is_dominant and is_heter:
         curr_interpret.append('The variant is observed in a healthy adult in the 1000 Genomes Project as a heterozygote (for diseases defined as dominant in OMIM).')
-        curr_interpret_chinese.append('此基因变异在健康人中以显性(杂合子)状态存在.')
+        curr_interpret_chinese.append('对于早期完全外显的疾病，在健康成年人中发现该变异 (显性遗传病发现杂合).')
     else:
         curr_interpret.append('The variant is NOT observed in a healthy adult in the 1000 Genomes Project as a heterozygote (for dominant diseases) nor as a homozygote (for recessive diseases).')
-        curr_interpret_chinese.append('此基因变异在健康人中既不以隐性(纯合子)也不以显性(杂合子)状态存在.')    
+        curr_interpret_chinese.append('对于早期完全外显的疾病，在健康成年人中未发现该变异（隐性遗传病发现纯合、显性遗传病发现杂合，或者X连锁半合子）.')    
     curr_interpret.append('BS2 is met.') if BS2 == 1 else curr_interpret.append('BS2 is NOT met.')
     curr_interpret_chinese.append('符合BS2标准.') if BS2 == 1 else curr_interpret_chinese.append('不符合BS2标准.')    
     curr_interpret = ' '.join(curr_interpret)
@@ -840,13 +840,13 @@ def check_PM1(variant_):
     if effect_in_missense_variant_types and not_in_benign_domain: 
         PM1 = 1
         curr_interpret.append('The variant has missense effect in a critical protein domain where all missense variants in the domain identified to date have been shown to be pathogenic.')
-        curr_interpret_chinese.append('此基因变异位于突变热点和/或关键的功能域(例如酶的活性部位)，且在这些区域不存在良性变异.')
+        curr_interpret_chinese.append('此基因变异位于热点突变区域和/或已知无良性变异的关键功能域.')
     elif effect_in_missense_variant_types:
         curr_interpret.append('The variant effect is missense type but NOT in a critical protein domain where all missense variants in the domain identified to date have been shown to be pathogenic.')
-        curr_interpret_chinese.append('此基因变异不位于不存在良性变异的突变热点和/或关键的功能域(例如酶的活性部位).')
+        curr_interpret_chinese.append('此基因变异不位于热点突变区域和/或已知无良性变异的关键功能域.')
     else:
         curr_interpret.append('The variant effect is NOT missense.')
-        curr_interpret_chinese.append('此基因变异不是错义突变.')
+        curr_interpret_chinese.append('此基因变异不是错义 (missense) 突变.')
     curr_interpret.append('PM1 is met.') if PM1 == 1 else curr_interpret.append('PM1 is NOT met.')
     curr_interpret_chinese.append('符合PM1标准.') if PM1 == 1 else curr_interpret_chinese.append('不符合PM1标准.')
     curr_interpret = ' '.join(curr_interpret)
@@ -913,17 +913,17 @@ def check_PM4_BP3(variant_):
     # If the variant effect type is stop_lost, then assign 1 to PM4, no matter if the allele is in repeat/non-repeat regions
     effect_is_stop_loss = True if 'stop_lost' in variant_effect else False
     if effect_is_stop_loss: PM4 = 1
+    curr_interpret.append('Allele is in a repeat region.') if in_repeat_region else curr_interpret.append('Allele is in a nonrepeat region.')
+    curr_interpret_chinese.append('变异位点在重复区 (repeat region).') if in_repeat_region else curr_interpret_chinese.append('变异位点在非重复区 (nonrepeat region).')
     if effect_in_inframe_indel_variant_types: 
         curr_interpret.append('Variant effect is in-frame deletions/insertion.')
         curr_interpret_chinese.append('基因变异类型是框内缺失/插入.')
     else:
         curr_interpret.append('Variant effect is NOT in-frame deletions/insertion.')
         curr_interpret_chinese.append('基因变异类型不是框内缺失/插入.')
-    curr_interpret.append('Allele is in a repeat region.') if in_repeat_region else curr_interpret.append('Allele is in a nonrepeat region.')
-    curr_interpret_chinese.append('变异位点在重复区域(repeat region).') if in_repeat_region else curr_interpret_chinese.append('变异位点在非重复区域(nonrepeat region).')
     if effect_is_stop_loss: 
         curr_interpret.append('Variant effect is stop loss.') 
-        curr_interpret_chinese.append('基因变异类型是终止子缺失.')
+        curr_interpret_chinese.append('基因变异类型是终止密码子丧失.')
     curr_interpret.append('PM4 is met.') if PM4 == 1 else curr_interpret.append('PM4 is NOT met.')
     curr_interpret_chinese.append('符合PM4标准.') if PM4 == 1 else curr_interpret_chinese.append('不符合PM4标准.')
     curr_interpret.append('BP3 is met.') if BP3 == 1 else curr_interpret.append('BP3 is NOT met.')
@@ -969,17 +969,17 @@ def check_PP2_BP1(variant_):
     if effect_in_missense_variant_types and gene_in_missense_pathogenic_genes: 
         PP2 = 1
         curr_interpret.append('The missense allele is in a gene that has a low rate of benign missense variation and in which missense variants are a common mechanism of disease.')
-        curr_interpret_chinese.append('此错义突变发生在这样一个基因上：良性错义突变在这个基因上的频率低，且在这个基因上的错义突变是致病的常见原因.')
+        curr_interpret_chinese.append('此错义 (missense) 突变发生在这样一个基因上：良性错义突变在这个基因上的频率低，且在这个基因上的错义突变是致病的常见原因.')
     if effect_in_missense_variant_types and gene_in_truncate_pathogenic_genes: 
         BP1 = 1
         curr_interpret.append('The missense allele is in a gene for which primarily truncating variants are known to cause disease.')
-        curr_interpret_chinese.append('错义突变位于截短(truncating)变异是致病主要原因的基因上.')    
+        curr_interpret_chinese.append('错义突变位于截短 (truncating) 变异是致病主要原因的基因上.')    
     if not effect_in_missense_variant_types:
         curr_interpret.append('The variant effect is NOT missense.')
-        curr_interpret_chinese.append('此基因变异类型不是错义突变.')
+        curr_interpret_chinese.append('此基因变异类型不是错义 (missense) 突变.')
     elif not gene_in_missense_pathogenic_genes and not gene_in_truncate_pathogenic_genes:
         curr_interpret.append('The variant effect is missense, but neither in a gene that has a low rate of benign missense variation and in which missense variants are a common mechanism of disease nor in a gene for which primarily truncating variants are known to cause disease.')
-        curr_interpret_chinese.append('此基因变异类型是错义突变，但并非发生在以下两种类型的基因上：(1) 良性错义突变在基因上的频率低，且在这个基因上的错义突变是致病的常见原因；(2) 基因的截短(truncating)变异是致病的主要原因.')
+        curr_interpret_chinese.append('此基因变异类型是错义 (missense) 突变，但并非发生在以下两种类型的基因上：(1) 基因的错义变异是致病的原因，并且这个基因中良性变异所占的比例很小；(2) 基因的截短 (truncating) 变异是致病的主要原因.')
     curr_interpret.append('PP2 is met.') if PP2 == 1 else curr_interpret.append('PP2 is NOT met.')
     curr_interpret_chinese.append('符合PP2标准.') if PP2 == 1 else curr_interpret_chinese.append('不符合PP2标准.')
     curr_interpret.append('BP1 is met.') if BP1 == 1 else curr_interpret.append('BP1 is NOT met.')
@@ -1034,7 +1034,7 @@ def check_PP3_BP4(variant_):
     #if 'N' in is_pathogenic: PP3 = 0
     if 'N' in is_pathogenic and 'D' not in is_pathogenic: BP4 = 1 
     curr_interpret.append('The cutoffs for computational pathogenicity predictions are %s.' % ('DANN:0.96, FATHMM:0.81415, MetaSVM:0.83357, GERP++:2.0, dbscSNV_rf_score:0.6, dbscSNV_ada_score:0.6'))
-    curr_interpret_chinese.append('各致病性算法的致病分数阈值是：%s.' % ('DANN:0.96, FATHMM:0.81415, MetaSVM:0.83357, GERP++:2.0, dbscSNV_rf_score:0.6, dbscSNV_ada_score:0.6'))    
+    curr_interpret_chinese.append('各致病性算法的致病分数阈值是: %s.' % ('DANN: 0.96, FATHMM: 0.81415, MetaSVM: 0.83357, GERP++: 2.0, dbscSNV_rf_score: 0.6, dbscSNV_ada_score: 0.6'))    
     if PP3 == 1:
         curr_interpret.append('PP3 is met.')
         curr_interpret_chinese.append('符合PP3标准.') 
@@ -1275,13 +1275,13 @@ def check_BP7(variant_):
     if effect_in_synonymous_variant_types and not_affect_splicing and not is_conservative: BP7 = 1
     if BP7 == 1: 
         curr_interpret.append('Variant effect is synonymous (silent) for which splicing prediction algorithms predict no impact to the splice consensus sequence nor the creation of a new splice site AND the nucleotide is not highly conserved.')
-        curr_interpret_chinese.append('变异类型为同义（沉默）变异，剪接预测算法预测此变异对剪接序列没有影响，核苷酸不是高度保守的.')
+        curr_interpret_chinese.append('变异类型为同义（沉默）变异，剪接算法预测此变异对剪接序列没有影响，核苷酸不是高度保守的.')
     elif effect_in_synonymous_variant_types and is_conservative:
         curr_interpret.append('Variant effect is synonymous (silent) but the nucleotide is highly conserved.')
         curr_interpret_chinese.append('变异类型为同义（沉默）变异，但核苷酸序列高度保守.')
     elif effect_in_synonymous_variant_types and not not_affect_splicing:
         curr_interpret.append('Variant effect is synonymous (silent) but the splicing prediction algorithms predict impact to the splice consensus sequence.')
-        curr_interpret_chinese.append('变异类型为同义（沉默）变异，剪接预测算法预测此变异影响剪接序列.')
+        curr_interpret_chinese.append('变异类型为同义（沉默）变异，但剪接算法预测此变异影响剪接序列.')
     elif effect_in_synonymous_variant_types:
         curr_interpret.append('Variant effect is synonymous (silent).')
         curr_interpret_chinese.append('变异类型为同义（沉默）变异.')
@@ -1634,10 +1634,10 @@ def Get_ACMG_result(df_hpo_ranking_genes, variants, df_pubmed, parent_ngs, paren
                 curr_interpret_chinese.append('<b>GERP++序列保守性预测分数</b>: %s (致病分数阈值: %s)' % (gerp_0, '2.0'))
     	if dbscSNV_rf_0: 
                 curr_interpret.append('<b>Random Forest dbscSNV splicing effect prediction</b>: %s (Pathogenicity Cutoff: 0.6).' % dbscSNV_rf_0)
-                curr_interpret_chinese.append('<b>基于随机森林算法的dbscSNV剪接效应(splicing effect)预测分数</b>: %s (致病分数阈值: %s)' % (dbscSNV_rf_0, '0.6'))
+                curr_interpret_chinese.append('<b>基于随机森林算法的dbscSNV剪接效应 (splicing effect) 预测分数</b>: %s (致病分数阈值: %s)' % (dbscSNV_rf_0, '0.6'))
     	if dbscSNV_ada_0: 
                 curr_interpret.append('<b>AdaBoost dbscSNV splicing effect prediction</b>: %s (Pathogenicity Cutoff: 0.6).' % dbscSNV_ada_0)
-                curr_interpret_chinese.append('<b>基于AdaBoost算法的dbscSNV剪接效应(splicing effect)预测分数</b>: %s (致病分数阈值: %s)' % (dbscSNV_ada_0, '0.6'))
+                curr_interpret_chinese.append('<b>基于AdaBoost算法的dbscSNV剪接效应 (splicing effect) 预测分数</b>: %s (致病分数阈值: %s)' % (dbscSNV_ada_0, '0.6'))
     	if clinvar_variation_ids_0 != ["<a href='https://www.ncbi.nlm.nih.gov/clinvar/variation//' target='_blank'>  </a>"]: 
                 curr_interpret.append("<b>Clinvar variation ids</b>: %s. <div class='first_layer'>" % ",".join(clinvar_variation_ids_0))
                 curr_interpret_chinese.append("<b>Clinvar数据库ID</b>: %s.<div class='first_layer'>" % ",".join(clinvar_variation_ids_0))
@@ -1664,7 +1664,7 @@ def Get_ACMG_result(df_hpo_ranking_genes, variants, df_pubmed, parent_ngs, paren
                     if pmid not in pubmed_articles_from_clinvar:
                         continue
                     title, journal, year, impact_factor, pathogenicity_score = pubmed_articles_from_clinvar[pmid]
-                    clinvar_pubmed_articles.append("<a href='https://www.ncbi.nlm.nih.gov/pubmed/%s' target='_blank'> %s </a>: title: %s, journal: %s, year: %s, impact_factor: %s" %(pmid, pmid, title, journal, year, impact_factor))
+                    clinvar_pubmed_articles.append("<a href='https://www.ncbi.nlm.nih.gov/pubmed/%s' target='_blank'> %s </a>: title: %s, journal: %s, year: %s, impact_factor: <b>%s</b>" %(pmid, pmid, title, journal, year, impact_factor))
                 curr_interpret.append("<U>Pubmed references from Clinvar:</U><br> <div class='second_layer'> %s. </div>" % "; ".join(clinvar_pubmed_articles))
                 curr_interpret_chinese.append("<U>Clinvar数据库记录的Pubmed相关生物医学文献: </U><br> <div class='second_layer'> %s. </div>" % "<br>".join(clinvar_pubmed_articles))
         if clinvar_diseases_0:
@@ -1673,11 +1673,11 @@ def Get_ACMG_result(df_hpo_ranking_genes, variants, df_pubmed, parent_ngs, paren
         curr_interpret.append('</div>')
         curr_interpret_chinese.append('</div>')
         if (gene_0, variant_0) in pubmed_articles.keys():
-                pubmed_articles_0 = ["<a href='https://www.ncbi.nlm.nih.gov/pubmed/%s' target='_blank'> %s </a>: title: %s, journal: %s, year: %s, impact_factor: %s" %(i[0],i[0], i[1], i[2], i[3], i[4]) for i in pubmed_articles[(gene_0, variant_0)]]
+                pubmed_articles_0 = ["<a href='https://www.ncbi.nlm.nih.gov/pubmed/%s' target='_blank'> %s </a>: title: %s, journal: %s, year: %s, impact_factor: <b>%s</b>" %(i[0],i[0], i[1], i[2], i[3], i[4]) for i in pubmed_articles[(gene_0, variant_0)]]
                 curr_interpret.append("<b>Pubmed references</b>: <br><div class='first_layer'> %s.</div>" % "; ".join(pubmed_articles_0))
                 curr_interpret_chinese.append("<b>Pubmed相关生物医学文献</b>: <br><div class='first_layer'> %s.</div>" % "<br>".join(pubmed_articles_0))
         elif not clinvar_pmids_0 and gene_0 in pubmed_articles_genes_novariant:
-                pubmed_articles_0 = ["<a href='https://www.ncbi.nlm.nih.gov/pubmed/%s' target='_blank'> %s </a>: title: %s, journal: %s, year: %s, impact_factor: %s" %(i[0],i[0], i[1], i[2], i[3], i[4]) for i in pubmed_articles_genes_novariant[gene_0]]
+                pubmed_articles_0 = ["<a href='https://www.ncbi.nlm.nih.gov/pubmed/%s' target='_blank'> %s </a>: title: %s, journal: %s, year: %s, impact_factor: <b>%s</b>" %(i[0],i[0], i[1], i[2], i[3], i[4]) for i in pubmed_articles_genes_novariant[gene_0]]
                 curr_interpret.append("<b>Pubmed references</b>: <br><div class='first_layer'> %s.</div>" % "; ".join(pubmed_articles_0))
                 curr_interpret_chinese.append("<b>Pubmed相关生物医学文献</b>: <br><div class='first_layer'> %s.</div>" % "<br>".join(pubmed_articles_0))
 
