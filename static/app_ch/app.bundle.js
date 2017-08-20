@@ -17975,21 +17975,13 @@ var New_task_upload = function (_React$Component) {
                     _react2.default.createElement(
                       'label',
                       { htmlFor: 'parents_info' },
-                      '\u7236\u6BCD\u4FE1\u606F:',
-                      _react2.default.createElement('br', null),
-                      _react2.default.createElement('small', null)
+                      '\u7236\u6BCD\u4FE1\u606F:'
                     )
                   ),
                   _react2.default.createElement(
                     'div',
                     { className: 'td2' },
-                    _react2.default.createElement(
-                      'span',
-                      null,
-                      '\u662F\u5426\u63D0\u4F9B\u7236\u4EB2\u57FA\u56E0\u4FE1\u606F:',
-                      _react2.default.createElement('br', null),
-                      '(\u82E5\u4E0A\u4F20\u6587\u4EF6\u5DF2\u5305\u542B\u7236\u6BCDNGS\u4FE1\u606F\u5219\u8BE5\u9879\u65E0\u9700\u9009\u62E9) '
-                    )
+                    '\u662F\u5426\u63D0\u4F9B\u7236\u4EB2\u57FA\u56E0\u4FE1\u606F:'
                   ),
                   _react2.default.createElement(
                     'div',
@@ -18011,9 +18003,7 @@ var New_task_upload = function (_React$Component) {
                     _react2.default.createElement(
                       'span',
                       null,
-                      '\u5426/\u662F ',
-                      _react2.default.createElement('br', null),
-                      '\xA0'
+                      '\u5426/\u662F '
                     )
                   )
                 ),
@@ -18068,7 +18058,13 @@ var New_task_upload = function (_React$Component) {
                       _react2.default.createElement(
                         'span',
                         null,
-                        '\u4E0A\u4F20\u7236\u4EB2\u57FA\u56E0\u4FE1\u606F:'
+                        '\u4E0A\u4F20\u7236\u4EB2\u57FA\u56E0\u4FE1\u606F:',
+                        _react2.default.createElement('br', null),
+                        _react2.default.createElement(
+                          'span',
+                          null,
+                          '(\u82E5\u4E0A\u4F20\u6587\u4EF6\u5DF2\u5305\u542B\u7236\u4EB2NGS\u6570\u636E\u5219\u65E0\u9700\u518D\u5355\u72EC\u4E0A\u4F20)'
+                        )
                       )
                     ),
                     _react2.default.createElement(
@@ -18186,7 +18182,13 @@ var New_task_upload = function (_React$Component) {
                       _react2.default.createElement(
                         'span',
                         null,
-                        '\u4E0A\u4F20\u6BCD\u4EB2\u57FA\u56E0\u4FE1\u606F:'
+                        '\u4E0A\u4F20\u6BCD\u4EB2\u57FA\u56E0\u4FE1\u606F:',
+                        _react2.default.createElement('br', null),
+                        _react2.default.createElement(
+                          'span',
+                          null,
+                          '(\u82E5\u4E0A\u4F20\u6587\u4EF6\u5DF2\u5305\u542B\u6BCD\u4EB2NGS\u6570\u636E\u5219\u65E0\u9700\u518D\u5355\u72EC\u4E0A\u4F20)'
+                        )
                       )
                     ),
                     _react2.default.createElement(
