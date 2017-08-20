@@ -50,6 +50,10 @@ def format_hgvs(chrom, pos, ref, alt):
     if chrom.lower().startswith('chr'):
         # trim off leading "chr" if any
         chrom = chrom[3:]
+    if chrom == 'x':
+        chrom = 'X'
+    if chrom == 'y':
+        chrom = 'Y'
     if len(ref) == len(alt) == 1:
         # this is a SNP
         hgvs = 'chr{0}:g.{1}{2}>{3}'.format(chrom, pos, ref, alt)
@@ -403,9 +407,9 @@ def read_input_gene_file(input_gene, parent_ngs, father_vcf, mother_vcf, proband
                     zygosity = 'comp het'
         if (not variant_id or not zygosity) and ((chrom_idx is not None and pos_idx is not None and ref_idx is not None and allele1_idx is not None and allele2_idx is not None) or (chrom_idx is not None and pos_idx is not None and ref_idx is not None and alt_idx is not None and (allele1_idx is None or allele2_idx is None))):
             if allele1_idx is not None and allele2_idx is not None:
-                chrome, pos, ref, allele1, allele2 = parts[chrom_idx], parts[pos_idx], parts[ref_idx], parts[allele1_idx], parts[allele2_idx]
+                chrome, pos, ref, allele1, allele2 = parts[chrom_idx], parts[pos_idx], parts[ref_idx].upper(), parts[allele1_idx].upper(), parts[allele2_idx].upper()
             else:
-                chrome, pos, ref, alt = parts[chrom_idx], parts[pos_idx], parts[ref_idx], parts[alt_idx]
+                chrome, pos, ref, alt = parts[chrom_idx], parts[pos_idx], parts[ref_idx].upper(), parts[alt_idx].upper()
                 alts = alt.split(',')
                 if len(alts) > 1: 
                     allele1, allele2 = alts[0], alts[1]
@@ -424,22 +428,22 @@ def read_input_gene_file(input_gene, parent_ngs, father_vcf, mother_vcf, proband
                 mother1, mother2, father1, father2 = '', '', '', ''
                 if mother_allele1_idx is not None:
                     try:
-                        mother1 = parts[mother_allele1_idx]
+                        mother1 = parts[mother_allele1_idx].upper()
                     except IndexError:
                         mother1 = ''
                 if mother_allele2_idx is not None:
                     try:
-                        mother2 = parts[mother_allele2_idx]
+                        mother2 = parts[mother_allele2_idx].upper()
                     except IndexError:
                         mother2 = ''
                 if father_allele1_idx is not None: 
                     try:
-                        father1 = parts[father_allele1_idx]
+                        father1 = parts[father_allele1_idx].upper()
                     except IndexError:
                         father1 = ''
                 if father_allele2_idx is not None:
                     try:
-                        father2 = parts[father_allele2_idx]
+                        father2 = parts[father_allele2_idx].upper()
                     except IndexError:
                         father2 = ''
                     #print 'idx: ', mother_allele1_idx, mother_allele2_idx, father_allele1_idx, father_allele2_idx
