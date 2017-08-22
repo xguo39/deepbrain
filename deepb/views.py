@@ -25,8 +25,7 @@ from rest_framework.permissions import IsAdminUser
 from rest_framework.views import APIView
 from rest_framework.decorators import permission_classes
 from rest_framework import status, generics
-from deepb.serializers import Progress_task_Serializer
-from deepb.serializers import All_task_Serializer
+from deepb.serializers import Progress_task_Serializer, All_task_Serializer, Evaluated_task_Serializer
 import json
 from collections import OrderedDict
 
@@ -505,3 +504,50 @@ class result_detail(APIView):
             'result_detail': json.loads(result_detail, object_pairs_hook=OrderedDict)
         }
         return Response(json_result)
+
+class review_list(APIView):
+
+    def get(self, request, user_name, format=None):
+        post = Raw_input_table.objects.filter(user_name=user_name, evaluated=1, status='succeed')[::-1]
+        serializer = Evaluated_task_Serializer(post, many=True)
+        json_result = {'success':True, 'list':serializer.data}
+        return Response(json_result)
+
+
+class review_upload(APIView):
+
+    def post(self, request, task_id, user_name, format=None):
+        put_data = Raw_input_table.objects.get(user_name=user_name, id=task_id)
+        put_data.evaluated = 0
+        put_data.save()
+
+        molecular_diagnosis = request.POST.get('molecular_diagnosis', None)
+        if request.POST.get('pheno_match', None):
+            pheno_match = 1
+        else:
+            pheno_match = 0
+        if request.POST.get('pathogenic', None):
+            pathogenic = 1
+        else:
+            pathogenic = 0
+
+
+        try:
+            evaluate_input = Evaluated_table(
+                    task_id = task_id,
+                    molecular_diagnosis = molecular_diagnosis,
+                    pheno_match = pheno_match,
+                    pathogenic = pathogenic,
+                )
+            evaluate_input.save()
+            return Response({'success':True})
+        except:
+            return Response({'success':False})
+
+
+
+
+
+
+
+

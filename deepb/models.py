@@ -36,3 +36,9 @@ class Raw_input_table(models.Model):
     patient_gender = models.IntegerField(default=0)
     checked = models.IntegerField(default=0)
     evaluated = models.IntegerField(default=0)
+
+class Evaluated_table(models.Model):
+    task_id = models.IntegerField(default=0)
+    molecular_diagnosis = models.CharField(max_length=100, default='')
+    pheno_match = models.IntegerField(default=0)
+    pathogenic = models.IntegerField(default=0)

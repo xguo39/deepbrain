@@ -25,6 +25,8 @@ urlpatterns = [
     url(r'^api/task/task_check/(?P<user_name>[-\w]+)/$', views.task_check.as_view()),
     url(r'^api/result/(?P<task_id>[0-9]+)/(?P<user_name>[-\w]+)/$', views.case_result.as_view()),
     url(r'^api/result/(?P<task_id>[0-9]+)/(?P<gene_name>[-\w]+)/(?P<user_name>[-\w]+)/$', views.result_detail.as_view()),
+    url(r'^api/review/list/(?P<user_name>[-\w]+)/$', views.review_list.as_view()),
+    url(r'^api/review/upload/(?P<task_id>[0-9]+)/(?P<user_name>[-\w]+)/$', views.review_upload.as_view()),
 ]
 
 
