@@ -20812,7 +20812,7 @@ var Result_page = function (_React$Component) {
             _react2.default.createElement(
               'p',
               { className: 'waiting-hint' },
-              '\u751F\u6210\u6587\u6863\u6B63\u5728\u5EFA\u8BBE\u4E2D...'
+              '\u4E00\u952E\u751F\u6210\u6587\u6863\u62A5\u544A\u529F\u80FD\u6B63\u5728\u5EFA\u8BBE\u4E2D...'
             ),
             _react2.default.createElement(_fragments.General_data_table, { table_data: this.state.current_data })
           );
