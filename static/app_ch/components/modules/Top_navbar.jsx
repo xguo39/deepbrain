@@ -19,7 +19,7 @@ class Top_navbar extends React.Component{
               <span className="icon-bar"></span>
               <span className="icon-bar"></span>
             </button>
-            <a className="navbar-brand" href=""><small>诺亚医生 | 遗传病基因智能解读 Beta</small></a>
+            <a className="navbar-brand" href=""><small>诺亚医生 | 遗传病基因解读 Beta</small></a>
           </div>
 
           <div className="collapse navbar-collapse" id="bs-example-navbar-collapse-1">

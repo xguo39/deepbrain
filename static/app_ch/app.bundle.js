@@ -16688,7 +16688,7 @@ var Top_navbar = function (_React$Component) {
               _react2.default.createElement(
                 'small',
                 null,
-                '\u8BFA\u4E9A\u533B\u751F | \u9057\u4F20\u75C5\u57FA\u56E0\u667A\u80FD\u89E3\u8BFB Beta'
+                '\u8BFA\u4E9A\u533B\u751F | \u9057\u4F20\u75C5\u57FA\u56E0\u89E3\u8BFB Beta'
               )
             )
           ),
