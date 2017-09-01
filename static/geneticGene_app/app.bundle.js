@@ -596,7 +596,7 @@ module.exports = shouldUseNative() ? Object.assign : function (target, source) {
 
 var _prodInvariant = __webpack_require__(4);
 
-var DOMProperty = __webpack_require__(25);
+var DOMProperty = __webpack_require__(26);
 var ReactDOMComponentFlags = __webpack_require__(168);
 
 var invariant = __webpack_require__(2);
@@ -2177,6 +2177,47 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 /* 24 */
 /***/ (function(module, exports, __webpack_require__) {
 
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+var domain = void 0;
+(function () {
+  var url = window.location.href;
+  var pathname = window.location.pathname;
+  domain = url.replace(pathname, '');
+})();
+
+var basic_info = {
+  // static_image:'http://127.0.0.1:8000/static/app_ch/files/images/'
+  static_image: domain + '/static/geneticGene_app/files/images/'
+};
+
+var server_domain = '' + domain;
+var static_image = domain + '/static/geneticGene_app/files/images/';
+var static_files = domain + '/static/geneticGene_app/files/';
+
+var apis = {
+  upload_task: '/api/task/new_task/',
+  progress_task_list: '/api/task/progress_task_list/',
+  all_task_list: '/api/task/all_task_list/',
+  checked_change: '/api/task/task_check/',
+  fetch_case_result: '/api/result/',
+  check_annotation: '/api/result/'
+};
+
+exports.static_files = static_files;
+exports.static_image = static_image;
+exports.server_domain = server_domain;
+exports.apis = apis;
+exports.default = basic_info;
+
+/***/ }),
+/* 25 */
+/***/ (function(module, exports, __webpack_require__) {
+
 var baseGetTag = __webpack_require__(34),
     isObject = __webpack_require__(18);
 
@@ -2217,7 +2258,7 @@ module.exports = isFunction;
 
 
 /***/ }),
-/* 25 */
+/* 26 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2432,48 +2473,6 @@ module.exports = DOMProperty;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 26 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-var domain = void 0;
-(function () {
-  var url = window.location.href;
-  var pathname = window.location.pathname;
-  domain = url.replace(pathname, '');
-})();
-
-var basic_info = {
-  // static_image:'http://127.0.0.1:8000/static/app_ch/files/images/'
-  static_image: domain + '/static/app_ch/files/images/'
-
-  // const server_domain = 'http://127.0.0.1:8000';
-  // const static_image = 'http://127.0.0.1:8000/static/app_ch/files/images/';
-};var server_domain = '' + domain;
-var static_image = domain + '/static/app_ch/files/images/';
-var static_files = domain + '/static/app_ch/files/';
-
-var apis = {
-  upload_task: '/api/task/new_task/',
-  progress_task_list: '/api/task/progress_task_list/',
-  all_task_list: '/api/task/all_task_list/',
-  checked_change: '/api/task/task_check/',
-  fetch_case_result: '/api/result/',
-  check_annotation: '/api/result/'
-};
-
-exports.static_files = static_files;
-exports.static_image = static_image;
-exports.server_domain = server_domain;
-exports.apis = apis;
-exports.default = basic_info;
-
-/***/ }),
 /* 27 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -2500,7 +2499,7 @@ module.exports = getNative;
 /* 28 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var isFunction = __webpack_require__(24),
+var isFunction = __webpack_require__(25),
     isLength = __webpack_require__(92);
 
 /**
@@ -9274,7 +9273,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _isFunction2 = __webpack_require__(24);
+var _isFunction2 = __webpack_require__(25);
 
 var _isFunction3 = _interopRequireDefault(_isFunction2);
 
@@ -9481,7 +9480,7 @@ var _react = __webpack_require__(1);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _base = __webpack_require__(26);
+var _base = __webpack_require__(24);
 
 var _ = __webpack_require__(119);
 
@@ -12288,7 +12287,7 @@ module.exports = PooledClass.addPoolingTo(CallbackQueue);
 
 
 
-var DOMProperty = __webpack_require__(25);
+var DOMProperty = __webpack_require__(26);
 var ReactDOMComponentTree = __webpack_require__(7);
 var ReactInstrumentation = __webpack_require__(14);
 
@@ -13025,7 +13024,7 @@ module.exports = ReactInputSelection;
 var _prodInvariant = __webpack_require__(4);
 
 var DOMLazyTree = __webpack_require__(37);
-var DOMProperty = __webpack_require__(25);
+var DOMProperty = __webpack_require__(26);
 var React = __webpack_require__(39);
 var ReactBrowserEventEmitter = __webpack_require__(68);
 var ReactCurrentOwner = __webpack_require__(20);
@@ -15727,7 +15726,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _isFunction2 = __webpack_require__(24);
+var _isFunction2 = __webpack_require__(25);
 
 var _isFunction3 = _interopRequireDefault(_isFunction2);
 
@@ -15869,7 +15868,7 @@ var _isEqualWith2 = __webpack_require__(382);
 
 var _isEqualWith3 = _interopRequireDefault(_isEqualWith2);
 
-var _isFunction2 = __webpack_require__(24);
+var _isFunction2 = __webpack_require__(25);
 
 var _isFunction3 = _interopRequireDefault(_isFunction2);
 
@@ -16636,6 +16635,8 @@ var _react = __webpack_require__(1);
 
 var _react2 = _interopRequireDefault(_react);
 
+var _base = __webpack_require__(24);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -16685,6 +16686,7 @@ var Top_navbar = function (_React$Component) {
             _react2.default.createElement(
               'a',
               { className: 'navbar-brand', href: '' },
+              _react2.default.createElement('img', { src: _base.static_image + 'dr.nova_logo.png', alt: 'gene_logo' }),
               _react2.default.createElement(
                 'small',
                 null,
@@ -17012,7 +17014,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-var _base = __webpack_require__(26);
+var _base = __webpack_require__(24);
 
 var user_name = document.getElementById('user_name').innerHTML;
 
@@ -17148,7 +17150,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-var _base = __webpack_require__(26);
+var _base = __webpack_require__(24);
 
 var user_name = document.getElementById('user_name').innerHTML;
 
@@ -17583,7 +17585,7 @@ var _react = __webpack_require__(1);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _base = __webpack_require__(26);
+var _base = __webpack_require__(24);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -20276,7 +20278,7 @@ var _react = __webpack_require__(1);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _base = __webpack_require__(26);
+var _base = __webpack_require__(24);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -20439,7 +20441,7 @@ var _Side_navbar_container = __webpack_require__(246);
 
 var _Side_navbar_container2 = _interopRequireDefault(_Side_navbar_container);
 
-var _base = __webpack_require__(26);
+var _base = __webpack_require__(24);
 
 var _New_task_container = __webpack_require__(243);
 
@@ -20612,7 +20614,7 @@ var _react = __webpack_require__(1);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _base = __webpack_require__(26);
+var _base = __webpack_require__(24);
 
 var _fragments = __webpack_require__(119);
 
@@ -21258,7 +21260,7 @@ var _react2 = _interopRequireDefault(_react);
 
 var _reactRouterDom = __webpack_require__(56);
 
-var _base = __webpack_require__(26);
+var _base = __webpack_require__(24);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -25081,7 +25083,7 @@ exports = module.exports = __webpack_require__(255)(undefined);
 
 
 // module
-exports.push([module.i, ".new_task {\n  position: relative;\n  width: 100%;\n  height: 100%;\n  margin-left: 20px;\n  display: flex;\n  flex-flow: row nowrap;\n  justify-content: flex-start;\n  color: #406A8C; }\n  .new_task > label {\n    position: absolute;\n    top: 88%;\n    left: 78.5%;\n    padding-left: 30px;\n    padding-right: 30px;\n    background-color: #0275d8;\n    border: 0px; }\n    .new_task > label span {\n      padding: 25px 10px; }\n    .new_task > label:hover {\n      background-color: #025fb1; }\n\n.new_task_upload {\n  position: relative;\n  flex-grow: 0;\n  width: 70%;\n  height: 95%;\n  margin-right: 20px;\n  margin-top: 20px;\n  overflow: auto;\n  overflow-x: hidden;\n  display: flex;\n  flex-direction: column;\n  -webkit-transition: all 300ms ease-in;\n  transition: all 300ms ease-in; }\n  .new_task_upload form {\n    height: 100%; }\n    .new_task_upload form .form-tb {\n      height: 100%;\n      display: flex;\n      flex-direction: column;\n      justify-content: flex-start; }\n    .new_task_upload form .tb-section {\n      flex: 1 0 auto;\n      margin-bottom: 25px;\n      background-color: white;\n      box-shadow: -3px 2px 2px 0 rgba(119, 151, 178, 0.16);\n      display: flex;\n      flex-direction: column; }\n    .new_task_upload form .tr {\n      flex-grow: 1;\n      position: relative;\n      width: 100%;\n      display: flex; }\n    .new_task_upload form .td1 {\n      position: relative;\n      display: inline;\n      width: 20%;\n      height: 100%;\n      text-align: center;\n      margin: auto 0px;\n      padding-top: 15px;\n      padding-bottom: 15px; }\n      .new_task_upload form .td1.optional {\n        font-size: 14px; }\n    .new_task_upload form .td2 {\n      position: relative;\n      display: inline;\n      width: 40%;\n      height: 100%;\n      margin: auto 0px;\n      padding: 10px 0px;\n      font-size: 13px; }\n  .new_task_upload .fade-content {\n    flex: 1 0 auto;\n    position: relative;\n    max-height: 280px;\n    overflow: hidden; }\n  .new_task_upload .fade-anchor {\n    background: -webkit-linear-gradient(top, rgba(237, 239, 240, 0), rgba(237, 239, 240, 0) 180px, #F5F8FA 250px);\n    background: linear-gradient(to bottom, rgba(237, 239, 240, 0), rgba(237, 239, 240, 0) 180px, #F5F8FA 250px);\n    -moz-box-sizing: border-box;\n    box-sizing: border-box;\n    cursor: pointer;\n    display: block;\n    height: 280px;\n    padding-top: 230px;\n    position: absolute;\n    top: 0;\n    right: 0;\n    left: 0;\n    text-align: center;\n    -webkit-transition: all 300ms ease-in;\n    transition: all 300ms ease-in; }\n    .new_task_upload .fade-anchor .fade-anchor-text {\n      background: #F5F8FA;\n      -moz-box-sizing: border-box;\n      box-sizing: border-box;\n      color: #406A8C;\n      display: inline-block;\n      max-width: 100%;\n      overflow: hidden;\n      text-decoration: underline;\n      text-overflow: ellipsis;\n      white-space: nowrap;\n      pointer-events: none; }\n  .new_task_upload .break-hint {\n    padding-left: 25px;\n    font-weight: bolder;\n    margin-bottom: 15px; }\n  .new_task_upload .file_input {\n    position: relative;\n    z-index: 5;\n    width: 80px;\n    height: 20px;\n    background: #FFFFFF;\n    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.5);\n    border-radius: 8px;\n    margin-bottom: 10px;\n    margin-top: 10px;\n    vertical-align: middle;\n    text-align: center;\n    cursor: pointer; }\n    .new_task_upload .file_input span {\n      position: relative;\n      display: inline-block;\n      font-size: 11px;\n      color: #53BAEC;\n      cursor: pointer; }\n      .new_task_upload .file_input span.prompt {\n        display: block;\n        margin-top: 5px;\n        color: #406A8C;\n        font-size: 10px;\n        cursor: default; }\n    .new_task_upload .file_input input {\n      position: relative;\n      visibility: hidden;\n      width: 0px;\n      height: 0px;\n      z-index: 0; }\n  .new_task_upload .highlight {\n    color: #53BAEC;\n    cursor: pointer;\n    font-size: 15px; }\n    .new_task_upload .highlight:hover {\n      text-decoration: underline; }\n  .new_task_upload label {\n    margin-bottom: 0px;\n    font-weight: normal; }\n  .new_task_upload a {\n    color: #53BAEC; }\n  .new_task_upload textarea {\n    border: 1px solid #e6e6e6; }\n  .new_task_upload #task_submit {\n    display: none; }\n\n.new_task_progress {\n  position: relative;\n  flex-grow: 0;\n  background: #FFFFFF;\n  box-shadow: -3px 2px 2px 0 rgba(119, 151, 178, 0.16);\n  margin-top: 20px;\n  width: 22%;\n  height: 79%;\n  overflow: auto; }\n  .new_task_progress .tb-title {\n    position: relative;\n    width: 100%;\n    padding-top: 0px;\n    padding: 20px; }\n\n.td3 {\n  position: relative;\n  width: 100%;\n  padding: 15px 20px;\n  font-size: 13px;\n  font-weight: 400; }\n  .td3 .progress {\n    margin-bottom: 6px;\n    height: 8px; }\n    .td3 .progress .progress-bar-info {\n      background-color: #53BAEC; }\n  .td3 .completed_task {\n    padding: 15px 0px;\n    cursor: pointer;\n    transition: .1s; }\n    .td3 .completed_task span {\n      pointer-events: none; }\n    .td3 .completed_task:hover {\n      font-size: 15px;\n      opacity: 0.9; }\n    .td3 .completed_task img {\n      margin-left: 15px;\n      width: 25px; }\n  .td3 .failed_task {\n    padding: 15px 0px;\n    cursor: pointer;\n    transition: .1s; }\n    .td3 .failed_task span {\n      pointer-events: none; }\n    .td3 .failed_task:hover {\n      font-size: 15px; }\n  .td3 p {\n    margin-bottom: 6px; }\n\n.task_list {\n  position: relative;\n  margin: 20px 20px;\n  width: 65%;\n  height: 90%; }\n  .task_list .search_container {\n    position: relative;\n    width: 100%;\n    height: 7%;\n    margin-bottom: 10px; }\n    .task_list .search_container span {\n      position: absolute;\n      height: 50%;\n      font-size: 12px;\n      opacity: 0.4;\n      transform: translate(0, -50%); }\n    .task_list .search_container div {\n      position: relative;\n      width: 100%;\n      height: 100%; }\n      .task_list .search_container div select {\n        display: none; }\n      .task_list .search_container div input {\n        position: relative;\n        width: 100%;\n        height: 100%;\n        border: 0px;\n        /* Input: */\n        background: #FFFFFF;\n        border: 1px solid #58BCEB;\n        border-radius: 4px; }\n        .task_list .search_container div input::-webkit-input-placeholder {\n          text-indent: 6%;\n          background: url(" + __webpack_require__(541) + ") no-repeat;\n          background-position: 2% 0;\n          background-size: 19px; }\n  .task_list p {\n    margin-top: 10px;\n    padding-left: 40px;\n    font-size: 14px;\n    color: #4A90E2; }\n\n.task_list_table {\n  position: relative;\n  width: 100%;\n  background: #FFFFFF;\n  box-shadow: -3px 2px 2px 0 rgba(119, 151, 178, 0.16);\n  overflow: auto;\n  height: 92%; }\n  .task_list_table table {\n    width: 100%;\n    text-align: center;\n    color: #406A8C; }\n  .task_list_table th {\n    text-align: center;\n    background: #FFFFFF;\n    border: 0px;\n    padding: 15px 0px;\n    border-bottom: 1px solid #f2f2f2;\n    font-size: 17px;\n    font-weight: normal; }\n  .task_list_table td {\n    padding: 15px 0px;\n    font-size: 15px; }\n  .task_list_table .tc1 {\n    width: 25%; }\n  .task_list_table .tc2 {\n    width: 50%; }\n\n.table-striped > tbody > tr:nth-child(odd):hover,\n.table-striped > tbody > tr:nth-child(odd):hover {\n  background: #f0f1f4; }\n\n.table-striped > tbody > tr:nth-child(even):hover,\n.table-striped > tbody > tr:nth-child(even):hover {\n  background: #f0f1f4; }\n\n.clickable {\n  cursor: pointer; }\n\n.result_page {\n  position: relative;\n  width: 100%;\n  height: 100%;\n  color: #406A8C; }\n  .result_page .back-sign {\n    position: relative;\n    padding: 15px 15px; }\n    .result_page .back-sign img {\n      position: relative;\n      width: 3%;\n      cursor: pointer; }\n    .result_page .back-sign span {\n      font-size: 18px;\n      margin-left: 10px;\n      vertical-align: middle; }\n\n.result_table_nav {\n  position: relative;\n  display: flex;\n  flex-direction: row;\n  justify-content: space-between;\n  align-items: center;\n  padding-bottom: 10px; }\n  .result_table_nav ul {\n    position: relative;\n    list-style-type: none;\n    margin: 0px;\n    margin-left: 15px;\n    padding-left: 0px;\n    width: 80%;\n    display: flex;\n    justify-content: space-between;\n    border: 1px solid #58BCEB;\n    border-right: 0px;\n    border-radius: 4px;\n    overflow: hidden; }\n    .result_table_nav ul li {\n      background-color: white;\n      flex-basis: 100%;\n      width: auto;\n      padding: 5px 10px;\n      vertical-align: middle;\n      border: 0px;\n      border-right: 1px solid #58BCEB;\n      text-align: center;\n      cursor: pointer; }\n      .result_table_nav ul li span {\n        vertical-align: middle;\n        color: #406A8C;\n        text-decoration: none;\n        background-color: transparent;\n        border: 0px;\n        pointer-events: none; }\n      .result_table_nav ul li.active {\n        background-color: #4A90E2; }\n        .result_table_nav ul li.active span {\n          color: white; }\n      .result_table_nav ul li:hover {\n        background-color: #4A90E2; }\n        .result_table_nav ul li:hover span {\n          color: white; }\n  .result_table_nav #review_button {\n    margin-right: 20px;\n    background-color: #58BCEB;\n    vertical-align: middle;\n    border: 0px;\n    letter-spacing: 2px;\n    font-size: 14px;\n    padding: 0px 25px;\n    height: 30px;\n    box-shadow: 0 1px 3px 0 rgba(117, 146, 222, 0.85); }\n    .result_table_nav #review_button:hover, .result_table_nav #review_button:focus {\n      background-color: #32ade7; }\n\n.review_block {\n  position: relative;\n  margin-bottom: 15px;\n  width: 100%;\n  height: 170px;\n  background: #F5F6FA;\n  box-shadow: -3px 2px 2px 0 rgba(119, 151, 178, 0.16); }\n  .review_block .question_container {\n    width: 100%;\n    height: 100%;\n    display: flex;\n    flex-direction: row;\n    justify-content: flex-start; }\n  .review_block .review_question {\n    margin-top: 15px;\n    text-align: center;\n    flex-basis: 100%; }\n    .review_block .review_question label {\n      padding: 0px 10px;\n      text-indent: 10px; }\n      .review_block .review_question label span {\n        padding-left: 5px; }\n    .review_block .review_question textarea {\n      border: 1px solid #e6e6e6; }\n  .review_block #review_submit {\n    height: 30px;\n    margin-top: 25px;\n    padding-left: 25px;\n    padding-right: 25px;\n    font-size: 15px;\n    line-height: 0px;\n    letter-spacing: 5px; }\n\n.result_area {\n  position: relative;\n  padding: 5px 15px;\n  height: 84%;\n  display: flex;\n  flex-direction: column;\n  justify-content: flex-start;\n  overflow: auto; }\n  .result_area .input_info {\n    position: relative;\n    background: #FFFFFF;\n    box-shadow: -3px 2px 2px 0 rgba(119, 151, 178, 0.16);\n    margin-bottom: 10px;\n    padding: 10px 0px; }\n    .result_area .input_info p {\n      margin: 0px 0px;\n      padding: 10px 65px; }\n      .result_area .input_info p span {\n        padding-right: 20px; }\n  .result_area .loading_sign {\n    position: absolute;\n    left: 40%;\n    top: 30%; }\n    .result_area .loading_sign img {\n      width: 50px;\n      height: 50px; }\n  .result_area .waiting-hint {\n    font-size: 18px;\n    margin-bottom: 15px; }\n\n.result_table {\n  flex-grow: 1;\n  width: 100%; }\n  .result_table table {\n    width: 100%;\n    background: #FFFFFF;\n    box-shadow: -3px 2px 2px 0 rgba(119, 151, 178, 0.16); }\n  .result_table thead th {\n    text-align: center;\n    border: 1px solid #e6e6e6;\n    padding: 20px 5px;\n    font-weight: bold; }\n  .result_table thead .sort {\n    cursor: pointer;\n    padding: 0px 0px; }\n  .result_table tbody tr:hover {\n    background-color: rgba(242, 242, 242, 0.6); }\n  .result_table tbody td {\n    text-align: center;\n    min-width: 80px;\n    border: 1px solid #e6e6e6;\n    padding: 20px 5px;\n    word-wrap: break-word; }\n  .result_table .pagify-pagination {\n    position: fixed;\n    left: 19%;\n    top: 96%;\n    font-size: 14px;\n    display: flex;\n    justify-content: flex-start;\n    align-items: center; }\n    .result_table .pagify-pagination span {\n      margin: 0px 5px;\n      cursor: pointer; }\n    .result_table .pagify-pagination .selected {\n      font-weight: bolder;\n      font-size: 16px; }\n\n.annotation_page {\n  background: rgba(55, 70, 95, 0.8);\n  position: fixed;\n  width: 100%;\n  height: 100%;\n  left: 0%;\n  top: 0%;\n  z-index: 50; }\n  .annotation_page .annotation_area {\n    position: relative;\n    top: 8%;\n    height: 85%; }\n  .annotation_page .annotation_header {\n    background-color: white;\n    position: relative;\n    width: 70%;\n    margin: 0px auto;\n    color: white;\n    display: flex;\n    justify-content: center; }\n    .annotation_page .annotation_header p {\n      color: #406A8C;\n      vertical-align: middle;\n      margin: 0px 7%;\n      letter-spacing: 10px;\n      font-size: 16px;\n      padding: 11px 0px; }\n      .annotation_page .annotation_header p span {\n        color: #4A90E2;\n        letter-spacing: 3px; }\n  .annotation_page img {\n    position: absolute;\n    width: 45px;\n    top: 0%;\n    left: 85%;\n    padding: 0px 0px;\n    cursor: pointer; }\n  .annotation_page .annotation_table {\n    background-color: white;\n    position: relative;\n    width: 70%;\n    max-height: 90%;\n    margin: 10px auto;\n    overflow: auto; }\n    .annotation_page .annotation_table table {\n      position: relative;\n      width: 100%;\n      color: #406A8C; }\n      .annotation_page .annotation_table table .col1 {\n        width: 20%;\n        border-right: 1px solid #f2f2f2; }\n      .annotation_page .annotation_table table .col2 {\n        width: 80%; }\n    .annotation_page .annotation_table th {\n      text-align: center;\n      font-size: 16px;\n      font-weight: normal;\n      letter-spacing: 10px;\n      padding: 10px 0px;\n      border-bottom: 1px solid #f2f2f2; }\n    .annotation_page .annotation_table td {\n      padding: 15px 0px; }\n      .annotation_page .annotation_table td.col1 {\n        text-align: center; }\n      .annotation_page .annotation_table td.col2 {\n        text-align: left; }\n\n.interpretation_content {\n  text-align: left;\n  padding-left: 20px;\n  line-height: 20px; }\n  .interpretation_content a {\n    color: #4A90E2; }\n  .interpretation_content .first_layer {\n    padding-left: 10px; }\n  .interpretation_content .second_layer {\n    padding-left: 10px; }\n\n.review_list {\n  position: relative;\n  margin: 25px 25px;\n  width: 65%;\n  height: 90%; }\n  .review_list p {\n    margin-top: 10px;\n    padding-left: 40px;\n    font-size: 14px;\n    color: #4A90E2; }\n\n.review_list_table {\n  position: relative;\n  width: 100%;\n  overflow: auto;\n  background: #FFFFFF;\n  box-shadow: -3px 2px 2px 0 rgba(119, 151, 178, 0.16);\n  text-align: center; }\n  .review_list_table table {\n    width: 100%;\n    color: #406A8C; }\n  .review_list_table th {\n    text-align: center;\n    background: #FFFFFF;\n    border: 0px;\n    padding: 15px 0px;\n    border-bottom: 1px solid #f2f2f2;\n    font-size: 17px;\n    font-weight: normal; }\n  .review_list_table tr:hover {\n    background: #F5F6F7; }\n  .review_list_table td {\n    padding: 15px 0px;\n    font-size: 15px; }\n  .review_list_table .tc1 {\n    width: 25%; }\n  .review_list_table .tc2 {\n    width: 50%; }\n\nbody {\n  overflow: hidden;\n  background-color: #F5F8FA; }\n\nhtml, body, #root, #root > div, .main_area, .row {\n  height: 100%; }\n\n.btn {\n  background-color: #4A90E2;\n  border-color: #4A90E2; }\n  .btn:hover, .btn:focus {\n    background-color: #2479db;\n    border-color: #2479db; }\n\n*::-webkit-scrollbar {\n  width: 6px;\n  height: 6px;\n  background-color: #E0E9EC; }\n\n*::-webkit-scrollbar-thumb {\n  background-color: #58BCEB;\n  border-radius: 6px; }\n\n.navbar {\n  position: relative;\n  background: #00061D;\n  opacity: 0.85;\n  box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.5);\n  margin-bottom: 0;\n  border: 0px;\n  border-radius: 0px;\n  z-index: 10; }\n\n.main_area {\n  position: relative; }\n\n.sidebar {\n  position: relative;\n  z-index: 5;\n  height: 100%;\n  padding-left: 0px;\n  padding-right: 0px;\n  overflow: hidden; }\n  .sidebar .bg {\n    position: absolute;\n    left: 0;\n    top: 0;\n    width: 100%;\n    height: 100%;\n    z-index: 8; }\n  .sidebar .bg-filter {\n    position: absolute;\n    background: linear-gradient(#0b4774, #09385D);\n    left: 0;\n    top: 0;\n    width: 100%;\n    height: 100%;\n    opacity: 0.8;\n    z-index: 10; }\n  .sidebar ul {\n    position: relative;\n    margin-top: 10px;\n    padding-right: 10px;\n    z-index: 20; }\n  .sidebar .nav-item {\n    margin: 10px auto; }\n  .sidebar .nav-link {\n    position: relative;\n    z-index: 30;\n    background: rgba(255, 255, 255, 0); }\n    .sidebar .nav-link.active {\n      background: linear-gradient(90deg, rgba(68, 140, 203, 0.6) 0%, rgba(255, 255, 255, 0) 92%);\n      border-left: 5px #78DCFF solid;\n      border-right: 0px; }\n    .sidebar .nav-link:focus {\n      background: linear-gradient(90deg, rgba(68, 140, 203, 0.6) 0%, rgba(255, 255, 255, 0) 92%);\n      border-left: 5px #78DCFF solid; }\n    .sidebar .nav-link img {\n      position: relative;\n      display: inline;\n      margin-right: 20px;\n      margin-left: 15%;\n      width: 10%;\n      z-index: 10;\n      pointer-events: none; }\n    .sidebar .nav-link span {\n      position: relative;\n      color: white;\n      font-size: 16px;\n      font-weight: lighter;\n      letter-spacing: 3px;\n      line-height: 150%;\n      vertical-align: middle;\n      z-index: 10;\n      pointer-events: none; }\n  .sidebar .related_link_block {\n    position: relative;\n    z-index: 25;\n    display: flex;\n    flex-direction: row;\n    flex-wrap: wrap;\n    justify-content: center;\n    position: absolute;\n    bottom: 90px; }\n    .sidebar .related_link_block p {\n      color: #cccccc;\n      width: 100%;\n      display: inline-block;\n      font-weight: lighter;\n      text-align: center;\n      font-size: 14px; }\n    .sidebar .related_link_block a {\n      text-align: center;\n      color: #cccccc;\n      font-weight: lighter;\n      font-size: 11px;\n      flex: 0 0 auto;\n      width: 50%; }\n\nmain {\n  position: relative;\n  background-color: #F5F8FA;\n  height: 90%;\n  overflow: scroll; }\n  main::-webkit-scrollbar {\n    display: none; }\n\n.tr-stripe {\n  background-color: #F5F6F7; }\n\n.tr-widen {\n  padding-top: 25px;\n  padding-bottom: 30px; }\n\n.tr-widen-sm {\n  padding-top: 15px;\n  padding-bottom: 20px; }\n\n.td-left {\n  text-align: center;\n  text-indent: -14px; }\n\n.td-stripe {\n  background-color: #F5F6F7; }\n\n.switch {\n  position: relative;\n  display: inline-block;\n  width: 36px;\n  height: 20.4px;\n  margin-right: 5px; }\n  .switch input {\n    visibility: hidden; }\n  .switch .slider {\n    position: absolute;\n    cursor: pointer;\n    top: 0;\n    left: 0;\n    right: 0;\n    bottom: 0;\n    background-color: #ccc;\n    -webkit-transition: .4s;\n    transition: .4s; }\n  .switch .slider:before {\n    position: absolute;\n    content: \"\";\n    height: 15.6px;\n    width: 15.6px;\n    left: 2.4px;\n    bottom: 2.4px;\n    background-color: white;\n    -webkit-transition: .4s;\n    transition: .4s; }\n  .switch input:checked + .slider {\n    background-color: #2196F3; }\n  .switch input:focus + .slider {\n    box-shadow: 0 0 1px #2196F3; }\n  .switch input:checked + .slider:before {\n    -webkit-transform: translateX(15.6px);\n    -ms-transform: translateX(15.6px);\n    transform: translateX(15.6px); }\n  .switch .slider.round {\n    border-radius: 20.4px; }\n  .switch .slider.round:before {\n    border-radius: 50%; }\n", ""]);
+exports.push([module.i, ".new_task {\n  position: relative;\n  width: 100%;\n  height: 100%;\n  margin-left: 20px;\n  display: flex;\n  flex-flow: row nowrap;\n  justify-content: flex-start;\n  color: #406A8C; }\n  .new_task > label {\n    position: absolute;\n    top: 88%;\n    left: 78.5%;\n    padding-left: 30px;\n    padding-right: 30px;\n    background-color: #0275d8;\n    border: 0px; }\n    .new_task > label span {\n      padding: 25px 10px; }\n    .new_task > label:hover {\n      background-color: #025fb1; }\n\n.new_task_upload {\n  position: relative;\n  flex-grow: 0;\n  width: 70%;\n  height: 95%;\n  margin-right: 20px;\n  margin-top: 20px;\n  overflow: auto;\n  overflow-x: hidden;\n  display: flex;\n  flex-direction: column;\n  -webkit-transition: all 300ms ease-in;\n  transition: all 300ms ease-in; }\n  .new_task_upload form {\n    height: 100%; }\n    .new_task_upload form .form-tb {\n      height: 100%;\n      display: flex;\n      flex-direction: column;\n      justify-content: flex-start; }\n    .new_task_upload form .tb-section {\n      flex: 1 0 auto;\n      margin-bottom: 25px;\n      background-color: white;\n      box-shadow: -3px 2px 2px 0 rgba(119, 151, 178, 0.16);\n      display: flex;\n      flex-direction: column; }\n    .new_task_upload form .tr {\n      flex-grow: 1;\n      position: relative;\n      width: 100%;\n      display: flex; }\n    .new_task_upload form .td1 {\n      position: relative;\n      display: inline;\n      width: 20%;\n      height: 100%;\n      text-align: center;\n      margin: auto 0px;\n      padding-top: 15px;\n      padding-bottom: 15px; }\n      .new_task_upload form .td1.optional {\n        font-size: 14px; }\n    .new_task_upload form .td2 {\n      position: relative;\n      display: inline;\n      width: 40%;\n      height: 100%;\n      margin: auto 0px;\n      padding: 10px 0px;\n      font-size: 13px; }\n  .new_task_upload .fade-content {\n    flex: 1 0 auto;\n    position: relative;\n    max-height: 280px;\n    overflow: hidden; }\n  .new_task_upload .fade-anchor {\n    background: -webkit-linear-gradient(top, rgba(237, 239, 240, 0), rgba(237, 239, 240, 0) 180px, #F5F8FA 250px);\n    background: linear-gradient(to bottom, rgba(237, 239, 240, 0), rgba(237, 239, 240, 0) 180px, #F5F8FA 250px);\n    -moz-box-sizing: border-box;\n    box-sizing: border-box;\n    cursor: pointer;\n    display: block;\n    height: 280px;\n    padding-top: 230px;\n    position: absolute;\n    top: 0;\n    right: 0;\n    left: 0;\n    text-align: center;\n    -webkit-transition: all 300ms ease-in;\n    transition: all 300ms ease-in; }\n    .new_task_upload .fade-anchor .fade-anchor-text {\n      background: #F5F8FA;\n      -moz-box-sizing: border-box;\n      box-sizing: border-box;\n      color: #406A8C;\n      display: inline-block;\n      max-width: 100%;\n      overflow: hidden;\n      text-decoration: underline;\n      text-overflow: ellipsis;\n      white-space: nowrap;\n      pointer-events: none; }\n  .new_task_upload .break-hint {\n    padding-left: 25px;\n    font-weight: bolder;\n    margin-bottom: 15px; }\n  .new_task_upload .file_input {\n    position: relative;\n    z-index: 5;\n    width: 80px;\n    height: 20px;\n    background: #FFFFFF;\n    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.5);\n    border-radius: 8px;\n    margin-bottom: 10px;\n    margin-top: 10px;\n    vertical-align: middle;\n    text-align: center;\n    cursor: pointer; }\n    .new_task_upload .file_input span {\n      position: relative;\n      display: inline-block;\n      font-size: 11px;\n      color: #53BAEC;\n      cursor: pointer; }\n      .new_task_upload .file_input span.prompt {\n        display: block;\n        margin-top: 5px;\n        color: #406A8C;\n        font-size: 10px;\n        cursor: default; }\n    .new_task_upload .file_input input {\n      position: relative;\n      visibility: hidden;\n      width: 0px;\n      height: 0px;\n      z-index: 0; }\n  .new_task_upload .highlight {\n    color: #53BAEC;\n    cursor: pointer;\n    font-size: 15px; }\n    .new_task_upload .highlight:hover {\n      text-decoration: underline; }\n  .new_task_upload label {\n    margin-bottom: 0px;\n    font-weight: normal; }\n  .new_task_upload a {\n    color: #53BAEC; }\n  .new_task_upload textarea {\n    border: 1px solid #e6e6e6; }\n  .new_task_upload #task_submit {\n    display: none; }\n\n.new_task_progress {\n  position: relative;\n  flex-grow: 0;\n  background: #FFFFFF;\n  box-shadow: -3px 2px 2px 0 rgba(119, 151, 178, 0.16);\n  margin-top: 20px;\n  width: 22%;\n  height: 79%;\n  overflow: auto; }\n  .new_task_progress .tb-title {\n    position: relative;\n    width: 100%;\n    padding-top: 0px;\n    padding: 20px; }\n\n.td3 {\n  position: relative;\n  width: 100%;\n  padding: 15px 20px;\n  font-size: 13px;\n  font-weight: 400; }\n  .td3 .progress {\n    margin-bottom: 6px;\n    height: 8px; }\n    .td3 .progress .progress-bar-info {\n      background-color: #53BAEC; }\n  .td3 .completed_task {\n    padding: 15px 0px;\n    cursor: pointer;\n    transition: .1s; }\n    .td3 .completed_task span {\n      pointer-events: none; }\n    .td3 .completed_task:hover {\n      font-size: 15px;\n      opacity: 0.9; }\n    .td3 .completed_task img {\n      margin-left: 15px;\n      width: 25px; }\n  .td3 .failed_task {\n    padding: 15px 0px;\n    cursor: pointer;\n    transition: .1s; }\n    .td3 .failed_task span {\n      pointer-events: none; }\n    .td3 .failed_task:hover {\n      font-size: 15px; }\n  .td3 p {\n    margin-bottom: 6px; }\n\n.task_list {\n  position: relative;\n  margin: 20px 20px;\n  width: 65%;\n  height: 90%; }\n  .task_list .search_container {\n    position: relative;\n    width: 100%;\n    height: 7%;\n    margin-bottom: 10px; }\n    .task_list .search_container span {\n      position: absolute;\n      height: 50%;\n      font-size: 12px;\n      opacity: 0.4;\n      transform: translate(0, -50%); }\n    .task_list .search_container div {\n      position: relative;\n      width: 100%;\n      height: 100%; }\n      .task_list .search_container div select {\n        display: none; }\n      .task_list .search_container div input {\n        position: relative;\n        width: 100%;\n        height: 100%;\n        border: 0px;\n        /* Input: */\n        background: #FFFFFF;\n        border: 1px solid #58BCEB;\n        border-radius: 4px; }\n        .task_list .search_container div input::-webkit-input-placeholder {\n          text-indent: 6%;\n          background: url(" + __webpack_require__(541) + ") no-repeat;\n          background-position: 2% 0;\n          background-size: 19px; }\n  .task_list p {\n    margin-top: 10px;\n    padding-left: 40px;\n    font-size: 14px;\n    color: #4A90E2; }\n\n.task_list_table {\n  position: relative;\n  width: 100%;\n  background: #FFFFFF;\n  box-shadow: -3px 2px 2px 0 rgba(119, 151, 178, 0.16);\n  overflow: auto;\n  height: 92%; }\n  .task_list_table table {\n    width: 100%;\n    text-align: center;\n    color: #406A8C; }\n  .task_list_table th {\n    text-align: center;\n    background: #FFFFFF;\n    border: 0px;\n    padding: 15px 0px;\n    border-bottom: 1px solid #f2f2f2;\n    font-size: 17px;\n    font-weight: normal; }\n  .task_list_table td {\n    padding: 15px 0px;\n    font-size: 15px; }\n  .task_list_table .tc1 {\n    width: 25%; }\n  .task_list_table .tc2 {\n    width: 50%; }\n\n.table-striped > tbody > tr:nth-child(odd):hover,\n.table-striped > tbody > tr:nth-child(odd):hover {\n  background: #f0f1f4; }\n\n.table-striped > tbody > tr:nth-child(even):hover,\n.table-striped > tbody > tr:nth-child(even):hover {\n  background: #f0f1f4; }\n\n.clickable {\n  cursor: pointer; }\n\n.result_page {\n  position: relative;\n  width: 100%;\n  height: 100%;\n  color: #406A8C; }\n  .result_page .back-sign {\n    position: relative;\n    padding: 15px 15px; }\n    .result_page .back-sign img {\n      position: relative;\n      width: 3%;\n      cursor: pointer; }\n    .result_page .back-sign span {\n      font-size: 18px;\n      margin-left: 10px;\n      vertical-align: middle; }\n\n.result_table_nav {\n  position: relative;\n  display: flex;\n  flex-direction: row;\n  justify-content: space-between;\n  align-items: center;\n  padding-bottom: 10px; }\n  .result_table_nav ul {\n    position: relative;\n    list-style-type: none;\n    margin: 0px;\n    margin-left: 15px;\n    padding-left: 0px;\n    width: 80%;\n    display: flex;\n    justify-content: space-between;\n    border: 1px solid #58BCEB;\n    border-right: 0px;\n    border-radius: 4px;\n    overflow: hidden; }\n    .result_table_nav ul li {\n      background-color: white;\n      flex-basis: 100%;\n      width: auto;\n      padding: 5px 10px;\n      vertical-align: middle;\n      border: 0px;\n      border-right: 1px solid #58BCEB;\n      text-align: center;\n      cursor: pointer; }\n      .result_table_nav ul li span {\n        vertical-align: middle;\n        color: #406A8C;\n        text-decoration: none;\n        background-color: transparent;\n        border: 0px;\n        pointer-events: none; }\n      .result_table_nav ul li.active {\n        background-color: #4A90E2; }\n        .result_table_nav ul li.active span {\n          color: white; }\n      .result_table_nav ul li:hover {\n        background-color: #4A90E2; }\n        .result_table_nav ul li:hover span {\n          color: white; }\n  .result_table_nav #review_button {\n    margin-right: 20px;\n    background-color: #58BCEB;\n    vertical-align: middle;\n    border: 0px;\n    letter-spacing: 2px;\n    font-size: 14px;\n    padding: 0px 25px;\n    height: 30px;\n    box-shadow: 0 1px 3px 0 rgba(117, 146, 222, 0.85); }\n    .result_table_nav #review_button:hover, .result_table_nav #review_button:focus {\n      background-color: #32ade7; }\n\n.review_block {\n  position: relative;\n  margin-bottom: 15px;\n  width: 100%;\n  height: 170px;\n  background: #F5F6FA;\n  box-shadow: -3px 2px 2px 0 rgba(119, 151, 178, 0.16); }\n  .review_block .question_container {\n    width: 100%;\n    height: 100%;\n    display: flex;\n    flex-direction: row;\n    justify-content: flex-start; }\n  .review_block .review_question {\n    margin-top: 15px;\n    text-align: center;\n    flex-basis: 100%; }\n    .review_block .review_question label {\n      padding: 0px 10px;\n      text-indent: 10px; }\n      .review_block .review_question label span {\n        padding-left: 5px; }\n    .review_block .review_question textarea {\n      border: 1px solid #e6e6e6; }\n  .review_block #review_submit {\n    height: 30px;\n    margin-top: 25px;\n    padding-left: 25px;\n    padding-right: 25px;\n    font-size: 15px;\n    line-height: 0px;\n    letter-spacing: 5px; }\n\n.result_area {\n  position: relative;\n  padding: 5px 15px;\n  height: 84%;\n  display: flex;\n  flex-direction: column;\n  justify-content: flex-start;\n  overflow: auto; }\n  .result_area .input_info {\n    position: relative;\n    background: #FFFFFF;\n    box-shadow: -3px 2px 2px 0 rgba(119, 151, 178, 0.16);\n    margin-bottom: 10px;\n    padding: 10px 0px; }\n    .result_area .input_info p {\n      margin: 0px 0px;\n      padding: 10px 65px; }\n      .result_area .input_info p span {\n        padding-right: 20px; }\n  .result_area .loading_sign {\n    position: absolute;\n    left: 40%;\n    top: 30%; }\n    .result_area .loading_sign img {\n      width: 50px;\n      height: 50px; }\n  .result_area .waiting-hint {\n    font-size: 18px;\n    margin-bottom: 15px; }\n\n.result_table {\n  flex-grow: 1;\n  width: 100%; }\n  .result_table table {\n    width: 100%;\n    background: #FFFFFF;\n    box-shadow: -3px 2px 2px 0 rgba(119, 151, 178, 0.16); }\n  .result_table thead th {\n    text-align: center;\n    border: 1px solid #e6e6e6;\n    padding: 20px 5px;\n    font-weight: bold; }\n  .result_table thead .sort {\n    cursor: pointer;\n    padding: 0px 0px; }\n  .result_table tbody tr:hover {\n    background-color: rgba(242, 242, 242, 0.6); }\n  .result_table tbody td {\n    text-align: center;\n    min-width: 80px;\n    border: 1px solid #e6e6e6;\n    padding: 20px 5px;\n    word-wrap: break-word; }\n  .result_table .pagify-pagination {\n    position: fixed;\n    left: 19%;\n    top: 96%;\n    font-size: 14px;\n    display: flex;\n    justify-content: flex-start;\n    align-items: center; }\n    .result_table .pagify-pagination span {\n      margin: 0px 5px;\n      cursor: pointer; }\n    .result_table .pagify-pagination .selected {\n      font-weight: bolder;\n      font-size: 16px; }\n\n.annotation_page {\n  background: rgba(55, 70, 95, 0.8);\n  position: fixed;\n  width: 100%;\n  height: 100%;\n  left: 0%;\n  top: 0%;\n  z-index: 50; }\n  .annotation_page .annotation_area {\n    position: relative;\n    top: 8%;\n    height: 85%; }\n  .annotation_page .annotation_header {\n    background-color: white;\n    position: relative;\n    width: 70%;\n    margin: 0px auto;\n    color: white;\n    display: flex;\n    justify-content: center; }\n    .annotation_page .annotation_header p {\n      color: #406A8C;\n      vertical-align: middle;\n      margin: 0px 7%;\n      letter-spacing: 10px;\n      font-size: 16px;\n      padding: 11px 0px; }\n      .annotation_page .annotation_header p span {\n        color: #4A90E2;\n        letter-spacing: 3px; }\n  .annotation_page img {\n    position: absolute;\n    width: 45px;\n    top: 0%;\n    left: 85%;\n    padding: 0px 0px;\n    cursor: pointer; }\n  .annotation_page .annotation_table {\n    background-color: white;\n    position: relative;\n    width: 70%;\n    max-height: 90%;\n    margin: 10px auto;\n    overflow: auto; }\n    .annotation_page .annotation_table table {\n      position: relative;\n      width: 100%;\n      color: #406A8C; }\n      .annotation_page .annotation_table table .col1 {\n        width: 20%;\n        border-right: 1px solid #f2f2f2; }\n      .annotation_page .annotation_table table .col2 {\n        width: 80%; }\n    .annotation_page .annotation_table th {\n      text-align: center;\n      font-size: 16px;\n      font-weight: normal;\n      letter-spacing: 10px;\n      padding: 10px 0px;\n      border-bottom: 1px solid #f2f2f2; }\n    .annotation_page .annotation_table td {\n      padding: 15px 0px; }\n      .annotation_page .annotation_table td.col1 {\n        text-align: center; }\n      .annotation_page .annotation_table td.col2 {\n        text-align: left; }\n\n.interpretation_content {\n  text-align: left;\n  padding-left: 20px;\n  line-height: 20px; }\n  .interpretation_content a {\n    color: #4A90E2; }\n  .interpretation_content .first_layer {\n    padding-left: 10px; }\n  .interpretation_content .second_layer {\n    padding-left: 10px; }\n\n.review_list {\n  position: relative;\n  margin: 25px 25px;\n  width: 65%;\n  height: 90%; }\n  .review_list p {\n    margin-top: 10px;\n    padding-left: 40px;\n    font-size: 14px;\n    color: #4A90E2; }\n\n.review_list_table {\n  position: relative;\n  width: 100%;\n  overflow: auto;\n  background: #FFFFFF;\n  box-shadow: -3px 2px 2px 0 rgba(119, 151, 178, 0.16);\n  text-align: center; }\n  .review_list_table table {\n    width: 100%;\n    color: #406A8C; }\n  .review_list_table th {\n    text-align: center;\n    background: #FFFFFF;\n    border: 0px;\n    padding: 15px 0px;\n    border-bottom: 1px solid #f2f2f2;\n    font-size: 17px;\n    font-weight: normal; }\n  .review_list_table tr:hover {\n    background: #F5F6F7; }\n  .review_list_table td {\n    padding: 15px 0px;\n    font-size: 15px; }\n  .review_list_table .tc1 {\n    width: 25%; }\n  .review_list_table .tc2 {\n    width: 50%; }\n\nbody {\n  overflow: hidden;\n  background-color: #F5F8FA; }\n\nhtml, body, #root, #root > div, .main_area, .row {\n  height: 100%; }\n\n.btn {\n  background-color: #4A90E2;\n  border-color: #4A90E2; }\n  .btn:hover, .btn:focus {\n    background-color: #2479db;\n    border-color: #2479db; }\n\n*::-webkit-scrollbar {\n  width: 6px;\n  height: 6px;\n  background-color: #E0E9EC; }\n\n*::-webkit-scrollbar-thumb {\n  background-color: #58BCEB;\n  border-radius: 6px; }\n\n.navbar {\n  position: relative;\n  background: #00061D;\n  opacity: 0.85;\n  box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.5);\n  margin-bottom: 0;\n  border: 0px;\n  border-radius: 0px;\n  z-index: 10; }\n  .navbar img {\n    display: inline;\n    width: 4%;\n    margin: 0px 10px; }\n\n.main_area {\n  position: relative; }\n\n.sidebar {\n  position: relative;\n  z-index: 5;\n  height: 100%;\n  padding-left: 0px;\n  padding-right: 0px;\n  overflow: hidden; }\n  .sidebar .bg {\n    position: absolute;\n    left: 0;\n    top: 0;\n    width: 100%;\n    height: 100%;\n    z-index: 8; }\n  .sidebar .bg-filter {\n    position: absolute;\n    background: linear-gradient(#0b4774, #09385D);\n    left: 0;\n    top: 0;\n    width: 100%;\n    height: 100%;\n    opacity: 0.8;\n    z-index: 10; }\n  .sidebar ul {\n    position: relative;\n    margin-top: 10px;\n    padding-right: 10px;\n    z-index: 20; }\n  .sidebar .nav-item {\n    margin: 10px auto; }\n  .sidebar .nav-link {\n    position: relative;\n    z-index: 30;\n    background: rgba(255, 255, 255, 0); }\n    .sidebar .nav-link.active {\n      background: linear-gradient(90deg, rgba(68, 140, 203, 0.6) 0%, rgba(255, 255, 255, 0) 92%);\n      border-left: 5px #78DCFF solid;\n      border-right: 0px; }\n    .sidebar .nav-link:focus {\n      background: linear-gradient(90deg, rgba(68, 140, 203, 0.6) 0%, rgba(255, 255, 255, 0) 92%);\n      border-left: 5px #78DCFF solid; }\n    .sidebar .nav-link img {\n      position: relative;\n      display: inline;\n      margin-right: 20px;\n      margin-left: 15%;\n      width: 10%;\n      z-index: 10;\n      pointer-events: none; }\n    .sidebar .nav-link span {\n      position: relative;\n      color: white;\n      font-size: 16px;\n      font-weight: lighter;\n      letter-spacing: 3px;\n      line-height: 150%;\n      vertical-align: middle;\n      z-index: 10;\n      pointer-events: none; }\n  .sidebar .related_link_block {\n    position: relative;\n    z-index: 25;\n    display: flex;\n    flex-direction: row;\n    flex-wrap: wrap;\n    justify-content: center;\n    position: absolute;\n    bottom: 90px; }\n    .sidebar .related_link_block p {\n      color: #cccccc;\n      width: 100%;\n      display: inline-block;\n      font-weight: lighter;\n      text-align: center;\n      font-size: 14px; }\n    .sidebar .related_link_block a {\n      text-align: center;\n      color: #cccccc;\n      font-weight: lighter;\n      font-size: 11px;\n      flex: 0 0 auto;\n      width: 50%; }\n\nmain {\n  position: relative;\n  background-color: #F5F8FA;\n  height: 90%;\n  overflow: scroll; }\n  main::-webkit-scrollbar {\n    display: none; }\n\n.tr-stripe {\n  background-color: #F5F6F7; }\n\n.tr-widen {\n  padding-top: 25px;\n  padding-bottom: 30px; }\n\n.tr-widen-sm {\n  padding-top: 15px;\n  padding-bottom: 20px; }\n\n.td-left {\n  text-align: center;\n  text-indent: -14px; }\n\n.td-stripe {\n  background-color: #F5F6F7; }\n\n.switch {\n  position: relative;\n  display: inline-block;\n  width: 36px;\n  height: 20.4px;\n  margin-right: 5px; }\n  .switch input {\n    visibility: hidden; }\n  .switch .slider {\n    position: absolute;\n    cursor: pointer;\n    top: 0;\n    left: 0;\n    right: 0;\n    bottom: 0;\n    background-color: #ccc;\n    -webkit-transition: .4s;\n    transition: .4s; }\n  .switch .slider:before {\n    position: absolute;\n    content: \"\";\n    height: 15.6px;\n    width: 15.6px;\n    left: 2.4px;\n    bottom: 2.4px;\n    background-color: white;\n    -webkit-transition: .4s;\n    transition: .4s; }\n  .switch input:checked + .slider {\n    background-color: #2196F3; }\n  .switch input:focus + .slider {\n    box-shadow: 0 0 1px #2196F3; }\n  .switch input:checked + .slider:before {\n    -webkit-transform: translateX(15.6px);\n    -ms-transform: translateX(15.6px);\n    transform: translateX(15.6px); }\n  .switch .slider.round {\n    border-radius: 20.4px; }\n  .switch .slider.round:before {\n    border-radius: 50%; }\n", ""]);
 
 // exports
 
@@ -27522,7 +27524,7 @@ module.exports = baseIsMatch;
 /* 304 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var isFunction = __webpack_require__(24),
+var isFunction = __webpack_require__(25),
     isMasked = __webpack_require__(350),
     isObject = __webpack_require__(18),
     toSource = __webpack_require__(158);
@@ -27820,7 +27822,7 @@ var assignMergeValue = __webpack_require__(135),
     isArray = __webpack_require__(9),
     isArrayLikeObject = __webpack_require__(381),
     isBuffer = __webpack_require__(65),
-    isFunction = __webpack_require__(24),
+    isFunction = __webpack_require__(25),
     isObject = __webpack_require__(18),
     isPlainObject = __webpack_require__(383),
     isTypedArray = __webpack_require__(93),
@@ -30498,7 +30500,7 @@ module.exports = property;
 /***/ (function(module, exports, __webpack_require__) {
 
 var castPath = __webpack_require__(84),
-    isFunction = __webpack_require__(24),
+    isFunction = __webpack_require__(25),
     toKey = __webpack_require__(46);
 
 /**
@@ -32718,7 +32720,7 @@ module.exports = FallbackCompositionState;
 
 
 
-var DOMProperty = __webpack_require__(25);
+var DOMProperty = __webpack_require__(26);
 
 var MUST_USE_PROPERTY = DOMProperty.injection.MUST_USE_PROPERTY;
 var HAS_BOOLEAN_VALUE = DOMProperty.injection.HAS_BOOLEAN_VALUE;
@@ -34183,7 +34185,7 @@ var AutoFocusUtils = __webpack_require__(399);
 var CSSPropertyOperations = __webpack_require__(401);
 var DOMLazyTree = __webpack_require__(37);
 var DOMNamespaces = __webpack_require__(96);
-var DOMProperty = __webpack_require__(25);
+var DOMProperty = __webpack_require__(26);
 var DOMPropertyOperations = __webpack_require__(167);
 var EventPluginHub = __webpack_require__(49);
 var EventPluginRegistry = __webpack_require__(67);
@@ -35649,7 +35651,7 @@ module.exports = ReactDOMInput;
 
 
 
-var DOMProperty = __webpack_require__(25);
+var DOMProperty = __webpack_require__(26);
 var ReactComponentTreeHook = __webpack_require__(11);
 
 var warning = __webpack_require__(3);
@@ -36618,7 +36620,7 @@ module.exports = {
 
 
 
-var DOMProperty = __webpack_require__(25);
+var DOMProperty = __webpack_require__(26);
 var EventPluginRegistry = __webpack_require__(67);
 var ReactComponentTreeHook = __webpack_require__(11);
 
@@ -37528,7 +37530,7 @@ module.exports = ReactHostOperationHistoryHook;
 
 
 
-var DOMProperty = __webpack_require__(25);
+var DOMProperty = __webpack_require__(26);
 var EventPluginHub = __webpack_require__(49);
 var EventPluginUtils = __webpack_require__(97);
 var ReactComponentEnvironment = __webpack_require__(100);
@@ -43587,7 +43589,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _isFunction2 = __webpack_require__(24);
+var _isFunction2 = __webpack_require__(25);
 
 var _isFunction3 = _interopRequireDefault(_isFunction2);
 

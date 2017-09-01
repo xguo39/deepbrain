@@ -45,6 +45,11 @@ html, body, #root, #root>div,.main_area, .row{
 	border: 0px;
 	border-radius: 0px;
 	z-index: 10;
+  img{
+    display: inline;
+    width: 4%;
+    margin: 0px 10px;
+  }
 }
 
 .main_area{

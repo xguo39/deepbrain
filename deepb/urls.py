@@ -17,7 +17,7 @@ urlpatterns = [
     url(r'^(?P<pk>[0-9]+)/result/ch$', views.result_ch, name='result_ch'),
     url(r'^(?P<pk>[0-9]+)/result/interpretation/$', views.interpretation, name='interpretation'),
     url(r'^(?P<pk>[0-9]+)/result/interpretation/ch$', views.interpretation_ch, name='interpretation_ch'),
-    url(r'^hpo$', views.chpo, name='chpo'),
+    url(r'^chpo$', views.chpo, name='chpo'),
     url(r'^lof$', views.lof, name='lof'),
     url(r'^api/task/new_task/(?P<user_name>[-\w]+)/$', views.new_task.as_view()),
     url(r'^api/task/progress_task_list/(?P<user_name>[-\w]+)/$', views.progress_task_list.as_view()),

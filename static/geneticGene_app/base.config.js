@@ -7,14 +7,13 @@ let domain;
 
 const basic_info = {
   // static_image:'http://127.0.0.1:8000/static/app_ch/files/images/'
-  static_image:`${domain}/static/app_ch/files/images/`
+  static_image:`${domain}/static/geneticGene_app/files/images/`
 }
 
-// const server_domain = 'http://127.0.0.1:8000';
-// const static_image = 'http://127.0.0.1:8000/static/app_ch/files/images/';
+
 const server_domain = `${domain}`;
-const static_image = `${domain}/static/app_ch/files/images/`;
-const static_files = `${domain}/static/app_ch/files/`;
+const static_image = `${domain}/static/geneticGene_app/files/images/`;
+const static_files = `${domain}/static/geneticGene_app/files/`;
 
 const apis={
   upload_task:'/api/task/new_task/',
