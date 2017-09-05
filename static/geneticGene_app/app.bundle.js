@@ -17196,7 +17196,7 @@ var upload_task_actions = {
           // Constanly fetch the progress task list after uploading
           dispatch(task_actions.fetchProgressTask());
         } else {
-          alert('抱歉，上传任务不成功，文件过大或文件内格式有误，请阅读使用说明后重新上传');
+          alert('抱歉，上传任务不成功，基因文件未经初筛或文件内格式有误，请阅读使用说明后重新上传');
           window.location.reload();
           dispatch(task_actions.uploadTaskFailure(data.errCode));
         }
@@ -20406,7 +20406,9 @@ var Failed_task = function (_React$Component3) {
         _react2.default.createElement(
           'span',
           null,
-          '  \u5931\u8D25'
+          ' \u4E0A\u4F20\u5931\u8D25',
+          _react2.default.createElement('br', null),
+          '\u53EF\u80FD\u662F\u6587\u4EF6\u5185\u683C\u5F0F\u6709\u8BEF\uFF0C\u8BF7\u91CD\u65B0\u9605\u8BFB\u4F7F\u7528\u8BF4\u660E\uFF0C\u6216\u8054\u7CFB\u6211\u4EEC'
         )
       );
     }

@@ -57,7 +57,7 @@ class Failed_task extends React.Component{
   render(){
     return (
       <div className='failed_task' alt={`${this.props.task_info.id},${this.props.task_info.task_name}`}>
-        <span>{this.props.task_info.task_name}</span><span>  失败</span>
+        <span>{this.props.task_info.task_name}</span><span> 上传失败<br/>可能是文件内格式有误，请重新阅读使用说明，或联系我们</span>
         {/* <img src={static_image+'finish_logo.png'} alt='finish_logo'/> */}
       </div>
     )
