@@ -17196,6 +17196,7 @@ var upload_task_actions = {
           // Constanly fetch the progress task list after uploading
           dispatch(task_actions.fetchProgressTask());
         } else {
+          alert('抱歉，上传任务不成功，文件过大或文件内格式有误，请阅读使用说明后重新上传');
           window.location.reload();
           dispatch(task_actions.uploadTaskFailure(data.errCode));
         }
@@ -17476,6 +17477,7 @@ var New_task_progress = function (_React$Component) {
   _createClass(New_task_progress, [{
     key: 'componentWillMount',
     value: function componentWillMount() {
+      // Each time refresh the page fetch the progress list again
       this.props.fetchTaskList();
     }
   }, {
@@ -17642,9 +17644,9 @@ var New_task_upload = function (_React$Component) {
           var _step$value = _slicedToArray(_step.value, 2),
               key = _step$value[0],
               value = _step$value[1];
-
-          console.log(key, value);
         }
+        // console.log(key, value);
+
         // Why can't extract the form data
       } catch (err) {
         _didIteratorError = true;
@@ -20309,7 +20311,6 @@ var Processing_task = function (_React$Component) {
     key: 'render',
     value: function render() {
       var current_percent = mappingDict[this.props.task_info.status];
-      // const current_percent = '50%';
       var barStyle = {
         "width": current_percent
       };

@@ -16,7 +16,6 @@ class Processing_task extends React.Component{
 
   render(){
     const current_percent = mappingDict[this.props.task_info.status];
-    // const current_percent = '50%';
     let barStyle={
       "width":current_percent,
     }

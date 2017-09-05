@@ -43,6 +43,7 @@ const upload_task_actions = {
           // Constanly fetch the progress task list after uploading
           dispatch(task_actions.fetchProgressTask());
         }else{
+          alert('抱歉，上传任务不成功，文件过大或文件内格式有误，请阅读使用说明后重新上传');
           window.location.reload();
           dispatch(task_actions.uploadTaskFailure(data.errCode));
         }
