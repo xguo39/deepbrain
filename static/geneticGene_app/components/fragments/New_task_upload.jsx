@@ -37,19 +37,19 @@ class New_task_upload extends React.Component {
     }
     // Why can't extract the form data
     this.props.submit_task(taskData);
-    myForm.reset();
-    this.setState({
-      father_check:false,
-      father_check_pheno:false,
-      mother_check:false,
-      mother_check_pheno:false,
-      incidental_findings_check:false,
-      candidate_genes_check:false,
-      input_gene_file:'尚未选择',
-      input_phen:'尚未选择',
-      father_gene_file:'尚未选择',
-      mother_gene_file:'尚未选择',
-    })
+    // myForm.reset();
+    // this.setState({
+    //   father_check:false,
+    //   father_check_pheno:false,
+    //   mother_check:false,
+    //   mother_check_pheno:false,
+    //   incidental_findings_check:false,
+    //   candidate_genes_check:false,
+    //   input_gene_file:'尚未选择',
+    //   input_phen:'尚未选择',
+    //   father_gene_file:'尚未选择',
+    //   mother_gene_file:'尚未选择',
+    // })
   }
 
   _handleChange(evt){

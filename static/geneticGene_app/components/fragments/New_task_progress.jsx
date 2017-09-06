@@ -1,5 +1,5 @@
 import React from 'react';
-import {Processing_task, Completed_task, Failed_task} from 'components/models/Progress_task.jsx';
+import {Processing_task, Completed_task, Failed_task, Waiting_task} from 'components/models/Progress_task.jsx';
 
 class New_task_progress extends React.Component {
   constructor(props){
@@ -30,17 +30,30 @@ class New_task_progress extends React.Component {
     if(progress_list.length > 0){
       return progress_list.map((task, index)=>{
         let status = task.status;
+        // Not success situation
         if(status!=='succeed'){
           if(status.indexOf('failed') === -1){
-            return <div key={index} className='td3 td-stripe'>
-              <Processing_task task_info={task}/>
-            </div>
-          }else{
+            // Uploading
+            if(status.indexOf('uploading') !== -1){
+              return <div key={index} className='td3'>
+                <Waiting_task task_info={task}/>
+              </div>
+            }
+            // Processing
+            else{
+              return <div key={index} className='td3 td-stripe'>
+                <Processing_task task_info={task}/>
+              </div>
+            }
+          }
+          // Failed
+          else{
             return <div key={index} className='td3'>
               <Failed_task task_info={task}/>
             </div>
           }
         }
+        // Succeed
         else{
           return <div key={index} className='td3'>
             <Completed_task task_info={task}/>
@@ -53,6 +66,8 @@ class New_task_progress extends React.Component {
   }
 
   render(){
+    if(this.props.isUploading) this.props.progress_task_list.unshift({status:'uploading'});
+    // this.props.progress_task_list.unshift({status:'uploading'});
     return (
       <div className='new_task_progress' onClick={(evt)=>this._handleClick(evt)}>
          <div className='tb-title'>上传列表:</div>
@@ -63,6 +78,7 @@ class New_task_progress extends React.Component {
 }
 
 New_task_progress.propTypes={
+  isUploading:React.PropTypes.bool,
   progress_task_list:React.PropTypes.array,
   fetchTaskList:React.PropTypes.func,
   toResult:React.PropTypes.func,

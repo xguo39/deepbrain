@@ -244,12 +244,27 @@
     span{
       pointer-events: none;
     }
+    a{
+      color: #53BAEC;
+      z-index: 100;
+      pointer-events: all;
+    }
     &:hover{
-      font-size: 15px;
+      // font-size: 15px;
+    }
+  }
+  .waiting_task{
+    padding: 5px 0px;
+    text-align: center;
+    img{
+      width: 20%;
     }
   }
   p{
     margin-bottom: 6px;
+  }
+  &:hover{
+    background-color: #f2f2f2;
   }
 }
 

@@ -10,6 +10,7 @@ import root_reducer from './root_reducer';
 // Create the initial state
 const initialState = {
   tasks:{
+    isUploading:false,
     isFetching:false,
     progress_task_list:[],
     all_task_list:[
