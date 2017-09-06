@@ -58,9 +58,10 @@ class Failed_task extends React.Component{
     return (
       <div className='failed_task' alt={`${this.props.task_info.id},${this.props.task_info.task_name}`}>
         <span>{this.props.task_info.task_name}</span>
-        <span> 上传失败<br/>可能是文件内格式有误，请重新阅读使用说明，或
-         <a href='http://www.genonova.com/#contact' target="_blank">联系我们</a>
-        </span>
+          <span> 上传失败<br/>
+           <span className='explain'>可能是文件内格式有误，请重新阅读使用说明，或
+           <a href='http://www.genonova.com/#contact' target="_blank">联系我们</a></span>
+          </span>
         {/* <img src={static_image+'finish_logo.png'} alt='finish_logo'/> */}
       </div>
     )

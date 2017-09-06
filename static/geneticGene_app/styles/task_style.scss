@@ -241,6 +241,9 @@
     padding: 15px 0px;
     cursor: pointer;
     transition: .1s;
+    .explain{
+      visibility: hidden;
+    }
     span{
       pointer-events: none;
     }
@@ -250,7 +253,9 @@
       pointer-events: all;
     }
     &:hover{
-      // font-size: 15px;
+      .explain{
+        visibility: visible;
+      }
     }
   }
   .waiting_task{
