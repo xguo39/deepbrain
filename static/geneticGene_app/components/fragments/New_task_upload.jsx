@@ -33,7 +33,7 @@ class New_task_upload extends React.Component {
         }
     }
     for (var [key, value] of taskData.entries()) {
-      console.log(key, value);
+      // console.log(key, value);
     }
     // Why can't extract the form data
     this.props.submit_task(taskData);

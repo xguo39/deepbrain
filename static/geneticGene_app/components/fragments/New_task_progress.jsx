@@ -7,6 +7,7 @@ class New_task_progress extends React.Component {
   }
 
   componentWillMount(){
+    // Each time refresh the page fetch the progress list again
     this.props.fetchTaskList();
   }
 

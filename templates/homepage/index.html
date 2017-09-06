@@ -9,8 +9,6 @@
   <link href="{% static 'css/index.css' %}" rel="stylesheet">
   <link rel="icon" href="{% static 'images/logo.png' %}">
   <script src="{% static 'js/jquery.min.js' %}"></script>
-  <!-- <script src="{% static 'js/bootstrap.min.js' %}"></script> -->
-  <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>  -->
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </head>
 
@@ -26,24 +24,24 @@
       </button>
       <a class="navbar-brand" href="#">
         <img src="{% static 'images/header-logo.png' %}" alt="header-logo">
-        <span>诺亚科技</span>
+        <span>诺亚|Genonova</span>
       </a>
     </div>
     <div class="collapse navbar-collapse" id="myNavbar">
       <ul class="nav navbar-nav navbar-right">
-        <li><a href="#test"><span>基因解读</span></a></li>
+        <li><a href="#test"><span>诺亚医生</span></a></li>
         <li><a href="#introduction"><span>公司介绍</span></a></li>
         <li><a href="#product"><span>产品介绍</span></a></li>
         <li><a href="#partner"><span>合作伙伴</span></a></li>
         <li><a href="#contact"><span>联系我们</span></a></li>
-        <!-- <li class="dropdown">
-          <a class="dropdown-toggle" data-toggle="dropdown" href="#">语言
+        <li class="dropdown">
+          <a class="dropdown-toggle" data-toggle="dropdown" href="#">Language
             <span class="caret"></span>
           </a>
           <ul class="dropdown-menu">
             <li><a href="{% url 'deepb:index_en' %}">English</a></li>
           </ul>
-        </li> -->
+        </li>
       </ul>
     </div>
   </div>
@@ -76,7 +74,7 @@
     </div>
 
     <div class="item">
-      <img src="{% static 'images/carousel_3.jpg' %}" alt="Third Carousel">
+      <img src="{% static 'images/carousel_3.png' %}" alt="Third Carousel">
       <div class="carousel-caption">
         <h3>诺亚科技</h3>
         <p>着力打造涵盖基因组学图谱、微生物组学图谱、医学知识图谱的"诺亚超级医生"</p>
@@ -96,26 +94,26 @@
 </div>
 
 <div id="test" class="pds container text-center">
-  <h3> 产品体验 </h3>
+  <h3> 诺亚医生 </h3>
   <div class="row">
       <!-- <a class="col-sm-4" target="_blank" href="{% url 'deepb:chpo' %}"><button class="btn btn1">进入智能解读平台</button></a> -->
       <a class="col-sm-3 col-xs-12" target="_blank" href="{% url 'deepb:chpo' %}">
          <div class='pd-small'>
-           <img src="{% static 'images/chpo_icon.png'%}" alt="chpo-icon">
+           <img class='s_img'src="{% static 'images/chpo_icon1.png'%}" alt="chpo-icon">
          </div>
-           <p> CHPO 智能搜 </p>
+           <p> 医学语言处理(CHPO) </p>
       </a>
       <a class="col-sm-6 col-xs-12" target="_blank" href="{% url 'deepb:home_new_ch' %}">
         <div>
-           <img src="{% static 'images/gene_intepretation_icon.png'%}" alt="geneInterpretation-icon">
+           <img class='l_img' src="{% static 'images/gene_interpretation_icon1.png'%}" alt="geneInterpretation-icon">
         </div>
         <p> 遗传病基因智能解读 </p>
       </a>
-      <a class="col-sm-3 col-xs-12" target="_blank" href="{% url 'deepb:lof' %}">
+      <a class="col-sm-3 col-xs-12 developing_app" >
         <div class='pd-small'>
-           <img src="{% static 'images/lof_icon.png'%}" alt="lof-icon">
+           <img class='s_img' src="{% static 'images/gene_cancer_icon.png'%}" alt="lof-icon">
         </div>
-        <p> 基因功能丧失（Loss of function）查询</p>
+        <p> 癌症基因智能解读</p>
       </a>
   </div>
 </div>

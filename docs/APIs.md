@@ -9,6 +9,7 @@ APIs
 
 - [Template](#template)
   - [Template Gene_task_form](#template-gene_task_form)
+  - [Template Review_task_form](#template-review_task_form)
 - [Tasks](#tasks)
   - [Upload_task](#upload_task)
   - [Progress_task_list](#progress_task_list)
@@ -16,7 +17,8 @@ APIs
   - [Checked_change](#checked_change)
   - [Fetch_case_result](#fetch_case_result)
   - [Fetch_Annotation](#fetch_annotation)
-  - [Logout](#logout)
+  - [Fetch Review list](#fetch-review-list)
+  - [Upload Result Review](#upload-result-review)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 ---------------------------
@@ -44,6 +46,15 @@ Template
   check_candidate_genes:boolean,
   patient_age:12,
   patient_gender:0,
+}
+```
+
+### Template Review_task_form
+```bash
+{
+  molecular_diagnosis:'',
+  pheno_match:false,
+  pathogenic:false
 }
 ```
 
@@ -319,11 +330,67 @@ http/1.1 200 OK
 }
 ```
 
-### Logout
-* Description: For fetching the current gene's annotation
-* URL: `/api/logout`
-* Method: `Post`
+### Fetch Review list
+* Description: For fetching the un-review list
+* URL: `/api/review/list/:user_name`
+* Method: `Get`
 * Request Example:
 ```javascript
- 'jump to login page'
+`{}`
+```
+* Response Example on `success`:
+```
+http/1.1 200 OK
+```
+```
+{
+  success:true,
+  review_list:[
+    {
+      id:1,
+      task_name:"xiaonan",
+      pub_date: '2017-06-18, 12:03pm',
+      status:'succeed',
+    },...
+  ]
+}
+```
+* Response Example on `failure`:
+```
+http/1.1 200 OK
+```
+```javascript
+{
+   success:false,
+   errCode:INFOMATION_UNCOMPLETED
+}
+```
+
+### Upload Result Review
+* Description: For uploading the result review task
+* URL:`/api/review/upload/:task_id/:user_name`
+* Method:`POST`
+* Request Example:
+```javascript
+{
+ body:{% Review_task_form %}
+}
+```
+* Response Example on `success`:
+```
+http/1.1 200 OK
+```
+```
+{
+  success:true
+}
+```
+* Response Example on `failure`:
+```
+http/1.1 200 OK
+```
+```
+{
+  success:false
+}
 ```

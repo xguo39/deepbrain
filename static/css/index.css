@@ -187,10 +187,15 @@ p{
   cursor: pointer;
 }
 
+.pds .developing_app:hover::after{
+  content: "（正在全力开发中）";
+  line-height: 15px;
+  /*margin-top: -30px;*/
+}
+
 .pds a:focus{
   text-decoration: none;
 }
-
 
 .pds a div{
   min-height: 200px;
@@ -199,17 +204,26 @@ p{
 .pds a img{
   padding-top: 20px;
   padding-bottom: 20px;
-  width: 35%;
 }
 
+.pds .l_img{
+  width: 20%;
+}
+
+.pds .s_img{
+  width: 45%;
+}
+
+
 .pds a p{
-  margin-bottom: 20px;
+  margin-bottom: 10px;
   font-size: 20px;
 }
 
 .pd-small img{
   padding-top: 50px !important;
 }
+
 
 /* Black buttons with extra padding and without rounded borders */
 .btn {
