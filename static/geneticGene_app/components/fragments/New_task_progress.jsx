@@ -30,34 +30,26 @@ class New_task_progress extends React.Component {
     if(progress_list.length > 0){
       return progress_list.map((task, index)=>{
         let status = task.status;
-        // Not success situation
+        // Not Succeed
         if(status!=='succeed'){
           if(status.indexOf('failed') === -1){
             // Uploading
             if(status.indexOf('uploading') !== -1){
-              return <div key={index} className='td3'>
-                <Waiting_task task_info={task}/>
-              </div>
+              return <Waiting_task task_info={task} key={index}/>
             }
             // Processing
             else{
-              return <div key={index} className='td3 td-stripe'>
-                <Processing_task task_info={task}/>
-              </div>
+              return <Processing_task task_info={task} key={index}/>
             }
           }
-          // Failed
+            // Failed
           else{
-            return <div key={index} className='td3'>
-              <Failed_task task_info={task}/>
-            </div>
+            return <Failed_task task_info={task} key={index}/>
           }
         }
-        // Succeed
+           // Succeed
         else{
-          return <div key={index} className='td3'>
-            <Completed_task task_info={task}/>
-          </div>
+          return <Completed_task task_info={task} key={index}/>
         }
       })
     }else{

@@ -17503,42 +17503,26 @@ var New_task_progress = function (_React$Component) {
       if (progress_list.length > 0) {
         return progress_list.map(function (task, index) {
           var status = task.status;
-          // Not success situation
+          // Not Succeed
           if (status !== 'succeed') {
             if (status.indexOf('failed') === -1) {
               // Uploading
               if (status.indexOf('uploading') !== -1) {
-                return _react2.default.createElement(
-                  'div',
-                  { key: index, className: 'td3' },
-                  _react2.default.createElement(_Progress_task.Waiting_task, { task_info: task })
-                );
+                return _react2.default.createElement(_Progress_task.Waiting_task, { task_info: task, key: index });
               }
               // Processing
               else {
-                  return _react2.default.createElement(
-                    'div',
-                    { key: index, className: 'td3 td-stripe' },
-                    _react2.default.createElement(_Progress_task.Processing_task, { task_info: task })
-                  );
+                  return _react2.default.createElement(_Progress_task.Processing_task, { task_info: task, key: index });
                 }
             }
             // Failed
             else {
-                return _react2.default.createElement(
-                  'div',
-                  { key: index, className: 'td3' },
-                  _react2.default.createElement(_Progress_task.Failed_task, { task_info: task })
-                );
+                return _react2.default.createElement(_Progress_task.Failed_task, { task_info: task, key: index });
               }
           }
           // Succeed
           else {
-              return _react2.default.createElement(
-                'div',
-                { key: index, className: 'td3' },
-                _react2.default.createElement(_Progress_task.Completed_task, { task_info: task })
-              );
+              return _react2.default.createElement(_Progress_task.Completed_task, { task_info: task, key: index });
             }
         });
       } else {
@@ -20336,7 +20320,7 @@ var Processing_task = function (_React$Component) {
       };
       return _react2.default.createElement(
         'div',
-        null,
+        { key: this.props.index, className: 'td3 td-stripe' },
         _react2.default.createElement(
           'p',
           { className: 'task-title' },
@@ -20384,18 +20368,22 @@ var Completed_task = function (_React$Component2) {
     value: function render() {
       return _react2.default.createElement(
         'div',
-        { className: 'completed_task', alt: this.props.task_info.id + ',' + this.props.task_info.task_name },
+        { key: this.props.index, className: 'td3' },
         _react2.default.createElement(
-          'span',
-          null,
-          this.props.task_info.task_name
-        ),
-        _react2.default.createElement(
-          'span',
-          null,
-          '  \u5B8C\u6210'
-        ),
-        _react2.default.createElement('img', { src: _base.static_image + 'finish_logo.png', alt: 'finish_logo' })
+          'div',
+          { className: 'completed_task', alt: this.props.task_info.id + ',' + this.props.task_info.task_name },
+          _react2.default.createElement(
+            'span',
+            null,
+            this.props.task_info.task_name
+          ),
+          _react2.default.createElement(
+            'span',
+            null,
+            '  \u5B8C\u6210'
+          ),
+          _react2.default.createElement('img', { src: _base.static_image + 'finish_logo.png', alt: 'finish_logo' })
+        )
       );
     }
   }]);
@@ -20417,25 +20405,29 @@ var Failed_task = function (_React$Component3) {
     value: function render() {
       return _react2.default.createElement(
         'div',
-        { className: 'failed_task', alt: this.props.task_info.id + ',' + this.props.task_info.task_name },
+        { key: this.props.index, className: 'td3' },
         _react2.default.createElement(
-          'span',
-          null,
-          this.props.task_info.task_name
-        ),
-        _react2.default.createElement(
-          'span',
-          null,
-          ' \u4E0A\u4F20\u5931\u8D25',
-          _react2.default.createElement('br', null),
+          'div',
+          { className: 'failed_task', alt: this.props.task_info.id + ',' + this.props.task_info.task_name },
           _react2.default.createElement(
             'span',
-            { className: 'explain' },
-            '\u53EF\u80FD\u662F\u6587\u4EF6\u5185\u683C\u5F0F\u6709\u8BEF\uFF0C\u8BF7\u91CD\u65B0\u9605\u8BFB\u4F7F\u7528\u8BF4\u660E\uFF0C\u6216',
+            null,
+            this.props.task_info.task_name
+          ),
+          _react2.default.createElement(
+            'span',
+            null,
+            ' \u4E0A\u4F20\u5931\u8D25',
+            _react2.default.createElement('br', null),
             _react2.default.createElement(
-              'a',
-              { href: 'http://www.genonova.com/#contact', target: '_blank' },
-              '\u8054\u7CFB\u6211\u4EEC'
+              'span',
+              { className: 'explain' },
+              '\u53EF\u80FD\u662F\u6587\u4EF6\u5185\u683C\u5F0F\u6709\u8BEF\uFF0C\u8BF7\u91CD\u65B0\u9605\u8BFB\u4F7F\u7528\u8BF4\u660E\uFF0C\u6216',
+              _react2.default.createElement(
+                'a',
+                { href: 'http://www.genonova.com/#contact', target: '_blank' },
+                '\u8054\u7CFB\u6211\u4EEC'
+              )
             )
           )
         )
@@ -20460,8 +20452,17 @@ var Waiting_task = function (_React$Component4) {
     value: function render() {
       return _react2.default.createElement(
         'div',
-        { className: 'waiting_task' },
-        _react2.default.createElement('img', { src: _base.static_image + 'loading_sign.gif', alt: 'result_loding_sign' })
+        { key: this.props.index, className: 'td3' },
+        _react2.default.createElement(
+          'div',
+          { className: 'waiting_task' },
+          _react2.default.createElement('img', { src: _base.static_image + 'loading_sign.gif', alt: 'result_loding_sign' }),
+          _react2.default.createElement(
+            'span',
+            null,
+            '\u6B63\u5728\u4E0A\u4F20\u4E2D\uFF0C\u8BF7\u8010\u5FC3\u7B49\u5019'
+          )
+        )
       );
     }
   }]);

@@ -20,7 +20,7 @@ class Processing_task extends React.Component{
       "width":current_percent,
     }
     return (
-      <div>
+      <div key={this.props.index} className='td3 td-stripe'>
         <p className='task-title'>{`${this.props.task_info.task_name}：${current_percent}`}</p>
         <div className="progress">
           <div className="progress-bar progress-bar-info progress-bar-striped active" role="progressbar" aria-valuenow="50"
@@ -41,9 +41,11 @@ class Completed_task extends React.Component{
 
   render(){
     return (
-      <div className='completed_task' alt={`${this.props.task_info.id},${this.props.task_info.task_name}`}>
-        <span>{this.props.task_info.task_name}</span><span>  完成</span>
-        <img src={static_image+'finish_logo.png'} alt='finish_logo'/>
+      <div key={this.props.index} className='td3'>
+        <div className='completed_task' alt={`${this.props.task_info.id},${this.props.task_info.task_name}`}>
+          <span>{this.props.task_info.task_name}</span><span>  完成</span>
+          <img src={static_image+'finish_logo.png'} alt='finish_logo'/>
+        </div>
       </div>
     )
   }
@@ -56,14 +58,17 @@ class Failed_task extends React.Component{
 
   render(){
     return (
-      <div className='failed_task' alt={`${this.props.task_info.id},${this.props.task_info.task_name}`}>
-        <span>{this.props.task_info.task_name}</span>
-          <span> 上传失败<br/>
-           <span className='explain'>可能是文件内格式有误，请重新阅读使用说明，或
-           <a href='http://www.genonova.com/#contact' target="_blank">联系我们</a></span>
-          </span>
-        {/* <img src={static_image+'finish_logo.png'} alt='finish_logo'/> */}
+      <div key={this.props.index} className='td3'>
+        <div className='failed_task' alt={`${this.props.task_info.id},${this.props.task_info.task_name}`}>
+          <span>{this.props.task_info.task_name}</span>
+            <span> 上传失败<br/>
+             <span className='explain'>可能是文件内格式有误，请重新阅读使用说明，或
+             <a href='http://www.genonova.com/#contact' target="_blank">联系我们</a></span>
+            </span>
+          {/* <img src={static_image+'finish_logo.png'} alt='finish_logo'/> */}
+        </div>
       </div>
+
     )
   }
 }
@@ -75,8 +80,11 @@ class Waiting_task extends React.Component{
 
   render(){
     return(
-      <div className='waiting_task'>
-        <img src={static_image+'loading_sign.gif'} alt='result_loding_sign'></img>
+      <div key={this.props.index} className='td3'>
+        <div className='waiting_task'>
+          <img src={static_image+'loading_sign.gif'} alt='result_loding_sign'></img>
+          <span>正在上传中，请耐心等候</span>
+        </div>
       </div>
     )
   }
