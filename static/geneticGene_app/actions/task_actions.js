@@ -43,7 +43,7 @@ const upload_task_actions = {
           // Constanly fetch the progress task list after uploading
           dispatch(task_actions.fetchProgressTask());
         }else{
-          alert('抱歉，上传任务不成功，基因文件未经初筛或文件内格式有误，请阅读使用说明后重新上传');
+          alert('十分抱歉，该文件无法处理，可能是由于基因文件未经初筛，或文件内格式有误，请阅读使用说明后再重新上传，谢谢');
           window.location.reload();
           dispatch(task_actions.uploadTaskFailure(data.errCode));
         }
