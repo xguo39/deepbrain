@@ -263,7 +263,7 @@ def check_PS1_PM5(variant_):
 
 def getDeNovoGenes():
     global denovo_genes, non_denovo_genes
-    infile = open(os.path.join(BASE, 'data/denovo_gene_and_non_denovo_gene.p'), 'rb')
+    infile = open(os.path.join(BASE, 'data/denovo_gene_and_non_denovo_gene.p'), 'r')
     denovo_genes, non_denovo_genes = pickle.load(infile)
     infile.close()
 

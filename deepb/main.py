@@ -134,10 +134,10 @@ def getFileDelimiter(inputfile):
 	        header = line
 	        sniffer = csv.Sniffer()
 	        dialect = sniffer.sniff(header)
-	        delimiter =  dialect.delimiter
-	        field_names = header.split(delimiter)
+	        delimiter_ =  dialect.delimiter
+	        field_names = header.split(delimiter_)
 	        break
-	return delimiter, field_names
+	return delimiter_, field_names
 
 def convertFile2DF_bak(inputfile, delimiter):
     columns = []

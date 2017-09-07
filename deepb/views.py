@@ -4,7 +4,7 @@ from django.shortcuts import get_object_or_404, render
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 from django.utils import timezone
-from deepb.models import Main_table, Raw_input_table
+from deepb.models import Main_table, Raw_input_table, Evaluated_table, Document
 from deepb.tasks import trigger_background_main_task
 from django.views.generic.list import ListView
 from django.views.generic import DetailView
@@ -330,6 +330,17 @@ class new_task(APIView):
         task_name = request.POST.get('task_name', None)
 
         gene_file = request.FILES['gene_file']
+        # form = DocumentForm(request.POST, request.FILES)
+        # if form.is_valid():
+        newdoc = Document(
+            user_name = user_name,
+            document = request.FILES['gene_file'],
+            description = request.POST.get('task_name', None),
+        )
+        newdoc.save()
+        # else:
+        #     print 'not valid'
+
         if gene_file.name.endswith('.xls') or gene_file.name.endswith('.xlsx'):
             raw_input_gene = pd.read_excel(gene_file).to_csv(index=False)
         else:
@@ -390,6 +401,7 @@ class new_task(APIView):
             patient_age = int(request.POST.get('patient_age', None))
         else:
             patient_age = 0
+
         if request.POST.get('patient_gender', None):
             patient_gender = int(request.POST.get('patient_gender', None))
 
@@ -416,7 +428,7 @@ class new_task(APIView):
             raw_gene_input.save()
 
             trigger_background_main_task.delay(raw_gene_input.id)
-        
+    
             return Response({'success':True})
         except:
             return Response({'success':False})
