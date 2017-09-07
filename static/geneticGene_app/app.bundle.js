@@ -16861,6 +16861,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 // Create the initial state
 var initialState = {
   tasks: {
+    isUploading: false,
     isFetching: false,
     progress_task_list: [],
     all_task_list: [
@@ -17196,7 +17197,7 @@ var upload_task_actions = {
           // Constanly fetch the progress task list after uploading
           dispatch(task_actions.fetchProgressTask());
         } else {
-          alert('抱歉，上传任务不成功，基因文件未经初筛或文件内格式有误，请阅读使用说明后重新上传');
+          alert('十分抱歉，该文件无法处理，可能是由于基因文件未经初筛，或文件内格式有误，请阅读使用说明后再重新上传，谢谢');
           window.location.reload();
           dispatch(task_actions.uploadTaskFailure(data.errCode));
         }
@@ -17502,27 +17503,27 @@ var New_task_progress = function (_React$Component) {
       if (progress_list.length > 0) {
         return progress_list.map(function (task, index) {
           var status = task.status;
+          // Not Succeed
           if (status !== 'succeed') {
             if (status.indexOf('failed') === -1) {
-              return _react2.default.createElement(
-                'div',
-                { key: index, className: 'td3 td-stripe' },
-                _react2.default.createElement(_Progress_task.Processing_task, { task_info: task })
-              );
-            } else {
-              return _react2.default.createElement(
-                'div',
-                { key: index, className: 'td3' },
-                _react2.default.createElement(_Progress_task.Failed_task, { task_info: task })
-              );
+              // Uploading
+              if (status.indexOf('uploading') !== -1) {
+                return _react2.default.createElement(_Progress_task.Waiting_task, { task_info: task, key: index });
+              }
+              // Processing
+              else {
+                  return _react2.default.createElement(_Progress_task.Processing_task, { task_info: task, key: index });
+                }
             }
-          } else {
-            return _react2.default.createElement(
-              'div',
-              { key: index, className: 'td3' },
-              _react2.default.createElement(_Progress_task.Completed_task, { task_info: task })
-            );
+            // Failed
+            else {
+                return _react2.default.createElement(_Progress_task.Failed_task, { task_info: task, key: index });
+              }
           }
+          // Succeed
+          else {
+              return _react2.default.createElement(_Progress_task.Completed_task, { task_info: task, key: index });
+            }
         });
       } else {
         return _react2.default.createElement('div', null);
@@ -17533,6 +17534,8 @@ var New_task_progress = function (_React$Component) {
     value: function render() {
       var _this2 = this;
 
+      if (this.props.isUploading) this.props.progress_task_list.unshift({ status: 'uploading' });
+      // this.props.progress_task_list.unshift({status:'uploading'});
       return _react2.default.createElement(
         'div',
         { className: 'new_task_progress', onClick: function onClick(evt) {
@@ -17552,6 +17555,7 @@ var New_task_progress = function (_React$Component) {
 }(_react2.default.Component);
 
 New_task_progress.propTypes = {
+  isUploading: _react2.default.PropTypes.bool,
   progress_task_list: _react2.default.PropTypes.array,
   fetchTaskList: _react2.default.PropTypes.func,
   toResult: _react2.default.PropTypes.func,
@@ -17664,19 +17668,19 @@ var New_task_upload = function (_React$Component) {
       }
 
       this.props.submit_task(taskData);
-      myForm.reset();
-      this.setState({
-        father_check: false,
-        father_check_pheno: false,
-        mother_check: false,
-        mother_check_pheno: false,
-        incidental_findings_check: false,
-        candidate_genes_check: false,
-        input_gene_file: '尚未选择',
-        input_phen: '尚未选择',
-        father_gene_file: '尚未选择',
-        mother_gene_file: '尚未选择'
-      });
+      // myForm.reset();
+      // this.setState({
+      //   father_check:false,
+      //   father_check_pheno:false,
+      //   mother_check:false,
+      //   mother_check_pheno:false,
+      //   incidental_findings_check:false,
+      //   candidate_genes_check:false,
+      //   input_gene_file:'尚未选择',
+      //   input_phen:'尚未选择',
+      //   father_gene_file:'尚未选择',
+      //   mother_gene_file:'尚未选择',
+      // })
     }
   }, {
     key: '_handleChange',
@@ -20272,7 +20276,7 @@ exports.default = Input_basic_info;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.Failed_task = exports.Completed_task = exports.Processing_task = undefined;
+exports.Waiting_task = exports.Failed_task = exports.Completed_task = exports.Processing_task = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -20316,7 +20320,7 @@ var Processing_task = function (_React$Component) {
       };
       return _react2.default.createElement(
         'div',
-        null,
+        { key: this.props.index, className: 'td3 td-stripe' },
         _react2.default.createElement(
           'p',
           { className: 'task-title' },
@@ -20364,18 +20368,22 @@ var Completed_task = function (_React$Component2) {
     value: function render() {
       return _react2.default.createElement(
         'div',
-        { className: 'completed_task', alt: this.props.task_info.id + ',' + this.props.task_info.task_name },
+        { key: this.props.index, className: 'td3' },
         _react2.default.createElement(
-          'span',
-          null,
-          this.props.task_info.task_name
-        ),
-        _react2.default.createElement(
-          'span',
-          null,
-          '  \u5B8C\u6210'
-        ),
-        _react2.default.createElement('img', { src: _base.static_image + 'finish_logo.png', alt: 'finish_logo' })
+          'div',
+          { className: 'completed_task', alt: this.props.task_info.id + ',' + this.props.task_info.task_name },
+          _react2.default.createElement(
+            'span',
+            null,
+            this.props.task_info.task_name
+          ),
+          _react2.default.createElement(
+            'span',
+            null,
+            '  \u5B8C\u6210'
+          ),
+          _react2.default.createElement('img', { src: _base.static_image + 'finish_logo.png', alt: 'finish_logo' })
+        )
       );
     }
   }]);
@@ -20397,18 +20405,31 @@ var Failed_task = function (_React$Component3) {
     value: function render() {
       return _react2.default.createElement(
         'div',
-        { className: 'failed_task', alt: this.props.task_info.id + ',' + this.props.task_info.task_name },
+        { key: this.props.index, className: 'td3' },
         _react2.default.createElement(
-          'span',
-          null,
-          this.props.task_info.task_name
-        ),
-        _react2.default.createElement(
-          'span',
-          null,
-          ' \u4E0A\u4F20\u5931\u8D25',
-          _react2.default.createElement('br', null),
-          '\u53EF\u80FD\u662F\u6587\u4EF6\u5185\u683C\u5F0F\u6709\u8BEF\uFF0C\u8BF7\u91CD\u65B0\u9605\u8BFB\u4F7F\u7528\u8BF4\u660E\uFF0C\u6216\u8054\u7CFB\u6211\u4EEC'
+          'div',
+          { className: 'failed_task', alt: this.props.task_info.id + ',' + this.props.task_info.task_name },
+          _react2.default.createElement(
+            'span',
+            null,
+            this.props.task_info.task_name
+          ),
+          _react2.default.createElement(
+            'span',
+            null,
+            ' \u4E0A\u4F20\u5931\u8D25',
+            _react2.default.createElement('br', null),
+            _react2.default.createElement(
+              'span',
+              { className: 'explain' },
+              '\u53EF\u80FD\u662F\u6587\u4EF6\u5185\u683C\u5F0F\u6709\u8BEF\uFF0C\u8BF7\u91CD\u65B0\u9605\u8BFB\u4F7F\u7528\u8BF4\u660E\uFF0C\u6216',
+              _react2.default.createElement(
+                'a',
+                { href: 'http://www.genonova.com/#contact', target: '_blank' },
+                '\u8054\u7CFB\u6211\u4EEC'
+              )
+            )
+          )
         )
       );
     }
@@ -20417,9 +20438,42 @@ var Failed_task = function (_React$Component3) {
   return Failed_task;
 }(_react2.default.Component);
 
+var Waiting_task = function (_React$Component4) {
+  _inherits(Waiting_task, _React$Component4);
+
+  function Waiting_task(props) {
+    _classCallCheck(this, Waiting_task);
+
+    return _possibleConstructorReturn(this, (Waiting_task.__proto__ || Object.getPrototypeOf(Waiting_task)).call(this, props));
+  }
+
+  _createClass(Waiting_task, [{
+    key: 'render',
+    value: function render() {
+      return _react2.default.createElement(
+        'div',
+        { key: this.props.index, className: 'td3' },
+        _react2.default.createElement(
+          'div',
+          { className: 'waiting_task' },
+          _react2.default.createElement('img', { src: _base.static_image + 'loading_sign.gif', alt: 'result_loding_sign' }),
+          _react2.default.createElement(
+            'span',
+            null,
+            '\u6B63\u5728\u4E0A\u4F20\u4E2D\uFF0C\u8BF7\u8010\u5FC3\u7B49\u5019'
+          )
+        )
+      );
+    }
+  }]);
+
+  return Waiting_task;
+}(_react2.default.Component);
+
 exports.Processing_task = Processing_task;
 exports.Completed_task = Completed_task;
 exports.Failed_task = Failed_task;
+exports.Waiting_task = Waiting_task;
 
 /***/ }),
 /* 234 */
@@ -21778,6 +21832,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var mapStateToProps = function mapStateToProps(state) {
   return {
+    isUploading: state.tasks.isUploading,
     progress_task_list: state.tasks.progress_task_list
   };
 };
@@ -22210,17 +22265,17 @@ function tasks() {
   switch (action.type) {
     case _root_actions2.default.REQUEST_UPLOAD_TASK:
       return _extends({}, state, {
-        isFetching: true
+        isUploading: true
       });
 
     case _root_actions2.default.UPLOAD_TASK_SUCCESS:
       return _extends({}, state, {
-        isFetching: false
+        isUploading: false
       });
 
     case _root_actions2.default.UPLOAD_TASK_FAILURE:
       return _extends({}, state, {
-        isFetching: false,
+        isUploading: false,
         errorCode: action.payload
       });
 
@@ -25086,7 +25141,7 @@ exports = module.exports = __webpack_require__(255)(undefined);
 
 
 // module
-exports.push([module.i, ".new_task {\n  position: relative;\n  width: 100%;\n  height: 100%;\n  margin-left: 20px;\n  display: flex;\n  flex-flow: row nowrap;\n  justify-content: flex-start;\n  color: #406A8C; }\n  .new_task > label {\n    position: absolute;\n    top: 88%;\n    left: 78.5%;\n    padding-left: 30px;\n    padding-right: 30px;\n    background-color: #0275d8;\n    border: 0px; }\n    .new_task > label span {\n      padding: 25px 10px; }\n    .new_task > label:hover {\n      background-color: #025fb1; }\n\n.new_task_upload {\n  position: relative;\n  flex-grow: 0;\n  width: 70%;\n  height: 95%;\n  margin-right: 20px;\n  margin-top: 20px;\n  overflow: auto;\n  overflow-x: hidden;\n  display: flex;\n  flex-direction: column;\n  -webkit-transition: all 300ms ease-in;\n  transition: all 300ms ease-in; }\n  .new_task_upload form {\n    height: 100%; }\n    .new_task_upload form .form-tb {\n      height: 100%;\n      display: flex;\n      flex-direction: column;\n      justify-content: flex-start; }\n    .new_task_upload form .tb-section {\n      flex: 1 0 auto;\n      margin-bottom: 25px;\n      background-color: white;\n      box-shadow: -3px 2px 2px 0 rgba(119, 151, 178, 0.16);\n      display: flex;\n      flex-direction: column; }\n    .new_task_upload form .tr {\n      flex-grow: 1;\n      position: relative;\n      width: 100%;\n      display: flex; }\n    .new_task_upload form .td1 {\n      position: relative;\n      display: inline;\n      width: 20%;\n      height: 100%;\n      text-align: center;\n      margin: auto 0px;\n      padding-top: 15px;\n      padding-bottom: 15px; }\n      .new_task_upload form .td1.optional {\n        font-size: 14px; }\n    .new_task_upload form .td2 {\n      position: relative;\n      display: inline;\n      width: 40%;\n      height: 100%;\n      margin: auto 0px;\n      padding: 10px 0px;\n      font-size: 13px; }\n  .new_task_upload .fade-content {\n    flex: 1 0 auto;\n    position: relative;\n    max-height: 280px;\n    overflow: hidden; }\n  .new_task_upload .fade-anchor {\n    background: -webkit-linear-gradient(top, rgba(237, 239, 240, 0), rgba(237, 239, 240, 0) 180px, #F5F8FA 250px);\n    background: linear-gradient(to bottom, rgba(237, 239, 240, 0), rgba(237, 239, 240, 0) 180px, #F5F8FA 250px);\n    -moz-box-sizing: border-box;\n    box-sizing: border-box;\n    cursor: pointer;\n    display: block;\n    height: 280px;\n    padding-top: 230px;\n    position: absolute;\n    top: 0;\n    right: 0;\n    left: 0;\n    text-align: center;\n    -webkit-transition: all 300ms ease-in;\n    transition: all 300ms ease-in; }\n    .new_task_upload .fade-anchor .fade-anchor-text {\n      background: #F5F8FA;\n      -moz-box-sizing: border-box;\n      box-sizing: border-box;\n      color: #406A8C;\n      display: inline-block;\n      max-width: 100%;\n      overflow: hidden;\n      text-decoration: underline;\n      text-overflow: ellipsis;\n      white-space: nowrap;\n      pointer-events: none; }\n  .new_task_upload .break-hint {\n    padding-left: 25px;\n    font-weight: bolder;\n    margin-bottom: 15px; }\n  .new_task_upload .file_input {\n    position: relative;\n    z-index: 5;\n    width: 80px;\n    height: 20px;\n    background: #FFFFFF;\n    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.5);\n    border-radius: 8px;\n    margin-bottom: 10px;\n    margin-top: 10px;\n    vertical-align: middle;\n    text-align: center;\n    cursor: pointer; }\n    .new_task_upload .file_input span {\n      position: relative;\n      display: inline-block;\n      font-size: 11px;\n      color: #53BAEC;\n      cursor: pointer; }\n      .new_task_upload .file_input span.prompt {\n        display: block;\n        margin-top: 5px;\n        color: #406A8C;\n        font-size: 10px;\n        cursor: default; }\n    .new_task_upload .file_input input {\n      position: relative;\n      visibility: hidden;\n      width: 0px;\n      height: 0px;\n      z-index: 0; }\n  .new_task_upload .highlight {\n    color: #53BAEC;\n    cursor: pointer;\n    font-size: 15px; }\n    .new_task_upload .highlight:hover {\n      text-decoration: underline; }\n  .new_task_upload label {\n    margin-bottom: 0px;\n    font-weight: normal; }\n  .new_task_upload a {\n    color: #53BAEC; }\n  .new_task_upload textarea {\n    border: 1px solid #e6e6e6; }\n  .new_task_upload #task_submit {\n    display: none; }\n\n.new_task_progress {\n  position: relative;\n  flex-grow: 0;\n  background: #FFFFFF;\n  box-shadow: -3px 2px 2px 0 rgba(119, 151, 178, 0.16);\n  margin-top: 20px;\n  width: 22%;\n  height: 79%;\n  overflow: auto; }\n  .new_task_progress .tb-title {\n    position: relative;\n    width: 100%;\n    padding-top: 0px;\n    padding: 20px; }\n\n.td3 {\n  position: relative;\n  width: 100%;\n  padding: 15px 20px;\n  font-size: 13px;\n  font-weight: 400; }\n  .td3 .progress {\n    margin-bottom: 6px;\n    height: 8px; }\n    .td3 .progress .progress-bar-info {\n      background-color: #53BAEC; }\n  .td3 .completed_task {\n    padding: 15px 0px;\n    cursor: pointer;\n    transition: .1s; }\n    .td3 .completed_task span {\n      pointer-events: none; }\n    .td3 .completed_task:hover {\n      font-size: 15px;\n      opacity: 0.9; }\n    .td3 .completed_task img {\n      margin-left: 15px;\n      width: 25px; }\n  .td3 .failed_task {\n    padding: 15px 0px;\n    cursor: pointer;\n    transition: .1s; }\n    .td3 .failed_task span {\n      pointer-events: none; }\n    .td3 .failed_task:hover {\n      font-size: 15px; }\n  .td3 p {\n    margin-bottom: 6px; }\n\n.task_list {\n  position: relative;\n  margin: 20px 20px;\n  width: 65%;\n  height: 90%; }\n  .task_list .search_container {\n    position: relative;\n    width: 100%;\n    height: 7%;\n    margin-bottom: 10px; }\n    .task_list .search_container span {\n      position: absolute;\n      height: 50%;\n      font-size: 12px;\n      opacity: 0.4;\n      transform: translate(0, -50%); }\n    .task_list .search_container div {\n      position: relative;\n      width: 100%;\n      height: 100%; }\n      .task_list .search_container div select {\n        display: none; }\n      .task_list .search_container div input {\n        position: relative;\n        width: 100%;\n        height: 100%;\n        border: 0px;\n        /* Input: */\n        background: #FFFFFF;\n        border: 1px solid #58BCEB;\n        border-radius: 4px; }\n        .task_list .search_container div input::-webkit-input-placeholder {\n          text-indent: 6%;\n          background: url(" + __webpack_require__(541) + ") no-repeat;\n          background-position: 2% 0;\n          background-size: 19px; }\n  .task_list p {\n    margin-top: 10px;\n    padding-left: 40px;\n    font-size: 14px;\n    color: #4A90E2; }\n\n.task_list_table {\n  position: relative;\n  width: 100%;\n  background: #FFFFFF;\n  box-shadow: -3px 2px 2px 0 rgba(119, 151, 178, 0.16);\n  overflow: auto;\n  height: 92%; }\n  .task_list_table table {\n    width: 100%;\n    text-align: center;\n    color: #406A8C; }\n  .task_list_table th {\n    text-align: center;\n    background: #FFFFFF;\n    border: 0px;\n    padding: 15px 0px;\n    border-bottom: 1px solid #f2f2f2;\n    font-size: 17px;\n    font-weight: normal; }\n  .task_list_table td {\n    padding: 15px 0px;\n    font-size: 15px; }\n  .task_list_table .tc1 {\n    width: 25%; }\n  .task_list_table .tc2 {\n    width: 50%; }\n\n.table-striped > tbody > tr:nth-child(odd):hover,\n.table-striped > tbody > tr:nth-child(odd):hover {\n  background: #f0f1f4; }\n\n.table-striped > tbody > tr:nth-child(even):hover,\n.table-striped > tbody > tr:nth-child(even):hover {\n  background: #f0f1f4; }\n\n.clickable {\n  cursor: pointer; }\n\n.result_page {\n  position: relative;\n  width: 100%;\n  height: 100%;\n  color: #406A8C; }\n  .result_page .back-sign {\n    position: relative;\n    padding: 15px 15px; }\n    .result_page .back-sign img {\n      position: relative;\n      width: 3%;\n      cursor: pointer; }\n    .result_page .back-sign span {\n      font-size: 18px;\n      margin-left: 10px;\n      vertical-align: middle; }\n\n.result_table_nav {\n  position: relative;\n  display: flex;\n  flex-direction: row;\n  justify-content: space-between;\n  align-items: center;\n  padding-bottom: 10px; }\n  .result_table_nav ul {\n    position: relative;\n    list-style-type: none;\n    margin: 0px;\n    margin-left: 15px;\n    padding-left: 0px;\n    width: 80%;\n    display: flex;\n    justify-content: space-between;\n    border: 1px solid #58BCEB;\n    border-right: 0px;\n    border-radius: 4px;\n    overflow: hidden; }\n    .result_table_nav ul li {\n      background-color: white;\n      flex-basis: 100%;\n      width: auto;\n      padding: 5px 10px;\n      vertical-align: middle;\n      border: 0px;\n      border-right: 1px solid #58BCEB;\n      text-align: center;\n      cursor: pointer; }\n      .result_table_nav ul li span {\n        vertical-align: middle;\n        color: #406A8C;\n        text-decoration: none;\n        background-color: transparent;\n        border: 0px;\n        pointer-events: none; }\n      .result_table_nav ul li.active {\n        background-color: #4A90E2; }\n        .result_table_nav ul li.active span {\n          color: white; }\n      .result_table_nav ul li:hover {\n        background-color: #4A90E2; }\n        .result_table_nav ul li:hover span {\n          color: white; }\n  .result_table_nav #review_button {\n    margin-right: 20px;\n    background-color: #58BCEB;\n    vertical-align: middle;\n    border: 0px;\n    letter-spacing: 2px;\n    font-size: 14px;\n    padding: 0px 25px;\n    height: 30px;\n    box-shadow: 0 1px 3px 0 rgba(117, 146, 222, 0.85); }\n    .result_table_nav #review_button:hover, .result_table_nav #review_button:focus {\n      background-color: #32ade7; }\n\n.review_block {\n  position: relative;\n  margin-bottom: 15px;\n  width: 100%;\n  height: 170px;\n  background: #F5F6FA;\n  box-shadow: -3px 2px 2px 0 rgba(119, 151, 178, 0.16); }\n  .review_block .question_container {\n    width: 100%;\n    height: 100%;\n    display: flex;\n    flex-direction: row;\n    justify-content: flex-start; }\n  .review_block .review_question {\n    margin-top: 15px;\n    text-align: center;\n    flex-basis: 100%; }\n    .review_block .review_question label {\n      padding: 0px 10px;\n      text-indent: 10px; }\n      .review_block .review_question label span {\n        padding-left: 5px; }\n    .review_block .review_question textarea {\n      border: 1px solid #e6e6e6; }\n  .review_block #review_submit {\n    height: 30px;\n    margin-top: 25px;\n    padding-left: 25px;\n    padding-right: 25px;\n    font-size: 15px;\n    line-height: 0px;\n    letter-spacing: 5px; }\n\n.result_area {\n  position: relative;\n  padding: 5px 15px;\n  height: 84%;\n  display: flex;\n  flex-direction: column;\n  justify-content: flex-start;\n  overflow: auto; }\n  .result_area .input_info {\n    position: relative;\n    background: #FFFFFF;\n    box-shadow: -3px 2px 2px 0 rgba(119, 151, 178, 0.16);\n    margin-bottom: 10px;\n    padding: 10px 0px; }\n    .result_area .input_info p {\n      margin: 0px 0px;\n      padding: 10px 65px; }\n      .result_area .input_info p span {\n        padding-right: 20px; }\n  .result_area .loading_sign {\n    position: absolute;\n    left: 40%;\n    top: 30%; }\n    .result_area .loading_sign img {\n      width: 50px;\n      height: 50px; }\n  .result_area .waiting-hint {\n    font-size: 18px;\n    margin-bottom: 15px; }\n\n.result_table {\n  flex-grow: 1;\n  width: 100%; }\n  .result_table table {\n    width: 100%;\n    background: #FFFFFF;\n    box-shadow: -3px 2px 2px 0 rgba(119, 151, 178, 0.16); }\n  .result_table thead th {\n    text-align: center;\n    border: 1px solid #e6e6e6;\n    padding: 20px 5px;\n    font-weight: bold; }\n  .result_table thead .sort {\n    cursor: pointer;\n    padding: 0px 0px; }\n  .result_table tbody tr:hover {\n    background-color: rgba(242, 242, 242, 0.6); }\n  .result_table tbody td {\n    text-align: center;\n    min-width: 80px;\n    border: 1px solid #e6e6e6;\n    padding: 20px 5px;\n    word-wrap: break-word; }\n  .result_table .pagify-pagination {\n    position: fixed;\n    left: 19%;\n    top: 96%;\n    font-size: 14px;\n    display: flex;\n    justify-content: flex-start;\n    align-items: center; }\n    .result_table .pagify-pagination span {\n      margin: 0px 5px;\n      cursor: pointer; }\n    .result_table .pagify-pagination .selected {\n      font-weight: bolder;\n      font-size: 16px; }\n\n.annotation_page {\n  background: rgba(55, 70, 95, 0.8);\n  position: fixed;\n  width: 100%;\n  height: 100%;\n  left: 0%;\n  top: 0%;\n  z-index: 50; }\n  .annotation_page .annotation_area {\n    position: relative;\n    top: 8%;\n    height: 85%; }\n  .annotation_page .annotation_header {\n    background-color: white;\n    position: relative;\n    width: 70%;\n    margin: 0px auto;\n    color: white;\n    display: flex;\n    justify-content: center; }\n    .annotation_page .annotation_header p {\n      color: #406A8C;\n      vertical-align: middle;\n      margin: 0px 7%;\n      letter-spacing: 10px;\n      font-size: 16px;\n      padding: 11px 0px; }\n      .annotation_page .annotation_header p span {\n        color: #4A90E2;\n        letter-spacing: 3px; }\n  .annotation_page img {\n    position: absolute;\n    width: 45px;\n    top: 0%;\n    left: 85%;\n    padding: 0px 0px;\n    cursor: pointer; }\n  .annotation_page .annotation_table {\n    background-color: white;\n    position: relative;\n    width: 70%;\n    max-height: 90%;\n    margin: 10px auto;\n    overflow: auto; }\n    .annotation_page .annotation_table table {\n      position: relative;\n      width: 100%;\n      color: #406A8C; }\n      .annotation_page .annotation_table table .col1 {\n        width: 20%;\n        border-right: 1px solid #f2f2f2; }\n      .annotation_page .annotation_table table .col2 {\n        width: 80%; }\n    .annotation_page .annotation_table th {\n      text-align: center;\n      font-size: 16px;\n      font-weight: normal;\n      letter-spacing: 10px;\n      padding: 10px 0px;\n      border-bottom: 1px solid #f2f2f2; }\n    .annotation_page .annotation_table td {\n      padding: 15px 0px; }\n      .annotation_page .annotation_table td.col1 {\n        text-align: center; }\n      .annotation_page .annotation_table td.col2 {\n        text-align: left; }\n\n.interpretation_content {\n  text-align: left;\n  padding-left: 20px;\n  line-height: 20px; }\n  .interpretation_content a {\n    color: #4A90E2; }\n  .interpretation_content .first_layer {\n    padding-left: 10px; }\n  .interpretation_content .second_layer {\n    padding-left: 10px; }\n\n.review_list {\n  position: relative;\n  margin: 25px 25px;\n  width: 65%;\n  height: 90%; }\n  .review_list p {\n    margin-top: 10px;\n    padding-left: 40px;\n    font-size: 14px;\n    color: #4A90E2; }\n\n.review_list_table {\n  position: relative;\n  width: 100%;\n  overflow: auto;\n  background: #FFFFFF;\n  box-shadow: -3px 2px 2px 0 rgba(119, 151, 178, 0.16);\n  text-align: center; }\n  .review_list_table table {\n    width: 100%;\n    color: #406A8C; }\n  .review_list_table th {\n    text-align: center;\n    background: #FFFFFF;\n    border: 0px;\n    padding: 15px 0px;\n    border-bottom: 1px solid #f2f2f2;\n    font-size: 17px;\n    font-weight: normal; }\n  .review_list_table tr:hover {\n    background: #F5F6F7; }\n  .review_list_table td {\n    padding: 15px 0px;\n    font-size: 15px; }\n  .review_list_table .tc1 {\n    width: 25%; }\n  .review_list_table .tc2 {\n    width: 50%; }\n\nbody {\n  overflow: hidden;\n  background-color: #F5F8FA; }\n\nhtml, body, #root, #root > div, .main_area, .row {\n  height: 100%; }\n\n.btn {\n  background-color: #4A90E2;\n  border-color: #4A90E2; }\n  .btn:hover, .btn:focus {\n    background-color: #2479db;\n    border-color: #2479db; }\n\n*::-webkit-scrollbar {\n  width: 6px;\n  height: 6px;\n  background-color: #E0E9EC; }\n\n*::-webkit-scrollbar-thumb {\n  background-color: #58BCEB;\n  border-radius: 6px; }\n\n.navbar {\n  position: relative;\n  background: #00061D;\n  opacity: 0.85;\n  box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.5);\n  margin-bottom: 0;\n  border: 0px;\n  border-radius: 0px;\n  z-index: 10; }\n  .navbar img {\n    display: inline;\n    width: 4%;\n    margin: 0px 10px; }\n\n.main_area {\n  position: relative; }\n\n.sidebar {\n  position: relative;\n  z-index: 5;\n  height: 100%;\n  padding-left: 0px;\n  padding-right: 0px;\n  overflow: hidden; }\n  .sidebar .bg {\n    position: absolute;\n    left: 0;\n    top: 0;\n    width: 100%;\n    height: 100%;\n    z-index: 8; }\n  .sidebar .bg-filter {\n    position: absolute;\n    background: linear-gradient(#0b4774, #09385D);\n    left: 0;\n    top: 0;\n    width: 100%;\n    height: 100%;\n    opacity: 0.8;\n    z-index: 10; }\n  .sidebar ul {\n    position: relative;\n    margin-top: 10px;\n    padding-right: 10px;\n    z-index: 20; }\n  .sidebar .nav-item {\n    margin: 10px auto; }\n  .sidebar .nav-link {\n    position: relative;\n    z-index: 30;\n    background: rgba(255, 255, 255, 0); }\n    .sidebar .nav-link.active {\n      background: linear-gradient(90deg, rgba(68, 140, 203, 0.6) 0%, rgba(255, 255, 255, 0) 92%);\n      border-left: 5px #78DCFF solid;\n      border-right: 0px; }\n    .sidebar .nav-link:focus {\n      background: linear-gradient(90deg, rgba(68, 140, 203, 0.6) 0%, rgba(255, 255, 255, 0) 92%);\n      border-left: 5px #78DCFF solid; }\n    .sidebar .nav-link img {\n      position: relative;\n      display: inline;\n      margin-right: 20px;\n      margin-left: 15%;\n      width: 10%;\n      z-index: 10;\n      pointer-events: none; }\n    .sidebar .nav-link span {\n      position: relative;\n      color: white;\n      font-size: 16px;\n      font-weight: lighter;\n      letter-spacing: 3px;\n      line-height: 150%;\n      vertical-align: middle;\n      z-index: 10;\n      pointer-events: none; }\n  .sidebar .related_link_block {\n    position: relative;\n    z-index: 25;\n    display: flex;\n    flex-direction: row;\n    flex-wrap: wrap;\n    justify-content: center;\n    position: absolute;\n    bottom: 90px; }\n    .sidebar .related_link_block p {\n      color: #cccccc;\n      width: 100%;\n      display: inline-block;\n      font-weight: lighter;\n      text-align: center;\n      font-size: 14px; }\n    .sidebar .related_link_block a {\n      text-align: center;\n      color: #cccccc;\n      font-weight: lighter;\n      font-size: 11px;\n      flex: 0 0 auto;\n      width: 50%; }\n\nmain {\n  position: relative;\n  background-color: #F5F8FA;\n  height: 90%;\n  overflow: scroll; }\n  main::-webkit-scrollbar {\n    display: none; }\n\n.tr-stripe {\n  background-color: #F5F6F7; }\n\n.tr-widen {\n  padding-top: 25px;\n  padding-bottom: 30px; }\n\n.tr-widen-sm {\n  padding-top: 15px;\n  padding-bottom: 20px; }\n\n.td-left {\n  text-align: center;\n  text-indent: -14px; }\n\n.td-stripe {\n  background-color: #F5F6F7; }\n\n.switch {\n  position: relative;\n  display: inline-block;\n  width: 36px;\n  height: 20.4px;\n  margin-right: 5px; }\n  .switch input {\n    visibility: hidden; }\n  .switch .slider {\n    position: absolute;\n    cursor: pointer;\n    top: 0;\n    left: 0;\n    right: 0;\n    bottom: 0;\n    background-color: #ccc;\n    -webkit-transition: .4s;\n    transition: .4s; }\n  .switch .slider:before {\n    position: absolute;\n    content: \"\";\n    height: 15.6px;\n    width: 15.6px;\n    left: 2.4px;\n    bottom: 2.4px;\n    background-color: white;\n    -webkit-transition: .4s;\n    transition: .4s; }\n  .switch input:checked + .slider {\n    background-color: #2196F3; }\n  .switch input:focus + .slider {\n    box-shadow: 0 0 1px #2196F3; }\n  .switch input:checked + .slider:before {\n    -webkit-transform: translateX(15.6px);\n    -ms-transform: translateX(15.6px);\n    transform: translateX(15.6px); }\n  .switch .slider.round {\n    border-radius: 20.4px; }\n  .switch .slider.round:before {\n    border-radius: 50%; }\n", ""]);
+exports.push([module.i, ".new_task {\n  position: relative;\n  width: 100%;\n  height: 100%;\n  margin-left: 20px;\n  display: flex;\n  flex-flow: row nowrap;\n  justify-content: flex-start;\n  color: #406A8C; }\n  .new_task > label {\n    position: absolute;\n    top: 88%;\n    left: 78.5%;\n    padding-left: 30px;\n    padding-right: 30px;\n    background-color: #0275d8;\n    border: 0px; }\n    .new_task > label span {\n      padding: 25px 10px; }\n    .new_task > label:hover {\n      background-color: #025fb1; }\n\n.new_task_upload {\n  position: relative;\n  flex-grow: 0;\n  width: 70%;\n  height: 95%;\n  margin-right: 20px;\n  margin-top: 20px;\n  overflow: auto;\n  overflow-x: hidden;\n  display: flex;\n  flex-direction: column;\n  -webkit-transition: all 300ms ease-in;\n  transition: all 300ms ease-in; }\n  .new_task_upload form {\n    height: 100%; }\n    .new_task_upload form .form-tb {\n      height: 100%;\n      display: flex;\n      flex-direction: column;\n      justify-content: flex-start; }\n    .new_task_upload form .tb-section {\n      flex: 1 0 auto;\n      margin-bottom: 25px;\n      background-color: white;\n      box-shadow: -3px 2px 2px 0 rgba(119, 151, 178, 0.16);\n      display: flex;\n      flex-direction: column; }\n    .new_task_upload form .tr {\n      flex-grow: 1;\n      position: relative;\n      width: 100%;\n      display: flex; }\n    .new_task_upload form .td1 {\n      position: relative;\n      display: inline;\n      width: 20%;\n      height: 100%;\n      text-align: center;\n      margin: auto 0px;\n      padding-top: 15px;\n      padding-bottom: 15px; }\n      .new_task_upload form .td1.optional {\n        font-size: 14px; }\n    .new_task_upload form .td2 {\n      position: relative;\n      display: inline;\n      width: 40%;\n      height: 100%;\n      margin: auto 0px;\n      padding: 10px 0px;\n      font-size: 13px; }\n  .new_task_upload .fade-content {\n    flex: 1 0 auto;\n    position: relative;\n    max-height: 280px;\n    overflow: hidden; }\n  .new_task_upload .fade-anchor {\n    background: -webkit-linear-gradient(top, rgba(237, 239, 240, 0), rgba(237, 239, 240, 0) 180px, #F5F8FA 250px);\n    background: linear-gradient(to bottom, rgba(237, 239, 240, 0), rgba(237, 239, 240, 0) 180px, #F5F8FA 250px);\n    -moz-box-sizing: border-box;\n    box-sizing: border-box;\n    cursor: pointer;\n    display: block;\n    height: 280px;\n    padding-top: 230px;\n    position: absolute;\n    top: 0;\n    right: 0;\n    left: 0;\n    text-align: center;\n    -webkit-transition: all 300ms ease-in;\n    transition: all 300ms ease-in; }\n    .new_task_upload .fade-anchor .fade-anchor-text {\n      background: #F5F8FA;\n      -moz-box-sizing: border-box;\n      box-sizing: border-box;\n      color: #406A8C;\n      display: inline-block;\n      max-width: 100%;\n      overflow: hidden;\n      text-decoration: underline;\n      text-overflow: ellipsis;\n      white-space: nowrap;\n      pointer-events: none; }\n  .new_task_upload .break-hint {\n    padding-left: 25px;\n    font-weight: bolder;\n    margin-bottom: 15px; }\n  .new_task_upload .file_input {\n    position: relative;\n    z-index: 5;\n    width: 80px;\n    height: 20px;\n    background: #FFFFFF;\n    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.5);\n    border-radius: 8px;\n    margin-bottom: 10px;\n    margin-top: 10px;\n    vertical-align: middle;\n    text-align: center;\n    cursor: pointer; }\n    .new_task_upload .file_input span {\n      position: relative;\n      display: inline-block;\n      font-size: 11px;\n      color: #53BAEC;\n      cursor: pointer; }\n      .new_task_upload .file_input span.prompt {\n        display: block;\n        margin-top: 5px;\n        color: #406A8C;\n        font-size: 10px;\n        cursor: default; }\n    .new_task_upload .file_input input {\n      position: relative;\n      visibility: hidden;\n      width: 0px;\n      height: 0px;\n      z-index: 0; }\n  .new_task_upload .highlight {\n    color: #53BAEC;\n    cursor: pointer;\n    font-size: 15px; }\n    .new_task_upload .highlight:hover {\n      text-decoration: underline; }\n  .new_task_upload label {\n    margin-bottom: 0px;\n    font-weight: normal; }\n  .new_task_upload a {\n    color: #53BAEC; }\n  .new_task_upload textarea {\n    border: 1px solid #e6e6e6; }\n  .new_task_upload #task_submit {\n    display: none; }\n\n.new_task_progress {\n  position: relative;\n  flex-grow: 0;\n  background: #FFFFFF;\n  box-shadow: -3px 2px 2px 0 rgba(119, 151, 178, 0.16);\n  margin-top: 20px;\n  width: 22%;\n  height: 79%;\n  overflow: auto; }\n  .new_task_progress .tb-title {\n    position: relative;\n    width: 100%;\n    padding-top: 0px;\n    padding: 20px; }\n\n.td3 {\n  position: relative;\n  width: 100%;\n  padding: 15px 20px;\n  font-size: 13px;\n  font-weight: 400; }\n  .td3 .progress {\n    margin-bottom: 6px;\n    height: 8px; }\n    .td3 .progress .progress-bar-info {\n      background-color: #53BAEC; }\n  .td3 .completed_task {\n    padding: 15px 0px;\n    cursor: pointer;\n    transition: .1s; }\n    .td3 .completed_task span {\n      pointer-events: none; }\n    .td3 .completed_task:hover {\n      font-size: 15px;\n      opacity: 0.9; }\n    .td3 .completed_task img {\n      margin-left: 15px;\n      width: 25px; }\n  .td3 .failed_task {\n    padding: 15px 0px;\n    cursor: pointer;\n    transition: .1s; }\n    .td3 .failed_task .explain {\n      visibility: hidden; }\n    .td3 .failed_task span {\n      pointer-events: none; }\n    .td3 .failed_task a {\n      color: #53BAEC;\n      z-index: 100;\n      pointer-events: all; }\n    .td3 .failed_task:hover .explain {\n      visibility: visible; }\n  .td3 .waiting_task {\n    padding: 5px 0px;\n    text-align: center; }\n    .td3 .waiting_task img {\n      width: 20%; }\n  .td3 p {\n    margin-bottom: 6px; }\n  .td3:hover {\n    background-color: #f2f2f2; }\n\n.task_list {\n  position: relative;\n  margin: 20px 20px;\n  width: 65%;\n  height: 90%; }\n  .task_list .search_container {\n    position: relative;\n    width: 100%;\n    height: 7%;\n    margin-bottom: 10px; }\n    .task_list .search_container span {\n      position: absolute;\n      height: 50%;\n      font-size: 12px;\n      opacity: 0.4;\n      transform: translate(0, -50%); }\n    .task_list .search_container div {\n      position: relative;\n      width: 100%;\n      height: 100%; }\n      .task_list .search_container div select {\n        display: none; }\n      .task_list .search_container div input {\n        position: relative;\n        width: 100%;\n        height: 100%;\n        border: 0px;\n        /* Input: */\n        background: #FFFFFF;\n        border: 1px solid #58BCEB;\n        border-radius: 4px; }\n        .task_list .search_container div input::-webkit-input-placeholder {\n          text-indent: 6%;\n          background: url(" + __webpack_require__(541) + ") no-repeat;\n          background-position: 2% 0;\n          background-size: 19px; }\n  .task_list p {\n    margin-top: 10px;\n    padding-left: 40px;\n    font-size: 14px;\n    color: #4A90E2; }\n\n.task_list_table {\n  position: relative;\n  width: 100%;\n  background: #FFFFFF;\n  box-shadow: -3px 2px 2px 0 rgba(119, 151, 178, 0.16);\n  overflow: auto;\n  height: 92%; }\n  .task_list_table table {\n    width: 100%;\n    text-align: center;\n    color: #406A8C; }\n  .task_list_table th {\n    text-align: center;\n    background: #FFFFFF;\n    border: 0px;\n    padding: 15px 0px;\n    border-bottom: 1px solid #f2f2f2;\n    font-size: 17px;\n    font-weight: normal; }\n  .task_list_table td {\n    padding: 15px 0px;\n    font-size: 15px; }\n  .task_list_table .tc1 {\n    width: 25%; }\n  .task_list_table .tc2 {\n    width: 50%; }\n\n.table-striped > tbody > tr:nth-child(odd):hover,\n.table-striped > tbody > tr:nth-child(odd):hover {\n  background: #f0f1f4; }\n\n.table-striped > tbody > tr:nth-child(even):hover,\n.table-striped > tbody > tr:nth-child(even):hover {\n  background: #f0f1f4; }\n\n.clickable {\n  cursor: pointer; }\n\n.result_page {\n  position: relative;\n  width: 100%;\n  height: 100%;\n  color: #406A8C; }\n  .result_page .back-sign {\n    position: relative;\n    padding: 15px 15px; }\n    .result_page .back-sign img {\n      position: relative;\n      width: 3%;\n      cursor: pointer; }\n    .result_page .back-sign span {\n      font-size: 18px;\n      margin-left: 10px;\n      vertical-align: middle; }\n\n.result_table_nav {\n  position: relative;\n  display: flex;\n  flex-direction: row;\n  justify-content: space-between;\n  align-items: center;\n  padding-bottom: 10px; }\n  .result_table_nav ul {\n    position: relative;\n    list-style-type: none;\n    margin: 0px;\n    margin-left: 15px;\n    padding-left: 0px;\n    width: 80%;\n    display: flex;\n    justify-content: space-between;\n    border: 1px solid #58BCEB;\n    border-right: 0px;\n    border-radius: 4px;\n    overflow: hidden; }\n    .result_table_nav ul li {\n      background-color: white;\n      flex-basis: 100%;\n      width: auto;\n      padding: 5px 10px;\n      vertical-align: middle;\n      border: 0px;\n      border-right: 1px solid #58BCEB;\n      text-align: center;\n      cursor: pointer; }\n      .result_table_nav ul li span {\n        vertical-align: middle;\n        color: #406A8C;\n        text-decoration: none;\n        background-color: transparent;\n        border: 0px;\n        pointer-events: none; }\n      .result_table_nav ul li.active {\n        background-color: #4A90E2; }\n        .result_table_nav ul li.active span {\n          color: white; }\n      .result_table_nav ul li:hover {\n        background-color: #4A90E2; }\n        .result_table_nav ul li:hover span {\n          color: white; }\n  .result_table_nav #review_button {\n    margin-right: 20px;\n    background-color: #58BCEB;\n    vertical-align: middle;\n    border: 0px;\n    letter-spacing: 2px;\n    font-size: 14px;\n    padding: 0px 25px;\n    height: 30px;\n    box-shadow: 0 1px 3px 0 rgba(117, 146, 222, 0.85); }\n    .result_table_nav #review_button:hover, .result_table_nav #review_button:focus {\n      background-color: #32ade7; }\n\n.review_block {\n  position: relative;\n  margin-bottom: 15px;\n  width: 100%;\n  height: 170px;\n  background: #F5F6FA;\n  box-shadow: -3px 2px 2px 0 rgba(119, 151, 178, 0.16); }\n  .review_block .question_container {\n    width: 100%;\n    height: 100%;\n    display: flex;\n    flex-direction: row;\n    justify-content: flex-start; }\n  .review_block .review_question {\n    margin-top: 15px;\n    text-align: center;\n    flex-basis: 100%; }\n    .review_block .review_question label {\n      padding: 0px 10px;\n      text-indent: 10px; }\n      .review_block .review_question label span {\n        padding-left: 5px; }\n    .review_block .review_question textarea {\n      border: 1px solid #e6e6e6; }\n  .review_block #review_submit {\n    height: 30px;\n    margin-top: 25px;\n    padding-left: 25px;\n    padding-right: 25px;\n    font-size: 15px;\n    line-height: 0px;\n    letter-spacing: 5px; }\n\n.result_area {\n  position: relative;\n  padding: 5px 15px;\n  height: 84%;\n  display: flex;\n  flex-direction: column;\n  justify-content: flex-start;\n  overflow: auto; }\n  .result_area .input_info {\n    position: relative;\n    background: #FFFFFF;\n    box-shadow: -3px 2px 2px 0 rgba(119, 151, 178, 0.16);\n    margin-bottom: 10px;\n    padding: 10px 0px; }\n    .result_area .input_info p {\n      margin: 0px 0px;\n      padding: 10px 65px; }\n      .result_area .input_info p span {\n        padding-right: 20px; }\n  .result_area .loading_sign {\n    position: absolute;\n    left: 40%;\n    top: 30%; }\n    .result_area .loading_sign img {\n      width: 50px;\n      height: 50px; }\n  .result_area .waiting-hint {\n    font-size: 18px;\n    margin-bottom: 15px; }\n\n.result_table {\n  flex-grow: 1;\n  width: 100%; }\n  .result_table table {\n    width: 100%;\n    background: #FFFFFF;\n    box-shadow: -3px 2px 2px 0 rgba(119, 151, 178, 0.16); }\n  .result_table thead th {\n    text-align: center;\n    border: 1px solid #e6e6e6;\n    padding: 20px 5px;\n    font-weight: bold; }\n  .result_table thead .sort {\n    cursor: pointer;\n    padding: 0px 0px; }\n  .result_table tbody tr:hover {\n    background-color: rgba(242, 242, 242, 0.6); }\n  .result_table tbody td {\n    text-align: center;\n    min-width: 80px;\n    border: 1px solid #e6e6e6;\n    padding: 20px 5px;\n    word-wrap: break-word; }\n  .result_table .pagify-pagination {\n    position: fixed;\n    left: 19%;\n    top: 96%;\n    font-size: 14px;\n    display: flex;\n    justify-content: flex-start;\n    align-items: center; }\n    .result_table .pagify-pagination span {\n      margin: 0px 5px;\n      cursor: pointer; }\n    .result_table .pagify-pagination .selected {\n      font-weight: bolder;\n      font-size: 16px; }\n\n.annotation_page {\n  background: rgba(55, 70, 95, 0.8);\n  position: fixed;\n  width: 100%;\n  height: 100%;\n  left: 0%;\n  top: 0%;\n  z-index: 50; }\n  .annotation_page .annotation_area {\n    position: relative;\n    top: 8%;\n    height: 85%; }\n  .annotation_page .annotation_header {\n    background-color: white;\n    position: relative;\n    width: 70%;\n    margin: 0px auto;\n    color: white;\n    display: flex;\n    justify-content: center; }\n    .annotation_page .annotation_header p {\n      color: #406A8C;\n      vertical-align: middle;\n      margin: 0px 7%;\n      letter-spacing: 10px;\n      font-size: 16px;\n      padding: 11px 0px; }\n      .annotation_page .annotation_header p span {\n        color: #4A90E2;\n        letter-spacing: 3px; }\n  .annotation_page img {\n    position: absolute;\n    width: 45px;\n    top: 0%;\n    left: 85%;\n    padding: 0px 0px;\n    cursor: pointer; }\n  .annotation_page .annotation_table {\n    background-color: white;\n    position: relative;\n    width: 70%;\n    max-height: 90%;\n    margin: 10px auto;\n    overflow: auto; }\n    .annotation_page .annotation_table table {\n      position: relative;\n      width: 100%;\n      color: #406A8C; }\n      .annotation_page .annotation_table table .col1 {\n        width: 20%;\n        border-right: 1px solid #f2f2f2; }\n      .annotation_page .annotation_table table .col2 {\n        width: 80%; }\n    .annotation_page .annotation_table th {\n      text-align: center;\n      font-size: 16px;\n      font-weight: normal;\n      letter-spacing: 10px;\n      padding: 10px 0px;\n      border-bottom: 1px solid #f2f2f2; }\n    .annotation_page .annotation_table td {\n      padding: 15px 0px; }\n      .annotation_page .annotation_table td.col1 {\n        text-align: center; }\n      .annotation_page .annotation_table td.col2 {\n        text-align: left; }\n\n.interpretation_content {\n  text-align: left;\n  padding-left: 20px;\n  line-height: 20px; }\n  .interpretation_content a {\n    color: #4A90E2; }\n  .interpretation_content .first_layer {\n    padding-left: 10px; }\n  .interpretation_content .second_layer {\n    padding-left: 10px; }\n\n.review_list {\n  position: relative;\n  margin: 25px 25px;\n  width: 65%;\n  height: 90%; }\n  .review_list p {\n    margin-top: 10px;\n    padding-left: 40px;\n    font-size: 14px;\n    color: #4A90E2; }\n\n.review_list_table {\n  position: relative;\n  width: 100%;\n  overflow: auto;\n  background: #FFFFFF;\n  box-shadow: -3px 2px 2px 0 rgba(119, 151, 178, 0.16);\n  text-align: center; }\n  .review_list_table table {\n    width: 100%;\n    color: #406A8C; }\n  .review_list_table th {\n    text-align: center;\n    background: #FFFFFF;\n    border: 0px;\n    padding: 15px 0px;\n    border-bottom: 1px solid #f2f2f2;\n    font-size: 17px;\n    font-weight: normal; }\n  .review_list_table tr:hover {\n    background: #F5F6F7; }\n  .review_list_table td {\n    padding: 15px 0px;\n    font-size: 15px; }\n  .review_list_table .tc1 {\n    width: 25%; }\n  .review_list_table .tc2 {\n    width: 50%; }\n\nbody {\n  overflow: hidden;\n  background-color: #F5F8FA; }\n\nhtml, body, #root, #root > div, .main_area, .row {\n  height: 100%; }\n\n.btn {\n  background-color: #4A90E2;\n  border-color: #4A90E2; }\n  .btn:hover, .btn:focus {\n    background-color: #2479db;\n    border-color: #2479db; }\n\n*::-webkit-scrollbar {\n  width: 6px;\n  height: 6px;\n  background-color: #E0E9EC; }\n\n*::-webkit-scrollbar-thumb {\n  background-color: #58BCEB;\n  border-radius: 6px; }\n\n.navbar {\n  position: relative;\n  background: #00061D;\n  opacity: 0.85;\n  box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.5);\n  margin-bottom: 0;\n  border: 0px;\n  border-radius: 0px;\n  z-index: 10; }\n  .navbar img {\n    display: inline;\n    width: 4%;\n    margin: 0px 10px; }\n\n.main_area {\n  position: relative; }\n\n.sidebar {\n  position: relative;\n  z-index: 5;\n  height: 100%;\n  padding-left: 0px;\n  padding-right: 0px;\n  overflow: hidden; }\n  .sidebar .bg {\n    position: absolute;\n    left: 0;\n    top: 0;\n    width: 100%;\n    height: 100%;\n    z-index: 8; }\n  .sidebar .bg-filter {\n    position: absolute;\n    background: linear-gradient(#0b4774, #09385D);\n    left: 0;\n    top: 0;\n    width: 100%;\n    height: 100%;\n    opacity: 0.8;\n    z-index: 10; }\n  .sidebar ul {\n    position: relative;\n    margin-top: 10px;\n    padding-right: 10px;\n    z-index: 20; }\n  .sidebar .nav-item {\n    margin: 10px auto; }\n  .sidebar .nav-link {\n    position: relative;\n    z-index: 30;\n    background: rgba(255, 255, 255, 0); }\n    .sidebar .nav-link.active {\n      background: linear-gradient(90deg, rgba(68, 140, 203, 0.6) 0%, rgba(255, 255, 255, 0) 92%);\n      border-left: 5px #78DCFF solid;\n      border-right: 0px; }\n    .sidebar .nav-link:focus {\n      background: linear-gradient(90deg, rgba(68, 140, 203, 0.6) 0%, rgba(255, 255, 255, 0) 92%);\n      border-left: 5px #78DCFF solid; }\n    .sidebar .nav-link img {\n      position: relative;\n      display: inline;\n      margin-right: 20px;\n      margin-left: 15%;\n      width: 10%;\n      z-index: 10;\n      pointer-events: none; }\n    .sidebar .nav-link span {\n      position: relative;\n      color: white;\n      font-size: 16px;\n      font-weight: lighter;\n      letter-spacing: 3px;\n      line-height: 150%;\n      vertical-align: middle;\n      z-index: 10;\n      pointer-events: none; }\n  .sidebar .related_link_block {\n    position: relative;\n    z-index: 25;\n    display: flex;\n    flex-direction: row;\n    flex-wrap: wrap;\n    justify-content: center;\n    position: absolute;\n    bottom: 90px; }\n    .sidebar .related_link_block p {\n      color: #cccccc;\n      width: 100%;\n      display: inline-block;\n      font-weight: lighter;\n      text-align: center;\n      font-size: 14px; }\n    .sidebar .related_link_block a {\n      text-align: center;\n      color: #cccccc;\n      font-weight: lighter;\n      font-size: 11px;\n      flex: 0 0 auto;\n      width: 50%; }\n\nmain {\n  position: relative;\n  background-color: #F5F8FA;\n  height: 90%;\n  overflow: scroll; }\n  main::-webkit-scrollbar {\n    display: none; }\n\n.tr-stripe {\n  background-color: #F5F6F7; }\n\n.tr-widen {\n  padding-top: 25px;\n  padding-bottom: 30px; }\n\n.tr-widen-sm {\n  padding-top: 15px;\n  padding-bottom: 20px; }\n\n.td-left {\n  text-align: center;\n  text-indent: -14px; }\n\n.td-stripe {\n  background-color: #F5F6F7; }\n\n.switch {\n  position: relative;\n  display: inline-block;\n  width: 36px;\n  height: 20.4px;\n  margin-right: 5px; }\n  .switch input {\n    visibility: hidden; }\n  .switch .slider {\n    position: absolute;\n    cursor: pointer;\n    top: 0;\n    left: 0;\n    right: 0;\n    bottom: 0;\n    background-color: #ccc;\n    -webkit-transition: .4s;\n    transition: .4s; }\n  .switch .slider:before {\n    position: absolute;\n    content: \"\";\n    height: 15.6px;\n    width: 15.6px;\n    left: 2.4px;\n    bottom: 2.4px;\n    background-color: white;\n    -webkit-transition: .4s;\n    transition: .4s; }\n  .switch input:checked + .slider {\n    background-color: #2196F3; }\n  .switch input:focus + .slider {\n    box-shadow: 0 0 1px #2196F3; }\n  .switch input:checked + .slider:before {\n    -webkit-transform: translateX(15.6px);\n    -ms-transform: translateX(15.6px);\n    transform: translateX(15.6px); }\n  .switch .slider.round {\n    border-radius: 20.4px; }\n  .switch .slider.round:before {\n    border-radius: 50%; }\n", ""]);
 
 // exports
 

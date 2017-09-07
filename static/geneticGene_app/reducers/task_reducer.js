@@ -5,19 +5,19 @@ export default function tasks(state={}, action){
     case root_actions.REQUEST_UPLOAD_TASK:
      return{
        ...state,
-       isFetching:true
+       isUploading:true
      }
 
     case root_actions.UPLOAD_TASK_SUCCESS:
      return{
        ...state,
-       isFetching:false,
+       isUploading:false,
      }
 
     case root_actions.UPLOAD_TASK_FAILURE:
      return{
        ...state,
-       isFetching:false,
+       isUploading:false,
        errorCode:action.payload
      }
 

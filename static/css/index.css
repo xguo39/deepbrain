@@ -389,7 +389,13 @@ p{
     width: 170px;
 }
 
+/* Define the contact*/
+#contact p {
+  font-size: 20px;
+  margin-top: 20px;
+}
 
+/* Define the footer*/
 footer {
     background-color: #005e80;
     color: #f5f5f5;

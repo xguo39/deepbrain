@@ -5,6 +5,7 @@ import {push} from 'react-router-redux';
 
 const mapStateToProps = (state)=>{
   return {
+     isUploading:state.tasks.isUploading,
      progress_task_list:state.tasks.progress_task_list
   }
 }
