@@ -6,5 +6,10 @@ deepb/data/
 deepb/migrations/
 .gitignore
 dump.rdb
+node_modules/
 local_data/
+<<<<<<< HEAD
+=======
+deepb/test.ipynb
+>>>>>>> master
 node_modules/

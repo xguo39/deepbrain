@@ -22,9 +22,9 @@ def getTopVariantsFromACMGRankings(ACMG_result):
     variantsdata= dict()
     top_variants = []
     for index, row in ACMG_result.iterrows():
-        gene, variant, id, final_score, pathogenicity_score, pathogenicity, hit_criteria, hpo_hit_score = row['gene'], row['variant'], row['id'], row['final_score'], row['pathogenicity_score'], row['pathogenicity'], row['hit_criteria'], row['hpo_hit_score']
+        gene, transcript, variant, id, zygosity, final_score, pathogenicity_score, pathogenicity, hit_criteria, hpo_hit_score = row['gene'], row['transcript'], row['variant'], row['id'], row['zygosity'], row['final_score'], row['pathogenicity_score'], row['pathogenicity'], row['hit_criteria'], row['hpo_hit_score']
         top_variants.append((gene, variant))
-        variantsdata[(gene, variant)] = [id, final_score, pathogenicity_score, pathogenicity, hit_criteria, hpo_hit_score]
+        variantsdata[(gene, variant)] = [transcript, id, zygosity, final_score, pathogenicity_score, pathogenicity, hit_criteria, hpo_hit_score]
 
     return top_variants, variantsdata
 
@@ -174,10 +174,10 @@ def searchPhenosFromDBdata(patient_phenotypes, variantphenos):
         phenos = list(set(variantphenosfromDB[key])) 
         if (gene, variant) in curr_interpret:
             curr_interpret[(gene, variant)].append("We find variants that affect the same protein domain as our case may lead to the phenos that match our patient's from genomic databases (OMIM, ORPHANET, etc): %s." % (', '.join(list(set(phenos))))) 
-            curr_interpret_chinese[(gene, variant)].append("基因疾病数据库(比如OMIM, ORPHANET)中报道与此基因变异类似、影响相同蛋白功能区的变异可能导致的如下表型与该病人吻合: %s." % (', '.join(list(set(phenos))))) 
+            curr_interpret_chinese[(gene, variant)].append("基因疾病数据库(OMIM, ORPHANET)中报道与此基因变异类似、影响相同蛋白功能区的变异可能导致的如下表型与该病人吻合: %s." % (', '.join(list(set(phenos))))) 
         else:
             curr_interpret[(gene, variant)] = ["We find variants that affect the same protein domain as our case may lead to the phenos that match our patient's from genomic databases (OMIM, ORPHANET, etc): %s." % (', '.join(list(set(phenos))))]
-            curr_interpret_chinese[(gene, variant)] = ["基因疾病数据库(比如OMIM, ORPHANET)中报道与此基因变异类似、影响相同蛋白功能区的变异可能导致的如下表型与该病人吻合: %s." % (', '.join(list(set(phenos))))]
+            curr_interpret_chinese[(gene, variant)] = ["基因疾病数据库(OMIM, ORPHANET)中报道与此基因变异类似、影响相同蛋白功能区的变异可能导致的如下表型与该病人吻合: %s." % (', '.join(list(set(phenos))))]
     return variantphenosfromDB
 
 def initWordDifficultyIndex():
@@ -263,7 +263,7 @@ def searchPhenosFromPubmed(patient_phenotypes, samedomainvariants, domainvariant
     for key in variantphenospmids.keys():
         gene, variant, protein = key
         pmids = variantphenospmids[key]
-        pmids = ["<a href='https://www.ncbi.nlm.nih.gov/pubmed/%s'> %s </a>" %(i,i) for i in pmids]
+        pmids = ["<a href='https://www.ncbi.nlm.nih.gov/pubmed/%s' target='_blank'> %s </a>" %(i,i) for i in pmids]
         if (gene, variant) in curr_interpret:
             curr_interpret[(gene, variant)].append('Previous literature (PMIDs: %s) reported similar phenotypes caused by genetic variants affecting the same protein domain as out current case.' % (', ').join(list(set(pmids))))
             curr_interpret_chinese[(gene, variant)].append('生物医学文献(PMIDs: %s)之前报道此基因变异的相似变异(影响相同蛋白功能区)引发与该病人相似的表型.' % (', ').join(list(set(pmids))))
@@ -485,10 +485,10 @@ def getScores(variantphenosfromPubmed, variantphenosfromDB, variantphenos, patie
         oppo_phenos = ', '.join(oppo_phenos)
         if (gene, variant) in curr_interpret:
             curr_interpret[(gene, variant)].append('We found previously reported cases that the genetic variants in the same protein domain as our case caused OPPOSITE phenotypes as our patient: %s.' % oppo_phenos)
-            curr_interpret_chinese[(gene, variant)].append('基因疾病数据库(比如OMIM, ORPHANET)报道与此基因变异相似的变异引发与该病人相反的表型: %s. 该变异对此病人的致病权重应下调.' % oppo_phenos)
+            curr_interpret_chinese[(gene, variant)].append('基因疾病数据库(OMIM, ORPHANET)报道与此基因变异相似的变异引发与该病人相反的表型: %s. 该变异对此病人的致病权重应下调.' % oppo_phenos)
         else:
             curr_interpret[(gene, variant)] = ['We found previously reported cases that the genetic variants in the same protein domain as our case caused OPPOSITE phenotypes as our patient: %s.' % oppo_phenos]
-            curr_interpret_chinese[(gene, variant)] = ['基因疾病数据库(比如OMIM, ORPHANET)报道与此基因变异相似的变异引发与该病人相反的表型: %s. 该变异对此病人的致病权重应下调.' % oppo_phenos]
+            curr_interpret_chinese[(gene, variant)] = ['基因疾病数据库(OMIM, ORPHANET)报道与此基因变异相似的变异引发与该病人相反的表型: %s. 该变异对此病人的致病权重应下调.' % oppo_phenos]
         if originalvar in scores:
             scores[originalvar] = scores[originalvar] * 0.9
         else:
@@ -513,11 +513,11 @@ def generateOutput(variants, ACMG_result, patient_phenotypes, variant_ACMG_inter
     final_res = []
     for key in variantsdata:
         gene, variant, protein = key
-        id, final_score, pathogenicity_score, pathogenicity, hit_criteria, hpo_hit_score = variantsdata[key]
+        transcript, id, zygosity, final_score, pathogenicity_score, pathogenicity, hit_criteria, hpo_hit_score = variantsdata[key]
         pheno_match_score = scores[key] if key in scores else 1.0
         final_score = float(final_score) * pheno_match_score
-        final_res.append([gene, variant, protein, id, final_score, pathogenicity, hit_criteria, pathogenicity_score, hpo_hit_score, pheno_match_score])	
-    df_final_res = pd.DataFrame(final_res, columns = ['gene', 'variant', 'protein', 'id', 'final_score', 'pathogenicity', 'hit_criteria', 'pathogenicity_score', 'hpo_hit_score', 'pheno_match_score'])
+        final_res.append([gene, transcript, variant, protein, id, zygosity, final_score, pathogenicity, hit_criteria, pathogenicity_score, hpo_hit_score, pheno_match_score])	
+    df_final_res = pd.DataFrame(final_res, columns = ['gene', 'transcript', 'variant', 'protein', 'id', 'zygosity', 'final_score', 'pathogenicity', 'hit_criteria', 'pathogenicity_score', 'hpo_hit_score', 'pheno_match_score'])
     df_final_res['pheno_match_score'] = df_final_res['pheno_match_score']*df_final_res['hpo_hit_score']
     # df_final_res['pheno_match_score'] = df_final_res['hpo_hit_score']
     df_final_res['final_score'] = df_final_res['final_score'].apply(lambda x: round(x,2))

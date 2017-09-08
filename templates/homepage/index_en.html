@@ -2,15 +2,16 @@
 <html lang="en">
 {% load static %}
 <head>
-  <title>GenoNova</title>
+  <title>Genonova</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
   <link href="{% static 'css/index.css' %}" rel="stylesheet">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+  <link rel="icon" href="{% static 'images/logo.png' %}">
+  <script src="{% static 'js/jquery.min.js' %}"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </head>
-<body>
+
 <body id="myPage" data-spy="scroll" data-target=".navbar" data-offset="50">
 
 <nav class="navbar navbar-default navbar-fixed-top">
@@ -21,19 +22,25 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="#">Genonova</a>
+      <a class="navbar-brand" href="#">
+        <img src="{% static 'images/header-logo.png' %}" alt="header-logo">
+        <span>诺亚|Genonova</span>
+      </a>
     </div>
     <div class="collapse navbar-collapse" id="myNavbar">
       <ul class="nav navbar-nav navbar-right">
-        <li><a href="#test">Gene Diagnosis</a></li>
-        <li><a href="#introduction">Introduction</a></li>
-        <li><a href="#contact">Contact</a></li>
+        <li><a href="#test"><span>Dr. Nova</span></a></li>
+        <li><a href="#introduction"><span>Company</span></a></li>
+        <li><a href="#product"><span>Products</span></a></li>
+        <li><a href="#partner"><span>Partners</span></a></li>
+        <li><a href="#contact"><span>Contact</span></a></li>
         <li class="dropdown">
-          <a class="dropdown-toggle" data-toggle="dropdown" href="#">Language
+          <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+            Language
             <span class="caret"></span>
           </a>
           <ul class="dropdown-menu">
-            <li><a href="{% url 'deepb:index' %}">中文</a></li>
+            <li><a href="{% url 'deepb:index' %}">Chinese</a></li>
           </ul>
         </li>
       </ul>
@@ -55,7 +62,7 @@
       <img src="{% static 'images/carousel_1.jpg' %}" alt="First Carousel">
       <div class="carousel-caption">
         <h3>Genonova</h3>
-        <p>智慧医疗领跑者</p>
+        <p>Nova Medical Language Processing Expert</p>
       </div>
     </div>
 
@@ -63,15 +70,15 @@
       <img src="{% static 'images/carousel_2.jpg' %}" alt="Second Carousel">
       <div class="carousel-caption">
         <h3>Genonova</h3>
-        <p>一键式解读基因测序海量数据</p>
+        <p>Nova Intelligent Interpretation System for Genetic Testing </p>
       </div>
     </div>
 
     <div class="item">
-      <img src="{% static 'images/carousel_3.jpg' %}" alt="Third Carousel">
+      <img src="{% static 'images/carousel_3.png' %}" alt="Third Carousel">
       <div class="carousel-caption">
         <h3>Genonova</h3>
-        <p>源自美国ACMG金标准</p>
+        <p>Dr. Nova for Tumor Grading</p>
       </div>
     </div>
   </div>
@@ -87,30 +94,168 @@
   </a>
 </div>
 
+<div id="test" class="pds container text-center">
+  <h3> Dr. Nova </h3>
+  <div class="row">
+      <!-- <a class="col-sm-4" target="_blank" href="{% url 'deepb:chpo' %}"><button class="btn btn1">进入智能解读平台</button></a> -->
+      <a class="col-sm-3 col-xs-12" target="_blank" href="{% url 'deepb:chpo' %}">
+         <div class='pd-small'>
+           <img class='s_img'src="{% static 'images/chpo_icon1.png'%}" alt="chpo-icon">
+         </div>
+           <p> CHPO Processing </p>
+      </a>
+      <a class="col-sm-6 col-xs-12" target="_blank" href="{% url 'deepb:home_new_ch' %}">
+        <div>
+          <img class='l_img' src="{% static 'images/gene_interpretation_icon1.png'%}" alt="geneInterpretation-icon">
+        </div>
+        <p> Genetic and Rare diseases Gene Interpretation </p>
+      </a>
+      <a class="col-sm-3 col-xs-12" target="_blank" href="{% url 'deepb:lof' %}">
+        <div class='pd-small'>
+           <img class='s_img' src="{% static 'images/gene_cancer_icon.png'%}" alt="lof-icon">
+        </div>
+        <p> Loss of function </p>
+      </a>
+  </div>
+</div>
 
-<div id="test" class="container text-center">
-  <h3>基因解读</h3>
-  <p>联系我们申请试用基因测序智能解读平台1.0版</p>
+<div class="company-intro container text-center">
+  <div id="introduction">
+    <img src="{% static 'images/logo.png'%}" alt='company_logo'>
+    <h3>About Us</h3>
+      <ul>
+        <li>
+          <span>Genonova was founded in New York in 2016.
+           We endeavor to apply machine learning (such as deep learning),
+           natural language processing (NLP), data mining with big data to healthcare
+          </span>
+        </li>
+        <li>
+          <span>Core members of our team have working experience in top US companies with
+            expertise in IT, finance, VC, healthcare and Biotech
+          </span>
+        </li>
+        <li>
+          <span>Our strength is to extract biological and medical knowledge from millions of literatures, books and databases by deep learning and NLP,
+           and to recognize and reveal patterns underneath tons of medical data by machine learning
+         </span>
+       </li>
+      </ul>
+  </div>
+</div>
+
+<div id="product" class="pd-intro container text-center">
+  <div class='sub-container'>
+    <h3 class="text-center">Products-Dr. Nova</h3>
+    <ul class="nav nav-tabs">
+      <li><a data-toggle="tab" href="#menu1">Medical Language Processing</a></li>
+      <li class="active"><a data-toggle="tab" href="#home">Genetic and Rare diseases</a></li>
+      <li><a data-toggle="tab" href="#menu2">Tumor Gene Expert</a></li>
+    </ul>
+    <div class="tab-content">
+      <div id="home" class="tab-pane fade in active">
+          <!-- <h4>基因测序智能解读</h4> -->
+        <ul>
+        <li>
+          <span>
+            Intelligent interpretation of genetic testing results based on NLP
+         </span>
+        </li>
+        <li>
+          <span>
+            Automated and intelligent processing including the description of phenotypic abnormalities with
+            standardized vocabulary in Human Phenotype Ontology (HPO). No medical knowledge is required for users
+          </span>
+        </li>
+        <li>
+          <span>
+            Providing information of related phenotypes and genetic variants (such as similar variants, alterations to protein functions, pathogenicity)
+             by real-time updating of over 15 clinical databases and automated query against over 20 million
+             biological and medical papers
+          </span>
+       </li>
+        <li>
+          <span>
+            Standardized interpretation and report based on American College of Medical Genetics (ACMG) guidelines.
+          </span>
+        </li>
+        <li>
+          <span>
+            Create our own quantitative ranking system for variation pathogenicity。
+          </span>
+        </li>
+        </ul>
+      </div>
+      <div id="menu1" class="tab-pane fade">
+          <!-- <h4>医学语言处理专家</h4> -->
+        <ul>
+        <li>
+           <span>
+             Clinical practice is often complicated and ambiguous.
+             Doctors could have different description and classification of the disease status,
+             leading to distinct interpretation of genomic testing results
+           </span>
+        </li>
+        <li>
+           <span>  At present, it is difficult for medical professionals, scientific researchers,
+             gene testing providers and patients to take advantage of standardized vocabulary
+             such as Chinese Human Phenotype Ontology Consortium <a href=" " data-toggle="tooltip" title="访问CHPO官网">CHPO</a >
+           </span>
+        </li>
+        <li>
+          <span>
+            Medical Language Processing Expert translates non-standardized symptom descriptions with standardized vocabularies
+            based on natural language processing. Thus medical professional,
+            scientific researchers and patients can still communicate accurately with their common languages
+          </span>
+        </li>
+        </ul>
+      </div>
+      <div id="menu2" class="tab-pane fade">
+        <!-- <h4>诺亚肿瘤分级诊断专家</h4> -->
+        <ul>
+        <li>
+          <span>
+            Cancer panels use next generation sequencing (NGS) technology to target specific genes or mutations that have established relevancy
+            to a particular cancer phenotype. NGS facilitates sequencing of large genomic regions, high numbers of genes, and/or high numbers of samples in a single,
+            efficient and cost-effective assay. In addition, NGS provides significantly higher sensitivity than traditional techniques, which permits the discovery of rare somatic mutations,
+            many of which have been identified as important cancer drivers.
+          </span>
+        </li>
+        <li>
+          <span>
+            Cancer panels provide comprehensive genomic analysis for cancer research, biomarker discovery,
+            and patient stratification for clinical discovery. Designed and developed with the most recent
+            research data available, these assays provide thorough assessments on cancer genes of interest.
+          </span>
+        </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div id="partner" class="container text-center">
+  <h3>Partners</h3>
+  <div class="logos center">
+    <img src="{% static 'images/chinese1-logo.gif' %}" alt="chinese1-logo">
+    <img src="{% static 'images/beijing-logo.jpg' %}" alt="chinese1-logo">
+    <img src="{% static 'images/wcmc-logo.jpg' %}" alt="wcmc-logo">
+    <img src="{% static 'images/gatech-logo.gif' %}" alt="gatech-logo">
+    <img src="{% static 'images/nyu-logo.png' %}" alt="nyu-logo">
+    <img src="{% static 'images/jackson-laboratory-logo.jpg' %}" alt="jackson-laboratory-logo">
+    <img src="{% static 'images/stanford-logo.jpg' %}" alt="stanford-logo">
+    <img src="{% static 'images/tsinghua-logo.png' %}" alt="tsinghua-logo">
+    <img src="{% static 'images/ch-logo.jpg' %}" alt="ch-logo">
+    <img src="{% static 'images/ums-logo.jpg' %}" alt="ums-logo">
+  </div>
   <br>
-<div class="row">
-    <a target="_blank" href="{% url 'deepb:home' %}"><button class="btn">进入智能解读平台</button></a>
-</div>
-</div>
-
-<div id="introduction" class="container text-center">
-  <h3>公司介绍</h3>
-  <ul>
-  <li><span>诺亚基因成立于纽约，是一家用人工智能技术实现了基因测序报告全智能化解读的公司，并基于机器学习（深度学习)
-      技术构建全球首个基因组学全图谱，全球首个微生物组学全图谱，其核心技术“机器自主阅读文献”代表了当前全球AI技术的最高水平</span></li>
-  <li><span>其核心产品“基因测序报告智能解读平台”已应用于全球排名第一的生物医学机构洛克菲勒大学、全美医学院TOP3-约翰霍普金斯医学院、
-      康奈尔医学院、全美儿童医学院排名第一费城儿童医学院</span></li>
-  <li><span>诺亚基因开发团队来自全球排名第一的洛克菲勒大学分子诊断团队和佐治亚理工人工智能领军团队</span></li>
-  </ul>
 </div>
 
 <div id="contact" class="container text-center">
-  <h3>联系我们</h3>
-  <p>pandatechdeepbrain@gmail.com</p>
+  <h3>Contact</h3>
+  <p>contact@genonova.com</p>
   <br>
 </div>
 
@@ -118,42 +263,66 @@
   <a class="up-arrow" href="#myPage" data-toggle="tooltip" title="TO TOP">
     <span class="glyphicon glyphicon-chevron-up"></span>
   </a><br><br>
-  <p>诺亚基因 <a href="https://www.genonova.com" data-toggle="tooltip" title="Visit Genonova">www.genonova.com</a></p>
+  <p>诺亚科技 <a href="https://www.genonova.com" data-toggle="tooltip" title="Visit Genonova">www.genonova.com</a></p>
 </footer>
 
 <script>
-$(document).ready(function(){
-  // Add smooth scrolling to all links in navbar + footer link
-  $(".navbar a, footer a[href='#myPage']").on('click', function(event) {
+  $(document).ready(function(){
+    // Add smooth scrolling to all links in navbar + footer link
+    $(".navbar a, footer a[href='#myPage']").on('click', function(event) {
 
-  // Make sure this.hash has a value before overriding default behavior
-  if (this.hash !== "") {
+    // Make sure this.hash has a value before overriding default behavior
+    if (this.hash !== "") {
 
-    // Prevent default anchor click behavior
-    event.preventDefault();
+      // Prevent default anchor click behavior
+      event.preventDefault();
 
-    // Store hash
-    var hash = this.hash;
+      // Store hash
+      var hash = this.hash;
 
-    // Using jQuery's animate() method to add smooth page scroll
-    // The optional number (900) specifies the number of milliseconds it takes to scroll to the specified area
-    $('html, body').animate({
-      scrollTop: $(hash).offset().top
-    }, 900, function(){
+      // Using jQuery's animate() method to add smooth page scroll
+      // The optional number (900) specifies the number of milliseconds it takes to scroll to the specified area
+      $('html, body').animate({
+        scrollTop: $(hash).offset().top
+      }, 900, function(){
 
-      // Add hash (#) to URL when done scrolling (default click behavior)
-      window.location.hash = hash;
-      });
-    } // End if
+        // Add hash (#) to URL when done scrolling (default click behavior)
+        window.location.hash = hash;
+        });
+      } // End if
+    });
+  })
+
+  $(document).ready(()=>{
+    var iScrollPos = 0;
+    var carouselHeight = $('.carousel:first').height();
+    $(window).scroll(function () {
+        var iCurScrollPos = $(this).scrollTop();
+        if (iCurScrollPos > iScrollPos + 10) {
+            //Scrolling Down
+            $('.navbar-fixed-top:first').addClass('disappear');
+            $('.navbar-fixed-top:first').removeClass('appear');
+        }
+        else if(iCurScrollPos < iScrollPos - 10) {
+           //Scrolling Up
+            $('.navbar-fixed-top:first').removeClass('disappear');
+            $('.navbar-fixed-top:first').addClass('appear');
+        }
+        iScrollPos = iCurScrollPos;
+        if(iScrollPos > carouselHeight){
+          $('.navbar-fixed-top:first').css("background-color","#005e80");
+        }else{
+          $('.navbar-fixed-top:first').css("background","transparent");
+        }
+    });
   });
-})
 </script>
 
 <script>
-$(document).ready(function(){
-    // Initialize Tooltip
-    $('[data-toggle="tooltip"]').tooltip();
-})
+  $(document).ready(function(){
+      // Initialize Tooltip
+      $('[data-toggle="tooltip"]').tooltip();
+  })
 </script>
 
 

@@ -7,11 +7,11 @@ from google import google
 reload(sys)
 sys.setdefaultencoding('utf-8')
 
-lof = 0
 
 def check_lof(input_gene):
     lof_result = []
     lof = 0
+    input_gene = input_gene.upper()
     search_results = google.search(input_gene+' loss of function', 1)
     for i in search_results:
         for j in i.description.split("..."):
