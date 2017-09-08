@@ -399,7 +399,7 @@ class new_task(APIView):
             newdoc = Document(
                 user_name = user_name,
                 document = gene_file,
-                description = task_name,
+                task_name = task_name,
             )
             newdoc.save()
 
