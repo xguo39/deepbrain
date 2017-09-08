@@ -8,6 +8,9 @@ deepb/migrations/
 dump.rdb
 node_modules/
 local_data/
+<<<<<<< HEAD
+=======
 deepb/test.ipynb
+>>>>>>> master
 node_modules/
 documents/

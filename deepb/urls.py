@@ -29,5 +29,4 @@ urlpatterns = [
     url(r'^api/review/upload/(?P<task_id>[0-9]+)/(?P<user_name>[-\w]+)/$', views.review_upload.as_view()),
 ]
 
-
 urlpatterns = format_suffix_patterns(urlpatterns)

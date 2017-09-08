@@ -1,0 +1,107 @@
+{% extends 'home_ch.html' %}
+{% load static %}
+
+{% block second_css %}
+{% endblock %}
+
+{% block main_content %}
+  <div class="container">
+    <div class = "col-sm-6" id = "upload">
+      <div class="container">
+        <h3 style= "float: left;">新任务</h3>
+        <h6 style= "float: left; margin: 33px 0px 0px 25px"><a target="_blank" href="{% static 'file/genonova_user_guide.pdf' %}">使用说明</a></h6>
+      </div>
+      <br />
+      <form name="form1" method="post" action="{% url 'deepb:upload_ch' %}" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <div class = "container" id = "enter_task_name">
+          <label>名称 <small><i>*需要</i></small></label> &nbsp;</br>
+          <input type="text" name="task_name" placeholder="" required>
+          <label></label><br />
+        </div>
+
+        <div class = "container" id = "input_gene_file">
+          <label>输入基因信息文件 <small>(支持 .txt .xls .csv .vcf)</small> <small><i>*需要</i></small></label></br>
+          <p><small>文件需包含 gene 与 HGVS cDNA </small></p>
+          <input type="file" name="gene_file" required accept=".txt,.xlsx,.xls,.csv,.vcf">
+        </div>
+
+        <div class = "container" id = "input_phen">
+          <label>输入表型信息 <small>(.txt 文件 或 文字录入)</small> <small><i>*可选</i></small> </label></br>
+          <input type="file" name="symptom_file" accept=".txt">
+          <p></p>
+          <textarea id = "myTextArea"
+                    name = "input_text_phenotype"
+                    rows = "7"
+                    cols = "245"
+                    maxlength = "800"
+                    placeholder = "表型间使用逗号分割&nbsp;(表型支持中英文输入)"></textarea>
+        </div>
+
+        <div class = "container" id = "run_task">
+          <button type="submit", onClick="return">提交</button>
+        </div>
+        <br />
+      </form>
+    </div>
+
+    <!-- <div class = "col-sm-6" id="results">
+      <h3>任务列表</h3>
+      <br />
+      <div id = "result_list">
+      {% for result in latest_task_list %}
+        {% if result.status == 'In progress' %}
+          名称: &nbsp;
+          {{ result.raw_input_table.task_name }}<br />
+          状态: 运行中  &nbsp;(运行时间预计 {{ result.raw_input_table.process_time }} 分钟)<br />
+          提交时间: &nbsp;
+          {{ result.raw_input_table.pub_date }}<br />
+          <p style="color:blue;float:left"><i>{{ result.raw_input_table.status }}</i></p><img src="{% static 'images/blue_loading_dots.gif' %}" width="30" height="30" style="float:left"><br />
+        {% elif result.status == 'Failed'%}
+          名称: &nbsp;
+          {{ result.raw_input_table.task_name }}<br />
+          状态: 失败<br />
+          提交时间: &nbsp;
+          {{ result.raw_input_table.pub_date }}<br />
+        {% elif result.status == 'Succeed' %}
+          名称: &nbsp;
+          {{ result.raw_input_table.task_name }} &nbsp;
+          <a href="{% url 'deepb:result_ch' result.main_table_id %}">查看结果</a><br />
+          状态: 成功<br />
+          提交时间: &nbsp;
+          {{ result.raw_input_table.pub_date }}<br />
+        {% else %}
+          名称: &nbsp;
+          {{ result.raw_input_table.task_name }}<br />
+          状态: 系统错误<br />
+          提交时间: &nbsp;
+          {{ result.raw_input_table.pub_date }}<br />
+        {% endif %}
+        <br />
+      {% endfor %}
+      {% if show_all %}
+      <a href="{% url 'deepb:home_all_ch' show_all %}"> 显示全部 {{ task_count }} 个任务</a>
+      {% endif %}
+      {% if all_back %}
+      <a href="{% url 'deepb:home_ch' %}"> 收起 </a>
+      {% endif %}
+      <br />
+      <br />
+      <br />
+      </div>
+    </div> -->
+  </div>
+{% endblock %}
+
+{% block main_javascript %}
+  <script>
+
+    {% if refresh %}
+      window.setTimeout(function () {
+          location.href = "";
+        }, 20000);
+    {% endif %}
+
+  </script>
+{% endblock %}

@@ -1,0 +1,16 @@
+.navbar-default{
+	/* BG GRADIENT: */
+	background: #00061D;
+	opacity: 0.85;
+	box-shadow: 0 2px 8px 0 rgba(0,0,0,0.50);
+	margin-bottom: 0;
+	border: 0px;
+	border-radius: 0px;
+	z-index: 10;
+
+}
+
+textarea {
+    padding: 6px 10px;
+    border-radius: 2px;
+}
