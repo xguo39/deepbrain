@@ -330,16 +330,6 @@ class new_task(APIView):
         task_name = request.POST.get('task_name', None)
 
         gene_file = request.FILES['gene_file']
-        # form = DocumentForm(request.POST, request.FILES)
-        # if form.is_valid():
-        newdoc = Document(
-            user_name = user_name,
-            document = request.FILES['gene_file'],
-            description = request.POST.get('task_name', None),
-        )
-        newdoc.save()
-        # else:
-        #     print 'not valid'
 
         if gene_file.name.endswith('.xls') or gene_file.name.endswith('.xlsx'):
             raw_input_gene = pd.read_excel(gene_file).to_csv(index=False)
@@ -406,6 +396,13 @@ class new_task(APIView):
             patient_gender = int(request.POST.get('patient_gender', None))
 
         try:
+            newdoc = Document(
+                user_name = user_name,
+                document = gene_file,
+                description = task_name,
+            )
+            newdoc.save()
+
             raw_gene_input = Raw_input_table(
                 raw_input_gene = raw_input_gene,
                 raw_input_phenotype = raw_input_phenotype,
