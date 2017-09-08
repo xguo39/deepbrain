@@ -47,7 +47,7 @@ def user_directory_path(instance, filename):
     return 'documents/user_{0}/{1}'.format(instance.user.id, filename)
 
 class Document(models.Model):
-    description = models.CharField(max_length=255, blank=True)
+    task_name = models.CharField(max_length=20, blank=True, default='')
     user_name = models.CharField(max_length=10, default='')
     document = models.FileField(upload_to='documents/%Y/%m/%d')
     uploaded_at = models.DateTimeField(auto_now_add=True)
