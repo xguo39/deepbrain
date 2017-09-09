@@ -7,6 +7,7 @@ import ACMG
 import filterVariantOnPhenotype
 import update_phenotype_to_gene
 import getCandidateGenes
+import generateFinalReport
 import csv
 
 import pandas as pd
@@ -35,14 +36,17 @@ sys.setdefaultencoding('utf-8')
 
 def format_hgvs(chrom, pos, ref, alt):
     '''get a valid hgvs name from VCF-style "chrom, pos, ref, alt" data.
+
     Example:
+
         >>> myvariant.format_hgvs("1", 35366, "C", "T")
         >>> myvariant.format_hgvs("2", 17142, "G", "GA")
         >>> myvariant.format_hgvs("MT", 8270, "CACCCCCTCT", "C")
         >>> myvariant.format_hgvs("X", 107930849, "GGA", "C")
+
     '''
     if chrom == '.' or pos == '.' or ref == '.' or alt == '.' or not chrom or not pos or not ref or not alt or ref == alt:
-        return ''
+    	return ''
     chrom = str(chrom)
     if chrom.lower().startswith('chr'):
         # trim off leading "chr" if any
@@ -79,62 +83,62 @@ def format_hgvs(chrom, pos, ref, alt):
     return hgvs
 
 def read_input_pheno_file(input_phenotype):
-    if not input_phenotype:
-        return '', '', '', ''
-    language = detect(unicode(input_phenotype))
-    phenotype_translate = None
-    if language == "zh-cn" or language == "ko":
-        site = "https://translate.googleapis.com/translate_a/single?client=gtx&sl=zh-Hans&tl=en&dt=t&q="+input_phenotype
-        hdr = {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.64 Safari/537.11',
-                'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-                'Accept-Charset': 'ISO-8859-1,utf-8;q=0.7,*;q=0.3',
-                'Accept-Encoding': 'none',
-                'Accept-Language': 'en-US,en;q=0.8',
-                'Connection': 'keep-alive'}
-        req = urllib2.Request(site, headers=hdr)
-        try:
-            page = urllib2.urlopen(req)
-            content = page.read()
-            phenotype_translate = json.loads(content)[0][0][0]
-            input_phenotype = phenotype_translate
-        except urllib2.HTTPError, e:
-            return '', '', '', ''
-    text = StringIO(unicode(input_phenotype), newline=None)
-    lines = text.readlines()
-    lines = [line.strip() for line in lines]
-    phenos = []
-    for line in lines:
-        if not line:
-            continue
+	if not input_phenotype:
+		return '', '', '', ''
+	language = detect(unicode(input_phenotype))
+	phenotype_translate = None
+	if language == "zh-cn" or language == "ko":
+		site = "https://translate.googleapis.com/translate_a/single?client=gtx&sl=zh-Hans&tl=en&dt=t&q="+input_phenotype
+		hdr = {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.64 Safari/537.11',
+				'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+				'Accept-Charset': 'ISO-8859-1,utf-8;q=0.7,*;q=0.3',
+				'Accept-Encoding': 'none',
+				'Accept-Language': 'en-US,en;q=0.8',
+				'Connection': 'keep-alive'}
+		req = urllib2.Request(site, headers=hdr)
+		try:
+			page = urllib2.urlopen(req)
+			content = page.read()
+			phenotype_translate = json.loads(content)[0][0][0]
+			input_phenotype = phenotype_translate
+		except urllib2.HTTPError, e:
+			return '', '', '', ''
+	text = StringIO(unicode(input_phenotype), newline=None)
+	lines = text.readlines()
+	lines = [line.strip() for line in lines]
+	phenos = []
+	for line in lines:
+		if not line:
+			continue
         phenos_each_line = re.split(r'  +|\t+|,|;|\.|\|', line.strip())
         phenos_each_line = [re.sub(r'^\W+|\W+$', '', s) for s in phenos_each_line]
         phenos_each_line = [s.lower() for s in phenos_each_line if s]
         phenos += phenos_each_line
 
-    corner_cases = dict()
-    original_phenos = [_.strip() for _ in phenos]
-    for pheno in phenos:
-        if re.search('development', pheno) and re.search('delay', pheno) and not re.search('growth', pheno):
-            phenos.append('growth delay')
-            corner_cases['growth delay'] = pheno.strip()
-        for pheno in phenos:
-            if re.search('growth', pheno) and re.search('delay', pheno) and not re.search('development', pheno):
-                phenos.append('developmental delay')
-                corner_cases['developmental delay'] = pheno.strip()
-        phenos = [_.strip() for _ in phenos]
-        phenos = list(set(phenos))
-        return phenos, corner_cases, original_phenos, phenotype_translate
+	corner_cases = dict()
+	original_phenos = [_.strip() for _ in phenos]
+	for pheno in phenos:
+		if re.search('development', pheno) and re.search('delay', pheno) and not re.search('growth', pheno):
+			phenos.append('growth delay')
+			corner_cases['growth delay'] = pheno.strip()
+		for pheno in phenos:
+			if re.search('growth', pheno) and re.search('delay', pheno) and not re.search('development', pheno):
+				phenos.append('developmental delay')
+				corner_cases['developmental delay'] = pheno.strip()
+		phenos = [_.strip() for _ in phenos]
+		phenos = list(set(phenos))
+		return phenos, corner_cases, original_phenos, phenotype_translate
 
 def getFileDelimiter(inputfile):
-    for line in inputfile:
-        if line and line[:2] != "##":
-            header = line
-            sniffer = csv.Sniffer()
-            dialect = sniffer.sniff(header)
-            delimiter =  dialect.delimiter
-            field_names = header.split(delimiter)
-            break
-    return delimiter, field_names
+	for line in inputfile:
+	    if line and line[:2] != "##":
+	        header = line
+	        sniffer = csv.Sniffer()
+	        dialect = sniffer.sniff(header)
+	        delimiter =  dialect.delimiter
+	        field_names = header.split(delimiter)
+	        break
+	return delimiter, field_names
 
 def convertFile2DF_bak(inputfile, delimiter):
     columns = []
@@ -250,7 +254,7 @@ def getCompHetGenes(candidate_vars_zygosity, variant_id_to_gene):
             if var_from_mother and var_from_father:
                 comp_het_genes.append(gene)
     #print 'variant_id_to_gene, gene_zygosity, comp_het_genes', variant_id_to_gene, gene_zygosity, comp_het_genes
-    return comp_het_genes   
+    return comp_het_genes	
 
 def getZygosity(parent_ngs, candidate_vars_zygosity, proband_gender, variant_id_to_gene):
     # candidate_vars_zygosity [(gene, variant, transcript, variant_id, chrome, ref, allele1, allele2, mother1, mother2, father1, father2), ...]
@@ -366,7 +370,7 @@ def read_input_gene_file(input_gene, parent_ngs, father_vcf, mother_vcf, proband
     parent_ngs_checked = False
     for line in input_gene[1:]:
         if not line:
-            continue    
+            continue	
         if type(line) != list and line.startswith("#"):
             continue
         if type(line) != list:
@@ -391,7 +395,7 @@ def read_input_gene_file(input_gene, parent_ngs, father_vcf, mother_vcf, proband
                 variant_id = 'chr' + part.split(':')[0].split('.')[-1] + part.split(':')[-1]
             if re.search(r'chr.*:g\.', part, re.I):
                 variant_id = part
-            if re.match(r'het|hom|hem|de |comp', part, re.I):   
+            if re.match(r'het|hom|hem|de |comp', part, re.I):	
                 if re.match(r'het', part, re.I):
                     zygosity = 'het'
                 elif re.match(r'hom', part, re.I):
@@ -418,6 +422,7 @@ def read_input_gene_file(input_gene, parent_ngs, father_vcf, mother_vcf, proband
             for alt in alts:
                 try:
                     variant_id = format_hgvs(chrome, pos, ref, alt)
+                    #print chrome, pos, ref, alt, variant_id
                 except ValueError:
                     pass
                 if not gene and not variant and not transcript and not variant_id:
@@ -499,22 +504,22 @@ def read_input_gene_file(input_gene, parent_ngs, father_vcf, mother_vcf, proband
     return candidate_vars, CANDIDATE_GENES, df_genes, field_names, gene_zygosity, non_snpeff_var_data # non_snpeff_var_data from MyVariant 
 
 def map_phenotype2gene(CANDIDATE_GENES, phenos, corner_cases, candidate_vars, original_phenos):
-    ranking_genes, ranking_disease, gene_associated_phenos, gene_associated_pheno_hpoids, pheno_to_hpo_pheno_and_id = map_phenotype_to_gene.generate_score(phenos, CANDIDATE_GENES, corner_cases, original_phenos)
-    # gene_associated_phenos = dict(list) e.g., {'BRCA1':['breast..', '..'], 'PTPN11':['noonan', '..']}
-    for gene in gene_associated_phenos.keys():
-        phenos = gene_associated_phenos[gene]
-        phenos = ', '.join(phenos)
-        gene_associated_phenos[gene] = phenos
-    df_gene_associated_phenos = pd.DataFrame(gene_associated_phenos.items(), columns = ['gene', 'correlated_phenotypes'])
-    # collect variant info
-    hpo_filtered_genes = np.unique([i[0] for i in ranking_genes]).tolist()
+	ranking_genes, ranking_disease, gene_associated_phenos, gene_associated_pheno_hpoids, pheno_to_hpo_pheno_and_id = map_phenotype_to_gene.generate_score(phenos, CANDIDATE_GENES, corner_cases, original_phenos)
+	# gene_associated_phenos = dict(list) e.g., {'BRCA1':['breast..', '..'], 'PTPN11':['noonan', '..']}
+	for gene in gene_associated_phenos.keys():
+		phenos = gene_associated_phenos[gene]
+		phenos = ', '.join(phenos)
+		gene_associated_phenos[gene] = phenos
+	df_gene_associated_phenos = pd.DataFrame(gene_associated_phenos.items(), columns = ['gene', 'correlated_phenotypes'])
+	# collect variant info
+	hpo_filtered_genes = np.unique([i[0] for i in ranking_genes]).tolist()
 
-    tmp_candidate_vars = []
-    for var in candidate_vars:
-        if var[0] in hpo_filtered_genes:
-            tmp_candidate_vars.append(var)
-    candidate_vars = tmp_candidate_vars
-    return ranking_genes, candidate_vars, df_gene_associated_phenos, gene_associated_phenos, gene_associated_pheno_hpoids, pheno_to_hpo_pheno_and_id
+	tmp_candidate_vars = []
+	for var in candidate_vars:
+		if var[0] in hpo_filtered_genes:
+			tmp_candidate_vars.append(var)
+	candidate_vars = tmp_candidate_vars
+	return ranking_genes, candidate_vars, df_gene_associated_phenos, gene_associated_phenos, gene_associated_pheno_hpoids, pheno_to_hpo_pheno_and_id
 
 def update_phenotype2gene(final_res, variants, ranking_genes, gene_zygosity, candidate_vars):
     ranking_genes = update_phenotype_to_gene.rankGenePhenoByCodingEffect(final_res, variants, ranking_genes)
@@ -674,8 +679,10 @@ def master_function(raw_input_id):
             if incidental_finding_report:
                 incidental_findings_genes, incidental_finding_gene_phenos = getIncidentalFindings(df_final_res)
                 df_incidental_findings_genes = df_final_res.loc[df_final_res['gene'].isin(incidental_findings_genes), ['gene', 'transcript', 'variant', 'protein', 'zygosity', 'pheno_match_score', 'hit_criteria', 'pathogenicity']]
+
                 df_incidental_finding_gene_phenos = pd.DataFrame(incidental_finding_gene_phenos.items(), columns=['gene', 'associated_phenotypes']) 
                 df_incidental_findings_genes = df_incidental_findings_genes.merge(df_incidental_finding_gene_phenos, how = 'left', on = 'gene')
+            order_information, patient_information, phenotype_information, general_information, parimary_variant_information, primary_interpretation_details, secondary_variant_information, secondary_interpretation_details, limitations = generateFinalReport.generateFinalReport(df_final_res, variant_ACMG_interpret_chinese, variants, pheno_to_hpo_pheno_and_id, df_incidental_findings_genes)
             return df_final_res, df_genes, phenos, field_names, variant_ACMG_interpretation, variant_ACMG_interpret_chinese, df_ranking_genes, df_jax_candidate_genes, df_incidental_findings_genes
 
         else:
@@ -690,6 +697,9 @@ def master_function(raw_input_id):
             if incidental_finding_report:
                 incidental_findings_genes, incidental_finding_gene_phenos = getIncidentalFindings(ACMG_result)
                 df_incidental_findings_genes = ACMG_result.loc[ACMG_result['gene'].isin(incidental_findings_genes), ['gene', 'transcript', 'variant', 'protein', 'zygosity', 'pheno_match_score', 'hit_criteria', 'pathogenicity']]
+
                 df_incidental_finding_gene_phenos = pd.DataFrame(incidental_finding_gene_phenos.items(), columns=['gene', 'associated_phenotypes']) 
                 df_incidental_findings_genes = df_incidental_findings_genes.merge(df_incidental_finding_gene_phenos, how = 'left', on = 'gene')
+            order_information, patient_information, phenotype_information, general_information, parimary_variant_information, primary_interpretation_details, secondary_variant_information, secondary_interpretation_details, limitations = generateFinalReport.generateFinalReport(ACMG_result, df_variant_ACMG_interpret_chinese, variants, None, df_incidental_findings_genes)
             return ACMG_result, df_genes, phenos, field_names, df_variant_ACMG_interpret, df_variant_ACMG_interpret_chinese, df_ranking_genes, df_jax_candidate_genes, df_incidental_findings_genes
+
