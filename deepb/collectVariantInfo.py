@@ -825,6 +825,8 @@ def get_variants(candidate_vars):
   # print "Get dbscSNV splicing data "
   for chromosome in set(dbscsnv_chromosomes):
     # print chromosome
+    if re.search('chrmt', chromosome, re.I):
+      continue
     with open(os.path.join(BASE, ('data/dbscSNV/dbscSNV1.1.' + chromosome)), 'rb') as f:
       f.readline()
       for line in f:
@@ -998,6 +1000,8 @@ def get_variants_from_vcf(candidate_vars, variantid_zygosity, non_snpeff_var_dat
 
   ## Get dbscSNV splicing effect data from local files
   for chromosome in set(dbscsnv_chromosomes):
+    if re.search('chrmt', chromosome, re.I):
+      continue
     with open(os.path.join(BASE, ('data/dbscSNV/dbscSNV1.1.' + chromosome)), 'rb') as f:
       f.readline()
       for line in f:

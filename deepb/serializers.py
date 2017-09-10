@@ -14,3 +14,9 @@ class All_task_Serializer(serializers.ModelSerializer):
         model = Raw_input_table
         fields = ('id','task_name','pub_date','status','checked')
 
+
+class Evaluated_task_Serializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Raw_input_table
+        fields = ('id','task_name','pub_date','status')

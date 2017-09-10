@@ -36,3 +36,19 @@ class Raw_input_table(models.Model):
     patient_gender = models.IntegerField(default=0)
     checked = models.IntegerField(default=0)
     evaluated = models.IntegerField(default=0)
+
+class Evaluated_table(models.Model):
+    task_id = models.IntegerField(default=0)
+    molecular_diagnosis = models.CharField(max_length=100, default='')
+    pheno_match = models.IntegerField(default=0)
+    pathogenic = models.IntegerField(default=0)
+
+def user_directory_path(instance, filename):
+    return 'documents/user_{0}/{1}'.format(instance.user.id, filename)
+
+class Document(models.Model):
+    task_name = models.CharField(max_length=20, blank=True, default='')
+    user_name = models.CharField(max_length=10, default='')
+    document = models.FileField(upload_to='documents/%Y/%m/%d')
+    uploaded_at = models.DateTimeField(auto_now_add=True)
+

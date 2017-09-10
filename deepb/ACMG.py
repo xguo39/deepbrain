@@ -3,7 +3,7 @@
 import re
 import pandas as pd
 from collections import defaultdict
-import pickle
+import cPickle as pickle
 import amino_acid_mapping
 import numpy as np
 import os
@@ -263,9 +263,7 @@ def check_PS1_PM5(variant_):
 
 def getDeNovoGenes():
     global denovo_genes, non_denovo_genes
-    infile = open(os.path.join(BASE, 'data/denovo_gene_and_non_denovo_gene.p'), 'rb')
-    denovo_genes, non_denovo_genes = pickle.load(infile)
-    infile.close()
+    denovo_genes, non_denovo_genes = pickle.load(open(os.path.join(BASE, 'data/denovo_gene_and_non_denovo_gene.p'), 'rb'))
 
 def check_PS2_PM6(variant_, parent_ngs, parent_affects):
     '''
@@ -903,7 +901,10 @@ def check_PM4_BP3(variant_):
  
     PM4, BP3 = 0, 0
     effect_in_inframe_indel_variant_types = re.search('|'.join(inframe_indel_variant_types), variant_effect, re.I)
-    repeat_region = repeat_regions[chromosome]
+    if not re.search('chrmt', chromosome, re.I):
+        repeat_region = repeat_regions[chromosome]
+    else:
+        repeat_region = []
     in_repeat_region = False 
     for idx in xrange(len(repeat_region)):
         region = repeat_region[idx]

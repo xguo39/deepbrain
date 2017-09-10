@@ -4,7 +4,7 @@ from django.shortcuts import get_object_or_404, render
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 from django.utils import timezone
-from deepb.models import Main_table, Raw_input_table
+from deepb.models import Main_table, Raw_input_table, Evaluated_table, Document
 from deepb.tasks import trigger_background_main_task
 from django.views.generic.list import ListView
 from django.views.generic import DetailView
@@ -25,8 +25,7 @@ from rest_framework.permissions import IsAdminUser
 from rest_framework.views import APIView
 from rest_framework.decorators import permission_classes
 from rest_framework import status, generics
-from deepb.serializers import Progress_task_Serializer
-from deepb.serializers import All_task_Serializer
+from deepb.serializers import Progress_task_Serializer, All_task_Serializer, Evaluated_task_Serializer
 import json
 from collections import OrderedDict
 
@@ -331,6 +330,7 @@ class new_task(APIView):
         task_name = request.POST.get('task_name', None)
 
         gene_file = request.FILES['gene_file']
+
         if gene_file.name.endswith('.xls') or gene_file.name.endswith('.xlsx'):
             raw_input_gene = pd.read_excel(gene_file).to_csv(index=False)
         else:
@@ -391,10 +391,18 @@ class new_task(APIView):
             patient_age = int(request.POST.get('patient_age', None))
         else:
             patient_age = 0
+
         if request.POST.get('patient_gender', None):
             patient_gender = int(request.POST.get('patient_gender', None))
 
         try:
+            newdoc = Document(
+                user_name = user_name,
+                document = gene_file,
+                task_name = task_name,
+            )
+            newdoc.save()
+
             raw_gene_input = Raw_input_table(
                 raw_input_gene = raw_input_gene,
                 raw_input_phenotype = raw_input_phenotype,
@@ -417,7 +425,7 @@ class new_task(APIView):
             raw_gene_input.save()
 
             trigger_background_main_task.delay(raw_gene_input.id)
-        
+    
             return Response({'success':True})
         except:
             return Response({'success':False})
@@ -505,3 +513,50 @@ class result_detail(APIView):
             'result_detail': json.loads(result_detail, object_pairs_hook=OrderedDict)
         }
         return Response(json_result)
+
+class review_list(APIView):
+
+    def get(self, request, user_name, format=None):
+        post = Raw_input_table.objects.filter(user_name=user_name, evaluated=1, status='succeed')[::-1]
+        serializer = Evaluated_task_Serializer(post, many=True)
+        json_result = {'success':True, 'list':serializer.data}
+        return Response(json_result)
+
+
+class review_upload(APIView):
+
+    def post(self, request, task_id, user_name, format=None):
+        put_data = Raw_input_table.objects.get(user_name=user_name, id=task_id)
+        put_data.evaluated = 0
+        put_data.save()
+
+        molecular_diagnosis = request.POST.get('molecular_diagnosis', None)
+        if request.POST.get('pheno_match', None):
+            pheno_match = 1
+        else:
+            pheno_match = 0
+        if request.POST.get('pathogenic', None):
+            pathogenic = 1
+        else:
+            pathogenic = 0
+
+
+        try:
+            evaluate_input = Evaluated_table(
+                    task_id = task_id,
+                    molecular_diagnosis = molecular_diagnosis,
+                    pheno_match = pheno_match,
+                    pathogenic = pathogenic,
+                )
+            evaluate_input.save()
+            return Response({'success':True})
+        except:
+            return Response({'success':False})
+
+
+
+
+
+
+
+

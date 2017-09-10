@@ -7,6 +7,7 @@ import ACMG
 import filterVariantOnPhenotype
 import update_phenotype_to_gene
 import getCandidateGenes
+import generateFinalReport
 import csv
 
 import pandas as pd
@@ -421,6 +422,7 @@ def read_input_gene_file(input_gene, parent_ngs, father_vcf, mother_vcf, proband
             for alt in alts:
                 try:
                     variant_id = format_hgvs(chrome, pos, ref, alt)
+                    #print chrome, pos, ref, alt, variant_id
                 except ValueError:
                     pass
                 if not gene and not variant and not transcript and not variant_id:
@@ -676,9 +678,11 @@ def master_function(raw_input_id):
                 df_jax_candidate_genes = df_jax_candidate_genes.merge(df_jax_gene_key_phenos, how = 'left', on = 'gene')
             if incidental_finding_report:
                 incidental_findings_genes, incidental_finding_gene_phenos = getIncidentalFindings(df_final_res)
-                df_incidental_findings_genes = df_final_res.loc[df_final_res['gene'].isin(incidental_findings_genes), ['gene', 'transcript', 'variant', 'protein', 'id', 'zygosity', 'hit_criteria']]
+                df_incidental_findings_genes = df_final_res.loc[df_final_res['gene'].isin(incidental_findings_genes), ['gene', 'transcript', 'variant', 'protein', 'zygosity', 'pheno_match_score', 'hit_criteria', 'pathogenicity']]
+
                 df_incidental_finding_gene_phenos = pd.DataFrame(incidental_finding_gene_phenos.items(), columns=['gene', 'associated_phenotypes']) 
                 df_incidental_findings_genes = df_incidental_findings_genes.merge(df_incidental_finding_gene_phenos, how = 'left', on = 'gene')
+            order_information, patient_information, phenotype_information, general_information, parimary_variant_information, primary_interpretation_details, secondary_variant_information, secondary_interpretation_details, limitations = generateFinalReport.generateFinalReport(df_final_res, variant_ACMG_interpret_chinese, variants, pheno_to_hpo_pheno_and_id, df_incidental_findings_genes)
             return df_final_res, df_genes, phenos, field_names, variant_ACMG_interpretation, variant_ACMG_interpret_chinese, df_ranking_genes, df_jax_candidate_genes, df_incidental_findings_genes
 
         else:
@@ -692,8 +696,10 @@ def master_function(raw_input_id):
                 jax_candidate_genes, jax_gene_key_phenos = [], dict()
             if incidental_finding_report:
                 incidental_findings_genes, incidental_finding_gene_phenos = getIncidentalFindings(ACMG_result)
-                df_incidental_findings_genes = ACMG_result.loc[ACMG_result['gene'].isin(incidental_findings_genes), ['gene', 'transcript', 'variant', 'protein', 'id', 'zygosity', 'hit_criteria']]
+                df_incidental_findings_genes = ACMG_result.loc[ACMG_result['gene'].isin(incidental_findings_genes), ['gene', 'transcript', 'variant', 'protein', 'zygosity', 'pheno_match_score', 'hit_criteria', 'pathogenicity']]
+
                 df_incidental_finding_gene_phenos = pd.DataFrame(incidental_finding_gene_phenos.items(), columns=['gene', 'associated_phenotypes']) 
                 df_incidental_findings_genes = df_incidental_findings_genes.merge(df_incidental_finding_gene_phenos, how = 'left', on = 'gene')
+            order_information, patient_information, phenotype_information, general_information, parimary_variant_information, primary_interpretation_details, secondary_variant_information, secondary_interpretation_details, limitations = generateFinalReport.generateFinalReport(ACMG_result, df_variant_ACMG_interpret_chinese, variants, None, df_incidental_findings_genes)
             return ACMG_result, df_genes, phenos, field_names, df_variant_ACMG_interpret, df_variant_ACMG_interpret_chinese, df_ranking_genes, df_jax_candidate_genes, df_incidental_findings_genes
 
