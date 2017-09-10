@@ -261,11 +261,7 @@ http/1.1 200 OK
 
 ### Fetch_case_result
 * Description: For fetching the single case result
-<<<<<<< HEAD
-* URL: `/api/result/:task_id/:user_name`
-=======
 * URL: `/api/result/:task_id/:user_name/`
->>>>>>> master
 * Method: `GET`
 * Request Example
 `{}`
@@ -317,11 +313,7 @@ http/1.1 200 OK
   input_gene_data:[
     {
 
-<<<<<<< HEAD
      }
-  ]
-=======
-    },...
   ],
   input_info:{
     age:32, // null if not
@@ -338,7 +330,6 @@ http/1.1 200 OK
     },...
    ]
   }
->>>>>>> master
  }
 ```
 * Response Example on `failure`:
@@ -355,13 +346,6 @@ http/1.1 200 OK
 
 ### Fetch_Annotation
 * Description: For fetching the current gene's annotation
-<<<<<<< HEAD
-* URL: `/api/result/:task_id/:gene_name/:cDNA/:user_name`
-* Method: `Get`
-* Request Example:
-```javascript
-`{}`
-=======
 * URL: `/api/result/:task_id/:gene_name/:user_name/`
 * Method: `Post`
 * Request Example:
@@ -369,7 +353,6 @@ http/1.1 200 OK
 `{
   cDNA:'c.5224G&t>C'
  }`
->>>>>>> master
 ```
 * Response Example on `success`:
 ```
@@ -378,17 +361,10 @@ http/1.1 200 OK
 ```
 {
  success:true,
-<<<<<<< HEAD
- annotation_list:[
-   {
-     standard:'variant_annotation',
-     analyze:'dkfslkdfjsldfjlksfjlksdjflksdjflksdj'
-=======
  result_detail:[
    {
      criteria:'PM2',
      interpretation:'dkfslkdfjsldfjlksfjlksdjflksdjflksdj'
->>>>>>> master
    },...
  ]
 }
@@ -403,8 +379,7 @@ http/1.1 200 OK
  errCode:INFOMATION_UNCOMPLETED
 }
 ```
-<<<<<<< HEAD
-=======
+
 
 ### Fetch Review list
 * Description: For fetching the un-review list
@@ -470,4 +445,3 @@ http/1.1 200 OK
   success:false
 }
 ```
->>>>>>> master

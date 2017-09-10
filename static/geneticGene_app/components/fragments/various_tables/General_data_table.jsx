@@ -4,6 +4,7 @@ import * as sort from 'sortabular';
 import orderBy from 'lodash/orderBy';
 import { compose } from 'redux';
 import {Paginator, paginate} from '../../helpers';
+import {static_image} from 'base.config';
 const mappingDict={
   gene:'基因',transcript:'转录本',variant:'c.DNA',protein:'蛋白质',zygosity:'配型',correlated_phenotypes:'表型匹配',
   pheno_match_score:'表型匹配得分', hit_criteria:'ACMG评判标准', pathogenicity:'致病性', criteria:'标准',
@@ -37,7 +38,8 @@ class General_data_table extends React.Component{
     let columns = [];
     let sortingColumns={};
     for(let column_key in this.props.table_data[0]){
-      if(typeof this.props.table_data[0][column_key] === "number"){
+      // The number column and the gene column need to be sorted
+      if(typeof this.props.table_data[0][column_key] === "number" || column_key==='gene'){
         let order = 1;
         if(column_key === 'final_score')  order = 0;
         sortingColumns[column_key]={
@@ -49,15 +51,24 @@ class General_data_table extends React.Component{
           property:`${column_key}`,
           header:{
             label:`${mappingDict[column_key]?mappingDict[column_key]:column_key}`,
-            transforms:[sortable],
+            transforms:[
+              sortable,
+            ],
             formatters:[
               sort.header({
                 getSortingColumns,
-              })
+              }),
+              name => (
+                <div className='sortable_header'>
+                  <span>{name}</span>
+                  <img src={`${static_image}vertical.png`} alt='sort'></img>
+                </div>
+              )
            ],
           }
         })
-      }else{
+      }
+      else{
         if(column_key==='interpretation'){
           columns.push({
             property:`${column_key}`,
@@ -118,7 +129,7 @@ class General_data_table extends React.Component{
     let sortingColumns={};
     // let order = 0;
     for(let column_key in props.table_data[0]){
-      if(typeof props.table_data[0][column_key] === "number"){
+      if(typeof props.table_data[0][column_key] === "number" || column_key==='gene'){
         let order = 2;
         if(column_key === 'final_score')  order = 0;
         else if (column_key === 'pheno_match_score') order = 1;
@@ -134,7 +145,13 @@ class General_data_table extends React.Component{
             formatters:[
               sort.header({
                 getSortingColumns,
-              })
+              }),
+              name => (
+                <div className='sortable_header'>
+                  <span>{name}</span>
+                  <img src={`${static_image}vertical.png`} alt='sort'></img>
+                </div>
+              )
            ],
           }
         })
